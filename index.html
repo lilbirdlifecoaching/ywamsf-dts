@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DTS in the Tenderloin — YWAM San Francisco</title>
+<meta name="description" content="Discipleship Training School at YWAM San Francisco — a monastery without walls in the heart of the Tenderloin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Libre+Caslon+Display&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Brand tokens matched to ywamsanfrancisco.org: white ground, cyan-blue #01BCDE, Adobe Caslon (→ Libre Caslon), Futura PT (→ Jost), square buttons */
+:root{--blue:#01bcde;--blue-dk:#0096b3;--tint:#eaf8fb;--soft:#f7f7f6;--ink:#1c2018;--body:#4a4d46;--grey:#9a9a9a;--line:#e6e6e6;--serif:"Libre Caslon Text","Adobe Caslon Pro",Georgia,serif;--display:"Libre Caslon Display","Libre Caslon Text",Georgia,serif;--label:"Jost","Futura PT",Futura,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.65;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--blue)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.label{font:700 12.5px/1.3 var(--label);letter-spacing:.22em;text-transform:uppercase;color:var(--grey);margin-bottom:16px;display:block}
+h1,h2,h3{font-weight:400;margin:0}
+h1{font-family:var(--display);font-size:clamp(46px,7vw,84px);line-height:1.02;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-size:clamp(32px,4.4vw,48px);line-height:1.15;margin-bottom:18px}
+h1 em,h2 em{font-style:italic;color:var(--blue)}
+h3{font-family:var(--serif);font-size:25px;line-height:1.25}
+p{margin:0 0 16px;color:var(--body)}
+.lede{font-size:20px;max-width:640px}
+section{padding:clamp(70px,9vw,110px) 0;position:relative}
+.rule-line{border:0;border-top:1px solid var(--line);margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:19px 30px;background:var(--blue);color:#fff;text-decoration:none;font:700 14px/1 var(--label);letter-spacing:.18em;text-transform:uppercase;border:0;border-radius:0;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--blue-dk)}
+.btn.ghost{background:transparent;color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.btn.ghost:hover{background:var(--tint)}
+.btn.white{background:#fff;color:var(--blue)}
+.btn.white:hover{background:var(--tint)}
+.btn.ghost-white{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px #fff}
+.btn.ghost-white:hover{background:rgba(255,255,255,.12)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--blue);width:0;z-index:60}
+
+/* nav — mirrors their header: logo left, bold spaced caps right */
+nav.top{position:sticky;top:0;z-index:50;background:#fff;transition:box-shadow .3s}
+nav.top.shadow{box-shadow:0 1px 0 var(--line)}
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:92px;transition:height .3s}
+nav.top.shadow .wrap{height:72px}
+.logo{text-decoration:none}
+.logo img{height:46px;transition:height .3s}
+nav.top.shadow .logo img{height:38px}
+.logo .fallback{font:700 16px var(--label);letter-spacing:.2em;color:var(--blue);text-transform:uppercase}
+.navlinks{display:flex;gap:28px;align-items:center}
+.navlinks a{text-decoration:none;font:700 13px var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--grey);transition:color .15s}
+.navlinks a:hover,.navlinks a.cur{color:var(--ink)}
+.navlinks .btn{padding:13px 18px;font-size:12px;color:#fff}
+.navlinks .btn:hover{color:#fff}
+@media(max-width:960px){.navlinks a:not(.btn){display:none}}
+
+/* hero */
+.hero{padding:40px 0 90px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(30px,5vw,70px);align-items:center}
+.hero p.lede{margin:28px 0 34px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.next{display:flex;gap:40px;flex-wrap:wrap;margin-top:40px;padding-top:26px;border-top:1px solid var(--line)}
+.next div{font-size:17px;color:var(--body)}
+.next .label{margin-bottom:6px}
+.hero-photo{position:relative}
+.hero-photo .ph{aspect-ratio:4/5;background:var(--soft) center/cover;overflow:hidden}
+.hero-photo .ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform .2s linear}
+.hero-photo .cap{display:flex;justify-content:space-between;font:700 11.5px var(--label);letter-spacing:.2em;text-transform:uppercase;color:var(--grey);margin-top:12px}
+.hero-photo .badge{position:absolute;left:-28px;bottom:48px;background:var(--blue);color:#fff;padding:20px 24px;max-width:230px;font-style:italic;font-size:20px;line-height:1.3}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-photo .badge{left:12px}}
+
+/* place */
+.place-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,80px);align-items:center}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pair figure{margin:0}
+.pair figure:nth-child(2){margin-top:60px}
+.pair .ph{aspect-ratio:3/4;background:var(--soft);overflow:hidden}
+.pair img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.pair figure:hover img{transform:scale(1.04)}
+.pair figcaption{font:700 11px var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--grey);margin-top:10px;line-height:1.5}
+.stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-top:34px}
+.stats div{padding:20px 0 18px;border-bottom:1px solid var(--line)}
+.stats div:nth-child(odd){padding-right:18px;border-right:1px solid var(--line)}
+.stats div:nth-child(even){padding-left:22px}
+.stats b{display:block;font-family:var(--display);font-weight:400;font-size:44px;line-height:1;color:var(--blue)}
+.stats span{font:600 12px var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+@media(max-width:860px){.place-grid{grid-template-columns:1fr}}
+
+/* rule of life */
+.rule{background:var(--soft)}
+.rule-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:44px}
+.vows{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.vow{perspective:1000px;height:310px;cursor:pointer}
+.vow-in{position:relative;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.vow.flip .vow-in{transform:rotateY(180deg)}
+.vow .f,.vow .bk{position:absolute;inset:0;backface-visibility:hidden;padding:28px;display:flex;flex-direction:column}
+.vow .f{background:#fff;border:1px solid var(--line);transition:border-color .2s}
+.vow:hover .f{border-color:var(--blue)}
+.vow .bk{background:var(--blue);color:#fff;transform:rotateY(180deg)}
+.vow .num{font-family:var(--display);font-size:60px;line-height:1;color:var(--blue);font-style:italic}
+.vow h3{margin-top:auto;margin-bottom:8px}
+.vow .f p{margin:0;font-style:italic}
+.vow .bk .label{color:rgba(255,255,255,.8)}
+.vow .bk p{color:#fff;font-size:18px}
+.vow .hint{position:absolute;top:26px;right:26px;font:700 11px var(--label);letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+@media(max-width:980px){.vows{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.vows{grid-template-columns:1fr}.vow{height:250px}}
+
+/* day */
+.clock{display:grid;grid-template-columns:260px 1fr;gap:clamp(24px,5vw,60px);margin-top:44px}
+.hours{display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.hours button{background:none;border:0;color:var(--grey);text-align:left;padding:12px 0 12px 24px;font:700 12.5px var(--label);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;position:relative;display:flex;gap:14px;transition:color .2s}
+.hours button b{min-width:56px;font-weight:700;font-variant-numeric:tabular-nums}
+.hours button:hover{color:var(--ink)}
+.hours button.on{color:var(--blue)}
+.hours button.on:before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:3px;background:var(--blue)}
+.hour-card{background:var(--tint);padding:clamp(26px,4vw,48px);min-height:320px;display:flex;flex-direction:column}
+.hour-card .t{font:700 12px var(--label);letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.hour-card h3{font-size:clamp(30px,4vw,42px);margin-bottom:16px}
+.hour-card p{font-size:19px;max-width:560px}
+.hour-card .tag{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.hour-card .tag span{font:700 11px var(--label);letter-spacing:.14em;text-transform:uppercase;padding:7px 12px;background:#fff;color:var(--blue-dk)}
+.note-small{font-size:15px;font-style:italic;color:var(--grey);margin-top:18px}
+@media(max-width:820px){.clock{grid-template-columns:1fr}.hours{flex-direction:row;overflow-x:auto;border-left:0;border-bottom:1px solid var(--line);scrollbar-width:none}.hours button{padding:10px 14px;white-space:nowrap;flex-direction:column;gap:2px}.hours button.on:before{left:8px;right:8px;top:auto;bottom:-1px;width:auto;height:3px}}
+
+/* sound like you */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
+.qc{border:1px solid var(--line);padding:26px 28px;cursor:pointer;background:#fff;text-align:left;font:inherit;color:inherit;transition:border-color .2s,background .2s}
+.qc:hover{border-color:var(--blue)}
+.qc .q{font-size:22px;line-height:1.35;font-style:italic;display:flex;justify-content:space-between;gap:16px}
+.qc .q i{font:500 26px/1 var(--label);color:var(--blue);transition:transform .3s;flex:none;font-style:normal}
+.qc .a{max-height:0;overflow:hidden;transition:max-height .45s ease,margin .3s;color:var(--body);font-size:17px}
+.qc.open{border-color:var(--blue);box-shadow:inset 3px 0 0 var(--blue)}
+.qc.open .a{max-height:260px;margin-top:14px}
+.qc.open .q i{transform:rotate(45deg)}
+@media(max-width:760px){.quotes{grid-template-columns:1fr}}
+
+/* movements */
+.moves{background:var(--soft)}
+.move-tabs{display:flex;margin:38px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.move-tabs button{border:0;background:transparent;padding:16px 22px;font:700 13px var(--label);letter-spacing:.18em;text-transform:uppercase;cursor:pointer;color:var(--grey);position:relative}
+.move-tabs button.on{color:var(--ink)}
+.move-tabs button.on:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--blue)}
+.move-panel{display:grid;grid-template-columns:.9fr 1.1fr;background:#fff;min-height:380px}
+.move-panel .ph{background:var(--line) center/cover;min-height:280px}
+.move-panel .txt{padding:clamp(26px,4vw,48px)}
+.move-panel .big{font-family:var(--display);font-size:clamp(60px,9vw,96px);line-height:.9;color:var(--blue);font-style:italic}
+.move-panel ul{padding:0;margin:20px 0 0;list-style:none}
+.move-panel li{padding:11px 0;border-top:1px solid var(--line);font:600 12.5px var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--body)}
+@media(max-width:760px){.move-panel{grid-template-columns:1fr}}
+
+/* pathfinder */
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+.act{background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;transition:border-color .3s,transform .3s}
+.act:hover{border-color:var(--blue);transform:translateY(-4px)}
+.act .ph{height:190px;background:var(--soft) center/cover;position:relative}
+.act .ph span{position:absolute;left:0;bottom:0;background:var(--blue);color:#fff;font:700 11px var(--label);letter-spacing:.2em;text-transform:uppercase;padding:9px 14px}
+.act .body{padding:24px 24px 8px}
+.act .body h3{margin-bottom:6px}
+.act .body p{font-size:16.5px;font-style:italic}
+.act .links{padding:0 12px 14px;display:grid;margin-top:auto}
+.act .links a,.act .links button{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 12px;text-decoration:none;background:none;border:0;border-top:1px solid var(--line);font:inherit;text-align:left;cursor:pointer;color:var(--ink);transition:background .15s}
+.act .links a:hover,.act .links button:hover{background:var(--tint)}
+.act .links strong{display:block;font:700 12.5px var(--label);letter-spacing:.14em;text-transform:uppercase}
+.act .links small{display:block;font-size:15px;color:var(--body);line-height:1.4;margin-top:3px}
+.act .links em{font-style:normal;color:var(--blue);font-size:20px}
+@media(max-width:900px){.acts{grid-template-columns:1fr}}
+
+/* numbers */
+.numbers-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,80px)}
+.price{background:var(--tint);padding:clamp(28px,4vw,44px);margin-top:10px}
+.price .amt{font-family:var(--display);font-size:clamp(60px,8vw,88px);line-height:1;color:var(--blue)}
+.price .amt small{font:700 14px var(--label);letter-spacing:.18em;color:var(--grey)}
+.price dl{display:grid;grid-template-columns:auto 1fr;gap:12px 22px;margin:28px 0;font-size:17px}
+.price dt{font:700 12px/1.9 var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.price dd{margin:0}
+.price p{font-size:16.5px}
+.faq details{border-top:1px solid var(--line);padding:20px 0}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;font-size:21px;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";color:var(--blue);font:500 26px/1 var(--label);transition:transform .3s}
+.faq details[open] summary:after{transform:rotate(45deg)}
+.faq details p{margin-top:12px;font-size:17px}
+.faq .todo{background:#fff6cc;padding:0 4px;font-style:italic}
+@media(max-width:860px){.numbers-grid{grid-template-columns:1fr}}
+
+/* voices */
+.voices{background:var(--soft);overflow:hidden}
+.track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 24px 24px;margin:38px -24px 0;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.voice{flex:0 0 min(400px,85%);scroll-snap-align:start;background:#fff;border:1px solid var(--line);padding:30px;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:border-color .2s}
+.voice:hover{border-color:var(--blue)}
+.voice blockquote{margin:0 0 22px;font-size:23px;line-height:1.35;font-style:italic}
+.voice blockquote:before{content:"“";display:block;font-family:var(--display);color:var(--blue);font-size:60px;line-height:.6;margin-bottom:6px;font-style:normal}
+.voice cite{margin-top:auto;font:700 11px var(--label);letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+.voice cite b{display:block;color:var(--blue);margin-bottom:3px}
+.voice.placeholder{border-style:dashed;background:transparent}
+.arrows{display:flex;gap:8px}
+.arrows button{width:48px;height:48px;border:1px solid var(--line);background:#fff;cursor:pointer;font:500 18px var(--label);color:var(--ink)}
+.arrows button:hover{border-color:var(--blue);color:var(--blue)}
+
+/* journal */
+.posts{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:38px}
+.post{text-decoration:none;color:var(--ink);border-top:1px solid var(--line);padding-top:20px}
+.post small{font:700 11.5px var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.post h3{margin:10px 0 10px;font-size:23px;transition:color .2s}
+.post:hover h3{color:var(--blue)}
+.post p{font-size:16.5px}
+@media(max-width:800px){.posts{grid-template-columns:1fr}}
+
+/* final */
+.final{background:var(--blue);color:#fff;text-align:center}
+.final h2{color:#fff}
+.final h2 em{color:#fff}
+.final .label{color:rgba(255,255,255,.8)}
+.final p{color:rgba(255,255,255,.92);max-width:560px;margin:0 auto 34px;font-size:20px}
+
+footer{padding:50px 0 60px;font-size:16px;color:var(--body)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px 40px}
+footer a{text-decoration:none;margin-right:18px}
+footer .label{margin-bottom:8px}
+.concept{font:600 11px var(--label);letter-spacing:.14em;text-transform:uppercase;color:var(--grey);width:100%;padding-top:24px;border-top:1px solid var(--line)}
+
+/* floating + modal */
+.fab{position:fixed;right:20px;bottom:20px;z-index:40;background:var(--blue);color:#fff;border:0;border-radius:0;padding:17px 22px;font:700 12.5px var(--label);letter-spacing:.18em;text-transform:uppercase;cursor:pointer;box-shadow:0 12px 30px -10px rgba(1,120,145,.55);transform:translateY(130px);transition:transform .4s cubic-bezier(.2,.8,.2,1),background .2s}
+.fab.show{transform:none}
+.fab:hover{background:var(--blue-dk)}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(28,32,24,.45);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:4vh 14px;overflow-y:auto}
+.modal.open{display:flex}
+.modal-box{background:#fff;width:100%;max-width:780px;padding:clamp(26px,5vw,56px);position:relative;border-top:4px solid var(--blue);animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(20px)}}
+.modal-x{position:absolute;top:14px;right:14px;width:42px;height:42px;border:1px solid var(--line);background:#fff;cursor:pointer;font:500 18px var(--label);color:var(--ink)}
+.modal-x:hover{border-color:var(--blue);color:var(--blue)}
+.dts-sv{--sv-ink:var(--ink,#1c2018);--sv-soft:var(--body,#4a4d46);--sv-accent:var(--blue,#01bcde);--sv-accent-dk:var(--blue-dk,#0096b3);--sv-tint:var(--tint,#eaf8fb);--sv-grey:var(--grey,#9a9a9a);--sv-card:#fff;--sv-line:var(--line,#e6e6e6);font-family:var(--serif,"Libre Caslon Text",Georgia,serif);color:var(--sv-ink);max-width:680px;margin:0 auto;padding:8px 0}
+.dts-sv *{box-sizing:border-box}
+.dts-sv .sv-kicker{font:700 12.5px/1.2 var(--label,"Jost",sans-serif);letter-spacing:.2em;text-transform:uppercase;color:var(--sv-grey);margin-bottom:14px}
+.dts-sv h2{font-family:var(--serif,"Libre Caslon Text",Georgia,serif);font-weight:400;font-size:clamp(28px,5vw,40px);line-height:1.15;margin:0 0 16px}
+.dts-sv h2 em,.dts-sv h3 em{font-style:italic;color:var(--sv-accent)}
+.dts-sv h3{font-family:var(--serif,Georgia,serif);font-weight:400;font-size:clamp(22px,4vw,28px);line-height:1.3;margin:0 0 22px}
+.dts-sv p{line-height:1.65;color:var(--sv-soft);font-size:17px;margin:0 0 14px}
+.dts-sv .sv-meta{display:flex;flex-wrap:wrap;gap:8px 22px;font:600 12px var(--label,sans-serif);letter-spacing:.14em;text-transform:uppercase;color:var(--sv-grey);margin:20px 0 28px}
+.dts-sv .sv-btn{appearance:none;border:0;background:var(--sv-accent);color:#fff;font:700 13.5px/1 var(--label,sans-serif);letter-spacing:.16em;text-transform:uppercase;padding:18px 26px;border-radius:0;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:background .15s}
+.dts-sv .sv-btn:hover{background:var(--sv-accent-dk)}
+.dts-sv .sv-btn.ghost{background:transparent;color:var(--sv-accent);box-shadow:inset 0 0 0 1.5px var(--sv-accent)}
+.dts-sv .sv-btn.ghost:hover{background:var(--sv-tint)}
+.dts-sv .sv-progress{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.dts-sv .sv-progress i{height:3px;background:var(--sv-line);transition:background .3s}
+.dts-sv .sv-progress i.on{background:var(--sv-accent)}
+.dts-sv .sv-count{font:700 11.5px var(--label,sans-serif);letter-spacing:.18em;text-transform:uppercase;color:var(--sv-grey);margin-bottom:24px;display:flex;justify-content:space-between}
+.dts-sv .sv-context{font-style:italic;color:var(--sv-accent);font-size:18px;margin-bottom:8px}
+.dts-sv .sv-opts{display:grid;gap:10px}
+.dts-sv .sv-opt{text-align:left;background:#fff;border:1px solid var(--sv-line);border-radius:0;padding:17px 18px;font:400 17px/1.45 var(--serif,Georgia,serif);color:var(--sv-ink);cursor:pointer;transition:border-color .15s,background .15s;display:flex;gap:16px;align-items:flex-start}
+.dts-sv .sv-opt:hover{border-color:var(--sv-accent)}
+.dts-sv .sv-opt.sel{border-color:var(--sv-accent);background:var(--sv-tint)}
+.dts-sv .sv-opt b{flex:0 0 28px;height:28px;border:1px solid var(--sv-line);display:grid;place-items:center;font:700 12px/1 var(--label,sans-serif);color:var(--sv-grey)}
+.dts-sv .sv-opt.sel b{background:var(--sv-accent);border-color:var(--sv-accent);color:#fff}
+.dts-sv .sv-nav{display:flex;justify-content:space-between;margin-top:24px}
+.dts-sv .sv-link{background:none;border:0;color:var(--sv-grey);font:700 12px var(--label,sans-serif);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;padding:6px 0}
+.dts-sv .sv-link:hover{color:var(--sv-accent)}
+.dts-sv .sv-fade{animation:svIn .35s ease both}
+@keyframes svIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dts-sv .sv-result-badge{display:inline-block;font:700 12px var(--label,sans-serif);letter-spacing:.2em;text-transform:uppercase;padding:9px 14px;background:var(--sv-accent);color:#fff;margin-bottom:18px}
+.dts-sv .sv-bars{display:grid;gap:12px;margin:24px 0 28px;padding:22px;background:var(--sv-tint)}
+.dts-sv .sv-bar{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+.dts-sv .sv-bar span{font:700 11.5px var(--label,sans-serif);letter-spacing:.12em;text-transform:uppercase;color:var(--sv-soft)}
+.dts-sv .sv-bar div{height:6px;background:#fff;overflow:hidden}
+.dts-sv .sv-bar div i{display:block;height:100%;background:var(--sv-accent);width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.dts-sv .sv-notes{display:grid;gap:12px;margin-bottom:28px}
+.dts-sv .sv-note{padding:16px 20px;border-left:3px solid var(--sv-accent);background:#fff;box-shadow:inset 0 0 0 1px var(--sv-line)}
+.dts-sv .sv-note.stretch{border-left-color:var(--sv-grey)}
+.dts-sv .sv-note strong{display:block;font:700 11.5px var(--label,sans-serif);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px;color:var(--sv-ink)}
+.dts-sv .sv-note p{margin:0;font-size:16.5px}
+.dts-sv .sv-steps{display:grid;gap:10px;margin-bottom:26px}
+.dts-sv .sv-step{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:17px 20px;border:1px solid var(--sv-line);text-decoration:none;color:var(--sv-ink);transition:border-color .15s,background .15s}
+.dts-sv .sv-step:hover{border-color:var(--sv-accent);background:var(--sv-tint)}
+.dts-sv .sv-step small{display:block;color:var(--sv-soft);font-size:15px;margin-top:3px}
+.dts-sv .sv-step span{font:700 13px var(--label,sans-serif);letter-spacing:.14em;text-transform:uppercase}
+.dts-sv .sv-step em{font-style:normal;color:var(--sv-accent);font-size:20px}
+.dts-sv .sv-actions{display:flex;flex-wrap:wrap;gap:10px}
+@media(max-width:520px){.dts-sv .sv-bar{grid-template-columns:1fr;gap:6px}}
+
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav class="top" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><img src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1573174111788-6RYY3FW134EIQB1C2BOI/ywamsf_logo_web3.png?format=500w" alt="YWAM San Francisco" onerror="this.outerHTML='<span class=fallback>YWAM San Francisco</span>'"></a>
+    <div class="navlinks">
+      <a href="#place">The place</a>
+      <a href="#rule">Rule of life</a>
+      <a href="#day">A day</a>
+      <a href="#movements">Five months</a>
+      <a href="#numbers">Cost</a>
+      <button class="btn" data-survey>Am I ready?</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="label">Discipleship Training School</span>
+      <h1>A monastery without walls, <em>in the heart of the Tenderloin.</em></h1>
+      <p class="lede">Five months of prayer, presence and learning to love your neighbor at 357 Ellis Street — then out into the cities of the world. Not to argue anyone into faith. To show them who Jesus is.</p>
+      <div class="ctas">
+        <button class="btn" data-survey>Am I ready for DTS?</button>
+        <a class="btn ghost" href="mailto:dts@ywamsanfrancisco.org">Talk to us</a>
+      </div>
+      <div class="next">
+        <div><span class="label">Next dates</span>January 18 – June 4, 2027</div>
+        <div><span class="label">Where</span>357 Ellis St, San Francisco</div>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="ph"><img id="heroImg" src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1771366341447-7MIV5OVDBE35181IZ7D8/image-asset.jpeg?format=1500w" alt="A rainy morning on a Tenderloin street"></div>
+      <div class="badge">Presence that restores.</div>
+      <div class="cap"><span>The Tenderloin</span><span>San Francisco</span></div>
+    </div>
+  </div>
+</header>
+
+<hr class="rule-line">
+
+<!-- PLACE -->
+<section id="place">
+  <div class="wrap place-grid">
+    <div class="pair reveal">
+      <figure><div class="ph"><img loading="lazy" src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/4ddbffe2-014d-4194-a26e-e5fba257edad/Community%2520Lunch_VSCO.jpg?format=1000w" alt="Community lunch around a table"></div><figcaption>Community lunch at 357 Ellis</figcaption></figure>
+      <figure><div class="ph"><img loading="lazy" src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1766710261599-3RJVQTYVZHFWL6GK280D/image-asset.jpeg?format=1000w" alt="Neighbors lined up outside on Christmas Day"></div><figcaption>Christmas Day · 209 neighbors fed</figcaption></figure>
+    </div>
+    <div class="reveal">
+      <span class="label">The place behind it</span>
+      <h2>We live on Ellis Street. <em>The door stays open.</em></h2>
+      <p class="lede">Monks used to build their monasteries far from the city. We did the opposite. Our home sits in the middle of the Tenderloin — among neighbors who are unhoused, elderly, newly arrived, recovering, and brilliant — and we pray, eat, work and learn right here.</p>
+      <p>When it pours, the Ellis Room stays lit all night so friends with nowhere dry to go have somewhere to be. On Sunday mornings, church pops up on the sidewalk over hot chocolate. Every week, the food pantry becomes a place where people are seen by name.</p>
+      <div class="stats">
+        <div><b><span data-count="300">0</span>+</b><span>neighbors at the pantry weekly</span></div>
+        <div><b>9–5</b><span>Ellis Room open overnight in storms</span></div>
+        <div><b data-count="209">0</b><span>served at Christmas lunch</span></div>
+        <div><b data-count="5">0</b><span>months to learn a new way to love</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RULE -->
+<section class="rule" id="rule">
+  <div class="wrap">
+    <div class="rule-head reveal">
+      <div>
+        <span class="label">Our rule of life</span>
+        <h2>Four vows. <em>Lived on a sidewalk.</em></h2>
+      </div>
+      <p class="lede" style="max-width:420px">Every monastery has a rule. Ours is short. Tap a card to see what it looks like on an ordinary Tuesday.</p>
+    </div>
+    <div class="vows">
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">i.</div><h3>Love of God</h3><p>We stay rooted in Him.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>Before anyone opens a door or a laptop, we're in prayer — for each other, for the neighborhood, for the person we'll meet by lunch.</p></div></div></div>
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">ii.</div><h3>Love of Neighbor</h3><p>We practice compassionate presence.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That's ministry too.</p></div></div></div>
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">iii.</div><h3>Humility in Action</h3><p>We look first to the interests of others.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone's face.</p></div></div></div>
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">iv.</div><h3>Formation that Multiplies</h3><p>We are disciples forming disciples.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>A one-on-one with your mentor over coffee. Small group after dinner. What you're learning becomes something you can pass on.</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DAY -->
+<section id="day">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">The hours</span>
+      <h2>A day on Ellis Street. <em>Pray and work.</em></h2>
+      <p class="lede">Monks marked the day with prayer and work. So do we. Tap through the hours.</p>
+    </div>
+    <div class="clock reveal">
+      <div class="hours" id="hours"></div>
+      <div class="hour-card" id="hourCard"></div>
+    </div>
+    <p class="note-small">A sample day. Rhythms shift week to week, and every week has free time and a Sabbath.</p>
+  </div>
+</section>
+
+<hr class="rule-line">
+
+<!-- SOUND LIKE YOU -->
+<section id="you">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">Does this sound like you?</span>
+      <h2>If one of these is yours, <em>keep reading.</em></h2>
+    </div>
+    <div class="quotes">
+      <button class="qc reveal"><div class="q">"I don't want to argue anyone into faith. I want to show them who Jesus is." <i>+</i></div><div class="a">Us too. Here, faith gets worn on the sleeve and lived out with the hands: a hot drink on a cold morning, a name remembered, a prayer offered when someone asks for one.</div></button>
+      <button class="qc reveal"><div class="q">"My faith feels like a Sunday thing. I want it to be an every-day thing." <i>+</i></div><div class="a">That's what a rule of life is for. Five months of shared rhythm — prayer, teaching, work, meals, service — until following Jesus stops being an event and becomes a way of living.</div></button>
+      <button class="qc reveal"><div class="q">"I'm drawn to the streets most people drive past." <i>+</i></div><div class="a">Then you'll feel at home. The Tenderloin is rough around the edges and full of image-bearers. You'll learn to stay, to listen, and to see beauty where others see a problem.</div></button>
+      <button class="qc reveal"><div class="q">"I want to be formed, not just informed." <i>+</i></div><div class="a">Weekly speakers give you the teaching. Mentorship, community and the street do the forming. You'll leave knowing more about God — and knowing Him more.</div></button>
+    </div>
+  </div>
+</section>
+
+<!-- MOVEMENTS -->
+<section class="moves" id="movements">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">From the neighborhood to the nations</span>
+      <h2>DTS consists of three parts, <em>making one life-changing experience.</em></h2>
+    </div>
+    <div class="move-tabs" id="moveTabs"></div>
+    <div class="move-panel reveal" id="movePanel"></div>
+  </div>
+</section>
+
+<!-- PATHFINDER -->
+<section id="paths">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">Not sure if DTS is right for you?</span>
+      <h2>Pick where <em>to start.</em></h2>
+      <p class="lede">You don't have to figure it out alone. Discern first, come and see second, say yes when it's time.</p>
+    </div>
+    <div class="acts">
+      <div class="act reveal">
+        <div class="ph" style="background-image:url('https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1779917437619-RYYYTGIULLW693NTZRZI/image-asset.jpeg?format=750w')"><span>01 · Discern</span></div>
+        <div class="body"><h3>Still wondering</h3><p>No commitment. Just enough to see if this is for you.</p></div>
+        <div class="links">
+          <button data-survey><div><strong>Am I ready for DTS?</strong><small>7 honest questions · ~3 minutes</small></div><em>→</em></button>
+          <a href="mailto:dts@ywamsanfrancisco.org"><div><strong>A conversation</strong><small>Tell us your story, ask anything</small></div><em>→</em></a>
+        </div>
+      </div>
+      <div class="act reveal">
+        <div class="ph" style="background-image:url('https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/4ddbffe2-014d-4194-a26e-e5fba257edad/Community%2520Lunch_VSCO.jpg?format=750w')"><span>02 · Come and see</span></div>
+        <div class="body"><h3>Taste the life</h3><p>Spend a morning in the neighborhood before you spend five months.</p></div>
+        <div class="links">
+          <a href="https://www.ywamsanfrancisco.org/volunteer" target="_blank" rel="noopener"><div><strong>Serve a shift</strong><small>Food pantry, Ellis Room, hot chocolate</small></div><em>→</em></a>
+          <a href="https://www.ywamsanfrancisco.org/blog/2026/1/19/church-that-shows-up" target="_blank" rel="noopener"><div><strong>Sunday Pop-Up Church</strong><small>Worship on the sidewalk outside our door</small></div><em>→</em></a>
+          <a href="https://www.ywamsanfrancisco.org/mission-adventure" target="_blank" rel="noopener"><div><strong>Mission Adventure</strong><small>A shorter taste of urban mission</small></div><em>→</em></a>
+        </div>
+      </div>
+      <div class="act reveal">
+        <div class="ph" style="background-image:url('https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/3aac1bb8-94e7-49d4-be92-e9dad686c355/MKMR8140.jpg?format=750w')"><span>03 · Say yes</span></div>
+        <div class="body"><h3>Come live it</h3><p>Five months of being trained, transformed and sent.</p></div>
+        <div class="links">
+          <a href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener"><div><strong>Apply for Jan 2027</strong><small>Jan 18 – Jun 4 · a real person replies</small></div><em>→</em></a>
+          <a href="tel:4158856543"><div><strong>Call the office</strong><small>415-885-6543</small></div><em>→</em></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-line">
+
+<!-- NUMBERS -->
+<section id="numbers">
+  <div class="wrap numbers-grid">
+    <div class="reveal">
+      <span class="label">Cost</span>
+      <h2>Clear numbers. <em>No surprises.</em></h2>
+      <div class="price">
+        <div class="amt">$8,000 <small>USD*</small></div>
+        <dl>
+          <dt>Dates</dt><dd>January 18 – June 4, 2027</dd>
+          <dt>Length</dt><dd>About five months</dd>
+          <dt>Phases</dt><dd>Training · Outreach · Debrief</dd>
+          <dt>Where</dt><dd>357 Ellis Street, San Francisco</dd>
+        </dl>
+        <p>We believe finances shouldn't stop someone from saying yes. Our team will help you explore fundraising and support options.</p>
+        <p style="font-size:14px;font-style:italic;color:var(--grey);margin:0">*Cost may vary for international applicants; please inquire for alternative pricing.</p>
+      </div>
+    </div>
+    <div class="faq reveal">
+      <span class="label">FAQ</span>
+      <details open><summary>What does a typical day look like?</summary><p>Teaching with the speaker of the week, formational practices like worship and prayer, community activities like small groups and shared meals, local ministry, and free time.</p></details>
+      <details><summary>Can I work or go to school during DTS?</summary><p>We don't recommend it. DTS is time set aside to deepen your relationship with God and experience His heart for people, and your capacity will already be stretched.</p></details>
+      <details><summary>Do I need to have my faith figured out?</summary><p>No. You don't have to figure it out alone. We'd love to hear your story, answer your questions and help you discern your next step.</p></details>
+      <details><summary>Is the Tenderloin safe?</summary><p>It's a real neighborhood with real struggles. You'll never serve alone, and you'll learn from staff who've lived and served here for years. <span class="todo">[YWAM SF team: add your specifics here.]</span></p></details>
+      <details><summary>What happens after DTS?</summary><p>The debrief sets you up for your next season — a job, college, joining YWAM, or wherever God is leading.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- VOICES -->
+<section class="voices" id="voices">
+  <div class="wrap">
+    <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div><span class="label">Love your neighbor(hood)</span><h2>Lessons learned <em>on these streets.</em></h2></div>
+      <div class="arrows"><button aria-label="Previous" data-dir="-1">←</button><button aria-label="Next" data-dir="1">→</button></div>
+    </div>
+    <div class="track" id="track">
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/emilyg" target="_blank" rel="noopener"><blockquote>…choose hurry instead of human in these moments.</blockquote><cite><b>Restaurants of the TL</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/danica-bless" target="_blank" rel="noopener"><blockquote>…seeking out God’s beauty amidst the chaos of daily life.</blockquote><cite><b>Arts and Murals</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/karol-svoboda" target="_blank" rel="noopener"><blockquote>…see and understand my neighbors at a much deeper level.</blockquote><cite><b>Karol Svoboda</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/2019/10/22/seniors-of-the-tl" target="_blank" rel="noopener"><blockquote>He shows up. Will you?</blockquote><cite><b>Seniors of the Tenderloin</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/mateo" target="_blank" rel="noopener"><blockquote>…it’s an honor to walk side by side with these visionaries.</blockquote><cite><b>The Youth of the Tenderloin</b>From the YWAM SF blog</cite></a>
+      <div class="voice placeholder"><blockquote style="color:var(--grey)">Your DTS alumni's words go here.</blockquote><cite><b>Placeholder</b>Collect 4–6 real quotes from past students</cite></div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNAL -->
+<section id="journal">
+  <div class="wrap">
+    <div class="reveal"><span class="label">Our latest posts</span><h2>Read a little. <em>Stay awhile.</em></h2></div>
+    <div class="posts">
+      <a class="post reveal" href="https://www.ywamsanfrancisco.org/blog/2026/7/15/why-a-discipleship-training-school-can-change-your-life" target="_blank" rel="noopener"><small>DTS · July 2026</small><h3>Why a Discipleship Training School can change your life</h3><p>A journey of knowing God, serving others, and finding your part in His mission.</p></a>
+      <a class="post reveal" href="https://www.ywamsanfrancisco.org/blog/2026/2/17/keeping-the-lights-on-after-hours-in-the-ellis-room" target="_blank" rel="noopener"><small>Ministry · February 2026</small><h3>Keeping the lights on: after hours in the Ellis Room</h3><p>What happens on Ellis Street when the rain comes and the city closes its doors.</p></a>
+      <a class="post reveal" href="https://www.ywamsanfrancisco.org/blog/2026/1/19/church-that-shows-up" target="_blank" rel="noopener"><small>Outreach · January 2026</small><h3>Church that shows up</h3><p>Hot chocolate, cookies, and worship on the sidewalk every Sunday morning.</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="wrap reveal">
+    <span class="label">The door is open</span>
+    <h2>Ready to stop watching <em>from a distance?</em></h2>
+    <p>Come be a presence that restores. Start with seven honest questions, or just say hello.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn white" data-survey>Am I ready for DTS?</button>
+      <a class="btn ghost-white" href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener">Apply now</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><span class="label">Visit</span>357 Ellis Street<br>San Francisco, CA 94102</div>
+    <div><span class="label">Contact</span><a href="mailto:dts@ywamsanfrancisco.org">dts@ywamsanfrancisco.org</a><br><a href="tel:4158856543">415-885-6543</a></div>
+    <div><span class="label">Follow</span><a href="https://www.instagram.com/ywamsf/">Instagram</a><a href="https://facebook.com/ywamsanfrancisco/">Facebook</a></div>
+    <div class="concept">Concept page for YWAM San Francisco review — not the live site</div>
+  </div>
+</footer>
+
+<button class="fab" id="fab" data-survey>Am I ready for DTS?</button>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-box"><button class="modal-x" aria-label="Close">✕</button><div id="survey"></div></div>
+</div>
+
+<script>(function(){
+var LINKS={
+  apply:"https://www.tfaforms.com/4827504",
+  email:"dts@ywamsanfrancisco.org",
+  phone:"tel:4158856543",
+  volunteer:"https://www.ywamsanfrancisco.org/volunteer",
+  ma:"https://www.ywamsanfrancisco.org/mission-adventure",
+  pantry:"https://www.ywamsanfrancisco.org/foodpantry",
+  blog:"https://www.ywamsanfrancisco.org/blog?category=DTS"
+};
+
+// Each question maps to one dimension. Scores 0–3. Every answer carries an honest note.
+var Q=[
+ {dim:"hunger",context:"Start with the center of it all.",
+  q:"When you think about God right now, which is closest?",
+  o:[
+   {t:"I'm hungry. I want to know Him, not just know about Him.",s:3,n:"That hunger is the whole point of DTS. The teaching, the prayer, the street — all of it is meant to feed it."},
+   {t:"I love Jesus, but it's become routine. I want it alive again.",s:2,n:"A lot of people arrive exactly here. Rhythm, community and serving the poor have a way of waking faith back up."},
+   {t:"I'm carrying real questions — some doubt, maybe some hurt.",s:2,n:"Honest questions are welcome at our table. DTS is a safe place to bring them, not a place you have to have it together."},
+   {t:"I'm not sure where I am with God. Mostly curious.",s:1,n:"Curiosity is a good start. Coming to a Sunday Pop-Up Church or volunteering first might help you see what's here."}
+  ]},
+ {dim:"presence",context:"A Tuesday afternoon on Ellis Street.",
+  q:"Someone is shouting on the corner. A man is asleep in a doorway. A neighbor you met last week waves. What happens in you?",
+  o:[
+   {t:"I want to learn the sleeping man's name.",s:3,n:"That instinct — toward the person, not the problem — is what the Tenderloin needs and what we'll help you grow."},
+   {t:"I'm nervous, but I want to be the kind of person who stays.",s:2,n:"Nervous and willing is a great place to start. Nobody is sent out alone; you'll learn presence alongside staff who've been here for years."},
+   {t:"Honestly, I'd want to walk faster.",s:1,n:"Thanks for being honest. Most of us had to unlearn hurry. This would be real stretching — worth talking through with the team."},
+   {t:"I'd rather serve somewhere that feels safer.",s:0,n:"That's a fair and honest answer. There are YWAM DTSs all over the world — our team would gladly help you find one that fits."}
+  ]},
+ {dim:"witness",context:"Faith on your sleeve, not in someone's face.",
+  q:"When someone doesn't believe what you believe, your first instinct is to…",
+  o:[
+   {t:"Get curious about their story before I say anything about mine.",s:3,n:"That's the posture we pray for: Jesus shown through listening, serving and loving first."},
+   {t:"Share what Jesus means to me if they ask — and really listen.",s:2,n:"Good instinct. DTS will give you lots of practice doing both well, often over a cup of hot chocolate."},
+   {t:"Make sure they hear the truth. It feels urgent.",s:1,n:"Your passion matters. Here, we'll invite you to lead with presence — to earn trust before words. It changes how the truth is heard."},
+   {t:"Keep my faith to myself. It feels private.",s:1,n:"Totally understandable. DTS is a place to discover that sharing faith can be gentle, natural and never forced."}
+  ]},
+ {dim:"together",context:"Monastery life means shared life.",
+  q:"For five months you'll share rooms, meals, dishes and prayer with people you didn't choose. That sounds…",
+  o:[
+   {t:"Like what I need. I grow best with people.",s:3,n:"You'll thrive in the rhythm of shared life — and help others thrive too."},
+   {t:"Stretching but good. I'd need a quiet corner sometimes.",s:2,n:"Very normal. There's free time built into every week, and learning to ask for space is part of healthy community."},
+   {t:"Hard. I'm private and recharge alone.",s:1,n:"Introverts do beautifully in DTS — but it's worth an honest conversation with staff about what living together looks like day to day."},
+   {t:"Like a dealbreaker.",s:0,n:"Good to know now. Living in community is core to DTS, so a different kind of involvement — like volunteering — might be the better fit this season."}
+  ]},
+ {dim:"rhythm",context:"Ora et labora — pray and work.",
+  q:"Morning prayer, worship, teaching, work, meals together, evening reflection. How does a daily rule of life land?",
+  o:[
+   {t:"I've been longing for rhythm. Yes please.",s:3,n:"You'll find the rhythm of DTS life a gift — a scaffold for the kind of life you're already reaching for."},
+   {t:"I'm not naturally disciplined, but I'd love to be formed by it.",s:2,n:"That's exactly what a rule of life is for. It holds you on the days you can't hold yourself."},
+   {t:"I tend to resist structure. I'd need grace.",s:1,n:"Grace is available. It helps to know going in that DTS is structured — and that the structure is meant to serve you."},
+   {t:"I'd want my days to be my own.",s:0,n:"DTS asks for a lot of your days. A lighter commitment, like weekly volunteering, might suit this season better."}
+  ]},
+ {dim:"room",context:"The practical bit.",
+  q:"DTS runs Jan 18 – Jun 4, 2027, including an outreach to cities overseas. No job or classes alongside. Cost is about $8,000, and the team helps with fundraising. Right now…",
+  o:[
+   {t:"I can clear the calendar. I'm ready to raise support or have it covered.",s:3,n:"Practically, you're ready. The next step is the application."},
+   {t:"I could make it work with planning and a few hard conversations.",s:2,n:"That's how most people start. Our team can walk you through fundraising and the conversations with work, school or family."},
+   {t:"I'm not sure. Work, school or family would need to shift.",s:1,n:"Worth talking it through with the team. Finances shouldn't stop someone from saying yes, and the timing may be more possible than it looks."},
+   {t:"This season doesn't have room. Maybe a future one.",s:0,n:"That's wise to name. Future schools run regularly — and you can get to know us now through volunteering."}
+  ]},
+ {dim:"open",context:"Last one.",
+  q:"If God used these five months to change something in you that you didn't plan on…",
+  o:[
+   {t:"Please. That's why I'd come.",s:3,n:"That openness is the soil DTS grows in."},
+   {t:"Scary — but yes.",s:2,n:"Scary and yes is often the most honest form of faith. You won't be walking it alone."},
+   {t:"I'd want to know what I'm signing up for first.",s:1,n:"Fair. A conversation with staff, or a visit, is a great way to see what the five months really look like."},
+   {t:"I'd rather keep to what I came for.",s:0,n:"DTS tends to go deeper than people expect. It might help to talk honestly with the team about what you're hoping for."}
+  ]}
+];
+var DIMS={hunger:"Hunger for God",presence:"Presence",witness:"Gentle witness",together:"Shared life",rhythm:"Rhythm",room:"Room in your life",open:"Openness"};
+
+var OUT={
+ yes:{badge:"Pull up a chair",title:"This sounds like <em>your season.</em>",
+  body:"Your answers say you're hungry, willing to be close to real need, and ready to share life with others. That's the heart of a DTS on Ellis Street. The next step is simple: apply, and a real person will get back to you.",
+  steps:[["Apply for January 2027","Starts Jan 18 · 5 months · Tenderloin + outreach",LINKS.apply],["Talk to the DTS team first","Email dts@ywamsanfrancisco.org","mailto:"+LINKS.email],["Read what DTS is like","Stories from the school",LINKS.blog]]},
+ see:{badge:"Come and see",title:"Something's stirring. <em>Come and see.</em>",
+  body:"There's real desire here, and a few places where you'd be stretched. That's normal — and the best way to discern is to taste the life before you commit to it. Spend a Sunday with us or serve a shift, then decide.",
+  steps:[["Serve a shift with us","Food pantry, Ellis Room, hot chocolate on the street",LINKS.volunteer],["Try a Mission Adventure","A shorter taste of urban mission in SF",LINKS.ma],["Have a no-pressure conversation","We'd love to hear your story","mailto:"+LINKS.email]]},
+ timing:{badge:"Heart ready, calendar not",title:"The heart's there. <em>The timing isn't — yet.</em>",
+  body:"Your answers show real readiness for this kind of life. The practical side is what's uncertain. Before you rule it out, talk with our team — finances and timing are often more workable than they look, and future schools are always coming.",
+  steps:[["Talk through fundraising & timing","We help every student explore support","mailto:"+LINKS.email],["Call the office","(415) 885-6543",LINKS.phone],["Get to know us now","Volunteer while you plan",LINKS.volunteer]]},
+ notyet:{badge:"Not yet — and that's okay",title:"Maybe not this season. <em>That's holy too.</em>",
+  body:"Your answers suggest DTS in the Tenderloin might not be the right fit right now. That's worth honoring, not forcing. You can still love your neighbor where you are — and our door on Ellis Street stays open.",
+  steps:[["Talk with someone anyway","No agenda, just a conversation","mailto:"+LINKS.email],["Serve once and see","Food pantry & community volunteering",LINKS.volunteer],["Read stories from the neighborhood","The Love Your Neighbor(hood) series","https://www.ywamsanfrancisco.org/blog"]]}
+};
+
+window.mountDtsSurvey=function(root){
+  var step=-1,ans=[];
+  root.classList.add("dts-sv");
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+  function render(){
+    if(step<0) return intro();
+    if(step>=Q.length) return result();
+    var q=Q[step],prog="";
+    for(var i=0;i<Q.length;i++)prog+='<i class="'+(i<=step?"on":"")+'"></i>';
+    var html='<div class="sv-fade"><div class="sv-progress">'+prog+'</div><div class="sv-count"><span>Question '+(step+1)+' of '+Q.length+'</span><span>'+DIMS[q.dim]+'</span></div>'+
+      '<div class="sv-context">'+q.context+'</div><h3>'+esc(q.q)+'</h3><div class="sv-opts">';
+    q.o.forEach(function(o,i){html+='<button class="sv-opt'+(ans[step]===i?" sel":"")+'" data-i="'+i+'"><b>'+"ABCD"[i]+'</b><span>'+esc(o.t)+'</span></button>'});
+    html+='</div><div class="sv-nav"><button class="sv-link" data-back>← Back</button>'+(ans[step]!=null?'<button class="sv-link" data-next>Next →</button>':'')+'</div></div>';
+    root.innerHTML=html;
+    root.querySelectorAll(".sv-opt").forEach(function(b){b.onclick=function(){
+      ans[step]=+b.dataset.i;root.querySelectorAll(".sv-opt").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");
+      setTimeout(function(){step++;render();scrollTop()},260)}});
+    root.querySelector("[data-back]").onclick=function(){step--;render()};
+    var n=root.querySelector("[data-next]");if(n)n.onclick=function(){step++;render()};
+  }
+  function scrollTop(){var r=root.getBoundingClientRect();if(r.top<0)root.scrollIntoView({behavior:"smooth",block:"start"});}
+  function intro(){
+    root.innerHTML='<div class="sv-fade"><div class="sv-kicker">✦ DTS fit survey</div><h2>Something brought you here. <em>Let\'s see if this is the season.</em></h2>'+
+    '<p>Seven honest questions about how you\'d live, serve and learn with us on Ellis Street in the Tenderloin. No wrong answers, no pitch — just a clearer read on whether a Discipleship Training School fits where you are right now.</p>'+
+    '<div class="sv-meta"><span>⏱ ~3 minutes</span><span>✦ 4 possible outcomes</span><span>🔒 Answers stay in your browser</span></div>'+
+    '<button class="sv-btn" data-go>Find out if I\'m ready →</button></div>';
+    root.querySelector("[data-go]").onclick=function(){step=0;render()};
+  }
+  function result(){
+    var sc={},total=0;
+    Q.forEach(function(q,i){var s=q.o[ans[i]].s;sc[q.dim]=s;total+=s});
+    var key=(sc.room<=1&&total>=12)?"timing":total>=16?"yes":total>=9?"see":"notyet";
+    var o=OUT[key];
+    var sorted=Q.map(function(q,i){return{q:q,i:i,s:sc[q.dim]}}).slice().sort(function(a,b){return b.s-a.s});
+    var strong=sorted.slice(0,2),stretch=sorted.filter(function(x){return x.s<=1}).slice(-2);
+    if(!stretch.length)stretch=[sorted[sorted.length-1]];
+    var bars="";Q.forEach(function(q){bars+='<div class="sv-bar"><span>'+DIMS[q.dim]+'</span><div><i data-w="'+(sc[q.dim]/3*100)+'"></i></div></div>'});
+    var notes="";
+    strong.forEach(function(x){notes+='<div class="sv-note"><strong>Already leaning in · '+DIMS[x.q.dim]+'</strong><p>'+x.q.o[ans[x.i]].n+'</p></div>'});
+    stretch.forEach(function(x){if(strong.indexOf(x)<0)notes+='<div class="sv-note stretch"><strong>Where you\'d be stretched · '+DIMS[x.q.dim]+'</strong><p>'+x.q.o[ans[x.i]].n+'</p></div>'});
+    var steps="";o.steps.forEach(function(s){steps+='<a class="sv-step" href="'+s[2]+'" target="_blank" rel="noopener"><div><span>'+s[0]+'</span><small>'+s[1]+'</small></div><em>→</em></a>'});
+    var summary="Hi DTS team,\n\nI just took the 'Am I ready for DTS?' survey. My result: "+o.badge+".\n\n"+Q.map(function(q,i){return "• "+q.q+"\n  "+q.o[ans[i]].t}).join("\n")+"\n\nI'd love to talk about next steps.\n";
+    root.innerHTML='<div class="sv-fade"><div class="sv-result-badge">'+o.badge+'</div><h2>'+o.title+'</h2><p>'+o.body+'</p>'+
+     '<div class="sv-bars">'+bars+'</div><div class="sv-notes">'+notes+'</div>'+
+     '<div class="sv-kicker" style="margin-top:6px">Your next step</div><div class="sv-steps">'+steps+'</div>'+
+     '<div class="sv-actions"><a class="sv-btn" href="mailto:'+LINKS.email+'?subject='+encodeURIComponent("My DTS survey result: "+o.badge)+'&body='+encodeURIComponent(summary)+'">Send my answers to the DTS team</a><button class="sv-btn ghost" data-restart>Start over</button></div></div>';
+    requestAnimationFrame(function(){setTimeout(function(){root.querySelectorAll(".sv-bar i").forEach(function(i){i.style.width=i.dataset.w+"%"})},60)});
+    root.querySelector("[data-restart]").onclick=function(){step=-1;ans=[];render()};
+  }
+  render();
+};
+})();
+</script>
+<script>
+(function(){
+  var nav=document.getElementById("nav"),bar=document.getElementById("progress"),fab=document.getElementById("fab"),hero=document.getElementById("heroImg");
+  var links=[].slice.call(document.querySelectorAll(".navlinks a"));
+  function onScroll(){var y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
+    nav.classList.toggle("shadow",y>10);bar.style.width=(y/h*100)+"%";
+    fab.classList.toggle("show",y>innerHeight*.9);
+    if(y<innerHeight&&hero)hero.style.transform="scale(1.06) translateY("+(y*.06)+"px)";
+    var cur=null;links.forEach(function(a){var s=document.querySelector(a.getAttribute("href"));if(s&&s.getBoundingClientRect().top<140)cur=a});
+    links.forEach(function(a){a.classList.toggle("cur",a===cur)});}
+  addEventListener("scroll",onScroll,{passive:true});onScroll();
+
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);
+    e.target.querySelectorAll("[data-count]").forEach(function(el){var n=+el.dataset.count,t0=null;function f(t){t0=t0||t;var p=Math.min((t-t0)/1400,1);el.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)})}})},{threshold:.15});
+  document.querySelectorAll(".reveal").forEach(function(el,i){el.style.transitionDelay=(i%4)*70+"ms";io.observe(el)});
+
+  document.querySelectorAll(".vow").forEach(function(v){v.addEventListener("click",function(){v.classList.toggle("flip")})});
+  document.querySelectorAll(".qc").forEach(function(q){q.addEventListener("click",function(){q.classList.toggle("open")})});
+
+  var H=[
+    ["7:00","Morning prayer","Before the neighborhood wakes","The day starts in stillness: Scripture, silence, and prayer for each other and for the block. Monks called it Lauds. We call it getting rooted before we go out.",["Love of God","Silence","Scripture"]],
+    ["8:00","One table","Breakfast together","Shared meals are where community actually happens. Someone burns the toast; someone else makes coffee for everyone. You'll know each other fast.",["Community","Hospitality"]],
+    ["9:00","Teaching","Speaker of the week","Worship, then a new teacher each week on the foundations of faith: the character of God, identity, hearing His voice, the nations, justice and mercy.",["Training","Worship"]],
+    ["12:30","Lunch & work","Pray and work","Dishes, floors, pantry boxes. Chores are formation too — humility learned with a mop in your hand.",["Humility in Action","Shared life"]],
+    ["14:00","On the street","Local ministry","Food pantry, the Ellis Room, a thermos of hot chocolate on the corner. Mostly you'll listen, learn names, and pray when someone asks.",["Love of Neighbor","Presence"]],
+    ["17:30","Dinner","Back at the table","Stories from the afternoon get told here — the funny ones, the heavy ones. Nobody carries the day alone.",["Community"]],
+    ["19:00","Reflection","Small groups","Where did you see God today? Where did you miss Him? Small groups, mentorship and honest prayer close the day.",["Formation that Multiplies","Mentorship"]],
+    ["21:00","Rest","…or the night shift","Most nights: rest. Some rain nights, the Ellis Room stays lit until morning for friends with nowhere dry to go.",["Sabbath","Ellis Room"]]
+  ];
+  var hoursEl=document.getElementById("hours"),card=document.getElementById("hourCard"),cur=0,auto;
+  H.forEach(function(h,i){var b=document.createElement("button");b.innerHTML="<b>"+h[0]+"</b>"+h[1];b.onclick=function(){show(i);clearInterval(auto)};hoursEl.appendChild(b)});
+  function show(i){cur=i;[].forEach.call(hoursEl.children,function(b,j){b.classList.toggle("on",i===j)});var h=H[i];
+    card.innerHTML='<div class="t">'+h[0]+' · '+h[2]+'</div><h3>'+h[1]+'</h3><p>'+h[3]+'</p><div class="tag">'+h[4].map(function(t){return"<span>"+t+"</span>"}).join("")+'</div>';
+    card.animate([{opacity:0,transform:"translateY(8px)"},{opacity:1,transform:"none"}],{duration:350,easing:"ease-out"});}
+  show(0);
+  new IntersectionObserver(function(es){es.forEach(function(e){clearInterval(auto);if(e.isIntersecting)auto=setInterval(function(){show((cur+1)%H.length)},5200)})},{threshold:.5}).observe(document.getElementById("day"));
+
+  var IMG="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/";
+  var M=[
+    ["Training","i","4ddbffe2-014d-4194-a26e-e5fba257edad/Community%2520Lunch_VSCO.jpg","Spiritual formation and discipleship in community. Weekly worship and prayer times, small groups, one-on-one mentorship, local ministry in the Tenderloin, and a new speaker every week teaching foundational topics of faith.",["Worship & prayer","One-on-one mentorship","Local ministry","New teacher every week"]],
+    ["Outreach","ii","3aac1bb8-94e7-49d4-be92-e9dad686c355/MKMR8140.jpg","You'll travel to the nations as a team to put into practice what you've learned — the skills and gifts you've been cultivating. We focus on sending teams into the urban centers of the world.",["Serve as a team","Urban-focused outreach","Share God's love","Discover your gifts"]],
+    ["Debrief","iii","1779917437619-RYYYTGIULLW693NTZRZI/image-asset.jpeg","Time to reflect on your experiences and set you up for your next season — whether that's a job, college, joining YWAM, or however God is leading you.",["Reflection","Next-season planning","Commissioning","Further YWAM training"]]
+  ];
+  var tabs=document.getElementById("moveTabs"),panel=document.getElementById("movePanel");
+  M.forEach(function(m,i){var b=document.createElement("button");b.textContent=m[0];b.onclick=function(){mv(i)};tabs.appendChild(b)});
+  function mv(i){[].forEach.call(tabs.children,function(b,j){b.classList.toggle("on",i===j)});var m=M[i];
+    panel.innerHTML='<div class="ph" style="background-image:url(\''+IMG+m[2]+'?format=1000w\')"></div><div class="txt"><div class="big">'+m[1]+'.</div><h3 style="font-size:clamp(28px,4vw,38px);margin:10px 0 14px">'+m[0]+'</h3><p style="font-size:18px">'+m[3]+'</p><ul>'+m[4].map(function(x){return"<li>"+x+"</li>"}).join("")+'</ul></div>';
+    panel.animate([{opacity:.3},{opacity:1}],{duration:300});}
+  mv(0);
+
+  var track=document.getElementById("track");
+  document.querySelectorAll(".arrows button").forEach(function(b){b.onclick=function(){track.scrollBy({left:+b.dataset.dir*Math.min(420,track.clientWidth*.85),behavior:"smooth"})}});
+
+  var modal=document.getElementById("modal"),mounted=false;
+  function openS(){if(!mounted){mountDtsSurvey(document.getElementById("survey"));mounted=true}modal.classList.add("open");document.body.style.overflow="hidden"}
+  function closeS(){modal.classList.remove("open");document.body.style.overflow=""}
+  document.querySelectorAll("[data-survey]").forEach(function(b){b.addEventListener("click",openS)});
+  modal.querySelector(".modal-x").onclick=closeS;
+  modal.addEventListener("click",function(e){if(e.target===modal)closeS()});
+  addEventListener("keydown",function(e){if(e.key==="Escape")closeS()});
+})();
+</script>
+</body>
+</html>

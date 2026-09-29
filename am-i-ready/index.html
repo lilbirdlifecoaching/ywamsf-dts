@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Am I Ready for DTS? — YWAM San Francisco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#01bcde;--blue-dk:#0096b3;--tint:#eaf8fb;--ink:#1c2018;--body:#4a4d46;--grey:#9a9a9a;--line:#e6e6e6;--serif:"Libre Caslon Text","Adobe Caslon Pro",Georgia,serif;--label:"Jost","Futura PT",Futura,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;font-family:var(--serif);color:var(--ink);min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 20px;max-width:1000px;margin:0 auto}
+header img{height:44px;display:block}
+header .fallback{font:700 16px var(--label);letter-spacing:.2em;color:var(--blue);text-transform:uppercase}
+header a.back{font:700 12.5px var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--grey);text-decoration:none}
+header a.back:hover{color:var(--blue)}
+main{padding:30px 20px 90px;border-top:1px solid var(--line)}
+.card{max-width:760px;margin:30px auto 0}
+footer{text-align:center;font-size:16px;color:var(--body);padding:30px 20px 50px;border-top:1px solid var(--line)}
+footer a{color:var(--blue);text-decoration:none}
+.dts-sv{--sv-ink:var(--ink,#1c2018);--sv-soft:var(--body,#4a4d46);--sv-accent:var(--blue,#01bcde);--sv-accent-dk:var(--blue-dk,#0096b3);--sv-tint:var(--tint,#eaf8fb);--sv-grey:var(--grey,#9a9a9a);--sv-card:#fff;--sv-line:var(--line,#e6e6e6);font-family:var(--serif,"Libre Caslon Text",Georgia,serif);color:var(--sv-ink);max-width:680px;margin:0 auto;padding:8px 0}
+.dts-sv *{box-sizing:border-box}
+.dts-sv .sv-kicker{font:700 12.5px/1.2 var(--label,"Jost",sans-serif);letter-spacing:.2em;text-transform:uppercase;color:var(--sv-grey);margin-bottom:14px}
+.dts-sv h2{font-family:var(--serif,"Libre Caslon Text",Georgia,serif);font-weight:400;font-size:clamp(28px,5vw,40px);line-height:1.15;margin:0 0 16px}
+.dts-sv h2 em,.dts-sv h3 em{font-style:italic;color:var(--sv-accent)}
+.dts-sv h3{font-family:var(--serif,Georgia,serif);font-weight:400;font-size:clamp(22px,4vw,28px);line-height:1.3;margin:0 0 22px}
+.dts-sv p{line-height:1.65;color:var(--sv-soft);font-size:17px;margin:0 0 14px}
+.dts-sv .sv-meta{display:flex;flex-wrap:wrap;gap:8px 22px;font:600 12px var(--label,sans-serif);letter-spacing:.14em;text-transform:uppercase;color:var(--sv-grey);margin:20px 0 28px}
+.dts-sv .sv-btn{appearance:none;border:0;background:var(--sv-accent);color:#fff;font:700 13.5px/1 var(--label,sans-serif);letter-spacing:.16em;text-transform:uppercase;padding:18px 26px;border-radius:0;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:background .15s}
+.dts-sv .sv-btn:hover{background:var(--sv-accent-dk)}
+.dts-sv .sv-btn.ghost{background:transparent;color:var(--sv-accent);box-shadow:inset 0 0 0 1.5px var(--sv-accent)}
+.dts-sv .sv-btn.ghost:hover{background:var(--sv-tint)}
+.dts-sv .sv-progress{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.dts-sv .sv-progress i{height:3px;background:var(--sv-line);transition:background .3s}
+.dts-sv .sv-progress i.on{background:var(--sv-accent)}
+.dts-sv .sv-count{font:700 11.5px var(--label,sans-serif);letter-spacing:.18em;text-transform:uppercase;color:var(--sv-grey);margin-bottom:24px;display:flex;justify-content:space-between}
+.dts-sv .sv-context{font-style:italic;color:var(--sv-accent);font-size:18px;margin-bottom:8px}
+.dts-sv .sv-opts{display:grid;gap:10px}
+.dts-sv .sv-opt{text-align:left;background:#fff;border:1px solid var(--sv-line);border-radius:0;padding:17px 18px;font:400 17px/1.45 var(--serif,Georgia,serif);color:var(--sv-ink);cursor:pointer;transition:border-color .15s,background .15s;display:flex;gap:16px;align-items:flex-start}
+.dts-sv .sv-opt:hover{border-color:var(--sv-accent)}
+.dts-sv .sv-opt.sel{border-color:var(--sv-accent);background:var(--sv-tint)}
+.dts-sv .sv-opt b{flex:0 0 28px;height:28px;border:1px solid var(--sv-line);display:grid;place-items:center;font:700 12px/1 var(--label,sans-serif);color:var(--sv-grey)}
+.dts-sv .sv-opt.sel b{background:var(--sv-accent);border-color:var(--sv-accent);color:#fff}
+.dts-sv .sv-nav{display:flex;justify-content:space-between;margin-top:24px}
+.dts-sv .sv-link{background:none;border:0;color:var(--sv-grey);font:700 12px var(--label,sans-serif);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;padding:6px 0}
+.dts-sv .sv-link:hover{color:var(--sv-accent)}
+.dts-sv .sv-fade{animation:svIn .35s ease both}
+@keyframes svIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dts-sv .sv-result-badge{display:inline-block;font:700 12px var(--label,sans-serif);letter-spacing:.2em;text-transform:uppercase;padding:9px 14px;background:var(--sv-accent);color:#fff;margin-bottom:18px}
+.dts-sv .sv-bars{display:grid;gap:12px;margin:24px 0 28px;padding:22px;background:var(--sv-tint)}
+.dts-sv .sv-bar{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+.dts-sv .sv-bar span{font:700 11.5px var(--label,sans-serif);letter-spacing:.12em;text-transform:uppercase;color:var(--sv-soft)}
+.dts-sv .sv-bar div{height:6px;background:#fff;overflow:hidden}
+.dts-sv .sv-bar div i{display:block;height:100%;background:var(--sv-accent);width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.dts-sv .sv-notes{display:grid;gap:12px;margin-bottom:28px}
+.dts-sv .sv-note{padding:16px 20px;border-left:3px solid var(--sv-accent);background:#fff;box-shadow:inset 0 0 0 1px var(--sv-line)}
+.dts-sv .sv-note.stretch{border-left-color:var(--sv-grey)}
+.dts-sv .sv-note strong{display:block;font:700 11.5px var(--label,sans-serif);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px;color:var(--sv-ink)}
+.dts-sv .sv-note p{margin:0;font-size:16.5px}
+.dts-sv .sv-steps{display:grid;gap:10px;margin-bottom:26px}
+.dts-sv .sv-step{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:17px 20px;border:1px solid var(--sv-line);text-decoration:none;color:var(--sv-ink);transition:border-color .15s,background .15s}
+.dts-sv .sv-step:hover{border-color:var(--sv-accent);background:var(--sv-tint)}
+.dts-sv .sv-step small{display:block;color:var(--sv-soft);font-size:15px;margin-top:3px}
+.dts-sv .sv-step span{font:700 13px var(--label,sans-serif);letter-spacing:.14em;text-transform:uppercase}
+.dts-sv .sv-step em{font-style:normal;color:var(--sv-accent);font-size:20px}
+.dts-sv .sv-actions{display:flex;flex-wrap:wrap;gap:10px}
+@media(max-width:520px){.dts-sv .sv-bar{grid-template-columns:1fr;gap:6px}}
+
+</style>
+</head>
+<body>
+<header><a href="https://www.ywamsanfrancisco.org"><img src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1573174111788-6RYY3FW134EIQB1C2BOI/ywamsf_logo_web3.png?format=500w" alt="YWAM San Francisco" onerror="this.outerHTML='<span class=fallback>YWAM San Francisco</span>'"></a><a class="back" href="/">Back to the concept</a></header>
+<main><div class="card"><div id="survey"></div></div></main>
+<footer>Questions? <a href="mailto:dts@ywamsanfrancisco.org">dts@ywamsanfrancisco.org</a> · <a href="tel:4158856543">415-885-6543</a></footer>
+<script>(function(){
+var LINKS={
+  apply:"https://www.tfaforms.com/4827504",
+  email:"dts@ywamsanfrancisco.org",
+  phone:"tel:4158856543",
+  volunteer:"https://www.ywamsanfrancisco.org/volunteer",
+  ma:"https://www.ywamsanfrancisco.org/mission-adventure",
+  pantry:"https://www.ywamsanfrancisco.org/foodpantry",
+  blog:"https://www.ywamsanfrancisco.org/blog?category=DTS"
+};
+
+// Each question maps to one dimension. Scores 0–3. Every answer carries an honest note.
+var Q=[
+ {dim:"hunger",context:"Start with the center of it all.",
+  q:"When you think about God right now, which is closest?",
+  o:[
+   {t:"I'm hungry. I want to know Him, not just know about Him.",s:3,n:"That hunger is the whole point of DTS. The teaching, the prayer, the street — all of it is meant to feed it."},
+   {t:"I love Jesus, but it's become routine. I want it alive again.",s:2,n:"A lot of people arrive exactly here. Rhythm, community and serving the poor have a way of waking faith back up."},
+   {t:"I'm carrying real questions — some doubt, maybe some hurt.",s:2,n:"Honest questions are welcome at our table. DTS is a safe place to bring them, not a place you have to have it together."},
+   {t:"I'm not sure where I am with God. Mostly curious.",s:1,n:"Curiosity is a good start. Coming to a Sunday Pop-Up Church or volunteering first might help you see what's here."}
+  ]},
+ {dim:"presence",context:"A Tuesday afternoon on Ellis Street.",
+  q:"Someone is shouting on the corner. A man is asleep in a doorway. A neighbor you met last week waves. What happens in you?",
+  o:[
+   {t:"I want to learn the sleeping man's name.",s:3,n:"That instinct — toward the person, not the problem — is what the Tenderloin needs and what we'll help you grow."},
+   {t:"I'm nervous, but I want to be the kind of person who stays.",s:2,n:"Nervous and willing is a great place to start. Nobody is sent out alone; you'll learn presence alongside staff who've been here for years."},
+   {t:"Honestly, I'd want to walk faster.",s:1,n:"Thanks for being honest. Most of us had to unlearn hurry. This would be real stretching — worth talking through with the team."},
+   {t:"I'd rather serve somewhere that feels safer.",s:0,n:"That's a fair and honest answer. There are YWAM DTSs all over the world — our team would gladly help you find one that fits."}
+  ]},
+ {dim:"witness",context:"Faith on your sleeve, not in someone's face.",
+  q:"When someone doesn't believe what you believe, your first instinct is to…",
+  o:[
+   {t:"Get curious about their story before I say anything about mine.",s:3,n:"That's the posture we pray for: Jesus shown through listening, serving and loving first."},
+   {t:"Share what Jesus means to me if they ask — and really listen.",s:2,n:"Good instinct. DTS will give you lots of practice doing both well, often over a cup of hot chocolate."},
+   {t:"Make sure they hear the truth. It feels urgent.",s:1,n:"Your passion matters. Here, we'll invite you to lead with presence — to earn trust before words. It changes how the truth is heard."},
+   {t:"Keep my faith to myself. It feels private.",s:1,n:"Totally understandable. DTS is a place to discover that sharing faith can be gentle, natural and never forced."}
+  ]},
+ {dim:"together",context:"Monastery life means shared life.",
+  q:"For five months you'll share rooms, meals, dishes and prayer with people you didn't choose. That sounds…",
+  o:[
+   {t:"Like what I need. I grow best with people.",s:3,n:"You'll thrive in the rhythm of shared life — and help others thrive too."},
+   {t:"Stretching but good. I'd need a quiet corner sometimes.",s:2,n:"Very normal. There's free time built into every week, and learning to ask for space is part of healthy community."},
+   {t:"Hard. I'm private and recharge alone.",s:1,n:"Introverts do beautifully in DTS — but it's worth an honest conversation with staff about what living together looks like day to day."},
+   {t:"Like a dealbreaker.",s:0,n:"Good to know now. Living in community is core to DTS, so a different kind of involvement — like volunteering — might be the better fit this season."}
+  ]},
+ {dim:"rhythm",context:"Ora et labora — pray and work.",
+  q:"Morning prayer, worship, teaching, work, meals together, evening reflection. How does a daily rule of life land?",
+  o:[
+   {t:"I've been longing for rhythm. Yes please.",s:3,n:"You'll find the rhythm of DTS life a gift — a scaffold for the kind of life you're already reaching for."},
+   {t:"I'm not naturally disciplined, but I'd love to be formed by it.",s:2,n:"That's exactly what a rule of life is for. It holds you on the days you can't hold yourself."},
+   {t:"I tend to resist structure. I'd need grace.",s:1,n:"Grace is available. It helps to know going in that DTS is structured — and that the structure is meant to serve you."},
+   {t:"I'd want my days to be my own.",s:0,n:"DTS asks for a lot of your days. A lighter commitment, like weekly volunteering, might suit this season better."}
+  ]},
+ {dim:"room",context:"The practical bit.",
+  q:"DTS runs Jan 18 – Jun 4, 2027, including an outreach to cities overseas. No job or classes alongside. Cost is about $8,000, and the team helps with fundraising. Right now…",
+  o:[
+   {t:"I can clear the calendar. I'm ready to raise support or have it covered.",s:3,n:"Practically, you're ready. The next step is the application."},
+   {t:"I could make it work with planning and a few hard conversations.",s:2,n:"That's how most people start. Our team can walk you through fundraising and the conversations with work, school or family."},
+   {t:"I'm not sure. Work, school or family would need to shift.",s:1,n:"Worth talking it through with the team. Finances shouldn't stop someone from saying yes, and the timing may be more possible than it looks."},
+   {t:"This season doesn't have room. Maybe a future one.",s:0,n:"That's wise to name. Future schools run regularly — and you can get to know us now through volunteering."}
+  ]},
+ {dim:"open",context:"Last one.",
+  q:"If God used these five months to change something in you that you didn't plan on…",
+  o:[
+   {t:"Please. That's why I'd come.",s:3,n:"That openness is the soil DTS grows in."},
+   {t:"Scary — but yes.",s:2,n:"Scary and yes is often the most honest form of faith. You won't be walking it alone."},
+   {t:"I'd want to know what I'm signing up for first.",s:1,n:"Fair. A conversation with staff, or a visit, is a great way to see what the five months really look like."},
+   {t:"I'd rather keep to what I came for.",s:0,n:"DTS tends to go deeper than people expect. It might help to talk honestly with the team about what you're hoping for."}
+  ]}
+];
+var DIMS={hunger:"Hunger for God",presence:"Presence",witness:"Gentle witness",together:"Shared life",rhythm:"Rhythm",room:"Room in your life",open:"Openness"};
+
+var OUT={
+ yes:{badge:"Pull up a chair",title:"This sounds like <em>your season.</em>",
+  body:"Your answers say you're hungry, willing to be close to real need, and ready to share life with others. That's the heart of a DTS on Ellis Street. The next step is simple: apply, and a real person will get back to you.",
+  steps:[["Apply for January 2027","Starts Jan 18 · 5 months · Tenderloin + outreach",LINKS.apply],["Talk to the DTS team first","Email dts@ywamsanfrancisco.org","mailto:"+LINKS.email],["Read what DTS is like","Stories from the school",LINKS.blog]]},
+ see:{badge:"Come and see",title:"Something's stirring. <em>Come and see.</em>",
+  body:"There's real desire here, and a few places where you'd be stretched. That's normal — and the best way to discern is to taste the life before you commit to it. Spend a Sunday with us or serve a shift, then decide.",
+  steps:[["Serve a shift with us","Food pantry, Ellis Room, hot chocolate on the street",LINKS.volunteer],["Try a Mission Adventure","A shorter taste of urban mission in SF",LINKS.ma],["Have a no-pressure conversation","We'd love to hear your story","mailto:"+LINKS.email]]},
+ timing:{badge:"Heart ready, calendar not",title:"The heart's there. <em>The timing isn't — yet.</em>",
+  body:"Your answers show real readiness for this kind of life. The practical side is what's uncertain. Before you rule it out, talk with our team — finances and timing are often more workable than they look, and future schools are always coming.",
+  steps:[["Talk through fundraising & timing","We help every student explore support","mailto:"+LINKS.email],["Call the office","(415) 885-6543",LINKS.phone],["Get to know us now","Volunteer while you plan",LINKS.volunteer]]},
+ notyet:{badge:"Not yet — and that's okay",title:"Maybe not this season. <em>That's holy too.</em>",
+  body:"Your answers suggest DTS in the Tenderloin might not be the right fit right now. That's worth honoring, not forcing. You can still love your neighbor where you are — and our door on Ellis Street stays open.",
+  steps:[["Talk with someone anyway","No agenda, just a conversation","mailto:"+LINKS.email],["Serve once and see","Food pantry & community volunteering",LINKS.volunteer],["Read stories from the neighborhood","The Love Your Neighbor(hood) series","https://www.ywamsanfrancisco.org/blog"]]}
+};
+
+window.mountDtsSurvey=function(root){
+  var step=-1,ans=[];
+  root.classList.add("dts-sv");
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+  function render(){
+    if(step<0) return intro();
+    if(step>=Q.length) return result();
+    var q=Q[step],prog="";
+    for(var i=0;i<Q.length;i++)prog+='<i class="'+(i<=step?"on":"")+'"></i>';
+    var html='<div class="sv-fade"><div class="sv-progress">'+prog+'</div><div class="sv-count"><span>Question '+(step+1)+' of '+Q.length+'</span><span>'+DIMS[q.dim]+'</span></div>'+
+      '<div class="sv-context">'+q.context+'</div><h3>'+esc(q.q)+'</h3><div class="sv-opts">';
+    q.o.forEach(function(o,i){html+='<button class="sv-opt'+(ans[step]===i?" sel":"")+'" data-i="'+i+'"><b>'+"ABCD"[i]+'</b><span>'+esc(o.t)+'</span></button>'});
+    html+='</div><div class="sv-nav"><button class="sv-link" data-back>← Back</button>'+(ans[step]!=null?'<button class="sv-link" data-next>Next →</button>':'')+'</div></div>';
+    root.innerHTML=html;
+    root.querySelectorAll(".sv-opt").forEach(function(b){b.onclick=function(){
+      ans[step]=+b.dataset.i;root.querySelectorAll(".sv-opt").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");
+      setTimeout(function(){step++;render();scrollTop()},260)}});
+    root.querySelector("[data-back]").onclick=function(){step--;render()};
+    var n=root.querySelector("[data-next]");if(n)n.onclick=function(){step++;render()};
+  }
+  function scrollTop(){var r=root.getBoundingClientRect();if(r.top<0)root.scrollIntoView({behavior:"smooth",block:"start"});}
+  function intro(){
+    root.innerHTML='<div class="sv-fade"><div class="sv-kicker">✦ DTS fit survey</div><h2>Something brought you here. <em>Let\'s see if this is the season.</em></h2>'+
+    '<p>Seven honest questions about how you\'d live, serve and learn with us on Ellis Street in the Tenderloin. No wrong answers, no pitch — just a clearer read on whether a Discipleship Training School fits where you are right now.</p>'+
+    '<div class="sv-meta"><span>⏱ ~3 minutes</span><span>✦ 4 possible outcomes</span><span>🔒 Answers stay in your browser</span></div>'+
+    '<button class="sv-btn" data-go>Find out if I\'m ready →</button></div>';
+    root.querySelector("[data-go]").onclick=function(){step=0;render()};
+  }
+  function result(){
+    var sc={},total=0;
+    Q.forEach(function(q,i){var s=q.o[ans[i]].s;sc[q.dim]=s;total+=s});
+    var key=(sc.room<=1&&total>=12)?"timing":total>=16?"yes":total>=9?"see":"notyet";
+    var o=OUT[key];
+    var sorted=Q.map(function(q,i){return{q:q,i:i,s:sc[q.dim]}}).slice().sort(function(a,b){return b.s-a.s});
+    var strong=sorted.slice(0,2),stretch=sorted.filter(function(x){return x.s<=1}).slice(-2);
+    if(!stretch.length)stretch=[sorted[sorted.length-1]];
+    var bars="";Q.forEach(function(q){bars+='<div class="sv-bar"><span>'+DIMS[q.dim]+'</span><div><i data-w="'+(sc[q.dim]/3*100)+'"></i></div></div>'});
+    var notes="";
+    strong.forEach(function(x){notes+='<div class="sv-note"><strong>Already leaning in · '+DIMS[x.q.dim]+'</strong><p>'+x.q.o[ans[x.i]].n+'</p></div>'});
+    stretch.forEach(function(x){if(strong.indexOf(x)<0)notes+='<div class="sv-note stretch"><strong>Where you\'d be stretched · '+DIMS[x.q.dim]+'</strong><p>'+x.q.o[ans[x.i]].n+'</p></div>'});
+    var steps="";o.steps.forEach(function(s){steps+='<a class="sv-step" href="'+s[2]+'" target="_blank" rel="noopener"><div><span>'+s[0]+'</span><small>'+s[1]+'</small></div><em>→</em></a>'});
+    var summary="Hi DTS team,\n\nI just took the 'Am I ready for DTS?' survey. My result: "+o.badge+".\n\n"+Q.map(function(q,i){return "• "+q.q+"\n  "+q.o[ans[i]].t}).join("\n")+"\n\nI'd love to talk about next steps.\n";
+    root.innerHTML='<div class="sv-fade"><div class="sv-result-badge">'+o.badge+'</div><h2>'+o.title+'</h2><p>'+o.body+'</p>'+
+     '<div class="sv-bars">'+bars+'</div><div class="sv-notes">'+notes+'</div>'+
+     '<div class="sv-kicker" style="margin-top:6px">Your next step</div><div class="sv-steps">'+steps+'</div>'+
+     '<div class="sv-actions"><a class="sv-btn" href="mailto:'+LINKS.email+'?subject='+encodeURIComponent("My DTS survey result: "+o.badge)+'&body='+encodeURIComponent(summary)+'">Send my answers to the DTS team</a><button class="sv-btn ghost" data-restart>Start over</button></div></div>';
+    requestAnimationFrame(function(){setTimeout(function(){root.querySelectorAll(".sv-bar i").forEach(function(i){i.style.width=i.dataset.w+"%"})},60)});
+    root.querySelector("[data-restart]").onclick=function(){step=-1;ans=[];render()};
+  }
+  render();
+};
+})();
+</script>
+<script>mountDtsSurvey(document.getElementById("survey"));</script>
+</body>
+</html>
