@@ -9,10 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/base.css">
-<link rel="stylesheet" href="../assets/survey.css">
+<link rel="stylesheet" href="../assets/base.css?v=202610061528">
+<link rel="stylesheet" href="../assets/survey.css?v=202610061528">
 <style>
-:root{--bg:#FBF4E6;--surface:#FFFDF8;--soft:#1E2A4B;--tint:#DFEFF2;--ink:#1E2A4B;--body:#3E4763;--muted:#4A7F92;--line:rgba(30,42,75,.16);
+:root{--cc-road:#1E2A4B;--cc-rail:#FBF4E6;--cc-flag:#FFFDF8;--cc-flag-edge:#D9413A;--bg:#FBF4E6;--surface:#FFFDF8;--soft:#1E2A4B;--tint:#DFEFF2;--ink:#1E2A4B;--body:#3E4763;--muted:#4A7F92;--line:rgba(30,42,75,.16);
 --accent:#D9413A;--accent-dk:#B8322C;--on-accent:#fff;--em:#D9413A;--stat:#D9413A;--logo-color:#1E2A4B;
 --display:"DM Serif Display",Georgia,serif;--serif:"DM Sans",system-ui,sans-serif;--label:"DM Sans",system-ui,sans-serif;--body-size:17.5px;--display-track:-.005em;
 --radius:0px;--chip-radius:0;--btn-radius:0;
@@ -35,6 +35,15 @@
 .hero .stamp{position:absolute;left:-58px;bottom:clamp(40px,10vh,110px);width:128px;height:128px;border-radius:50%;background:#1E2A4B;color:#FBF4E6;display:grid;place-items:center;text-align:center;font:400 19px/1.1 var(--display);padding:16px;transform:rotate(-8deg);z-index:2;box-shadow:0 0 0 6px #FBF4E6}
 .price{--muted:rgba(251,244,230,.6)}
 @media(max-width:860px){.hero{grid-template-columns:1fr;max-height:none}.hero .copy{padding:40px 24px}.hero .art{height:58vh}.hero .stamp{left:auto;right:18px;top:-50px;bottom:auto;width:104px;height:104px;font-size:16px}}
+
+
+.cc-sec{padding:clamp(36px,5vw,60px) 0 0;background:var(--cc-bg,var(--bg))}
+.cc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.cc-head .label{margin-bottom:6px}
+.cc-line{font-family:var(--display);font-size:clamp(24px,3vw,34px);line-height:1.15;color:var(--ink);margin:0}
+.cc-line span{color:var(--muted);font-size:.62em;font-family:var(--serif)}
+.cc-apply{font:700 13px var(--label);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--accent);border-bottom:1.5px solid currentColor;padding-bottom:3px}
+.cc{--cc-panel-num:var(--accent);--display:var(--display)}
 
 </style>
 </head>
@@ -68,6 +77,14 @@
     <div class="stamp">Presence that restores.</div>
   </div>
 </header>
+<!-- NEXT DEPARTURE: cable car -->
+<section class="cc-sec" aria-label="Next DTS dates">
+  <div class="wrap cc-head">
+    <div><span class="label">Next departure</span><p class="cc-line">January 18 – June 4, 2027 <span>· the Tenderloin, the nations, then home</span></p></div>
+    <a class="cc-apply" href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener">Apply for January →</a>
+  </div>
+  <div data-cablecar data-board="YWAM San Francisco" data-plates="JAN 18|JUN 4" data-band="Next DTS · Jan 18 – Jun 4, 2027" data-flag="Now boarding · Apply for January" data-href="https://www.tfaforms.com/4827504" aria-label="Next DTS: January 18 to June 4, 2027. Apply now."></div>
+</section>
 
 <hr class="rule-line">
 
@@ -305,9 +322,10 @@
 </div>
 
 <nav class="switcher" aria-label="Design concepts"><span>Concepts</span><a href="../ywam1/"><i>YWAM </i>1</a><a href="../ywam2/"><i>YWAM </i>2</a><a href="../ywam3/" class="on" aria-current="page"><i>YWAM </i>3</a><a href="../ywam4/"><i>YWAM </i>4</a><a href="../">Current</a></nav>
-<script src="../assets/survey.js"></script>
-<script src="../assets/scene.js"></script>
-<script src="../assets/igcarousel.js"></script>
-<script src="../assets/page.js"></script>
+<script src="../assets/survey.js?v=202610061528"></script>
+<script src="../assets/scene.js?v=202610061528"></script>
+<script src="../assets/igcarousel.js?v=202610061528"></script>
+<script src="../assets/cablecar.js?v=202610061528"></script>
+<script src="../assets/page.js?v=202610061528"></script>
 </body>
 </html>

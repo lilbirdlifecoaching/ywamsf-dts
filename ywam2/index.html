@@ -9,10 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/base.css">
-<link rel="stylesheet" href="../assets/survey.css">
+<link rel="stylesheet" href="../assets/base.css?v=202610061528">
+<link rel="stylesheet" href="../assets/survey.css?v=202610061528">
 <style>
-:root{--bg:#EAEDF0;--surface:#F7F8F9;--soft:#E2E4E3;--tint:#DCE4E8;--ink:#26313B;--body:#465361;--muted:#6B7C85;--line:rgba(70,83,97,.18);
+:root{--cc-road:#465361;--cc-rail:#EAEDF0;--cc-flag:#F7F8F9;--cc-flag-edge:#9A1E14;--bg:#EAEDF0;--surface:#F7F8F9;--soft:#E2E4E3;--tint:#DCE4E8;--ink:#26313B;--body:#465361;--muted:#6B7C85;--line:rgba(70,83,97,.18);
 --accent:#9A1E14;--accent-dk:#7C170F;--on-accent:#fff;--em:#9A1E14;--stat:#465361;--logo-color:#465361;--nav-bg:#EAEDF0;
 --display:"Cormorant Garamond",Georgia,serif;--display-weight:500;--serif:"Manrope",system-ui,sans-serif;--label:"Manrope",system-ui,sans-serif;--body-size:17px;
 --radius:6px;--chip-radius:3px;--btn-radius:3px;--btn-track:.14em;--btn-size:12.5px;--btn-weight:800;
@@ -36,6 +36,15 @@ h2{font-size:clamp(36px,5vw,60px);line-height:1}
 .qc .q,.voice blockquote,.faq summary{font-size:27px}
 .price{--muted:rgba(234,237,240,.65)}
 @media(max-width:700px){.hero{height:auto;min-height:0;max-height:none}.hero .scene{position:relative;height:46vh}.hero .fogfade{background:linear-gradient(to top,#EAEDF0 0%,rgba(234,237,240,.9) 34%,rgba(234,237,240,0) 62%);height:46vh;bottom:auto}.hero .hero-copy{position:relative;bottom:auto;margin-top:-70px;padding-bottom:44px}}
+
+
+.cc-sec{padding:clamp(36px,5vw,60px) 0 0;background:var(--cc-bg,var(--bg))}
+.cc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.cc-head .label{margin-bottom:6px}
+.cc-line{font-family:var(--display);font-size:clamp(24px,3vw,34px);line-height:1.15;color:var(--ink);margin:0}
+.cc-line span{color:var(--muted);font-size:.62em;font-family:var(--serif)}
+.cc-apply{font:700 13px var(--label);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--accent);border-bottom:1.5px solid currentColor;padding-bottom:3px}
+.cc{--cc-panel-num:var(--accent);--display:var(--display)}
 
 </style>
 </head>
@@ -66,6 +75,14 @@ h2{font-size:clamp(36px,5vw,60px);line-height:1}
     <div class="ctas"><button class="btn" data-survey>Am I ready for DTS? <span class="arr" aria-hidden="true">→</span></button><a class="btn ghost" href="mailto:dts@ywamsanfrancisco.org">Talk to us</a></div>
   </div>
 </header>
+<!-- NEXT DEPARTURE: cable car -->
+<section class="cc-sec" aria-label="Next DTS dates">
+  <div class="wrap cc-head">
+    <div><span class="label">Next departure</span><p class="cc-line">January 18 – June 4, 2027 <span>· the Tenderloin, the nations, then home</span></p></div>
+    <a class="cc-apply" href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener">Apply for January →</a>
+  </div>
+  <div data-cablecar data-board="YWAM San Francisco" data-plates="JAN 18|JUN 4" data-band="Next DTS · Jan 18 – Jun 4, 2027" data-flag="Now boarding · Apply for January" data-href="https://www.tfaforms.com/4827504" aria-label="Next DTS: January 18 to June 4, 2027. Apply now."></div>
+</section>
 
 <hr class="rule-line">
 
@@ -303,9 +320,10 @@ h2{font-size:clamp(36px,5vw,60px);line-height:1}
 </div>
 
 <nav class="switcher" aria-label="Design concepts"><span>Concepts</span><a href="../ywam1/"><i>YWAM </i>1</a><a href="../ywam2/" class="on" aria-current="page"><i>YWAM </i>2</a><a href="../ywam3/"><i>YWAM </i>3</a><a href="../ywam4/"><i>YWAM </i>4</a><a href="../">Current</a></nav>
-<script src="../assets/survey.js"></script>
-<script src="../assets/scene.js"></script>
-<script src="../assets/igcarousel.js"></script>
-<script src="../assets/page.js"></script>
+<script src="../assets/survey.js?v=202610061528"></script>
+<script src="../assets/scene.js?v=202610061528"></script>
+<script src="../assets/igcarousel.js?v=202610061528"></script>
+<script src="../assets/cablecar.js?v=202610061528"></script>
+<script src="../assets/page.js?v=202610061528"></script>
 </body>
 </html>
