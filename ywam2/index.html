@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>YWAM 2 · Fog — YWAM San Francisco concept</title>
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/base.css">
+<link rel="stylesheet" href="../assets/survey.css">
+<style>
+:root{--bg:#EAEDF0;--surface:#F7F8F9;--soft:#E2E4E3;--tint:#DCE4E8;--ink:#26313B;--body:#465361;--muted:#6B7C85;--line:rgba(70,83,97,.18);
+--accent:#9A1E14;--accent-dk:#7C170F;--on-accent:#fff;--em:#9A1E14;--stat:#465361;--logo-color:#465361;--nav-bg:#EAEDF0;
+--display:"Cormorant Garamond",Georgia,serif;--display-weight:500;--serif:"Manrope",system-ui,sans-serif;--label:"Manrope",system-ui,sans-serif;--body-size:17px;
+--radius:6px;--chip-radius:3px;--btn-radius:3px;--btn-track:.14em;--btn-size:12.5px;--btn-weight:800;
+--final-bg:#465361;--final-ink:#EAEDF0;--vow-back:#465361;--price-bg:#465361;--price-ink:#EAEDF0;--price-amt:#fff;--ig-bg:#E2E4E3;
+--ig-bridge:#A8281B;--ig-shade:#465361;--ig-water:#95A7AD;--ig-water2:#BCC9CE;--ig-hill:#95A7AD;--ig-card-radius:6px;--on-dark-btn:#F7F8F9;
+--blue:var(--accent);--blue-dk:var(--accent-dk);--grey:var(--muted)}
+
+h1{font-size:clamp(50px,6.4vw,92px);line-height:.95;letter-spacing:-.02em}
+.hero h1{font-size:clamp(44px,5.4vw,78px);max-width:none}
+.hero .lede{max-width:600px}
+h2{font-size:clamp(36px,5vw,60px);line-height:1}
+.hero{position:relative;height:calc(100svh - 84px);min-height:600px;max-height:940px;overflow:hidden}
+.hero .scene{position:absolute;inset:0}
+.hero .fogfade{position:absolute;inset:0;background:linear-gradient(to top,#EAEDF0 0%,rgba(234,237,240,.95) 34%,rgba(234,237,240,.6) 48%,rgba(234,237,240,0) 60%),linear-gradient(to right,rgba(234,237,240,.55),rgba(234,237,240,0) 55%);pointer-events:none}
+.hero .hero-copy{position:absolute;left:0;right:0;bottom:clamp(30px,6vh,70px)}
+.hero .label{color:var(--body)}
+.hero .lede{margin:22px 0 28px;color:var(--body)}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero .next{display:flex;gap:40px;flex-wrap:wrap;margin-top:28px;font-size:15px;color:var(--body)}
+.hero .next .label{margin-bottom:4px}
+.qc .q,.voice blockquote,.faq summary{font-size:27px}
+.price{--muted:rgba(234,237,240,.65)}
+@media(max-width:700px){.hero{height:auto;min-height:0;max-height:none}.hero .scene{position:relative;height:46vh}.hero .fogfade{background:linear-gradient(to top,#EAEDF0 0%,rgba(234,237,240,.9) 34%,rgba(234,237,240,0) 62%);height:46vh;bottom:auto}.hero .hero-copy{position:relative;bottom:auto;margin-top:-70px;padding-bottom:44px}}
+
+</style>
+</head>
+<body class="v2">
+<div id="progress"></div>
+<nav class="top" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="YWAM San Francisco"><span class="logo-mark"></span></a>
+    <div class="navlinks">
+      <a href="#place">The place</a>
+      <a href="#rule">Rule of life</a>
+      <a href="#day">A day</a>
+      <a href="#movements">Five months</a>
+      <a href="#numbers">Cost</a>
+      <button class="btn" data-survey>Am I ready? <span class="arr" aria-hidden="true">→</span></button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div data-scene="soft" data-anchor="0.42" data-anchor-m="0.6" data-focus="0.72"
+    style="--sc-sky1:#6E9CBF;--sc-sky2:#CFDDE7;--sc-hillfar:#B5C3CA;--sc-hill:#7F949C;--sc-hill2:#95A7AD;--sc-water:#6B828D;--sc-water2:#556A76;--sc-bridge:#A8281B;--sc-shade:#741A11;--sc-dark:#3D4955;--sc-fog:#FFFFFF;--sc-line:#DCE4E8"></div>
+  <div class="fogfade"></div>
+  <div class="wrap hero-copy">
+    <span class="label">Discipleship Training School</span>
+    <h1>A monastery without walls,<br><em>in the heart of the Tenderloin.</em></h1>
+    <p class="lede">Five months of prayer, presence and learning to love your neighbor at 357 Ellis Street — then out into the cities of the world. Not to argue anyone into faith. To show them who Jesus is.</p>
+    <div class="ctas"><button class="btn" data-survey>Am I ready for DTS? <span class="arr" aria-hidden="true">→</span></button><a class="btn ghost" href="mailto:dts@ywamsanfrancisco.org">Talk to us</a></div>
+  </div>
+</header>
+
+<hr class="rule-line">
+
+<!-- PLACE -->
+<section id="place">
+  <div class="wrap place-grid">
+    <div class="pair reveal">
+      <figure><div class="ph"><img loading="lazy" src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/4ddbffe2-014d-4194-a26e-e5fba257edad/Community%2520Lunch_VSCO.jpg?format=1000w" alt="Community lunch around a table"></div><figcaption>Community lunch at 357 Ellis</figcaption></figure>
+      <figure><div class="ph"><img loading="lazy" src="https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1766710261599-3RJVQTYVZHFWL6GK280D/image-asset.jpeg?format=1000w" alt="Neighbors lined up outside on Christmas Day"></div><figcaption>Christmas Day · 209 neighbors fed</figcaption></figure>
+    </div>
+    <div class="reveal">
+      <span class="label">The place behind it</span>
+      <h2>We live on Ellis Street. <em>The door stays open.</em></h2>
+      <p class="lede">Monks used to build their monasteries far from the city. We did the opposite. Our home sits in the middle of the Tenderloin — among neighbors who are unhoused, elderly, newly arrived, recovering, and brilliant — and we pray, eat, work and learn right here.</p>
+      <p>When it pours, the Ellis Room stays lit all night so friends with nowhere dry to go have somewhere to be. On Sunday mornings, church pops up on the sidewalk over hot chocolate. Every week, the food pantry becomes a place where people are seen by name.</p>
+      <div class="stats">
+        <div><b><span data-count="300">0</span>+</b><span>neighbors at the pantry weekly</span></div>
+        <div><b>9–5</b><span>Ellis Room open overnight in storms</span></div>
+        <div><b data-count="209">0</b><span>served at Christmas lunch</span></div>
+        <div><b data-count="5">0</b><span>months to learn a new way to love</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RULE -->
+<section class="rule alt" id="rule">
+  <div class="wrap">
+    <div class="rule-head reveal">
+      <div>
+        <span class="label">Our rule of life</span>
+        <h2>Four vows. <em>Lived on a sidewalk.</em></h2>
+      </div>
+      <p class="lede" style="max-width:420px">Every monastery has a rule. Ours is short. Tap a card to see what it looks like on an ordinary Tuesday.</p>
+    </div>
+    <div class="vows">
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">i.</div><h3>Love of God</h3><p>We stay rooted in Him.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>Before anyone opens a door or a laptop, we're in prayer — for each other, for the neighborhood, for the person we'll meet by lunch.</p></div></div></div>
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">ii.</div><h3>Love of Neighbor</h3><p>We practice compassionate presence.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That's ministry too.</p></div></div></div>
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">iii.</div><h3>Humility in Action</h3><p>We look first to the interests of others.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone's face.</p></div></div></div>
+      <div class="vow reveal"><div class="vow-in"><div class="f"><span class="hint">Tap</span><div class="num">iv.</div><h3>Formation that Multiplies</h3><p>We are disciples forming disciples.</p></div><div class="bk"><span class="label">On a Tuesday</span><p>A one-on-one with your mentor over coffee. Small group after dinner. What you're learning becomes something you can pass on.</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DAY -->
+<section id="day">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">The hours</span>
+      <h2>A day on Ellis Street. <em>Pray and work.</em></h2>
+      <p class="lede">Monks marked the day with prayer and work. So do we. Tap through the hours.</p>
+    </div>
+    <div class="clock reveal">
+      <div class="hours" id="hours"></div>
+      <div class="hour-card" id="hourCard"></div>
+    </div>
+    <p class="note-small">A sample day. Rhythms shift week to week, and every week has free time and a Sabbath.</p>
+  </div>
+</section>
+
+<hr class="rule-line">
+
+<!-- SOUND LIKE YOU -->
+<section id="you">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">Does this sound like you?</span>
+      <h2>If one of these is yours, <em>keep reading.</em></h2>
+    </div>
+    <div class="quotes">
+      <button class="qc reveal"><div class="q">"I don't want to argue anyone into faith. I want to show them who Jesus is." <i>+</i></div><div class="a">Us too. Here, faith gets worn on the sleeve and lived out with the hands: a hot drink on a cold morning, a name remembered, a prayer offered when someone asks for one.</div></button>
+      <button class="qc reveal"><div class="q">"My faith feels like a Sunday thing. I want it to be an every-day thing." <i>+</i></div><div class="a">That's what a rule of life is for. Five months of shared rhythm — prayer, teaching, work, meals, service — until following Jesus stops being an event and becomes a way of living.</div></button>
+      <button class="qc reveal"><div class="q">"I'm drawn to the streets most people drive past." <i>+</i></div><div class="a">Then you'll feel at home. The Tenderloin is rough around the edges and full of image-bearers. You'll learn to stay, to listen, and to see beauty where others see a problem.</div></button>
+      <button class="qc reveal"><div class="q">"I want to be formed, not just informed." <i>+</i></div><div class="a">Weekly speakers give you the teaching. Mentorship, community and the street do the forming. You'll leave knowing more about God — and knowing Him more.</div></button>
+    </div>
+  </div>
+</section>
+
+<!-- MOVEMENTS -->
+<section class="moves alt" id="movements">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">From the neighborhood to the nations</span>
+      <h2>DTS consists of three parts, <em>making one life-changing experience.</em></h2>
+    </div>
+    <div class="move-tabs" id="moveTabs"></div>
+    <div class="move-panel reveal" id="movePanel"></div>
+  </div>
+</section>
+
+<!-- PATHFINDER -->
+<section id="paths">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">Not sure if DTS is right for you?</span>
+      <h2>Pick where <em>to start.</em></h2>
+      <p class="lede">You don't have to figure it out alone. Discern first, come and see second, say yes when it's time.</p>
+    </div>
+    <div class="acts">
+      <div class="act reveal">
+        <div class="ph" style="background-image:url('https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1779917437619-RYYYTGIULLW693NTZRZI/image-asset.jpeg?format=750w')"><span>01 · Discern</span></div>
+        <div class="body"><h3>Still wondering</h3><p>No commitment. Just enough to see if this is for you.</p></div>
+        <div class="links">
+          <button data-survey><div><strong>Am I ready for DTS?</strong><small>7 honest questions · ~3 minutes</small></div><em>→</em></button>
+          <a href="mailto:dts@ywamsanfrancisco.org"><div><strong>A conversation</strong><small>Tell us your story, ask anything</small></div><em>→</em></a>
+        </div>
+      </div>
+      <div class="act reveal">
+        <div class="ph" style="background-image:url('https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/4ddbffe2-014d-4194-a26e-e5fba257edad/Community%2520Lunch_VSCO.jpg?format=750w')"><span>02 · Come and see</span></div>
+        <div class="body"><h3>Taste the life</h3><p>Spend a morning in the neighborhood before you spend five months.</p></div>
+        <div class="links">
+          <a href="https://www.ywamsanfrancisco.org/volunteer" target="_blank" rel="noopener"><div><strong>Serve a shift</strong><small>Food pantry, Ellis Room, hot chocolate</small></div><em>→</em></a>
+          <a href="https://www.ywamsanfrancisco.org/blog/2026/1/19/church-that-shows-up" target="_blank" rel="noopener"><div><strong>Sunday Pop-Up Church</strong><small>Worship on the sidewalk outside our door</small></div><em>→</em></a>
+          <a href="https://www.ywamsanfrancisco.org/mission-adventure" target="_blank" rel="noopener"><div><strong>Mission Adventure</strong><small>A shorter taste of urban mission</small></div><em>→</em></a>
+        </div>
+      </div>
+      <div class="act reveal">
+        <div class="ph" style="background-image:url('https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/3aac1bb8-94e7-49d4-be92-e9dad686c355/MKMR8140.jpg?format=750w')"><span>03 · Say yes</span></div>
+        <div class="body"><h3>Come live it</h3><p>Five months of being trained, transformed and sent.</p></div>
+        <div class="links">
+          <a href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener"><div><strong>Apply for Jan 2027</strong><small>Jan 18 – Jun 4 · a real person replies</small></div><em>→</em></a>
+          <a href="tel:4158856543"><div><strong>Call the office</strong><small>415-885-6543</small></div><em>→</em></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-line">
+
+<!-- NUMBERS -->
+<section id="numbers">
+  <div class="wrap numbers-grid">
+    <div class="reveal">
+      <span class="label">Cost</span>
+      <h2>Clear numbers. <em>No surprises.</em></h2>
+      <div class="price">
+        <div class="amt">$8,000 <small>USD*</small></div>
+        <dl>
+          <dt>Dates</dt><dd>January 18 – June 4, 2027</dd>
+          <dt>Length</dt><dd>About five months</dd>
+          <dt>Phases</dt><dd>Training · Outreach · Debrief</dd>
+          <dt>Where</dt><dd>357 Ellis Street, San Francisco</dd>
+        </dl>
+        <p>We believe finances shouldn't stop someone from saying yes. Our team will help you explore fundraising and support options.</p>
+        <p style="font-size:14px;font-style:italic;color:var(--grey);margin:0">*Cost may vary for international applicants; please inquire for alternative pricing.</p>
+      </div>
+    </div>
+    <div class="faq reveal">
+      <span class="label">FAQ</span>
+      <details open><summary>What does a typical day look like?</summary><p>Teaching with the speaker of the week, formational practices like worship and prayer, community activities like small groups and shared meals, local ministry, and free time.</p></details>
+      <details><summary>Can I work or go to school during DTS?</summary><p>We don't recommend it. DTS is time set aside to deepen your relationship with God and experience His heart for people, and your capacity will already be stretched.</p></details>
+      <details><summary>Do I need to have my faith figured out?</summary><p>No. You don't have to figure it out alone. We'd love to hear your story, answer your questions and help you discern your next step.</p></details>
+      <details><summary>Is the Tenderloin safe?</summary><p>It's a real neighborhood with real struggles. You'll never serve alone, and you'll learn from staff who've lived and served here for years. <span class="todo">[YWAM SF team: add your specifics here.]</span></p></details>
+      <details><summary>What happens after DTS?</summary><p>The debrief sets you up for your next season — a job, college, joining YWAM, or wherever God is leading.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- VOICES -->
+<section class="voices alt" id="voices">
+  <div class="wrap">
+    <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div><span class="label">Love your neighbor(hood)</span><h2>Lessons learned <em>on these streets.</em></h2></div>
+      <div class="arrows"><button aria-label="Previous" data-dir="-1">←</button><button aria-label="Next" data-dir="1">→</button></div>
+    </div>
+    <div class="track" id="track">
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/emilyg" target="_blank" rel="noopener"><blockquote>…choose hurry instead of human in these moments.</blockquote><cite><b>Restaurants of the TL</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/danica-bless" target="_blank" rel="noopener"><blockquote>…seeking out God’s beauty amidst the chaos of daily life.</blockquote><cite><b>Arts and Murals</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/karol-svoboda" target="_blank" rel="noopener"><blockquote>…see and understand my neighbors at a much deeper level.</blockquote><cite><b>Karol Svoboda</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/2019/10/22/seniors-of-the-tl" target="_blank" rel="noopener"><blockquote>He shows up. Will you?</blockquote><cite><b>Seniors of the Tenderloin</b>From the YWAM SF blog</cite></a>
+      <a class="voice" href="https://www.ywamsanfrancisco.org/blog/mateo" target="_blank" rel="noopener"><blockquote>…it’s an honor to walk side by side with these visionaries.</blockquote><cite><b>The Youth of the Tenderloin</b>From the YWAM SF blog</cite></a>
+      <div class="voice placeholder"><blockquote style="color:var(--grey)">Your DTS alumni's words go here.</blockquote><cite><b>Placeholder</b>Collect 4–6 real quotes from past students</cite></div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNAL -->
+<section id="journal">
+  <div class="wrap">
+    <div class="reveal"><span class="label">Our latest posts</span><h2>Read a little. <em>Stay awhile.</em></h2></div>
+    <div class="posts">
+      <a class="post reveal" href="https://www.ywamsanfrancisco.org/blog/2026/7/15/why-a-discipleship-training-school-can-change-your-life" target="_blank" rel="noopener"><small>DTS · July 2026</small><h3>Why a Discipleship Training School can change your life</h3><p>A journey of knowing God, serving others, and finding your part in His mission.</p></a>
+      <a class="post reveal" href="https://www.ywamsanfrancisco.org/blog/2026/2/17/keeping-the-lights-on-after-hours-in-the-ellis-room" target="_blank" rel="noopener"><small>Ministry · February 2026</small><h3>Keeping the lights on: after hours in the Ellis Room</h3><p>What happens on Ellis Street when the rain comes and the city closes its doors.</p></a>
+      <a class="post reveal" href="https://www.ywamsanfrancisco.org/blog/2026/1/19/church-that-shows-up" target="_blank" rel="noopener"><small>Outreach · January 2026</small><h3>Church that shows up</h3><p>Hot chocolate, cookies, and worship on the sidewalk every Sunday morning.</p></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- INSTAGRAM -->
+<section class="ig" id="instagram">
+  <div class="wrap ig-head reveal">
+    <span class="label">@ywamsf on Instagram</span>
+    <h2>Life on Ellis Street, <em>this week.</em></h2>
+    <p class="lede">Hot chocolate on the corner, lunch at one long table, the lights on through a rainy night. Follow along.</p>
+  </div>
+  <div class="ig-stage" data-ig tabindex="0" aria-label="Recent Instagram posts. Use left and right arrow keys to browse."></div>
+  <div class="wrap">
+    <div class="ig-cols reveal">
+      <div><h3>Pop-Up Church</h3><p>Worship on the sidewalk outside our door, every Sunday morning.</p></div>
+      <div><h3>Food Pantry</h3><p>300+ neighbors every week, met with fresh food and known by name.</p></div>
+      <div><h3>The Ellis Room</h3><p>A safe place to land — and on rain nights, open until morning.</p></div>
+    </div>
+    <p class="ig-note"><a href="https://www.instagram.com/ywamsf/" target="_blank" rel="noopener">Follow @ywamsf</a> · Preview uses recent YWAM SF images; it can connect to the live feed later.</p>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="wrap reveal">
+    <span class="label">The door is open</span>
+    <h2>Ready to stop watching <em>from a distance?</em></h2>
+    <p>Come be a presence that restores. Start with seven honest questions, or just say hello.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn light" data-survey>Am I ready for DTS? <span class="arr" aria-hidden="true">→</span></button>
+      <a class="btn ghost-light" href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener">Apply now</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><span class="label">Visit</span>357 Ellis Street<br>San Francisco, CA 94102</div>
+    <div><span class="label">Contact</span><a href="mailto:dts@ywamsanfrancisco.org">dts@ywamsanfrancisco.org</a><br><a href="tel:4158856543">415-885-6543</a></div>
+    <div><span class="label">Follow</span><a href="https://www.instagram.com/ywamsf/">Instagram</a><a href="https://facebook.com/ywamsanfrancisco/">Facebook</a></div>
+    <div class="concept">Design concept for the YWAM San Francisco refresh — not the live site</div>
+  </div>
+</footer>
+
+<button class="fab" id="fab" data-survey>Am I ready for DTS?</button>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-box"><button class="modal-x" aria-label="Close">✕</button><div id="survey"></div></div>
+</div>
+
+<nav class="switcher" aria-label="Design concepts"><span>Concepts</span><a href="../ywam1/"><i>YWAM </i>1</a><a href="../ywam2/" class="on" aria-current="page"><i>YWAM </i>2</a><a href="../ywam3/"><i>YWAM </i>3</a><a href="../ywam4/"><i>YWAM </i>4</a><a href="../">Current</a></nav>
+<script src="../assets/survey.js"></script>
+<script src="../assets/scene.js"></script>
+<script src="../assets/igcarousel.js"></script>
+<script src="../assets/page.js"></script>
+</body>
+</html>
