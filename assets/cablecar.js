@@ -12,10 +12,7 @@
   var BOARD = [574, 101, 1548, 139];
   var PLATES = [[896, 490, 1060, 550], [1600, 490, 1764, 550]];
   var BAND = [884, 594, 1792, 660];
-  var SKYLINE = '<svg class="cc-sky" viewBox="0 0 1600 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">' +
-    '<path class="far" d="M0,260 V220 H0 V183 H45 H45 V182 H98 H98 V216 H165 H165 V204 H225 H225 V175 H267 H267 Q347,150 447,190 H447 H447 V190 H512 H512 V206 H551 H551 V196 H614 H614 V210 H648 H648 V218 H715 H715 V168 H746 H746 V182 H806 H806 V175 H860 H860 V195 H917 H917 V192 H983 H983 V197 H1021 V189 H1027 V197 H1027 V207 H1088 H1088 V171 H1145 H1145 V194 H1194 H1194 V184 H1248 H1248 Q1328,150 1428,190 H1428 H1428 V194 H1495 H1495 V177 H1546 H1546 V166 H1577 H1577 V178 H1645 V260 Z"/>' +
-    '<path class="mid" d="M0,260 V230 H0 V211 H42 H42 V221 H67 H67 V184 H95 H95 V203 H149 V191 H155 V203 H155 V222 H203 V208 H209 V222 H209 V223 H258 H258 V202 H287 H287 V157 H312 H312 V202 H337 V194 H343 V202 H343 V177 H383 V170 H389 V177 H389 V159 H430 H430 V217 H463 H463 V183 H497 V176 H503 V183 H503 V151 H528 V137 H534 V151 H534 V190 H583 H583 V176 Q613,150 643,176 H643 M607,176 V96 H619 V176 M643,176 H643 V184 H694 H694 V141 H727 H727 V157 H754 H754 V187 H807 H807 V153 H847 H847 V200 H855 V120 L869,10 L883,120 V200 H891 H891 V165 H920 H920 V211 H963 H963 V225 H1011 H1011 V159 H1037 H1037 V187 H1079 H1079 V60 Q1105,18 1131,60 V200 H1131 H1131 V156 H1184 H1184 V219 H1210 H1210 V141 H1262 H1262 V141 H1287 H1287 V194 H1337 H1337 V228 H1381 H1381 V209 H1425 H1425 V223 H1478 V213 H1484 V223 H1484 V199 H1514 H1514 V220 H1567 V208 H1573 V220 H1573 V213 H1612 V260 Z"/>' +
-    '</svg>';
+  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'skyline.webp\')"></div>';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function pct(v, of) { return (v / of * 100).toFixed(3) + '%'; }
@@ -120,7 +117,7 @@
   '.cc-flag{padding:.8em 1.3em .8em 1.5em;background:var(--cc-flag,#F7F2E6);color:var(--cc-flag-ink,#1E2A4B);font:800 calc(var(--ch) * .042)/1 var(--label,system-ui);letter-spacing:.14em;text-transform:uppercase;white-space:normal;line-height:1.25;border-top:3px solid var(--cc-flag-edge,#9A1E14);border-bottom:3px solid var(--cc-flag-edge,#9A1E14);box-shadow:0 8px 16px -10px rgba(0,0,0,.4)}' +
   '.cc-car:hover .cc-flag,.cc-car:focus-visible .cc-flag{background:var(--cc-flag-edge,#9A1E14);color:#fff}' +
   '@keyframes ccFlap{from{transform:rotate(-.25deg)}to{transform:rotate(.25deg)}}' +
-  '.cc-sky{position:absolute;left:-4%;width:108%;bottom:12%;height:78%;pointer-events:none;will-change:transform}.cc-sky .far{fill:var(--cc-sky-far,rgba(70,83,97,.12))}.cc-sky .mid{fill:var(--cc-sky,rgba(70,83,97,.26))}' +
+  '.cc-sky{position:absolute;left:-3%;width:106%;bottom:12%;height:88%;pointer-events:none;will-change:transform;background:center bottom/auto 100% no-repeat;opacity:var(--cc-sky-o,.34);-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}' +
   '@media (max-width:640px){.cc{--cc-h:230px}.cc-banner{display:none}}' +
   '@media (prefers-reduced-motion:reduce){.cc-banner{animation:none}}';
   var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
