@@ -9,11 +9,13 @@
   /* nav */
   var nav = $('.y5-nav');
   if (nav) {
-    addEventListener('scroll', function () { nav.classList.toggle('shadow', nav.getBoundingClientRect().top <= 0 && scrollY > 120); }, { passive: true });
+    var navTick = function () { nav.classList.toggle('shadow', nav.getBoundingClientRect().top <= 0.5 && (window.scrollY || pageYOffset) > 8); };
+    addEventListener('scroll', navTick, { passive: true }); navTick();
     var bg = $('.y5-burger'); if (bg) bg.addEventListener('click', function () { var o = nav.classList.toggle('open'); bg.setAttribute('aria-expanded', o); });
   }
 
   /* reveal + counters */
+  if (!('IntersectionObserver' in window)) { window.IntersectionObserver = function () { return { observe: function (el) { el.classList && el.classList.add('in'); }, unobserve: function () {} }; }; }
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) {
       if (!e.isIntersecting) return; e.target.classList.add('in'); io.unobserve(e.target);
@@ -101,7 +103,7 @@
           var fr = document.createElement('iframe');
           fr.title = 'YWAM San Francisco film, playing in the window';
           fr.allow = 'autoplay; encrypted-media; picture-in-picture';
-          fr.tabIndex = -1;
+          fr.tabIndex = -1; fr.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
           fr.src = 'https://www.youtube-nocookie.com/embed/' + VIDEO + '?autoplay=1&mute=1&loop=1&playlist=' + VIDEO + '&controls=0&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1';
           fr.src += '&enablejsapi=1&start=8';
           scr.appendChild(fr); window.ywamReveal && ywamReveal(fr);
@@ -118,7 +120,14 @@
   setTimeout(curve, 50); addEventListener('load', curve);
 
   /* departures board */
-  function sfNow() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })); }
+  function sfNow() {
+    try {
+      var o = {}; new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+        .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
+      var d = new Date(+o.year, +o.month - 1, +o.day, (+o.hour) % 24, +o.minute, +o.second);
+      return isNaN(d) ? new Date() : d;
+    } catch (e) { return new Date(); }
+  }
   var DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   $$('.board').forEach(function (bd) {
     var clk = $('.clock', bd);
@@ -130,7 +139,7 @@
       if (tr.dataset.href) { tr.classList.add('go'); tr.tabIndex = 0; var goRow = function () { if (tr.dataset.newtab) window.open(tr.dataset.href, '_blank', 'noopener'); else location.href = tr.dataset.href; }; tr.addEventListener('click', goRow); tr.addEventListener('keydown', function (e) { if (e.key === 'Enter') goRow(); }); }
     });
     var flaps = $$('.flap', bd);
-    flaps.forEach(function (f) { var t = f.textContent; f.dataset.t = t; f.innerHTML = t.split('').map(function (c) { return '<i>' + (c === ' ' ? '&nbsp;' : c) + '</i>'; }).join(''); });
+    flaps.forEach(function (f) { var t = f.textContent; f.dataset.t = t; f.textContent = ''; t.split('').forEach(function (c) { var i = document.createElement('i'); i.textContent = c === ' ' ? '\u00a0' : c; f.appendChild(i); }); });
     new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (!e.isIntersecting || reduce) return;
@@ -202,19 +211,27 @@
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
-  function sfNow() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })); }
+  function sfNow() {
+    try {
+      var o = {}; new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+        .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
+      var d = new Date(+o.year, +o.month - 1, +o.day, (+o.hour) % 24, +o.minute, +o.second);
+      return isNaN(d) ? new Date() : d;
+    } catch (e) { return new Date(); }
+  }
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* YouTube previews: show the iframe only once the video is actually playing (hides the title card) */
+  var YT_ORIGIN = 'https://www.youtube-nocookie.com', YT_ORIGINS = ['https://www.youtube-nocookie.com', 'https://www.youtube.com'];
   window.ywamReveal = function (fr) {
     var shown = false;
     function show() { if (shown) return; shown = true; setTimeout(function () { fr.classList.add('on'); }, 900); }
     fr.addEventListener('load', function () {
-      try { fr.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'yw' }), '*'); } catch (e) {}
+      try { fr.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'yw' }), YT_ORIGIN); } catch (e) {}
       setTimeout(show, 6000); // fallback if the player never reports its state
     });
     addEventListener('message', function (e) {
-      if (!/youtube/.test(e.origin) || e.source !== fr.contentWindow) return;
+      if (YT_ORIGINS.indexOf(e.origin) < 0 || e.source !== fr.contentWindow) return;
       try { var d = JSON.parse(e.data); var st = d.info && d.info.playerState; if (d.event === 'onStateChange') st = d.info; if (st === 1) show(); } catch (er) {}
     });
   };
@@ -247,7 +264,7 @@
   /* DTS billboard film: plays muted from 0:05; "Play with sound" restarts from the beginning */
   var film = $('#dtsfilm');
   if (film) {
-    function cmd(f, a) { try { film.contentWindow.postMessage(JSON.stringify({ event: 'command', func: f, args: a || [] }), '*'); } catch (e) {} }
+    function cmd(f, a) { try { film.contentWindow.postMessage(JSON.stringify({ event: 'command', func: f, args: a || [] }), YT_ORIGIN); } catch (e) {} }
     window.ywamReveal && ywamReveal(film);
     var snd = $('.vsound'), pl = $('.vplay'), full = $('.vfull'), hit = $('.bb-hit'), started = false;
     function setPaused(p) { pl.setAttribute('aria-pressed', p); pl.setAttribute('aria-label', p ? 'Play film' : 'Pause film'); }
@@ -262,12 +279,17 @@
     });
     if (hit) hit.addEventListener('click', playWithSound);
     pl.addEventListener('click', function () { var p = pl.getAttribute('aria-pressed') !== 'true'; setPaused(p); cmd(p ? 'pauseVideo' : 'playVideo'); });
+    if (full && !(document.fullscreenEnabled || document.webkitFullscreenEnabled) ) full.hidden = true;
     if (full) full.addEventListener('click', function () { playWithSound(); var f = film.requestFullscreen || film.webkitRequestFullscreen; if (f) f.call(film); });
     if (reduce) { cmd('pauseVideo'); setPaused(true); }
   }
 
   /* DTS vow cards: turn over */
-  $$('.vow5').forEach(function (v) { v.addEventListener('click', function () { v.setAttribute('aria-pressed', v.getAttribute('aria-pressed') !== 'true'); }); });
+  $$('.vow5').forEach(function (v) {
+    function t() { v.setAttribute('aria-pressed', v.getAttribute('aria-pressed') !== 'true'); }
+    v.addEventListener('click', t);
+    v.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t(); } });
+  });
 
   /* DTS day bar */
   var sky = $('.sky');

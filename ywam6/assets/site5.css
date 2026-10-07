@@ -42,7 +42,7 @@ section{position:relative}
 .y5-top a:hover{opacity:1}
 .y5-brand{display:flex;justify-content:center;padding:22px 0 10px;background:var(--fog)}
 .y5-logo{display:block;width:210px;height:66px;background:var(--red);-webkit-mask:url(img/ywamsf-logo.png) center/contain no-repeat;mask:url(img/ywamsf-logo.png) center/contain no-repeat}
-.y5-nav{position:sticky;top:0;z-index:60;background:rgba(234,237,240,.94);backdrop-filter:blur(10px);transition:box-shadow .3s}
+.y5-nav{position:sticky;top:0;z-index:60;background:rgba(234,237,240,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:box-shadow .3s}
 .y5-nav.shadow{box-shadow:0 1px 0 var(--line)}
 .y5-nav .wrap{display:flex;align-items:center;justify-content:center;gap:clamp(14px,3vw,44px);min-height:62px;flex-wrap:wrap}
 .y5-nav a{font:700 12.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--slate);text-decoration:none;padding:8px 0;position:relative}
@@ -83,7 +83,7 @@ section{position:relative}
 @keyframes flickerOn{0%{opacity:0}8%{opacity:.9}12%{opacity:0}22%{opacity:1}26%{opacity:.15}34%{opacity:1}42%{opacity:.35}48%,100%{opacity:1}}
 @keyframes hum{0%,100%{opacity:1}50%{opacity:.88}52%{opacity:.6}54%{opacity:.95}}
 .neon-hero .spill{border-radius:50%;background:radial-gradient(closest-side,rgba(255,58,48,.32),transparent);opacity:0;animation:fadeIn 2s 3.2s ease forwards;mix-blend-mode:screen}
-.hero-card{position:absolute;left:50%;bottom:clamp(20px,5vh,48px);transform:translateX(-50%);width:min(92%,980px);background:rgba(247,248,249,.93);backdrop-filter:blur(8px);border-radius:6px;padding:clamp(18px,2.6vw,30px) clamp(20px,3vw,40px);text-align:center;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.hero-card{position:absolute;left:50%;bottom:clamp(20px,5vh,48px);transform:translateX(-50%);width:min(92%,980px);background:rgba(247,248,249,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:6px;padding:clamp(18px,2.6vw,30px) clamp(20px,3vw,40px);text-align:center;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
 .hero-card h1{font-size:clamp(30px,4.4vw,58px);line-height:1.02}
 .hero-card p{margin:10px auto 0;color:var(--muted);font-size:15px;letter-spacing:.04em}
 @media (prefers-reduced-motion:reduce){.neon-hero .photo,.neon-hero .tint,.neon-hero .face,.neon-hero .tube,.neon-hero .spill{animation:none;opacity:1}.neon-hero .photo{filter:brightness(.66) saturate(.85)}}
@@ -117,7 +117,7 @@ section{position:relative}
 .wall .glass{position:absolute;pointer-events:none}
 .wall .glow{position:absolute;pointer-events:none;background:radial-gradient(closest-side,rgba(255,220,170,.35),transparent);mix-blend-mode:screen;animation:flick 3s ease-in-out infinite alternate}
 @keyframes flick{to{opacity:.6}}
-.wall .play{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;background:rgba(20,26,32,.82);color:#fff;border:0;border-radius:999px;padding:10px 16px 10px 10px;font:800 11.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(6px);transition:transform .2s,background .2s}
+.wall .play{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;background:rgba(20,26,32,.82);color:#fff;border:0;border-radius:999px;padding:10px 16px 10px 10px;font:800 11.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:transform .2s,background .2s}
 .wall .play:hover{transform:translate(-50%,-50%) scale(1.04);background:var(--red)}
 .wall .play i{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center}
 .wall .play i:before{content:"";border-left:10px solid var(--ink);border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:3px}
@@ -323,7 +323,7 @@ section{position:relative}
 .story:hover h3{color:var(--red)}
 .story p{font-size:15.5px}
 @media (max-width:860px){.stories{grid-template-columns:1fr}}
-.switcher{position:fixed;left:16px;bottom:16px;z-index:70;display:flex;align-items:center;gap:4px;padding:5px 6px 5px 14px;background:rgba(17,20,28,.86);backdrop-filter:blur(8px);border-radius:999px;font:600 11px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.switcher{position:fixed;left:16px;bottom:16px;z-index:70;display:flex;align-items:center;gap:4px;padding:5px 6px 5px 14px;background:rgba(17,20,28,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:999px;font:600 11px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
 .switcher a{color:#fff;text-decoration:none;padding:8px 11px;border-radius:999px}
 .switcher a:hover{background:rgba(255,255,255,.14)}
 .switcher a.on{background:#fff;color:#111}
@@ -567,7 +567,7 @@ h1 em,h2 em,h3 em,.vision em,.verse blockquote em{font-style:inherit;color:inher
 .vframe iframe.on{opacity:1}
 .vshade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 16%)}
 .vctl{position:absolute;right:clamp(14px,3vw,36px);bottom:clamp(22px,4vw,48px);display:flex;gap:10px;z-index:3}
-.vctl button{display:inline-flex;align-items:center;gap:10px;height:48px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:rgba(20,26,32,.62);backdrop-filter:blur(8px);color:#fff;font:800 12px var(--sans);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;padding:0 18px 0 14px;transition:background .2s}
+.vctl button{display:inline-flex;align-items:center;gap:10px;height:48px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:rgba(20,26,32,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font:800 12px var(--sans);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;padding:0 18px 0 14px;transition:background .2s}
 .vctl button:hover{background:rgba(20,26,32,.85)}
 .vctl .vplay{width:48px;padding:0;justify-content:center}
 .vctl .ico{width:20px;height:20px;background:#fff;display:block}
@@ -694,7 +694,7 @@ h1 em,h2 em,h3 em,.vision em,.verse blockquote em{font-style:inherit;color:inher
 .ready-foot{text-align:center;margin:26px 0 0;color:rgba(255,255,255,.8)}
 .ready-foot a{color:#fff}
 @media (max-width:900px){.phases,.testis,.ready3{grid-template-columns:1fr}.numbers5{grid-template-columns:1fr}}
-.modal{position:fixed;inset:0;z-index:90;background:rgba(10,14,24,.55);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:4vh 14px;overflow-y:auto}
+.modal{position:fixed;inset:0;z-index:90;background:rgba(10,14,24,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:4vh 14px;overflow-y:auto}
 .modal.open{display:flex}
 .modal-box{background:var(--mist);width:100%;max-width:780px;padding:clamp(26px,5vw,56px);position:relative;border-top:4px solid var(--slate);border-radius:8px}
 .modal-x{position:absolute;top:14px;right:14px;width:42px;height:42px;border:1px solid var(--line);background:#fff;cursor:pointer;font:500 18px var(--sans);color:var(--ink);border-radius:50%}
@@ -740,6 +740,9 @@ h1 em,h2 em,h3 em,.vision em,.verse blockquote em{font-style:inherit;color:inher
 @media (max-width:640px){.cc-strip .cc{--cc-h:210px;--cc-car-max:120px}}
 /* round 8: skyline bleeds to both edges */
 .cc-strip .cc-sky{left:-2%;width:110%;-webkit-mask-image:none;mask-image:none}
+/* fallback sizes for browsers without container units */
+.wall .screen iframe,.bb-screen iframe,.vframe iframe{width:130%;height:130%;left:-15%;top:-15%;transform:none}
+@supports (width:1cqw){.wall .screen iframe,.bb-screen iframe,.vframe iframe{left:50%;top:50%;transform:translate(-50%,-50%)}}
 /* round 8: perspective-mapped screens (storefront window + billboard) */
 [data-quad]{position:absolute;left:0;top:0;transform-origin:0 0;visibility:hidden}
 [data-quad].placed{visibility:visible}
@@ -803,3 +806,52 @@ h1 em,h2 em,h3 em,.vision em,.verse blockquote em{font-style:inherit;color:inher
 .neon-hero .lamp.sm:before{left:-10px;top:-5px;width:20px;height:10px;box-shadow:0 0 12px 5px rgba(255,214,150,.1)}
 .neon-hero .lamp.sm:after{left:-40px;width:80px;height:110px}
 .neon-hero .lamp.globe:before{left:-9px;top:-9px;width:18px;height:18px;box-shadow:0 0 12px 5px rgba(255,214,150,.12)}
+
+/* ================= round 11: cross-browser hardening ================= */
+a,button,[role="button"],summary,.hr,.ig-card{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+/* Flip cards without preserve-3d: each face turns on its own and swaps visibility at the halfway point.
+   Works in Safari/iOS where nested layers ignore backface-visibility. */
+.pillar .in,.vin{transform-style:flat;-webkit-transform-style:flat;transform:none!important;transition:none}
+.pillar .f,.pillar .b,.vf,.vb{-webkit-backface-visibility:hidden;backface-visibility:hidden;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity 0s linear .32s,visibility 0s linear .32s;will-change:transform}
+.pillar .f,.vf{transform:perspective(1400px) rotateY(0deg);opacity:1;visibility:visible}
+.pillar .b,.vb{transform:perspective(1400px) rotateY(180deg);opacity:0;visibility:hidden}
+.pillar.flip .f,.vow5[aria-pressed="true"] .vf{transform:perspective(1400px) rotateY(-180deg);opacity:0;visibility:hidden}
+.pillar.flip .b,.vow5[aria-pressed="true"] .vb{transform:perspective(1400px) rotateY(0deg);opacity:1;visibility:visible}
+.vf{-webkit-clip-path:polygon(0 0,100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%)}
+.vow5:hover .vf{-webkit-clip-path:polygon(0 0,100% 0,100% calc(100% - 52px),calc(100% - 52px) 100%,0 100%)}
+.vow5{display:block;perspective:none;cursor:pointer;outline:none;-webkit-user-select:none;user-select:none}
+.vow5:focus-visible{box-shadow:0 0 0 3px var(--slate)}
+@media (prefers-reduced-motion:reduce){.pillar .f,.pillar .b,.vf,.vb{transition:none}}
+@media (hover:none){.vow5:hover .vf{clip-path:polygon(0 0,100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%);-webkit-clip-path:polygon(0 0,100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%)}.vow5:hover .fold{width:34px;height:34px}.vow5:hover .vf .turn{right:46px}}
+/* never let a wide element push the page sideways on phones */
+html{overflow-x:clip}
+@supports not (overflow:clip){html{overflow-x:hidden}}
+img{max-width:100%}
+.neon-hero img,.bb-frame img,.wall img,.ig-card img,[data-quad] img,.cc img{max-width:none}
+.vfull[hidden]{display:none}
+.pillar .b:after{content:"Tap to turn back  ↻";position:absolute;right:20px;bottom:16px;font:800 10.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+
+/* older Safari/iOS 14: no aspect-ratio support */
+@supports not (aspect-ratio:1/1){
+  .wall{height:0;padding-top:83.36%}
+  .bb-frame{height:0;padding-top:48.5%}
+  .map{height:320px}
+  .phase .pimg,.update img{height:260px}
+}
+/* summary can't be a flex container in older Safari */
+.faq5 summary{display:block;position:relative;padding-right:34px}
+.faq5 summary:after{position:absolute;right:0;top:0}
+/* round 12: footer About/Give/Contact, logo drops into the sticky nav, tighter vision text */
+.y5-foot .flinks{width:100%;display:flex;gap:10px clamp(18px,4vw,48px);flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.22);margin-bottom:4px}
+.y5-foot .flinks a{font:800 12.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#fff;opacity:.95}
+.y5-foot .flinks a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+.y5-nav .wrap{position:relative}
+.y5-nav .mini,.y5-nav.shadow .mini{display:block;position:absolute;left:24px;top:50%;width:112px;height:34px;margin:0;padding:0;opacity:0;pointer-events:none;transform:translateY(-140%);transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1);background:var(--red)}
+.y5-nav.shadow .mini{opacity:1;pointer-events:auto;transform:translateY(-50%)}
+@media (max-width:900px){.y5-nav .mini,.y5-nav.shadow .mini{display:block}.y5-nav .wrap,.y5-nav.shadow .wrap{justify-content:flex-end}}
+@media (max-width:480px){.y5-nav .mini,.y5-nav.shadow .mini{width:92px;height:30px}}
+@media (prefers-reduced-motion:reduce){.y5-nav .mini{transition:none}}
+.verse blockquote{max-width:46ch;font-size:clamp(22px,2.7vw,36px);line-height:1.22}
+/* reserve a fixed slot for the logo so the links never move when it drops in */
+@media (min-width:901px){.y5-nav .wrap{padding-left:160px;flex-wrap:nowrap}.y5-nav .links{display:flex;align-items:center;gap:inherit;white-space:nowrap}}
+@media (min-width:901px) and (max-width:1120px){.y5-nav .wrap{gap:18px}.y5-nav a{font-size:11.5px;letter-spacing:.1em}.y5-nav .sign{padding:10px 12px}}
