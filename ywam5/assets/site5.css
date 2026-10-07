@@ -768,3 +768,32 @@ h1 em,h2 em,h3 em,.vision em,.verse blockquote em{font-style:inherit;color:inher
 @media (max-width:700px){.vctl .vfull{width:42px}}
 .bb-hit{position:absolute;left:0;top:0;transform-origin:0 0;z-index:2}
 @media (max-width:860px){.wall-grid{grid-template-columns:1fr}}
+/* round 9: night comes on in the hero — warm windows, streetlights, hotel signs */
+.neon-hero .night{left:0;top:0;width:2500px;height:1424px;pointer-events:none}
+.neon-hero .night>*{position:absolute;opacity:0;animation:nightOn 2.4s var(--d,3s) ease forwards}
+@keyframes nightOn{to{opacity:1}}
+.neon-hero .win{border-radius:2px;background:radial-gradient(ellipse at 50% 60%,rgba(255,206,120,.95),rgba(255,170,70,.7) 60%,rgba(255,150,60,.35));mix-blend-mode:screen;filter:blur(1.5px);box-shadow:0 0 18px 4px rgba(255,180,90,.35)}
+.neon-hero .win.dim{background:radial-gradient(ellipse at 50% 60%,rgba(255,196,110,.7),rgba(255,160,70,.4) 70%,rgba(255,150,60,.15))}
+.neon-hero .night>.win{--peak:.78;animation:winOn 2.6s var(--d,3s) ease forwards}
+@keyframes winOn{to{opacity:var(--peak)}}
+.neon-hero .lamp{width:0;height:0}
+.neon-hero .lamp:before{content:"";position:absolute;left:-70px;top:-70px;width:140px;height:140px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,236,190,.95),rgba(255,214,150,.55) 30%,rgba(255,200,120,0));mix-blend-mode:screen}
+.neon-hero .lamp:after{content:"";position:absolute;left:-90px;top:0;width:180px;height:260px;background:radial-gradient(ellipse at 50% 0,rgba(255,216,150,.32),rgba(255,200,120,0) 70%);mix-blend-mode:screen}
+.neon-hero .lamp.sm:before{left:-40px;top:-40px;width:80px;height:80px}
+.neon-hero .lamp.sm:after{left:-55px;width:110px;height:150px}
+.neon-hero .lamp.globe:before{left:-34px;top:-34px;width:68px;height:68px}
+.neon-hero .lamp.globe:after{display:none}
+.neon-hero .night>.lamp{animation:nightOn 1.6s var(--d,3s) steps(1,end) forwards,lampOn 1.6s var(--d,3s) ease forwards}
+@keyframes lampOn{0%{opacity:0}20%{opacity:.6}30%{opacity:.15}55%{opacity:.9}100%{opacity:.85}}
+.neon-hero .sign{max-width:none;filter:drop-shadow(0 0 4px var(--g)) drop-shadow(0 0 16px var(--g));mix-blend-mode:normal}
+.neon-hero .night>.sign{animation:signOn 2.4s var(--d,3s) steps(1,end) forwards,signHum 7s calc(var(--d,3s) + 2.4s) ease-in-out infinite}
+@keyframes signOn{0%{opacity:0}10%{opacity:.7}14%{opacity:0}26%{opacity:.85}30%{opacity:.2}44%,100%{opacity:.82}}
+@keyframes signHum{0%,100%{opacity:.82}50%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){.neon-hero .night>*{animation:none;opacity:.75}}
+/* YouTube previews: oversize + crop so the title bar and logo stay out of frame; fade in only once playing */
+.wall .screen iframe,.bb-screen iframe{width:calc(max(100cqw,177.78cqh) * 1.22);height:calc(max(56.25cqw,100cqh) * 1.22)}
+.wall .screen iframe{opacity:0;transition:opacity 1.2s}
+.wall .screen iframe.on{opacity:1}
+.wall .play{transform:translate(-50%,-50%) scale(.92)}
+.wall .play:hover{transform:translate(-50%,-50%) scale(.97)}
+.wall .play{white-space:nowrap}

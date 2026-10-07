@@ -103,7 +103,8 @@
           fr.allow = 'autoplay; encrypted-media; picture-in-picture';
           fr.tabIndex = -1;
           fr.src = 'https://www.youtube-nocookie.com/embed/' + VIDEO + '?autoplay=1&mute=1&loop=1&playlist=' + VIDEO + '&controls=0&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1';
-          scr.appendChild(fr);
+          fr.src += '&enablejsapi=1&start=8';
+          scr.appendChild(fr); window.ywamReveal && ywamReveal(fr);
         }
       });
     }, { threshold: .25 }).observe(w);
@@ -204,6 +205,19 @@
   function sfNow() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })); }
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* YouTube previews: show the iframe only once the video is actually playing (hides the title card) */
+  window.ywamReveal = function (fr) {
+    var shown = false;
+    function show() { if (shown) return; shown = true; setTimeout(function () { fr.classList.add('on'); }, 900); }
+    fr.addEventListener('load', function () {
+      try { fr.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'yw' }), '*'); } catch (e) {}
+      setTimeout(show, 6000); // fallback if the player never reports its state
+    });
+    addEventListener('message', function (e) {
+      if (!/youtube/.test(e.origin) || e.source !== fr.contentWindow) return;
+      try { var d = JSON.parse(e.data); var st = d.info && d.info.playerState; if (d.event === 'onStateChange') st = d.info; if (st === 1) show(); } catch (er) {}
+    });
+  };
   /* perspective-mapped screens: [data-quad] inside [data-qframe] (natural image coords) */
   function homography(w, h, q) {
     var src = [[0, 0], [w, 0], [w, h], [0, h]], A = [], b = [];
@@ -234,7 +248,7 @@
   var film = $('#dtsfilm');
   if (film) {
     function cmd(f, a) { try { film.contentWindow.postMessage(JSON.stringify({ event: 'command', func: f, args: a || [] }), '*'); } catch (e) {} }
-    film.addEventListener('load', function () { setTimeout(function () { film.classList.add('on'); }, 1400); });
+    window.ywamReveal && ywamReveal(film);
     var snd = $('.vsound'), pl = $('.vplay'), full = $('.vfull'), hit = $('.bb-hit'), started = false;
     function setPaused(p) { pl.setAttribute('aria-pressed', p); pl.setAttribute('aria-label', p ? 'Play film' : 'Pause film'); }
     function playWithSound() {
