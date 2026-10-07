@@ -161,24 +161,38 @@
 (function () {
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   [].forEach.call(document.querySelectorAll('.reel'), function (reel) {
-    var hits = [].slice.call(reel.querySelectorAll('.hit')), sec = reel.parentNode, dots = sec.querySelector('.reel-dots'), cur = -1, timer, paused = false, visible = false;
-    hits.forEach(function (_, i) { var d = document.createElement('i'); dots.appendChild(d); });
+    var hits = [].slice.call(reel.querySelectorAll('.hit')), sec = reel.parentNode, dots = sec.querySelector('.reel-dots'), cur = 0, paused = false, visible = false, lock = 0, settle;
+    hits.forEach(function (_, i) { var d = document.createElement('i'); d.onclick = function () { go(i); }; dots.appendChild(d); });
     var ds = [].slice.call(dots.children);
-    function center() {
+    function mark(i) { cur = i; hits.forEach(function (h, k) { h.classList.toggle('on', k === i); }); ds.forEach(function (d, k) { d.classList.toggle('on', k === i); }); }
+    function nearest() {
       var r = reel.getBoundingClientRect(), mid = r.left + r.width / 2, best = 0, bd = 1e9;
       hits.forEach(function (h, i) { var b = h.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid); if (d < bd) { bd = d; best = i; } });
-      if (best !== cur) { cur = best; hits.forEach(function (h, i) { h.classList.toggle('on', i === cur); }); ds.forEach(function (d, i) { d.classList.toggle('on', i === cur); }); }
+      return best;
     }
-    function go(i) { i = (i + hits.length) % hits.length; var h = hits[i]; reel.scrollTo({ left: h.offsetLeft - (reel.clientWidth - h.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' }); }
-    reel.addEventListener('scroll', function () { window.requestAnimationFrame(center); }, { passive: true });
+    function offsetFor(h) { var r = reel.getBoundingClientRect(), b = h.getBoundingClientRect(); return reel.scrollLeft + (b.left + b.width / 2) - (r.left + r.width / 2); }
+    function go(i, instant) {
+      i = (i + hits.length) % hits.length; mark(i);
+      lock = Date.now() + 900;
+      reel.scrollTo({ left: offsetFor(hits[i]), behavior: (reduce || instant) ? 'auto' : 'smooth' });
+    }
+    reel.addEventListener('scroll', function () {
+      clearTimeout(settle);
+      settle = setTimeout(function () { lock = 0; var n = nearest(); if (n !== cur) mark(n); }, 140);
+      if (Date.now() > lock) { var n = nearest(); if (n !== cur) mark(n); }
+    }, { passive: true });
     hits.forEach(function (h, i) { h.addEventListener('click', function (e) { if (i !== cur) { e.preventDefault(); go(i); } }); });
     sec.querySelector('.reel-prev').onclick = function () { go(cur - 1); };
     sec.querySelector('.reel-next').onclick = function () { go(cur + 1); };
-    ['mouseenter', 'touchstart', 'focusin'].forEach(function (ev) { reel.addEventListener(ev, function () { paused = true; }, { passive: true }); });
+    reel.addEventListener('mouseenter', function () { paused = true; });
     reel.addEventListener('mouseleave', function () { paused = false; });
-    function tick() { if (!paused && visible && !reduce) go(cur + 1); }
+    reel.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+    reel.addEventListener('focusin', function () { paused = true; });
+    [sec.querySelector('.reel-prev'), sec.querySelector('.reel-next'), dots].forEach(function (b) { b.addEventListener('click', function () { paused = true; clearTimeout(b._r); b._r = setTimeout(function () { paused = false; }, 8000); }); });
+    function tick() { if (!paused && visible && !reduce && Date.now() > lock) go(cur + 1); }
     new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .4 }).observe(reel);
-    setTimeout(function () { go(0); center(); }, 60); center();
-    timer = setInterval(tick, 3800);
+    mark(0); setTimeout(function () { go(0, true); }, 60);
+    window.addEventListener('resize', function () { go(cur, true); });
+    setInterval(tick, 3800);
   });
 })();
