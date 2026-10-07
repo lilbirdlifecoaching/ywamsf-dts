@@ -49,7 +49,7 @@
     var W, H, ch, cw, rpx, xStart, xMid, xEnd, sky;
     function layout() {
       W = el.clientWidth; H = el.clientHeight;
-      ch = Math.min(H * 0.74, (W - 32) * IH / IW); cw = ch * IW / IH; rpx = R / IH * ch;
+      ch = Math.min(H * 0.74, (W - 32) * IH / IW, parseFloat(getComputedStyle(el).getPropertyValue('--cc-car-max')) || 1e9); cw = ch * IW / IH; rpx = R / IH * ch;
       car.style.height = ch + 'px'; car.style.width = cw + 'px';
       el.style.setProperty('--ch', ch + 'px');
       var flagEl = el.querySelector('.cc-flag'); if (flagEl) flagEl.style.maxWidth = Math.max(200, W - cw - ch * 0.1 - 48) + 'px';

@@ -733,3 +733,8 @@ h1 em,h2 em,h3 em,.vision em,.verse blockquote em{font-style:inherit;color:inher
 .hr{left:calc(6% + var(--x) * .88)}
 .board-note{font-size:13.5px;color:var(--muted);margin:12px 0 0}
 .board tr.go:focus-visible td{outline:2px solid #f2be73;outline-offset:-2px}
+/* round 7: full-width skyline behind the cable car */
+.cc-strip .cc{--cc-h:clamp(230px,23vw,380px);--cc-car-max:166px;--cc-sky-o:.5}
+.cc-strip .cc-sky{left:-2%;width:104%;top:0;bottom:13%;height:auto;background-size:cover;background-position:center bottom;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent),linear-gradient(0deg,#000 70%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);transform-origin:center bottom}
+@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(200px,30vw,290px);--cc-car-max:128px}}
+@media (max-width:640px){.cc-strip .cc{--cc-h:210px;--cc-car-max:120px}}
