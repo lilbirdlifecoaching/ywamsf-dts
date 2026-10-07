@@ -157,3 +157,28 @@
     p.addEventListener('input', upd); d.addEventListener('input', upd); upd();
   });
 })();
+/* greatest-hits reel */
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  [].forEach.call(document.querySelectorAll('.reel'), function (reel) {
+    var hits = [].slice.call(reel.querySelectorAll('.hit')), sec = reel.parentNode, dots = sec.querySelector('.reel-dots'), cur = -1, timer, paused = false, visible = false;
+    hits.forEach(function (_, i) { var d = document.createElement('i'); dots.appendChild(d); });
+    var ds = [].slice.call(dots.children);
+    function center() {
+      var r = reel.getBoundingClientRect(), mid = r.left + r.width / 2, best = 0, bd = 1e9;
+      hits.forEach(function (h, i) { var b = h.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid); if (d < bd) { bd = d; best = i; } });
+      if (best !== cur) { cur = best; hits.forEach(function (h, i) { h.classList.toggle('on', i === cur); }); ds.forEach(function (d, i) { d.classList.toggle('on', i === cur); }); }
+    }
+    function go(i) { i = (i + hits.length) % hits.length; var h = hits[i]; reel.scrollTo({ left: h.offsetLeft - (reel.clientWidth - h.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' }); }
+    reel.addEventListener('scroll', function () { window.requestAnimationFrame(center); }, { passive: true });
+    hits.forEach(function (h, i) { h.addEventListener('click', function (e) { if (i !== cur) { e.preventDefault(); go(i); } }); });
+    sec.querySelector('.reel-prev').onclick = function () { go(cur - 1); };
+    sec.querySelector('.reel-next').onclick = function () { go(cur + 1); };
+    ['mouseenter', 'touchstart', 'focusin'].forEach(function (ev) { reel.addEventListener(ev, function () { paused = true; }, { passive: true }); });
+    reel.addEventListener('mouseleave', function () { paused = false; });
+    function tick() { if (!paused && visible && !reduce) go(cur + 1); }
+    new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .4 }).observe(reel);
+    setTimeout(function () { go(0); center(); }, 60); center();
+    timer = setInterval(tick, 3800);
+  });
+})();
