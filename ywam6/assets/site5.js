@@ -204,23 +204,52 @@
   function sfNow() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })); }
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* DTS video header: sound + pause via the YouTube iframe API (postMessage) */
+  /* perspective-mapped screens: [data-quad] inside [data-qframe] (natural image coords) */
+  function homography(w, h, q) {
+    var src = [[0, 0], [w, 0], [w, h], [0, h]], A = [], b = [];
+    for (var i = 0; i < 4; i++) { var x = src[i][0], y = src[i][1], u = q[i][0], v = q[i][1];
+      A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u); A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v); }
+    for (var c = 0; c < 8; c++) { var piv = c; for (var r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[piv][c])) piv = r;
+      var t = A[c]; A[c] = A[piv]; A[piv] = t; t = b[c]; b[c] = b[piv]; b[piv] = t;
+      for (var r2 = 0; r2 < 8; r2++) if (r2 !== c) { var f = A[r2][c] / A[c][c]; for (var k = c; k < 8; k++) A[r2][k] -= f * A[c][k]; b[r2] -= f * b[c]; } }
+    var H = b.map(function (v, i) { return v / A[i][i]; });
+    return 'matrix3d(' + [H[0], H[3], 0, H[6], H[1], H[4], 0, H[7], 0, 0, 1, 0, H[2], H[5], 0, 1].map(function (v) { return +v.toFixed(9); }).join(',') + ')';
+  }
+  function placeQuads() {
+    $$('[data-qframe]').forEach(function (fr) {
+      var s = fr.clientWidth / +fr.dataset.w;
+      $$('[data-quad]', fr).forEach(function (el) {
+        var q = el.dataset.quad.split(' ').map(function (p) { var xy = p.split(','); return [+xy[0] * s, +xy[1] * s]; });
+        var wTop = Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), wBot = Math.hypot(q[2][0] - q[3][0], q[2][1] - q[3][1]);
+        var hL = Math.hypot(q[3][0] - q[0][0], q[3][1] - q[0][1]), hR = Math.hypot(q[2][0] - q[1][0], q[2][1] - q[1][1]);
+        var W = 1000, Hh = Math.round(W * (hL + hR) / (wTop + wBot));
+        el.style.width = W + 'px'; el.style.height = Hh + 'px'; el.style.transform = homography(W, Hh, q); el.classList.add('placed');
+      });
+    });
+  }
+  placeQuads(); addEventListener('resize', placeQuads); addEventListener('load', placeQuads);
+  if (window.ResizeObserver) $$('[data-qframe]').forEach(function (fr) { new ResizeObserver(placeQuads).observe(fr); });
+
+  /* DTS billboard film: plays muted from 0:05; "Play with sound" restarts from the beginning */
   var film = $('#dtsfilm');
   if (film) {
     function cmd(f, a) { try { film.contentWindow.postMessage(JSON.stringify({ event: 'command', func: f, args: a || [] }), '*'); } catch (e) {} }
     film.addEventListener('load', function () { setTimeout(function () { film.classList.add('on'); }, 1400); });
-    var snd = $('.vsound'), pl = $('.vplay');
+    var snd = $('.vsound'), pl = $('.vplay'), full = $('.vfull'), hit = $('.bb-hit'), started = false;
+    function setPaused(p) { pl.setAttribute('aria-pressed', p); pl.setAttribute('aria-label', p ? 'Play film' : 'Pause film'); }
+    function playWithSound() {
+      if (!started) { cmd('seekTo', [0, true]); started = true; }
+      cmd('unMute'); cmd('setVolume', [85]); cmd('playVideo'); setPaused(false);
+      snd.setAttribute('aria-pressed', 'true'); $('.lbl', snd).textContent = 'Mute';
+    }
     snd.addEventListener('click', function () {
-      var on = snd.getAttribute('aria-pressed') !== 'true';
-      snd.setAttribute('aria-pressed', on); $('.lbl', snd).textContent = on ? 'Mute' : 'Sound on';
-      if (on) { cmd('unMute'); cmd('setVolume', [80]); cmd('playVideo'); pl.setAttribute('aria-pressed', 'false'); pl.setAttribute('aria-label', 'Pause film'); } else cmd('mute');
+      if (snd.getAttribute('aria-pressed') === 'true') { cmd('mute'); snd.setAttribute('aria-pressed', 'false'); $('.lbl', snd).textContent = 'Sound on'; }
+      else playWithSound();
     });
-    pl.addEventListener('click', function () {
-      var paused = pl.getAttribute('aria-pressed') !== 'true';
-      pl.setAttribute('aria-pressed', paused); pl.setAttribute('aria-label', paused ? 'Play film' : 'Pause film');
-      cmd(paused ? 'pauseVideo' : 'playVideo');
-    });
-    if (reduce) { pl.click(); }
+    if (hit) hit.addEventListener('click', playWithSound);
+    pl.addEventListener('click', function () { var p = pl.getAttribute('aria-pressed') !== 'true'; setPaused(p); cmd(p ? 'pauseVideo' : 'playVideo'); });
+    if (full) full.addEventListener('click', function () { playWithSound(); var f = film.requestFullscreen || film.webkitRequestFullscreen; if (f) f.call(film); });
+    if (reduce) { cmd('pauseVideo'); setPaused(true); }
   }
 
   /* DTS vow cards: turn over */
