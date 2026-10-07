@@ -381,3 +381,11 @@ section{position:relative}
 .y5-foot .concept{border-top:1px solid rgba(255,255,255,.18);padding-top:12px;margin-top:4px;opacity:.6}
 .cc-strip .cc-flag{line-height:1.2;text-wrap:balance}
 .cc-strip .cc-flag b{white-space:nowrap}
+
+/* round 3 */
+.lit.lines{max-width:none}
+.lit.lines span{display:block}
+@media (min-width:641px){.lit.lines span{white-space:nowrap}}
+.verse blockquote{max-width:30ch;font-size:clamp(28px,3.7vw,48px);line-height:1.15}
+.verse blockquote{text-wrap:balance}
+@media (max-width:640px){.lit.lines{font-size:7.2vw}}
