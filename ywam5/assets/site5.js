@@ -126,7 +126,7 @@
     var today = DAYS[sfNow().getDay()];
     $$('tr[data-days]', bd).forEach(function (tr) {
       var st = $('.status', tr); if (tr.dataset.days.split(' ').indexOf(today) > -1) { st.textContent = 'Today'; st.classList.add('today'); }
-      if (tr.dataset.href) { tr.classList.add('go'); tr.addEventListener('click', function () { location.href = tr.dataset.href; }); }
+      if (tr.dataset.href) { tr.classList.add('go'); tr.tabIndex = 0; var goRow = function () { if (tr.dataset.newtab) window.open(tr.dataset.href, '_blank', 'noopener'); else location.href = tr.dataset.href; }; tr.addEventListener('click', goRow); tr.addEventListener('keydown', function (e) { if (e.key === 'Enter') goRow(); }); }
     });
     var flaps = $$('.flap', bd);
     flaps.forEach(function (f) { var t = f.textContent; f.dataset.t = t; f.innerHTML = t.split('').map(function (c) { return '<i>' + (c === ' ' ? '&nbsp;' : c) + '</i>'; }).join(''); });
@@ -195,4 +195,123 @@
     window.addEventListener('resize', function () { go(cur, true); });
     setInterval(tick, 3800);
   });
+})();
+
+/* ================= round 6 ================= */
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
+  function sfNow() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })); }
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* DTS video header: sound + pause via the YouTube iframe API (postMessage) */
+  var film = $('#dtsfilm');
+  if (film) {
+    function cmd(f, a) { try { film.contentWindow.postMessage(JSON.stringify({ event: 'command', func: f, args: a || [] }), '*'); } catch (e) {} }
+    film.addEventListener('load', function () { setTimeout(function () { film.classList.add('on'); }, 1400); });
+    var snd = $('.vsound'), pl = $('.vplay');
+    snd.addEventListener('click', function () {
+      var on = snd.getAttribute('aria-pressed') !== 'true';
+      snd.setAttribute('aria-pressed', on); $('.lbl', snd).textContent = on ? 'Mute' : 'Sound on';
+      if (on) { cmd('unMute'); cmd('setVolume', [80]); cmd('playVideo'); pl.setAttribute('aria-pressed', 'false'); pl.setAttribute('aria-label', 'Pause film'); } else cmd('mute');
+    });
+    pl.addEventListener('click', function () {
+      var paused = pl.getAttribute('aria-pressed') !== 'true';
+      pl.setAttribute('aria-pressed', paused); pl.setAttribute('aria-label', paused ? 'Play film' : 'Pause film');
+      cmd(paused ? 'pauseVideo' : 'playVideo');
+    });
+    if (reduce) { pl.click(); }
+  }
+
+  /* DTS vow cards: turn over */
+  $$('.vow5').forEach(function (v) { v.addEventListener('click', function () { v.setAttribute('aria-pressed', v.getAttribute('aria-pressed') !== 'true'); }); });
+
+  /* DTS day bar */
+  var sky = $('.sky');
+  if (sky && window.YWAM_DAY) {
+    var hrs = $$('.hr', sky), card = $('.hour5'), cur = 0, auto;
+    function show(i) {
+      cur = i; var h = YWAM_DAY[i];
+      hrs.forEach(function (b, j) { b.classList.toggle('on', i === j); b.setAttribute('aria-pressed', i === j); });
+      sky.style.setProperty('--sx', 'calc(6% + ' + hrs[i].style.getPropertyValue('--x') + ' * .88)');
+      sky.classList.toggle('night', i >= hrs.length - 1);
+      $('[data-h="t"]', card).textContent = h.t + ' · ' + h.s; $('[data-h="n"]', card).textContent = h.n; $('[data-h="d"]', card).textContent = h.d;
+      if (card.animate && !reduce) card.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'ease-out' });
+    }
+    hrs.forEach(function (b, i) { b.addEventListener('click', function () { show(i); clearInterval(auto); auto = null; }); });
+    show(0);
+    if (!reduce && window.IntersectionObserver) new IntersectionObserver(function (es) { es.forEach(function (e) { clearInterval(auto); auto = null; if (e.isIntersecting) auto = setInterval(function () { show((cur + 1) % hrs.length); }, 4800); }); }, { threshold: .5 }).observe(sky);
+  }
+
+  /* DTS readiness check-in (survey.js) */
+  var modal = $('#modal');
+  if (modal) {
+    var mounted = false;
+    function openS() { if (!mounted && window.mountDtsSurvey) { mountDtsSurvey($('#survey')); mounted = true; } modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; $('.modal-x', modal).focus(); }
+    function closeS() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+    $$('[data-survey]').forEach(function (b) { b.addEventListener('click', openS); });
+    $('.modal-x', modal).addEventListener('click', closeS);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeS(); });
+    addEventListener('keydown', function (e) { if (e.key === 'Escape') closeS(); });
+  }
+
+  /* Volunteer: carousel center card drives the shift panel */
+  var vstage = $('[data-vol]');
+  if (vstage && window.YWAM_IG_POSTS) {
+    var P = YWAM_IG_POSTS.slice(0, window.YWAM_VOL_N || YWAM_IG_POSTS.length), panel = $('#shift'), dots = $('.shift-dots');
+    P.forEach(function (p, i) { var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.title; b.addEventListener('click', function () { if (!vstage._go) return; var T = YWAM_IG_POSTS.length, c = vstage._center || 0, best = i, bd = 1e9; for (var k = i; k < T; k += P.length) { var dd = Math.abs(k - c); dd = Math.min(dd, T - dd); if (dd < bd) { bd = dd; best = k; } } vstage._go(best); }); dots.appendChild(b); });
+    function fill(i) {
+      i = i % P.length; var p = P[i]; if (!p) return;
+      $('[data-f="when"]', panel).textContent = p.when; $('[data-f="time"]', panel).textContent = p.time || '';
+      $('[data-f="title"]', panel).textContent = p.title; $('[data-f="desc"]', panel).textContent = p.desc;
+      $('[data-f="meta"]', panel).innerHTML = (p.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
+      $('[data-f="signup"]', panel).href = 'mailto:volunteer@ywamsanfrancisco.org?subject=' + encodeURIComponent(p.subject || p.title);
+      [].forEach.call(dots.children, function (b, j) { b.setAttribute('aria-selected', i === j); });
+    }
+    vstage.addEventListener('igcenter', function (e) { fill(e.detail.index); });
+    $$('tr[data-shift]').forEach(function (tr) { tr.addEventListener('click', function () { var b = dots.children[+tr.dataset.shift]; if (b) b.click(); }); });
+    fill(0);
+    vstage.addEventListener('click', function (e) {
+      var c = e.target.closest('.ig-card.is-center'); if (!c) return;
+      e.preventDefault(); panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      panel.classList.add('pulse'); setTimeout(function () { panel.classList.remove('pulse'); }, 900);
+    });
+    panel.addEventListener('mouseenter', function () { vstage._pause && vstage._pause(true); });
+    panel.addEventListener('mouseleave', function () { vstage._pause && vstage._pause(false); });
+  }
+
+  /* Ellis Room: live "now / next" in San Francisco time */
+  var week = $('.week');
+  if (week) {
+    var nn = $('.nownext'), DN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    function nth(d) { return Math.ceil(d.getDate() / 7); }
+    function runsOn(ev, date) { return ev.dataset.rule !== 'nth24' || [2, 4].indexOf(nth(date)) > -1; }
+    function fmt(m) { var h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + (mm ? ':' + (mm < 10 ? '0' : '') + mm : '') + ' ' + ap; }
+    function tick() {
+      var now = sfNow(), d = now.getDay(), m = now.getHours() * 60 + now.getMinutes(), live = [], next = null;
+      $$('.ev', week).forEach(function (e) { e.classList.remove('now', 'past'); });
+      $$('.day', week).forEach(function (col) { col.classList.toggle('today', +col.dataset.d === d); });
+      var todayCol = $('.day[data-d="' + d + '"]', week);
+      if (todayCol) $$('.ev[data-s]', todayCol).forEach(function (e) {
+        if (!runsOn(e, now)) return; var s = +e.dataset.s, en = +e.dataset.e;
+        if (m >= s && m < en) { e.classList.add('now'); live.push(e.dataset.t); } else if (m >= en) e.classList.add('past');
+      });
+      for (var k = 0; k < 8 && !next; k++) {
+        var dd = (d + k) % 7, date = new Date(now.getTime() + k * 864e5), col = $('.day[data-d="' + dd + '"]', week);
+        if (!col) continue;
+        $$('.ev[data-s]', col).forEach(function (e) { var s = +e.dataset.s; if (!runsOn(e, date)) return; if ((k > 0 || s > m) && (!next || s < next.s)) next = { s: s, t: e.dataset.t, k: k, dd: dd }; });
+      }
+      var html = '';
+      if (live.length) html += '<span><span class="tag">Happening now</span><b>' + live.join(' · ') + '</b></span>';
+      if (next) html += '<span><span class="tag next">Up next</span><b>' + next.t + '</b> · ' + (next.k === 0 ? 'today' : next.k === 1 ? 'tomorrow' : DN[next.dd]) + ' at ' + fmt(next.s) + '</span>';
+      nn.innerHTML = html;
+    }
+    tick(); setInterval(tick, 60000);
+    var tc = $('.day.today', week), wrap = $('.week-wrap');
+    if (tc && wrap && wrap.scrollWidth > wrap.clientWidth) wrap.scrollLeft = tc.offsetLeft - 24;
+  }
+
+  /* Ellis Room: voices track */
+  var vt = $('.vtrack');
+  if (vt) $$('.varrows button').forEach(function (b) { b.addEventListener('click', function () { vt.scrollBy({ left: +b.dataset.dir * Math.min(400, vt.clientWidth * .85), behavior: reduce ? 'auto' : 'smooth' }); }); });
 })();
