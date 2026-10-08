@@ -176,7 +176,7 @@
     if (showerAt == null) showerAt = .45;
     // time runs slower through dawn, dusk and the shower, faster through the dead of night
     for (var i = 1; i <= steps; i++) { var pi = i / steps, hh = start + span * pi; var rr = refHour(hh); cum.push(cum[i - 1] + (nightish(hh) ? .6 : 1) + 2.4 * bell(rr, 19.6, .75) + 3.2 * bell(pi, showerAt, .055)); }
-    var total = cum[steps], DUR = 24000, t0 = performance.now();
+    var total = cum[steps], DUR = 50000, t0 = performance.now();
     function frameAt(now) {
       var u = Math.min(1, (now - t0) / DUR), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
       var target = e * total, k = 0; while (k < steps && cum[k + 1] < target) k++;
