@@ -1054,3 +1054,18 @@ html{scroll-padding-top:120px}
 @media (hover:none){.icard.in .ic svg.live .l,.icard.in .ic svg.live .a.s{stroke-dashoffset:0}.icard.in .ic svg.live :is(.a:not(.s),.win,.dot){opacity:1}.icard.in .ic svg.ghost *{opacity:0}}
 @media (prefers-reduced-motion:reduce){.icard .ic svg.live *{transition:none!important;stroke-dashoffset:0!important;opacity:1!important}}
 .vol-top{padding-top:clamp(8px,1.5vw,20px)}
+/* round 29: stained glass lights up on hover */
+.vf .art.glass{position:relative}
+.vf .art.glass img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vf .art.glass .lead{filter:none}
+.vf .art.glass .lit{clip-path:circle(0% at 50% -8%);-webkit-clip-path:circle(0% at 50% -8%);transition:clip-path 1.3s cubic-bezier(.55,.1,.25,1),-webkit-clip-path 1.3s cubic-bezier(.55,.1,.25,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.vf .art.glass .glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(255,236,190,.55),rgba(255,220,160,0) 70%);mix-blend-mode:screen;opacity:0;transition:opacity 1s .35s;pointer-events:none}
+.vf .art.glass .beam{position:absolute;inset:-20%;background:linear-gradient(115deg,transparent 40%,rgba(255,250,235,.55) 50%,transparent 60%);transform:translateX(-80%);opacity:0;pointer-events:none;mix-blend-mode:screen}
+.vow5:hover .vf .art.glass .lit,.vow5:focus-visible .vf .art.glass .lit{clip-path:circle(150% at 50% -8%);-webkit-clip-path:circle(150% at 50% -8%)}
+.vow5:hover .vf .art.glass .glow,.vow5:focus-visible .vf .art.glass .glow{opacity:1}
+.vow5:hover .vf .art.glass .beam,.vow5:focus-visible .vf .art.glass .beam{animation:beam 1.6s .5s ease-out forwards}
+@keyframes beam{0%{transform:translateX(-80%);opacity:0}20%{opacity:1}100%{transform:translateX(80%);opacity:0}}
+.vow5:hover .vf .art img{transform:none}
+.vow5:hover .vf .art.glass .lit{transform:scale(1.03)}
+@media (hover:none){.vow5.in .vf .art.glass .lit{clip-path:circle(150% at 50% -8%);-webkit-clip-path:circle(150% at 50% -8%);transition-delay:.3s}.vow5.in .vf .art.glass .glow{opacity:1}}
+@media (prefers-reduced-motion:reduce){.vf .art.glass .lit{clip-path:none!important;-webkit-clip-path:none!important;transition:none}.vf .art.glass .beam{display:none}}
