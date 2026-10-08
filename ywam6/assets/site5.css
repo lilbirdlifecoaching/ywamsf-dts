@@ -950,3 +950,4 @@ img{max-width:100%}
 @supports not (aspect-ratio:1/1){.bb-frame{padding-top:53.1%}}
 .bb-frame{aspect-ratio:2000/1162}
 @supports not (aspect-ratio:1/1){.bb-frame{padding-top:58.1%}}
+.monastery .mon-sub:before{display:none}
