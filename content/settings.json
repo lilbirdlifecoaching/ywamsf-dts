@@ -1,0 +1,27 @@
+{
+  "phone": "415-885-6543",
+  "email": "info@ywamsanfrancisco.org",
+  "volunteer_email": "volunteer@ywamsanfrancisco.org",
+  "outreach_email": "outreach@ywamsanfrancisco.org",
+  "dts_email": "dts@ywamsanfrancisco.org",
+  "address": "357 Ellis Street",
+  "city": "San Francisco, CA 94102",
+  "dts_apply_url": "https://www.tfaforms.com/4827504",
+  "team_booking_url": "https://www.tfaforms.com/4652564",
+  "give_online_url": "https://www.ywamsanfrancisco.org/give",
+  "ma_price_per_day": 100,
+  "hours": [
+    {
+      "label": "Ellis Room",
+      "text": "Mon · Tue · Wed · Fri, 10:30 am–4:30 pm"
+    },
+    {
+      "label": "Food pantry",
+      "text": "Thursdays, 1–4 pm"
+    },
+    {
+      "label": "Pop-Up Church",
+      "text": "Sundays, 7:30–9 am"
+    }
+  ]
+}

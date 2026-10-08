@@ -1113,3 +1113,10 @@ html{scroll-padding-top:120px}
 .crew .av{width:52px;height:52px;font-size:14px}
 .crew img.av{object-fit:cover;object-position:50% 25%;background:var(--fog)}
 @media (max-width:520px){.person .pp{aspect-ratio:1/1}}
+/* round 35: announcement bar + board member without photo */
+.ann{background:var(--red);color:#fff;font:600 14px/1.45 var(--sans);text-align:center;padding:9px 0}
+.ann .wrap{display:block}
+.ann a{color:#fff;font-weight:800;text-decoration:underline;text-underline-offset:3px;margin-left:6px;white-space:nowrap}
+.bm-av{display:flex;align-items:center;justify-content:center;width:150px;height:180px;border-radius:6px;background:var(--slate);color:#fff;font:500 46px var(--display)}
+@media (max-width:520px){.bm-av{width:100%;height:200px}}
+.countdown[hidden]{display:none!important}

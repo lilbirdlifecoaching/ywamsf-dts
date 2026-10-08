@@ -1,0 +1,52 @@
+{
+  "ministries": [
+    {
+      "title": "Food Pantry",
+      "when": "Thursdays",
+      "description": "Fresh groceries for 300+ neighbors every week, with the SF-Marin Food Bank.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1523470468503-LAPWPKY6R826VXHL68K4/15032668_1220674414661086_4026214942382535655_n.jpg"
+    },
+    {
+      "title": "The Ellis Room",
+      "when": "Mon · Tue · Wed · Fri",
+      "description": "A safe place to land: coffee, conversation, donations and community.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1771366341447-7MIV5OVDBE35181IZ7D8/image-asset.jpeg"
+    },
+    {
+      "title": "Hot Chocolate",
+      "when": "Friday nights",
+      "description": "A warm cup on a cold corner, and a conversation that follows.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/5ba0f660-bbf7-4144-b64a-585367f72114/BLOG1.jpg"
+    },
+    {
+      "title": "Pop-Up Church",
+      "when": "Sunday mornings",
+      "description": "Worship, a simple message and prayer, right on the sidewalk.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/b35aba7c-2f00-4ad9-a1b9-1abfb7c52e46/Mark-preaching.jpg"
+    },
+    {
+      "title": "Tenderloin Connect",
+      "when": "2nd & 4th Sundays",
+      "description": "Visiting neighbors in SRO buildings who are facing deep isolation.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1540831552303-HBK9EJDA16MALV1V8TXK/MKMR8685+%283%29.jpg"
+    },
+    {
+      "title": "Showers & Haircuts",
+      "when": "Mon · Tue · Wed",
+      "description": "Hot showers, hygiene supplies and free haircuts, no questions asked.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1575500058941-V8ANWXNMA9KBPJ0BNMBK/IMG_4598.jpeg"
+    },
+    {
+      "title": "Bible Study",
+      "when": "Mornings",
+      "description": "Space to explore faith together, housed or unhoused.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/4ddbffe2-014d-4194-a26e-e5fba257edad/Community%2520Lunch_VSCO.jpg"
+    },
+    {
+      "title": "Community Meals",
+      "when": "Holidays",
+      "description": "One long table. 209 neighbors at Christmas lunch.",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1766710261599-3RJVQTYVZHFWL6GK280D/image-asset.jpeg"
+    }
+  ]
+}

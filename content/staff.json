@@ -1,0 +1,81 @@
+{
+  "directors": [
+    {
+      "name": "Steve Binnquist",
+      "role": "YWAM San Francisco Director",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/79fc220c-550f-4db4-b4c4-ee1e8b5058c1/steve.jpg"
+    },
+    {
+      "name": "Kent McCormick",
+      "role": "Director of Neighborhood Engagement",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/236fb4a1-a620-4879-b8c6-327aed4c63c8/Kent+McKormick.jpg"
+    },
+    {
+      "name": "Saji Thomas",
+      "role": "Director of Training and Outreach",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/e45a61e4-bff2-48a9-b1d8-e35633129372/saji.jpg"
+    },
+    {
+      "name": "Emily Bridge",
+      "role": "Director of Operations",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/e71445e0-7593-4986-b068-690b65d7ab94/DSC_4496.jpg"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Neighborhood Engagement",
+      "members": [
+        {
+          "name": "Udom Setthaya",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/6e7cc3c5-1b21-4502-89a2-c1afe0d29436/udom.jpg"
+        },
+        {
+          "name": "Ihab Sourial",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/3b123139-883e-44d3-b69a-ee9ccec104d9/Ihab+Sourial.jpg"
+        },
+        {
+          "name": "Kyle Hersma",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/2515169b-def0-429a-bad9-1b4e71571dcb/DSC_4436.jpg"
+        },
+        {
+          "name": "Liva Rakotomalala",
+          "photo": ""
+        },
+        {
+          "name": "Barnabas Nnanna",
+          "photo": ""
+        },
+        {
+          "name": "Jan Kronester",
+          "photo": ""
+        },
+        {
+          "name": "Shivani Garcia",
+          "photo": ""
+        }
+      ]
+    },
+    {
+      "name": "Operations",
+      "members": [
+        {
+          "name": "Jenna Salamy",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/ff9558cd-d9b3-48bc-af29-48f7d2a44e76/jenna.jpg"
+        },
+        {
+          "name": "Samuel Karuppiah",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/73c4e746-545a-4164-9d7b-5ebcbdb66628/DSC_4491.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Training and Outreach",
+      "members": [
+        {
+          "name": "Jackie Karuppiah",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/50933dc0-87c0-4e71-9da0-9d173d9d8dc7/jackie.jpg"
+        }
+      ]
+    }
+  ]
+}

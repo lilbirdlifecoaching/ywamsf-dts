@@ -1,0 +1,105 @@
+{
+  "shifts": [
+    {
+      "title": "Food Pantry",
+      "when": "Thursdays",
+      "time": "1–4 pm",
+      "days": [
+        "THU"
+      ],
+      "every": "every",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1523470468503-LAPWPKY6R826VXHL68K4/15032668_1220674414661086_4026214942382535655_n.jpg",
+      "description": "Tangibly share the love of God by providing fresh groceries to low-income households in the Tenderloin. Volunteers set up the room, run food stations, help with language interpretation and clean up.",
+      "tags": [
+        "Thursdays",
+        "1:00–4:00 pm",
+        "Teams welcome"
+      ],
+      "colour": "#C99634"
+    },
+    {
+      "title": "The Ellis Room",
+      "when": "Mon, Tue, Wed & Fri",
+      "time": "10:30–4:30",
+      "days": [
+        "MON",
+        "TUE",
+        "WED",
+        "FRI"
+      ],
+      "every": "every",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1771366341447-7MIV5OVDBE35181IZ7D8/image-asset.jpeg",
+      "description": "Create space for neighbors to access resources and community. Sit and talk with neighbors, serve coffee, facilitate showers and manage donations.",
+      "tags": [
+        "Mon · Tue · Wed · Fri",
+        "10:30 am–4:30 pm"
+      ],
+      "colour": "#465361"
+    },
+    {
+      "title": "Hot Chocolate Ministry",
+      "when": "Fridays",
+      "time": "6:45–9 pm",
+      "days": [
+        "FRI"
+      ],
+      "every": "every",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/5ba0f660-bbf7-4144-b64a-585367f72114/BLOG1.jpg",
+      "description": "Head out onto the streets of the Tenderloin with hot chocolate. Connect with, pray for and share the Gospel with our neighbors.",
+      "tags": [
+        "Fridays",
+        "6:45–9:00 pm",
+        "Evening outreach"
+      ],
+      "colour": "#8A5A3C"
+    },
+    {
+      "title": "Pop-Up Church",
+      "when": "Sundays",
+      "time": "7:20–9 am",
+      "days": [
+        "SUN"
+      ],
+      "every": "every",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/b35aba7c-2f00-4ad9-a1b9-1abfb7c52e46/Mark-preaching.jpg",
+      "description": "Bring church to the streets. During shelter-in-place many neighbors had no church they could reach, so now church comes to them, every Sunday morning.",
+      "tags": [
+        "Sundays",
+        "7:20–9:00 am",
+        "See sign-up for dates"
+      ],
+      "colour": "#9A1E14"
+    },
+    {
+      "title": "Tenderloin Connect",
+      "when": "2nd & 4th Sundays",
+      "time": "2–5 pm",
+      "days": [
+        "SUN"
+      ],
+      "every": "2nd & 4th",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1540831552303-HBK9EJDA16MALV1V8TXK/MKMR8685+%283%29.jpg",
+      "description": "A volunteer-led outreach into SRO buildings. Build consistent, intentional relationships with residents facing deep isolation and relational poverty.",
+      "tags": [
+        "2nd & 4th Sundays",
+        "2:00–5:00 pm",
+        "18+"
+      ],
+      "colour": "#2E7D6B"
+    },
+    {
+      "title": "Maintenance",
+      "when": "All year",
+      "time": "one day or more",
+      "days": [],
+      "every": "every",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1540598603373-VXTW5XDY0CFKQFB8RVMQ/YWAM_FoodPantry_20180809_758_original.jpeg",
+      "description": "Help clean, repair and improve our 100-year-old ministry center. One-day and multi-day projects all year round.",
+      "tags": [
+        "Anytime",
+        "Skills welcome"
+      ],
+      "colour": "#95A7AD"
+    }
+  ]
+}

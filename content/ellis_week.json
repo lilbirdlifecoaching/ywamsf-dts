@@ -1,0 +1,193 @@
+{
+  "entries": [
+    {
+      "day": "Mon",
+      "category": "room",
+      "title": "Ellis Room",
+      "label": "10:30–4:30",
+      "start": "10:30",
+      "end": "16:30",
+      "every": "every"
+    },
+    {
+      "day": "Mon",
+      "category": "word",
+      "title": "Bible Study",
+      "label": "10:30 am",
+      "start": "10:30",
+      "end": "11:30",
+      "every": "every"
+    },
+    {
+      "day": "Mon",
+      "category": "care",
+      "title": "Showers & hygiene",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Mon",
+      "category": "care",
+      "title": "Mentorship & advocacy",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Tue",
+      "category": "room",
+      "title": "Ellis Room",
+      "label": "10:30–4:30",
+      "start": "10:30",
+      "end": "16:30",
+      "every": "every"
+    },
+    {
+      "day": "Tue",
+      "category": "word",
+      "title": "Bible Study",
+      "label": "10:30 am",
+      "start": "10:30",
+      "end": "11:30",
+      "every": "every"
+    },
+    {
+      "day": "Tue",
+      "category": "care",
+      "title": "Free haircuts",
+      "label": "11:30–1:30",
+      "start": "11:30",
+      "end": "13:30",
+      "every": "every"
+    },
+    {
+      "day": "Tue",
+      "category": "care",
+      "title": "Showers & hygiene",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Tue",
+      "category": "care",
+      "title": "Mentorship & advocacy",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Wed",
+      "category": "room",
+      "title": "Ellis Room",
+      "label": "10:30–4:30",
+      "start": "10:30",
+      "end": "16:30",
+      "every": "every"
+    },
+    {
+      "day": "Wed",
+      "category": "word",
+      "title": "Bible Study",
+      "label": "10:30 am",
+      "start": "10:30",
+      "end": "11:30",
+      "every": "every"
+    },
+    {
+      "day": "Wed",
+      "category": "care",
+      "title": "Showers & hygiene",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Wed",
+      "category": "care",
+      "title": "Mentorship & advocacy",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Thu",
+      "category": "food",
+      "title": "Food Pantry",
+      "label": "1–4 pm",
+      "start": "13:00",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Thu",
+      "category": "food",
+      "title": "Pantry sign-ups",
+      "label": "3:30 pm",
+      "start": "15:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Fri",
+      "category": "room",
+      "title": "Ellis Room",
+      "label": "10:30–4:30",
+      "start": "10:30",
+      "end": "16:30",
+      "every": "every"
+    },
+    {
+      "day": "Fri",
+      "category": "care",
+      "title": "Mentorship & advocacy",
+      "label": "1:30–4 pm",
+      "start": "13:30",
+      "end": "16:00",
+      "every": "every"
+    },
+    {
+      "day": "Fri",
+      "category": "food",
+      "title": "Cookout",
+      "label": "Friday evening",
+      "start": "17:00",
+      "end": "18:45",
+      "every": "every"
+    },
+    {
+      "day": "Fri",
+      "category": "out",
+      "title": "Hot Chocolate",
+      "label": "6:45–9 pm",
+      "start": "18:45",
+      "end": "21:00",
+      "every": "every"
+    },
+    {
+      "day": "Sun",
+      "category": "word",
+      "title": "Pop-Up Church",
+      "label": "7:30–9:00 am",
+      "start": "07:30",
+      "end": "09:00",
+      "every": "every"
+    },
+    {
+      "day": "Sun",
+      "category": "out",
+      "title": "Tenderloin Connect",
+      "label": "2–5 pm · 2nd & 4th",
+      "start": "14:00",
+      "end": "17:00",
+      "every": "2nd & 4th"
+    }
+  ]
+}

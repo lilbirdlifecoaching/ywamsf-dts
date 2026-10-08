@@ -1,0 +1,25 @@
+{
+  "events": [
+    {
+      "title": "Community Game Night",
+      "when": "Mon",
+      "when_detail": "5–9 pm",
+      "description": "Bring your friends, a game to share and some healthy competition, or borrow one of ours. All ages welcome, every Monday evening.",
+      "date": ""
+    },
+    {
+      "title": "Lunch & Learn",
+      "when": "Wed",
+      "when_detail": "Midday",
+      "description": "A short update on ministry in the Tenderloin from our director, followed by a time of prayer together. Dates are announced on our events calendar.",
+      "date": ""
+    },
+    {
+      "title": "Community events",
+      "when": "Year",
+      "when_detail": "round",
+      "description": "Christmas lunch, special community nights and celebrations through the year.",
+      "date": ""
+    }
+  ]
+}

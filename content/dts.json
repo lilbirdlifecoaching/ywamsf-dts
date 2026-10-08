@@ -1,0 +1,14 @@
+{
+  "schools": [
+    {
+      "name": "Discipleship Training School",
+      "start": "2027-01-18",
+      "end": "2027-06-04",
+      "start_time": "09:00",
+      "cost": 8000,
+      "status": "Now boarding",
+      "apply_url": ""
+    }
+  ],
+  "cost_note": "Cost may vary for international applicants; please ask about alternative pricing."
+}

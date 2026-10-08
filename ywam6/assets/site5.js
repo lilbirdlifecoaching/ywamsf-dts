@@ -163,7 +163,7 @@
   /* team cost calculator */
   $$('.calc').forEach(function (c) {
     var p = $('#calcPeople', c), d = $('#calcDays', c), op = $('#outPeople', c), od = $('#outDays', c), tot = $('#calcTotal', c), per = $('#calcPer', c);
-    function upd() { var n = +p.value, k = +d.value; op.textContent = n; od.textContent = k; tot.textContent = '$' + (n * k * 100).toLocaleString(); per.textContent = n + ' people × ' + k + ' day' + (k > 1 ? 's' : '') + ' × $100 · food, housing & ministry supplies included'; }
+    function upd() { var n = +p.value, k = +d.value; op.textContent = n; od.textContent = k; var r = +(c.getAttribute('data-rate') || 100); tot.textContent = '$' + (n * k * r).toLocaleString(); per.textContent = n + ' people × ' + k + ' day' + (k > 1 ? 's' : '') + ' × $' + r.toLocaleString() + ' · food, housing & ministry supplies included'; }
     p.addEventListener('input', upd); d.addEventListener('input', upd); upd();
   });
 })();
@@ -329,8 +329,8 @@
       i = i % P.length; var p = P[i]; if (!p) return;
       $('[data-f="when"]', panel).textContent = p.when; $('[data-f="time"]', panel).textContent = p.time || '';
       $('[data-f="title"]', panel).textContent = p.title; $('[data-f="desc"]', panel).textContent = p.desc;
-      $('[data-f="meta"]', panel).innerHTML = (p.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
-      $('[data-f="signup"]', panel).href = 'mailto:volunteer@ywamsanfrancisco.org?subject=' + encodeURIComponent(p.subject || p.title);
+      var mt = $('[data-f="meta"]', panel); mt.textContent = ''; (p.meta || []).forEach(function (m) { var sp = document.createElement('span'); sp.textContent = m; mt.appendChild(sp); });
+      $('[data-f="signup"]', panel).href = 'mailto:' + (p.email || 'volunteer@ywamsanfrancisco.org') + '?subject=' + encodeURIComponent(p.subject || p.title);
       [].forEach.call(dots.children, function (b, j) { b.setAttribute('aria-selected', i === j); });
     }
     var vsec = vstage.closest('.vol-ig');
@@ -379,8 +379,9 @@
         $$('.ev[data-s]', col).forEach(function (e) { var s = +e.dataset.s; if (!runsOn(e, date)) return; if ((k > 0 || s > m) && (!next || s < next.s)) next = { s: s, t: e.dataset.t, k: k, dd: dd }; });
       }
       var html = '';
-      if (live.length) html += '<span><span class="tag">Happening now</span><b>' + live.join(' · ') + '</b></span>';
-      if (next) html += '<span><span class="tag next">Up next</span><b>' + next.t + '</b> · ' + (next.k === 0 ? 'today' : next.k === 1 ? 'tomorrow' : DN[next.dd]) + ' at ' + fmt(next.s) + '</span>';
+      function hx(v) { return String(v).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      if (live.length) html += '<span><span class="tag">Happening now</span><b>' + hx(live.join(' · ')) + '</b></span>';
+      if (next) html += '<span><span class="tag next">Up next</span><b>' + hx(next.t) + '</b> · ' + (next.k === 0 ? 'today' : next.k === 1 ? 'tomorrow' : DN[next.dd]) + ' at ' + fmt(next.s) + '</span>';
       nn.innerHTML = html;
     }
     tick(); setInterval(tick, 60000);
@@ -410,3 +411,6 @@
 })();
 
 (function(){var h=document.querySelector('.y5-head');if(!h)return;function t(){h.classList.toggle('scrolled',(window.scrollY||pageYOffset)>4)}addEventListener('scroll',t,{passive:true});t();})();
+
+/* announcement bar: hide after its end date (San Francisco time) */
+(function () { var b = document.querySelector('.ann[data-until]'); if (!b) return; try { var t = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }); if (t > b.getAttribute('data-until')) b.remove(); } catch (e) {} })();

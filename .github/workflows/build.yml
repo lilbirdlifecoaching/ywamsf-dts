@@ -1,0 +1,39 @@
+# Rebuilds the YWAM 5 and YWAM 6 sites from src/ and content/.
+# Runs when the admin page saves a change, and every night so dates roll over
+# (for example, the next DTS takes over the day after the current one starts).
+name: Build site
+
+on:
+  push:
+    branches: [main]
+    paths: ['content/**', 'src/**', '.github/workflows/build.yml']
+  schedule:
+    - cron: '17 8 * * *'   # about 1 am in San Francisco
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build YWAM 5 and YWAM 6
+        run: |
+          V=5 python3 src/build.py
+          V=6 python3 src/build.py
+      - name: Publish if anything changed
+        run: |
+          git config user.name "YWAM SF site builder"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A ywam5 ywam6
+          if git diff --cached --quiet; then echo "No changes."; exit 0; fi
+          git commit -m "Rebuild site from content ($(date -u +%Y-%m-%dT%H:%MZ))"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1

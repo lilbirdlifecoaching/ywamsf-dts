@@ -1,7 +1,8 @@
 (function(){
+var DTSI=window.YWAM_DTS||{range:"soon",cost:"$8,000",month:"the next school",start:"soon"};
 var LINKS={
-  apply:"https://www.tfaforms.com/4827504",
-  email:"dts@ywamsanfrancisco.org",
+  apply:DTSI.apply||"https://www.tfaforms.com/4827504",
+  email:DTSI.email||"dts@ywamsanfrancisco.org",
   phone:"tel:4158856543",
   volunteer:"https://www.ywamsanfrancisco.org/volunteer",
   ma:"https://www.ywamsanfrancisco.org/mission-adventure",
@@ -52,7 +53,7 @@ var Q=[
    {t:"I'd want my days to be my own.",s:0,n:"DTS asks for a lot of your days. A lighter commitment, like weekly volunteering, might suit this season better."}
   ]},
  {dim:"room",context:"The practical bit.",
-  q:"DTS runs Jan 18 – Jun 4, 2027, including an outreach to cities overseas. No job or classes alongside. Cost is about $8,000, and the team helps with fundraising. Right now…",
+  q:"DTS runs "+DTSI.range+", including an outreach to cities overseas. No job or classes alongside. Cost is about "+DTSI.cost+", and the team helps with fundraising. Right now…",
   o:[
    {t:"I can clear the calendar. I'm ready to raise support or have it covered.",s:3,n:"Practically, you're ready. The next step is the application."},
    {t:"I could make it work with planning and a few hard conversations.",s:2,n:"That's how most people start. Our team can walk you through fundraising and the conversations with work, school or family."},
@@ -73,7 +74,7 @@ var DIMS={hunger:"Hunger for God",presence:"Presence",witness:"Gentle witness",t
 var OUT={
  yes:{badge:"Pull up a chair",title:"This sounds like <em>your season.</em>",
   body:"Your answers say you're hungry, willing to be close to real need, and ready to share life with others. That's the heart of a DTS on Ellis Street. The next step is simple: apply, and a real person will get back to you.",
-  steps:[["Apply for January 2027","Starts Jan 18 · 5 months · Tenderloin + outreach",LINKS.apply],["Talk to the DTS team first","Email dts@ywamsanfrancisco.org","mailto:"+LINKS.email],["Read what DTS is like","Stories from the school",LINKS.blog]]},
+  steps:[["Apply for "+DTSI.month,"Starts "+DTSI.start+" · 5 months · Tenderloin + outreach",LINKS.apply],["Talk to the DTS team first","Email dts@ywamsanfrancisco.org","mailto:"+LINKS.email],["Read what DTS is like","Stories from the school",LINKS.blog]]},
  see:{badge:"Come and see",title:"Something's stirring. <em>Come and see.</em>",
   body:"There's real desire here, and a few places where you'd be stretched. That's normal — and the best way to discern is to taste the life before you commit to it. Spend a Sunday with us or serve a shift, then decide.",
   steps:[["Serve a shift with us","Food pantry, Ellis Room, hot chocolate on the street",LINKS.volunteer],["Try a Mission Adventure","A shorter taste of urban mission in SF",LINKS.ma],["Have a no-pressure conversation","We'd love to hear your story","mailto:"+LINKS.email]]},
