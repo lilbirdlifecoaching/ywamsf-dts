@@ -933,3 +933,7 @@ img{max-width:100%}
 .vol-ig .head{margin-bottom:0}
 @media (min-width:760px){.vol-ig .ig-stage{margin-top:calc(-6.4vw)}}
 @media (max-width:760px){.vol-top .vmosaic{grid-template-rows:none}}
+/* round 22: photo banner above the volunteer heading */
+.vol-banner{position:relative;height:min(62vh,560px);min-height:280px;overflow:hidden;background:#2b3138}
+.vol-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% 12%}
+.vol-banner:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 22%)}
