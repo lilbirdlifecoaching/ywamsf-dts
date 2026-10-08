@@ -1194,3 +1194,18 @@ html{scroll-padding-top:120px}
 .dc-wx{text-transform:none;letter-spacing:.02em;font-size:12.5px}
 @media (max-width:420px){.dc-pill{gap:7px;padding:8px 12px 8px 10px}.dc-time{min-width:0}}
 @media (max-width:700px){.dayctl{top:12px;bottom:auto;right:12px}.dc-panel{top:calc(100% + 8px);bottom:auto;transform:translateY(-6px)}.dayctl.open .dc-panel{transform:none}}
+/* round 40: play-the-day button, rain haze */
+.dayctl{display:flex;align-items:center;gap:8px}
+.dc-play{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.92);color:var(--ink);border:0;border-radius:999px;padding:9px 15px 9px 11px;font:800 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 24px -14px rgba(0,0,0,.6);transition:background .2s,transform .2s}
+.dc-play:hover{background:#fff;transform:translateY(-1px)}
+.dc-play:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.dc-play svg{width:16px;height:16px;fill:var(--red);stroke:none}
+.dc-play .sk{display:none;fill:var(--ink)}
+.dc-play.on .pl{display:none}.dc-play.on .sk{display:inline}
+.dc-play.on{background:rgba(18,24,32,.55);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.dc-play.on .sk{fill:#fff}
+.neon-hero .rainhaze{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity 1.5s;background:linear-gradient(180deg,rgba(214,220,228,.16),rgba(214,220,228,.3) 52%,rgba(214,220,228,.1) 78%,rgba(214,220,228,.04))}
+.neon-hero .rainhaze.night{background:linear-gradient(180deg,rgba(90,104,132,.14),rgba(110,124,152,.26) 52%,rgba(90,104,132,.08) 80%,rgba(90,104,132,.03))}
+@media (max-width:700px){.dayctl{flex-direction:column;align-items:flex-end;gap:6px}.dc-play{padding:8px 13px 8px 10px;font-size:10px}}
+.neon-hero .frame{isolation:isolate}
+.neon-hero .rain,.neon-hero .rainhaze{will-change:transform;transform:translateZ(0)}

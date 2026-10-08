@@ -198,8 +198,9 @@ home = f'''
 {SIGN}
     <div class="fog" aria-hidden="true"><i></i><i></i><i></i></div>
   </div>
+  <div class="rainhaze" aria-hidden="true"></div>
   <canvas class="rain" aria-hidden="true"></canvas>
-  <div class="dayctl" role="group" aria-label="Time of day on Ellis Street"><div class="dc-panel" id="dcpanel"><small><span>Midnight</span><span>Noon</span><span>Midnight</span></small><input type="range" min="0" max="1439" step="5" aria-label="Drag through the day on Ellis Street"><div class="dc-btns"><button type="button" class="dc-replay">Replay the day</button><button type="button" class="dc-live">Back to now</button></div></div><button type="button" class="dc-pill" aria-expanded="false" aria-controls="dcpanel"><span class="dc-dot" aria-hidden="true"></span><span class="dc-time">Ellis St</span><span class="dc-sep" aria-hidden="true"></span><span class="dc-ic" aria-hidden="true"></span><span class="dc-tmp"></span><span class="dc-wx"></span></button></div>
+  <div class="dayctl" role="group" aria-label="Time of day on Ellis Street"><button type="button" class="dc-play" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l10.5-6.5z"/><path class="sk" d="M6.5 6v12M11 6l7 6-7 6z"/></svg><span class="lbl">Watch the last 24 hours</span></button><div class="dc-panel" id="dcpanel"><small><span>Midnight</span><span>Noon</span><span>Midnight</span></small><input type="range" min="0" max="1439" step="5" aria-label="Drag through the day on Ellis Street"><div class="dc-btns"><button type="button" class="dc-replay">Replay the day</button><button type="button" class="dc-live">Back to now</button></div></div><button type="button" class="dc-pill" aria-expanded="false" aria-controls="dcpanel"><span class="dc-dot" aria-hidden="true"></span><span class="dc-time">Ellis St</span><span class="dc-sep" aria-hidden="true"></span><span class="dc-ic" aria-hidden="true"></span><span class="dc-tmp"></span><span class="dc-wx"></span></button></div>
 </section>
 
 <section class="pad intro"><div class="wrap">

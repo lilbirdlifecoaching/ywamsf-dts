@@ -105,29 +105,62 @@
     }).catch(function () {});
   }
 
-  /* ---------------------------------------------------------------- rain canvas */
-  var cv = hero.querySelector('.rain'), cx = cv && cv.getContext && cv.getContext('2d'), drops = [], rainAmt = 0, rainNight = 0, rainOn = false, vis = true;
-  function sizeCanvas() { if (!cv) return; var r = Math.min(2, window.devicePixelRatio || 1); cv.width = hero.clientWidth * r; cv.height = hero.clientHeight * r; cx && cx.setTransform(r, 0, 0, r, 0, 0); }
-  function rainLoop() {
-    if (!cx) return;
-    var W = hero.clientWidth, H = hero.clientHeight, want = Math.round(rainAmt * (W > 700 ? 260 : 120));
-    while (drops.length < want) drops.push({ x: Math.random() * W * 1.2, y: Math.random() * H, l: 10 + Math.random() * 18, v: 9 + Math.random() * 7, a: .25 + Math.random() * .45 });
-    if (drops.length > want) drops.length = want;
-    cx.clearRect(0, 0, W, H);
-    if (want) {
-      cx.lineWidth = 1; cx.lineCap = 'round';
-      var col = rainNight > .5 ? '205,215,235' : '235,240,246';
-      for (var i = 0; i < drops.length; i++) {
-        var p = drops[i];
-        cx.strokeStyle = 'rgba(' + col + ',' + (p.a * Math.min(1, rainAmt * 1.4)).toFixed(3) + ')';
-        cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(p.x - p.l * .28, p.y + p.l); cx.stroke();
-        p.y += p.v; p.x -= p.v * .28;
-        if (p.y > H) { p.y = -20; p.x = Math.random() * W * 1.2; }
-      }
-    }
-    if ((rainAmt > .01 || drops.length) && vis && !reduce) requestAnimationFrame(rainLoop); else { rainOn = false; cx.clearRect(0, 0, W, H); }
+  /* ---------------------------------------------------------------- rain
+     Drops live at different depths: far ones are short, faint and slow; near ones are long,
+     soft and fast. The wind gusts, near drops splash on the street, and a light haze softens
+     the distance while it rains. */
+  var cv = hero.querySelector('.rain'), cx = cv && cv.getContext && cv.getContext('2d'), haze = hero.querySelector('.rainhaze');
+  var drops = [], splashes = [], rainAmt = 0, rainNight = 0, rainOn = false, vis = true, lastT = 0;
+  function sizeCanvas() { if (!cv) return; var r = 1; cv.width = hero.clientWidth * r; cv.height = hero.clientHeight * r; cx && cx.setTransform(r, 0, 0, r, 0, 0); }
+  function newDrop(W, H, anywhere) {
+    var z = Math.pow(Math.random(), 1.7);                       // most drops are far away
+    return { x: Math.random() * W * 1.4 - W * .2, y: anywhere ? Math.random() * H : -Math.random() * H * .25 - 40, z: z,
+      v: 650 + 1500 * z + Math.random() * 200, len: 6 + 46 * Math.pow(z, 1.3), g: H * (.8 + .19 * z) + Math.random() * 18 };
   }
-  function kickRain() { if (!rainOn && rainAmt > .01 && vis && cx && !reduce) { rainOn = true; requestAnimationFrame(rainLoop); } }
+  var BANDS = [[0, .3, .5, .17], [.3, .62, .85, .22], [.62, .85, 1.25, .27], [.85, 1.01, 1.8, .3]];  // depth range, line width, alpha
+  function rainLoop(t) {
+    if (!cx) return;
+    var W = hero.clientWidth, H = hero.clientHeight, dt = Math.min(50, lastT ? t - lastT : 16) / 1000; lastT = t;
+    var want = Math.round(rainAmt * (W > 700 ? 950 : 380));
+    while (drops.length < want) drops.push(newDrop(W, H, drops.length < want * .9 && !splashes.length));
+    if (drops.length > want) drops.length = want;
+    var wind = .2 + .11 * Math.sin(t / 2300) + .05 * Math.sin(t / 830 + 1.3);      // gusts tilt the rain
+    cx.clearRect(0, 0, W, H);
+    var col = rainNight > .5 ? '196,210,232' : '226,232,240', k = Math.min(1, rainAmt * 1.3);
+    cx.lineCap = 'round';
+    for (var b = 0; b < BANDS.length; b++) {
+      var B = BANDS[b], tail = new Path2D(), head = new Path2D();
+      for (var i = 0; i < drops.length; i++) {
+        var p = drops[i]; if (p.z < B[0] || p.z >= B[1]) continue;
+        var dx = -p.len * wind, x2 = p.x + dx, y2 = p.y + p.len;
+        tail.moveTo(p.x, p.y); tail.lineTo(x2, y2);
+        head.moveTo(p.x + dx * .55, p.y + p.len * .55); head.lineTo(x2, y2);
+      }
+      cx.lineWidth = B[2]; cx.strokeStyle = 'rgba(' + col + ',' + (B[3] * .55 * k).toFixed(3) + ')'; cx.stroke(tail);
+      cx.strokeStyle = 'rgba(' + col + ',' + (B[3] * k).toFixed(3) + ')'; cx.stroke(head);
+    }
+    for (var n = 0; n < drops.length; n++) {
+      var d = drops[n], step = d.v * dt; d.y += step; d.x -= step * wind;
+      if (d.z > .45 && d.y + d.len > d.g) { if (splashes.length < 90) splashes.push({ x: d.x - d.len * wind, y: d.g, s: .5 + d.z, t: 0 }); drops[n] = newDrop(W, H, false); }
+      else if (d.y > H) drops[n] = newDrop(W, H, false);
+    }
+    // splashes: a quick ring and two flecks
+    for (var m = splashes.length - 1; m >= 0; m--) {
+      var sp = splashes[m]; sp.t += dt / .28; if (sp.t >= 1) { splashes.splice(m, 1); continue; }
+      var a = (1 - sp.t) * .5 * k, r = (2 + 6 * sp.s) * sp.t;
+      cx.strokeStyle = 'rgba(' + col + ',' + a.toFixed(3) + ')'; cx.lineWidth = .7;
+      cx.beginPath(); cx.ellipse(sp.x, sp.y, r, r * .28, 0, 0, Math.PI * 2); cx.stroke();
+      cx.fillStyle = 'rgba(' + col + ',' + (a * .9).toFixed(3) + ')';
+      var hgt = 9 * sp.s * sp.t * (1 - sp.t) * 4;
+      cx.fillRect(sp.x - r * .7, sp.y - hgt, 1.1, 1.1); cx.fillRect(sp.x + r * .6, sp.y - hgt * .8, 1, 1);
+    }
+    if ((rainAmt > .01 || splashes.length) && vis && !reduce) requestAnimationFrame(rainLoop);
+    else { rainOn = false; lastT = 0; drops.length = 0; splashes.length = 0; cx.clearRect(0, 0, W, H); }
+  }
+  function kickRain() {
+    if (haze) { haze.style.opacity = Math.min(1, rainAmt * 1.1).toFixed(3); haze.classList.toggle('night', rainNight > .5); }
+    if (!rainOn && rainAmt > .01 && vis && cx && !reduce) { rainOn = true; requestAnimationFrame(rainLoop); }
+  }
   sizeCanvas(); addEventListener('resize', sizeCanvas);
   if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { vis = e[0].isIntersecting; kickRain(); }).observe(hero);
 
@@ -192,7 +225,7 @@
   function nightish(h) { var r = refHour(h); return r < 6 || r > 20.4; }
   function bell(x, c, wdt) { var d = (x - c) / wdt; return Math.exp(-d * d); }
   function intro() {
-    cancelAnimationFrame(raf); mode = 'intro';
+    cancelAnimationFrame(raf); mode = 'intro'; if (typeof setPlay === 'function') setTimeout(setPlay, 0);
     var H = sfParts(new Date()).h, span = 22, start = H - span, steps = 440, cum = [0];
     // a shower: prefer the evening (neon on, wet street), else the afternoon or late morning
     var showerAt = null;
@@ -219,13 +252,16 @@
   }
   var liveT = 0, wxT = 0, fromW = null, wxBlendT = 0;
   function goLive() {
-    cancelAnimationFrame(raf); mode = 'live';
+    cancelAnimationFrame(raf); mode = 'live'; if (typeof setPlay === 'function') setTimeout(setPlay, 0);
     var h = sfParts(new Date()).h, w = wxReal || WX;
     render(h, w); showClock(h, w, true);
     clearInterval(liveT); liveT = setInterval(function () { if (mode === 'live') { var hh = sfParts(new Date()).h, ww = wxReal || WX; render(hh, ww); showClock(hh, ww, true); } }, 60000);
   }
-  function scrub(h) { cancelAnimationFrame(raf); mode = 'scrub'; var w = wxReal || WX; render(h, w); showClock(h, w, false); }
+  function scrub(h) { cancelAnimationFrame(raf); mode = 'scrub'; setTimeout(setPlay, 0); var w = wxReal || WX; render(h, w); showClock(h, w, false); }
 
+  var playB = hero.querySelector('.dc-play');
+  function setPlay() { if (!playB) return; var on = mode === 'intro'; playB.classList.toggle('on', on); playB.querySelector('.lbl').textContent = on ? 'Skip to now' : 'Watch the last 24 hours'; playB.setAttribute('aria-pressed', String(on)); }
+  if (playB) playB.addEventListener('click', function () { if (mode === 'intro') goLive(); else intro(); setPlay(); });
   if (ctl) {
     if (tog) tog.addEventListener('click', function () { var o = ctl.classList.toggle('open'); tog.setAttribute('aria-expanded', String(o)); });
     if (rng) rng.addEventListener('input', function () { scrub(+rng.value / 60); });
@@ -236,11 +272,7 @@
   /* ---------------------------------------------------------------- go */
   var wxP = loadWeather();
   clearInterval(wxT); wxT = setInterval(function () { loadWeather().then(function () { if (mode === 'live') goLive(); }); }, 15 * 60000);
-  if (reduce) { render(now0.h, WX); wxP.then(goLive); showClock(now0.h, WX, true); }
-  else {
-    render(now0.h - 22, { cloud: .25, rain: 0, fog: 0 });
-    // give the photo a moment to appear, then roll the day
-    setTimeout(intro, 700);
-    wxP.then(function () { if (mode === 'live') goLive(); });
-  }
+  // open on the real sky; the 24-hour time-lapse plays only when someone asks for it
+  mode = 'live'; render(now0.h, WX); showClock(now0.h, WX, true); setPlay();
+  wxP.then(function () { if (mode === 'live') goLive(); });
 })();
