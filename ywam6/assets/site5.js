@@ -392,3 +392,19 @@
   var vt = $('.vtrack');
   if (vt) $$('.varrows button').forEach(function (b) { b.addEventListener('click', function () { vt.scrollBy({ left: +b.dataset.dir * Math.min(400, vt.clientWidth * .85), behavior: reduce ? 'auto' : 'smooth' }); }); });
 })();
+
+/* DTS countdown */
+(function () {
+  [].forEach.call(document.querySelectorAll('[data-countdown]'), function (el) {
+    var end = new Date(el.dataset.countdown).getTime(), u = {};
+    ['d', 'h', 'm', 's'].forEach(function (k) { u[k] = el.querySelector('[data-u="' + k + '"]'); });
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function tick() {
+      var t = Math.max(0, end - Date.now()), s = Math.floor(t / 1000);
+      u.d.textContent = Math.floor(s / 86400); u.h.textContent = pad(Math.floor(s % 86400 / 3600));
+      u.m.textContent = pad(Math.floor(s % 3600 / 60)); u.s.textContent = pad(s % 60);
+      if (!t) { el.querySelector('.cd-lab').textContent = 'Now departed'; clearInterval(iv); }
+    }
+    var iv = setInterval(tick, 1000); tick();
+  });
+})();
