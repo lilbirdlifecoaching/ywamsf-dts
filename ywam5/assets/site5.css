@@ -922,3 +922,14 @@ img{max-width:100%}
 .page-hero .ph-img.tall{height:min(78vh,740px)}
 .y5-nav .mini,.y5-nav.shadow .mini{background:var(--slate)}
 .intro-body .come-btn{margin-top:22px}
+/* round 21: volunteer page — words + mosaic as the header, tighter spacing */
+.vol-top{padding-top:clamp(36px,5vw,64px)}
+.vol-top .vol-head{max-width:820px;margin-bottom:clamp(22px,3vw,34px)}
+.vol-top h1{font-size:clamp(40px,5.2vw,72px);line-height:1.04}
+.vol-top .lede{margin-top:14px;max-width:62ch}
+.vol-top .vmosaic{grid-template-rows:clamp(190px,21vw,290px) clamp(190px,21vw,290px)}
+.vol-board{padding-top:clamp(28px,3.5vw,44px)}
+.vol-ig{padding-top:clamp(44px,5vw,70px)}
+.vol-ig .head{margin-bottom:0}
+@media (min-width:760px){.vol-ig .ig-stage{margin-top:calc(-6.4vw)}}
+@media (max-width:760px){.vol-top .vmosaic{grid-template-rows:none}}
