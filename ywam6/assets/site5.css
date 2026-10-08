@@ -1069,3 +1069,11 @@ html{scroll-padding-top:120px}
 .vow5:hover .vf .art.glass .lit{transform:scale(1.03)}
 @media (hover:none){.vow5.in .vf .art.glass .lit{clip-path:circle(150% at 50% -8%);-webkit-clip-path:circle(150% at 50% -8%);transition-delay:.3s}.vow5.in .vf .art.glass .glow{opacity:1}}
 @media (prefers-reduced-motion:reduce){.vf .art.glass .lit{clip-path:none!important;-webkit-clip-path:none!important;transition:none}.vf .art.glass .beam{display:none}}
+/* round 30: back of vow card = the lit window */
+.vb{overflow:hidden}
+.vb .vbimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.vb:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(14,18,24,.35) 0%,rgba(14,18,24,.72) 45%,rgba(14,18,24,.86) 100%)}
+.vb>*:not(.vbimg){position:relative;z-index:2}
+.vb small{color:rgba(255,255,255,.85)}
+.vb .bt{color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.vb .turn.back{position:absolute;z-index:2}
