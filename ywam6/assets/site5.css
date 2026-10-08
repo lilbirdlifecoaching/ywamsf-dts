@@ -904,3 +904,9 @@ img{max-width:100%}
 /* volunteer carousel: no bridge, soft spotlight instead */
 .vol-ig .ig-plate{display:none}
 .vol-ig .ig-stage{background:radial-gradient(ellipse 34% 60% at 50% 52%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%),radial-gradient(ellipse 30% 6% at 50% 88%,rgba(38,49,59,.16),rgba(38,49,59,0) 70%)}
+/* round 18: monastery title + red italic line */
+.monastery .mon-head h2{font-size:clamp(40px,4.6vw,64px);line-height:1.04}
+.monastery .mon-sub{margin:14px 0 0;font:500 italic clamp(24px,2.5vw,34px)/1.25 var(--display);color:var(--red);display:flex;align-items:center;gap:16px}
+.monastery .mon-sub:before{content:"";width:42px;height:1.5px;background:var(--red);flex:none}
+@media (max-width:600px){.monastery .mon-sub:before{display:none}}
+.monastery .mon-head{max-width:none}
