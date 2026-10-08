@@ -1077,3 +1077,18 @@ html{scroll-padding-top:120px}
 .vb small{color:rgba(255,255,255,.85)}
 .vb .bt{color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.5)}
 .vb .turn.back{position:absolute;z-index:2}
+/* round 31: simpler Give page */
+.give-online{display:flex;align-items:center;justify-content:space-between;gap:24px 48px;flex-wrap:wrap;background:var(--slate);color:#fff;border-radius:10px;padding:clamp(26px,4vw,48px)}
+.give-online .kick{color:rgba(255,255,255,.7)}
+.give-online h2{color:#fff;margin-bottom:8px}
+.give-online p{color:rgba(255,255,255,.85);max-width:56ch;margin:0}
+.go-cta{display:grid;gap:10px;justify-items:center}
+.go-cta .btn{background:#fff;color:var(--ink);padding:18px 30px}
+.go-cta .btn:hover{background:var(--fog)}
+.go-cta small{font-size:13px;color:rgba(255,255,255,.7)}
+.gw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card5.gw{background:#fff}
+.card5.gw p{margin:0 0 10px;font-size:15.5px}
+.card5.gw .go{font:800 11.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--red);padding-bottom:2px}
+@media (max-width:900px){.gw-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.gw-grid{grid-template-columns:1fr}}
