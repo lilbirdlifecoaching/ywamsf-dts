@@ -1039,3 +1039,17 @@ html{scroll-padding-top:120px}
 .heart + .pad,.pad + .pad.monastery,.pad + .pad.voices5{padding-top:clamp(18px,2.5vw,34px)}
 .cta-band.pad{padding-block:clamp(48px,5.5vw,80px)}
 .split .photo-stack{max-width:460px;width:100%;justify-self:center}
+/* round 28: detail icons draw themselves on hover */
+.icard .ic .icw{position:relative;display:block;width:46px;height:46px}
+.icard .ic .icw svg{position:absolute;inset:0}
+.icard .ic svg.ghost *{opacity:.2}
+.icard .ic svg.live .l,.icard .ic svg.live .a.s{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1s cubic-bezier(.6,.05,.3,1)}
+.icard .ic svg.live :is(.a:not(.s),.win,.dot){opacity:0;transition:opacity .4s .8s}
+.icard .ic svg.live :nth-child(2){transition-delay:.12s}.icard .ic svg.live :nth-child(3){transition-delay:.24s}.icard .ic svg.live :nth-child(4){transition-delay:.36s}.icard .ic svg.live :nth-child(5){transition-delay:.5s}
+.icard:hover .ic svg.live .l,.icard:hover .ic svg.live .a.s,.icard:focus-within .ic svg.live .l{stroke-dashoffset:0}
+.icard:hover .ic svg.live :is(.a:not(.s),.win,.dot){opacity:1}
+.icard:hover .ic svg.ghost *{opacity:0;transition:opacity .4s}
+.icard{transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s}
+.icard:hover{transform:translateY(-6px);box-shadow:0 26px 44px -30px rgba(0,0,0,.45)}
+@media (hover:none){.icard.in .ic svg.live .l,.icard.in .ic svg.live .a.s{stroke-dashoffset:0}.icard.in .ic svg.live :is(.a:not(.s),.win,.dot){opacity:1}.icard.in .ic svg.ghost *{opacity:0}}
+@media (prefers-reduced-motion:reduce){.icard .ic svg.live *{transition:none!important;stroke-dashoffset:0!important;opacity:1!important}}
