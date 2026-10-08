@@ -201,7 +201,7 @@
     [sec.querySelector('.reel-prev'), sec.querySelector('.reel-next'), dots].forEach(function (b) { b.addEventListener('click', function () { paused = true; clearTimeout(b._r); b._r = setTimeout(function () { paused = false; }, 8000); }); });
     function tick() { if (!paused && visible && !reduce && Date.now() > lock) go(cur + 1); }
     new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .4 }).observe(reel);
-    mark(0); setTimeout(function () { go(0, true); }, 60);
+    var start = Math.min(1, hits.length - 1); mark(start); setTimeout(function () { go(start, true); }, 60);
     window.addEventListener('resize', function () { go(cur, true); });
     setInterval(tick, 3800);
   });

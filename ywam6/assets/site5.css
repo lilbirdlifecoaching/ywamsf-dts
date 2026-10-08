@@ -917,3 +917,7 @@ img{max-width:100%}
 @keyframes todayPulse{0%{box-shadow:0 0 0 0 rgba(255,58,48,.6)}80%,100%{box-shadow:0 0 0 12px rgba(255,58,48,0)}}
 .shift-dots button.is-today:after{content:"Today";margin-left:8px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;background:#ff3a30;color:#fff;padding:2px 6px;border-radius:2px;vertical-align:1px}
 @media (prefers-reduced-motion:reduce){.ig-today:before{animation:none}.vol-ig{transition:none}}
+/* round 20 */
+.page-hero .ph-img.still img{animation:none;transform:none}
+.page-hero .ph-img.tall{height:min(78vh,740px)}
+.y5-nav .mini,.y5-nav.shadow .mini{background:var(--slate)}
