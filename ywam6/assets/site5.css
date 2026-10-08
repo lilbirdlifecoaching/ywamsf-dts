@@ -942,3 +942,7 @@ img{max-width:100%}
 .vol-banner:after{background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 11%)}
 .vol-banner img{object-position:58% 40%}
 .vol-banner{height:clamp(300px,43vw,840px);min-height:0}
+/* round 23: wide pantry photo shown whole */
+.vol-banner{height:clamp(280px,37.5vw,900px)}
+.vol-banner img{object-position:60% 40%}
+.vol-banner:after{background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 7%)}
