@@ -937,3 +937,8 @@ img{max-width:100%}
 .vol-banner{position:relative;height:min(62vh,560px);min-height:280px;overflow:hidden;background:#2b3138}
 .vol-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% 12%}
 .vol-banner:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 22%)}
+.vol-banner{height:min(68vh,620px)}
+.vol-banner img{object-position:58% 58%}
+.vol-banner:after{background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 11%)}
+.vol-banner img{object-position:58% 40%}
+.vol-banner{height:clamp(300px,43vw,840px);min-height:0}
