@@ -895,3 +895,12 @@ img{max-width:100%}
 .vmosaic figure:hover img{transform:scale(1.04)}
 .vmosaic figcaption{position:absolute;left:14px;bottom:14px;background:rgba(247,248,249,.95);color:var(--ink);font:800 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;padding:8px 12px;border-radius:3px}
 @media (max-width:760px){.vmosaic{grid-template-columns:1fr;grid-template-rows:none}.vmosaic figure{aspect-ratio:4/3}.vmosaic figure.big{grid-row:auto}}
+/* round 17: zoomed-out header (square photo on a soft blurred field) */
+.page-hero .ph-img.zoomout{height:min(64vh,580px)}
+.page-hero .ph-img.zoomout img{animation:none}
+.page-hero .ph-img.zoomout .zbg{inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(28px) saturate(.7) brightness(1.08);opacity:.85}
+.page-hero .ph-img.zoomout .zfg{left:auto;right:max(4%,calc(50% - 560px));width:auto;height:100%;max-width:70%;object-fit:cover;object-position:50% 40%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+@media (max-width:760px){.page-hero .ph-img.zoomout .zfg{right:0;max-width:none;width:100%;-webkit-mask-image:none;mask-image:none}}
+/* volunteer carousel: no bridge, soft spotlight instead */
+.vol-ig .ig-plate{display:none}
+.vol-ig .ig-stage{background:radial-gradient(ellipse 34% 60% at 50% 52%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%),radial-gradient(ellipse 30% 6% at 50% 88%,rgba(38,49,59,.16),rgba(38,49,59,0) 70%)}
