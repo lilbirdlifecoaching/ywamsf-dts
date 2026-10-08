@@ -121,7 +121,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     css = f'{up}assets/site5.css?v={VER}'
     return wire(f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title><link rel="icon" type="image/png" href="{root}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="{css}">{extra_head}</head><body>
@@ -166,7 +166,11 @@ home = f'''
 <section class="neon-hero" aria-label="YWAM San Francisco sign on Ellis Street">
   <div class="frame" style="width:2500px;height:1424px">
     <img class="photo" src="assets/img/hero-ellis.jpg" alt="Ellis Street in the Tenderloin, with the YWAM San Francisco sign on the left" style="width:2500px;height:1424px">
+    <div class="sky-c" aria-hidden="true"></div>
+    <div class="sun-l" aria-hidden="true"><i class="sun"></i></div>
     <div class="tint" style="left:0;top:0;width:2500px;height:1424px"></div>
+    <div class="sunwash" aria-hidden="true"></div>
+    <div class="wet" aria-hidden="true"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div>
     <div class="night" aria-hidden="true">
       <i class="win" style="left:1873px;top:462px;width:81px;height:72px;--d:3.0s"></i><i class="win" style="left:1885px;top:741px;width:77px;height:76px;--d:4.1s"></i><i class="win dim" style="left:1889px;top:872px;width:76px;height:79px;--d:5.2s"></i>
       <i class="win" style="left:2154px;top:576px;width:23px;height:154px;--d:3.6s"></i><i class="win dim" style="left:2108px;top:622px;width:15px;height:108px;--d:4.6s"></i><i class="win" style="left:1802px;top:480px;width:12px;height:67px;--d:3.3s"></i>
@@ -179,7 +183,10 @@ home = f'''
     </div>
     <img class="face" src="assets/img/sign-dim.jpg" alt="" style="left:177px;top:285px;width:661px;height:367px">
 {SIGN}
+    <div class="fog" aria-hidden="true"><i></i><i></i><i></i></div>
   </div>
+  <canvas class="rain" aria-hidden="true"></canvas>
+  <div class="dayctl" role="group" aria-label="Time of day on Ellis Street"><div class="dc-panel" id="dcpanel"><small><span>Midnight</span><span>Noon</span><span>Midnight</span></small><input type="range" min="0" max="1439" step="5" aria-label="Drag through the day on Ellis Street"><div class="dc-btns"><button type="button" class="dc-replay">Replay the day</button><button type="button" class="dc-live">Back to now</button></div></div><button type="button" class="dc-pill" aria-expanded="false" aria-controls="dcpanel"><span class="dc-dot" aria-hidden="true"></span><span class="dc-time">Ellis St</span><span class="dc-wx"></span></button></div>
 </section>
 
 <section class="pad intro"><div class="wrap">
@@ -243,7 +250,7 @@ home = f'''
 
 <div class="lightbox" role="dialog" aria-modal="true" aria-label="YWAM San Francisco film"><div class="box"><iframe title="YWAM San Francisco film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
 '''
-home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/cablecar.js?v={VER}"></script>'
+home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/cablecar.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
 os.makedirs(OUT, exist_ok=True)
 open(os.path.join(OUT, 'index.html'), 'w').write(page('YWAM San Francisco — Concept %d' % V, 'home', '', '../', home, scripts=home_scripts))
 
