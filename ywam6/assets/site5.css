@@ -946,3 +946,5 @@ img{max-width:100%}
 .vol-banner{height:clamp(280px,37.5vw,900px)}
 .vol-banner img{object-position:60% 40%}
 .vol-banner:after{background:linear-gradient(0deg,var(--fog) 0%,rgba(234,237,240,0) 7%)}
+.bb-frame{aspect-ratio:2000/1062}
+@supports not (aspect-ratio:1/1){.bb-frame{padding-top:53.1%}}
