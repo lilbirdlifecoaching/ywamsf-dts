@@ -1053,3 +1053,4 @@ html{scroll-padding-top:120px}
 .icard:hover{transform:translateY(-6px);box-shadow:0 26px 44px -30px rgba(0,0,0,.45)}
 @media (hover:none){.icard.in .ic svg.live .l,.icard.in .ic svg.live .a.s{stroke-dashoffset:0}.icard.in .ic svg.live :is(.a:not(.s),.win,.dot){opacity:1}.icard.in .ic svg.ghost *{opacity:0}}
 @media (prefers-reduced-motion:reduce){.icard .ic svg.live *{transition:none!important;stroke-dashoffset:0!important;opacity:1!important}}
+.vol-top{padding-top:clamp(8px,1.5vw,20px)}
