@@ -1,4 +1,14 @@
 {
   "version": 1,
-  "users": []
+  "repo": "lilbirdlifecoaching/ywamsf-dts",
+  "users": [
+    {
+      "name": "Luke Haythorpe",
+      "iter": 600000,
+      "salt": "HdOo7cWqG6EB1HBy5qNGyg==",
+      "iv": "/maLW/PGL5lmZCvk",
+      "ct": "P7ro9K0jR+kcEu3ZsejcAg3u6z5e2BwcYLADsEN/wZ01JoODz20Pq4QEJZlJ+oeTW3b2ECAdWi/gKIsN/dkC5eGS8zva5NV/XDxnMGQc1YaEiBYihz3uSHVH/yf0u/ReUXgM3tGaeELkW767hg==",
+      "added": "2026-10-08"
+    }
+  ]
 }
