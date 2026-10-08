@@ -1092,3 +1092,14 @@ html{scroll-padding-top:120px}
 .card5.gw .go{font:800 11.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--red);padding-bottom:2px}
 @media (max-width:900px){.gw-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.gw-grid{grid-template-columns:1fr}}
+/* round 32: pay option illustrations (draw on hover, stay drawn when chosen) */
+.opt .drw{position:relative;display:block;width:76px;height:68px;margin:-2px 0 10px -6px}
+.opt .dr{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.opt .dr path{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.1s cubic-bezier(.6,.05,.3,1)}
+.opt .dr path.r{stroke:var(--red)}
+.opt .dr path:nth-child(2){transition-delay:.12s}.opt .dr path:nth-child(3){transition-delay:.24s}.opt .dr path:nth-child(4){transition-delay:.36s}.opt .dr path:nth-child(5){transition-delay:.5s}.opt .dr path:nth-child(6){transition-delay:.62s}
+.opt .dr.ghost path{stroke-dasharray:none;stroke-dashoffset:0;opacity:.16;transition:opacity .4s}
+.opt:hover .dr:not(.ghost) path,.opt input:checked+.o .dr:not(.ghost) path,.opt input:focus-visible+.o .dr:not(.ghost) path{stroke-dashoffset:0}
+.opt:hover .dr.ghost path,.opt input:checked+.o .dr.ghost path{opacity:0}
+.opt:hover .o{border-color:var(--slate)}
+@media (prefers-reduced-motion:reduce){.opt .dr path{transition:none}}
