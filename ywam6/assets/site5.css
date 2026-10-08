@@ -973,3 +973,48 @@ html{scroll-padding-top:120px}
 .y5-foot .row{justify-content:center;text-align:center}
 .y5-foot .links{justify-content:center;width:100%}
 .y5-foot .addr{width:100%}
+/* round 25: icon cards (Bring a Team) */
+.icard{padding-top:26px}
+.icard .ic{width:76px;height:76px;border-radius:50%;background:var(--fog);display:grid;place-items:center;margin-bottom:18px;box-shadow:inset 0 0 0 1px var(--line);transition:transform .5s cubic-bezier(.2,.8,.2,1),background .4s}
+.icard .ic svg{width:46px;height:46px;overflow:visible}
+.icard .ic .l{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.icard .ic .t{stroke-width:1.4;opacity:.45}
+.icard .ic .a{fill:var(--red);stroke:none}
+.icard .ic .a.s{fill:none;stroke:var(--red);stroke-width:2.2;stroke-linecap:round}
+.icard .ic .dot{fill:#fff}
+.icard .ic .win{fill:#f2be73}
+.icard:hover .ic{transform:translateY(-3px) rotate(-4deg);background:#fff}
+/* Pay page */
+.pay-sec{padding-block:clamp(44px,6vw,90px);background:linear-gradient(180deg,var(--fog),#dfe6ec)}
+.pay-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(30px,6vw,90px);align-items:start}
+.pay-intro h1{font-size:clamp(44px,5vw,70px);line-height:1.02;margin-bottom:14px}
+.pay-notes{list-style:none;padding:0;margin:26px 0 0;border-top:1px solid var(--line)}
+.pay-notes li{padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+.pay-notes a{color:var(--ink)}
+.pay-card{background:#fff;border-radius:10px;padding:clamp(22px,3.5vw,38px);box-shadow:0 30px 60px -40px rgba(20,30,40,.55),inset 0 0 0 1px var(--line);display:grid;gap:18px}
+.pay-opts{border:0;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pay-opts legend{font:800 11px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding:0}
+.opt{position:relative;cursor:pointer}
+.opt input{position:absolute;opacity:0}
+.opt .o{display:block;height:100%;border:1.5px solid var(--line);border-radius:8px;padding:16px 16px 14px;transition:border-color .2s,background .2s,box-shadow .2s}
+.opt .o b{display:block;font:500 26px/1.1 var(--display);color:var(--ink)}
+.opt .o small{display:block;margin-top:4px;font-size:13px;color:var(--muted)}
+.opt input:checked+.o{border-color:var(--ink);background:var(--fog);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt input:focus-visible+.o{outline:2px solid var(--slate);outline-offset:2px}
+.fld{display:grid;gap:7px}
+.fld>span{font:800 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.fld>span i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:600}
+.fld input{font:500 16.5px var(--sans);color:var(--ink);background:var(--fog);border:1px solid var(--line);border-radius:6px;padding:13px 14px;width:100%;box-sizing:border-box}
+.fld input:focus{outline:2px solid var(--slate);outline-offset:1px;background:#fff}
+.amt-row{position:relative}
+.amt-row .cur{position:absolute;left:14px;top:50%;transform:translateY(-50%);font:500 22px var(--display);color:var(--muted)}
+.amt-row input{padding-left:32px;font:500 26px var(--display)}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:-6px}
+.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:700 13px var(--sans);color:var(--slate);cursor:pointer}
+.quick button.on,.quick button:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.pay-card .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pay-btn{justify-content:center;width:100%;padding:18px}
+.pay-soon{margin:0;font-size:13.5px;color:var(--muted);text-align:center}
+.fld[hidden]{display:none}
+@media (max-width:860px){.pay-grid{grid-template-columns:1fr}}
+@media (max-width:520px){.pay-opts,.pay-card .two{grid-template-columns:1fr}}

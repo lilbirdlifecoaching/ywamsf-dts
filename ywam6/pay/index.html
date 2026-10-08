@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
+<title>Pay — YWAM San Francisco</title><link rel="icon" type="image/png" href="../../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site5.css?v=202610072137"></head><body>
+<header class="y5-head"><div class="y5-top"><div class="wrap"><a class="tlogo" href="../" aria-label="YWAM San Francisco home"></a><span class="tlinks"><a href="../about/">About</a><a href="../give/">Give</a><a href="../pay/" aria-current="page">Pay</a><a href="../contact/">Connect with us</a></span></div></div>
+<nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links"><a href="../volunteer/">Come Volunteer</a><a href="../teams/">Bring a Team</a><a href="../course/">DTS (5 Month Course)</a><a href="../ellis-room/">Ellis Room</a><a class="sign" href="https://www.tfaforms.com/4827504" target="_blank" rel="noopener">Sign Me Up!</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>
+<main id="main">
+<section class="pay-sec"><div class="wrap pay-grid">
+  <div class="pay-intro rv"><span class="kick">Pay</span><h1>Make a payment.</h1>
+    <p class="lede">Pay school or trip fees for yourself or someone else. Choose what it’s for, tell us who it’s for, and we’ll make sure it’s applied to the right person.</p>
+    <ul class="pay-notes"><li>Payments go straight to a student’s or participant’s account.</li><li>To support our work in general, please <a href="../give/">give here</a> instead.</li><li>Questions? Email <a href="mailto:info@ywamsanfrancisco.org">info@ywamsanfrancisco.org</a> or call 415-885-6543.</li></ul></div>
+  <form class="pay-card rv" id="payform" novalidate>
+    <fieldset class="pay-opts"><legend>What is this payment for?</legend>
+      <label class="opt"><input type="radio" name="program" value="DTS (5 Month Course)" checked><span class="o"><b>DTS</b><small>5 Month Course · school fees</small></span></label>
+      <label class="opt"><input type="radio" name="program" value="Mission Adventures"><span class="o"><b>Mission Adventures</b><small>Team trip · participant fees</small></span></label>
+    </fieldset>
+    <label class="fld"><span>Who is this payment for?</span><input name="for" required autocomplete="off" placeholder="Student or participant’s full name"></label>
+    <label class="fld team-only" hidden><span>Team or church name</span><input name="team" autocomplete="organization" placeholder="e.g. Grace Church Youth"></label>
+    <label class="fld"><span>Amount (USD)</span><div class="amt-row"><span class="cur">$</span><input name="amount" type="number" min="1" step="0.01" inputmode="decimal" required placeholder="0.00"></div></label>
+    <div class="quick" aria-label="Quick amounts"></div>
+    <div class="two"><label class="fld"><span>Your name</span><input name="payer" required autocomplete="name"></label><label class="fld"><span>Your email</span><input name="email" type="email" required autocomplete="email"></label></div>
+    <label class="fld"><span>Note <i>(optional)</i></span><input name="note" placeholder="Deposit, balance, outreach fee…"></label>
+    <button class="btn pay-btn" type="submit">Continue to payment</button>
+    <p class="pay-soon" role="status">Online card payments are coming soon. For now, “Continue” sends these details to our finance team, who will reply with how to pay.</p>
+  </form>
+</div></section>
+</main>
+<div class="y5-foot"><div class="inner"><div class="wrap row">
+<div class="links"><a href="https://www.ywamsanfrancisco.org/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
+<div class="addr">357 Ellis Street, San Francisco, CA 94102<br><a href="tel:4158856543">415-885-6543</a> · <a class="em" href="mailto:info@ywamsanfrancisco.org">info@ywamsanfrancisco.org</a></div>
+<div class="concept">Design concept YWAM 6 (YWAM 5 with a backlit sign) for the YWAM San Francisco refresh — not the live site</div></div></div></div>
+<nav class="switcher" aria-label="Design concepts"><span>Concepts</span><a href="../../ywam1/"><i>YWAM </i>1</a><a href="../../ywam2/"><i>YWAM </i>2</a><a href="../../ywam3/"><i>YWAM </i>3</a><a href="../../ywam4/"><i>YWAM </i>4</a><a href="../../ywam5/"><i>YWAM </i>5</a><a class="on" href="../../ywam6/"><i>YWAM </i>6</a></nav>
+<script>(function(){var f=document.getElementById('payform');if(!f)return;
+var Q={'DTS (5 Month Course)':[250,1000,8000],'Mission Adventures':[100,500,1000]},quick=f.querySelector('.quick'),team=f.querySelector('.team-only');
+function upd(){var p=f.program.value;team.hidden=p!=='Mission Adventures';quick.innerHTML='';Q[p].forEach(function(v){var b=document.createElement('button');b.type='button';b.textContent='$'+v.toLocaleString();b.onclick=function(){f.amount.value=v;[].forEach.call(quick.children,function(x){x.classList.toggle('on',x===b)})};quick.appendChild(b)});}
+[].forEach.call(f.program,function(r){r.addEventListener('change',upd)});upd();
+f.amount.addEventListener('input',function(){[].forEach.call(quick.children,function(x){x.classList.remove('on')})});
+f.addEventListener('submit',function(e){e.preventDefault();if(!f.reportValidity())return;
+var a=parseFloat(f.amount.value).toFixed(2),sub='Payment: '+f.program.value+' for '+f['for'].value+' ($'+a+')';
+var body='Program: '+f.program.value+'\nFor: '+f['for'].value+(f.team.value&&!team.hidden?'\nTeam: '+f.team.value:'')+'\nAmount: $'+a+'\nFrom: '+f.payer.value+' <'+f.email.value+'>'+(f.note.value?'\nNote: '+f.note.value:'');
+location.href='mailto:info@ywamsanfrancisco.org?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body);});})();</script><script src="../assets/site5.js?v=202610072137"></script></body></html>
