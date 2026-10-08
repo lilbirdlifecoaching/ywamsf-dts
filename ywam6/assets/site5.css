@@ -887,3 +887,11 @@ img{max-width:100%}
 .rhythm figcaption span{display:block;margin-top:6px;font-size:14.5px;color:var(--muted);line-height:1.45}
 @media (max-width:900px){.monastery .mon-copy{grid-template-columns:1fr}.rhythm{grid-template-columns:1fr 1fr;gap:14px}.rhythm figure:nth-child(even){margin-top:30px}}
 @supports not (aspect-ratio:1/1){.rph{height:360px}}
+/* round 16: volunteer photo mosaic */
+.vmosaic{display:grid;grid-template-columns:1.5fr 1fr;grid-template-rows:260px 260px;gap:14px}
+.vmosaic figure{position:relative;margin:0;border-radius:6px;overflow:hidden;background:var(--mist)}
+.vmosaic figure.big{grid-row:1/3}
+.vmosaic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.vmosaic figure:hover img{transform:scale(1.04)}
+.vmosaic figcaption{position:absolute;left:14px;bottom:14px;background:rgba(247,248,249,.95);color:var(--ink);font:800 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;padding:8px 12px;border-radius:3px}
+@media (max-width:760px){.vmosaic{grid-template-columns:1fr;grid-template-rows:none}.vmosaic figure{aspect-ratio:4/3}.vmosaic figure.big{grid-row:auto}}
