@@ -87,7 +87,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.1;margin:0}
 .item>.body{padding:6px 14px 14px;border-top:1px solid var(--line);background:#fff;border-radius:0 0 8px 8px}
 .item.closed>.body{display:none}
 .chev{transition:transform .2s;color:var(--muted)}
-.item:not(.closed) .chev{transform:rotate(90deg)}
+.item:not(.closed)>header .chev{transform:rotate(90deg)}
 .add{margin:10px 0 18px}
 .sublist{margin:4px 0 12px;padding:12px;border:1px dashed var(--line);border-radius:8px;background:var(--mist)}
 .sublist>span{display:block;font:700 12px var(--sans);color:var(--slate);margin-bottom:8px}

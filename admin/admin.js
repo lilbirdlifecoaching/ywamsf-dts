@@ -266,6 +266,13 @@
     { id: 'instagram', grp: 'News', file: 'instagram.json', title: 'Instagram cards', page: '#',
       intro: 'The Instagram carousel on the home page. Save a photo from a post, upload it here, and paste the post’s link.',
       fields: [{ k: 'posts', l: 'Posts', t: 'list', add: 'Add a post', title: function (x) { return x.caption || 'New post'; }, blank: { photo: '', caption: '', url: '' }, fields: [F.photo('photo', 'Photo', { req: true }), F.text('caption', 'Short caption', { full: true }), { k: 'url', l: 'Link to the post', t: 'url', full: true }] }] },
+    { id: 'resources', grp: 'News', file: 'resources.json', title: 'Resources', page: 'about/resources/',
+      intro: 'The resource library on About → Resources. The same groups appear as tabs at the bottom of the DTS page.',
+      fields: [{ k: 'youtube_url', l: 'YouTube channel link', t: 'url', full: true },
+        { k: 'groups', l: 'Groups', t: 'list', add: 'Add a group', sub: function (x) { return (x.items || []).length + ' links'; }, blank: { title: '', intro: '', items: [] },
+          fields: [F.text('title', 'Group title', { req: true, full: true }), F.area('intro', 'One-line introduction'),
+            { k: 'items', l: 'Links', t: 'list', add: 'Add a link', title: function (x) { return x.title || 'New link'; }, sub: function (x) { return x.by || ''; }, blank: { title: '', by: '', url: '' },
+              fields: [F.text('title', 'Title', { req: true, full: true }), F.text('by', 'By (optional)'), { k: 'url', l: 'Link', t: 'url', req: true, hint: 'YouTube, Vimeo and PDF links are labelled automatically.' }] }] }] },
     { id: 'banner', grp: 'Site', file: 'banner.json', title: 'Announcement bar', page: '#',
       intro: 'A slim red bar across the top of every page, for things like closures or a big event.',
       fields: [{ k: 'show', l: 'Show the announcement bar', t: 'bool' }, F.text('text', 'Message', { full: true }), F.text('link_text', 'Link text (optional)'), { k: 'link_url', l: 'Link (optional)', t: 'url' }, { k: 'hide_after', l: 'Hide automatically after', t: 'date', hint: 'Optional. The bar disappears the day after this date.' }] },
@@ -481,7 +488,7 @@
     }
     draw();
     var add = h('button', { class: 'btn ghost small add', type: 'button', text: '+ ' + (f.add || 'Add'), onclick: function () { arr.push(JSON.parse(JSON.stringify(f.blank || {}))); changed(); draw(arr.length - 1); var last = list.lastChild; if (last) { var inp = last.querySelector('input,textarea,select'); if (inp) inp.focus(); last.scrollIntoView({ block: 'nearest' }); } } });
-    return h('div', { class: (f.k === 'members' && obj.name !== undefined) ? 'sublist' : '' }, h('div', { class: 'fld', style: 'margin-bottom:8px' }, h('span', { text: f.l })), list, add);
+    return h('div', { class: ((f.k === 'members' && obj.name !== undefined) || (f.k === 'items' && obj.title !== undefined)) ? 'sublist' : '' }, h('div', { class: 'fld', style: 'margin-bottom:8px' }, h('span', { text: f.l })), list, add);
   }
 
   /* ------------------------------------------------------------------ validation + save */

@@ -100,9 +100,15 @@ FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('pay/', 'Pay', 'pay'), ('contact/', 'Connect with us', 'contact')]
+ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
 def header(cur, up):
     links = ''.join('<a href="%s%s"%s>%s</a>' % (up, h, ' aria-current="page"' if k == cur else '', t) for h, t, k in NAV)
-    top = ''.join('<a href="%s"%s%s>%s</a>' % (h if h.startswith('http') else up + h, ' target="_blank" rel="noopener"' if h.startswith('http') else '', ' aria-current="page"' if k == cur else '', t) for h, t, k in TOP)
+    def tl(h, t, k):
+        a = '<a href="%s"%s%s>%s</a>' % (h if h.startswith('http') else up + h, ' target="_blank" rel="noopener"' if h.startswith('http') else '', ' aria-current="page"' if k == cur else '', t)
+        if k != 'about': return a
+        menu = ''.join('<a href="%s%s" role="menuitem">%s</a>' % (up, mh, mt) for mh, mt in ABOUT_MENU)
+        return '<span class="tdd"><a href="%sabout/" class="tdd-btn" aria-haspopup="true" aria-expanded="false"%s>About<i aria-hidden="true"></i></a><span class="tdd-menu" role="menu" aria-label="About">%s</span></span>' % (up, ' aria-current="page"' if k == cur else '', menu)
+    top = ''.join(tl(h, t, k) for h, t, k in TOP)
     return f'''<header class="y5-head"><div class="y5-top"><div class="wrap"><a class="tlogo" href="{up or './'}" aria-label="YWAM San Francisco home"></a><span class="tlinks">{top}</span></div></div>
 <nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links">{links}<a class="sign" href="{SIGNUP}" target="_blank" rel="noopener">Sign Me Up!</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>'''
 
@@ -379,6 +385,27 @@ os.makedirs(os.path.join(OUT, 'ellis-room'), exist_ok=True)
 open(os.path.join(OUT, 'ellis-room/index.html'), 'w').write(page('The Ellis Room — YWAM San Francisco', 'neighbors', '../', '../../', nb))
 
 CDN = C
+RES = load('resources.json')
+YT_CHANNEL = lnk(RES.get('youtube_url'), 'https://www.youtube.com/user/YWAMsanfrancisco')
+def rkind(u):
+    u = str(u).lower()
+    if 'youtube.com' in u or 'youtu.be' in u: return 'Video · YouTube'
+    if 'vimeo.com' in u: return 'Video · Vimeo'
+    if u.split('?')[0].endswith('.pdf'): return 'PDF'
+    if 'map' in u: return 'Map'
+    return 'Read'
+def res_items(g):
+    return ''.join('<li><a class="rlink" href="%s" target="_blank" rel="noopener"><small>%s</small><b>%s</b>%s<i aria-hidden="true">↗</i></a></li>' % (lnk(x.get('url')), rkind(x.get('url')), t(x.get('title')), ('<span>' + t(x.get('by')) + '</span>') if t(x.get('by')) else '') for x in g.get('items', []) if t(x.get('title')) and lnk(x.get('url')))
+RES_GROUPS = [g for g in RES.get('groups', []) if t(g.get('title')) and g.get('items')]
+def gid(g): return re.sub(r'[^a-z0-9]+', '-', str(g.get('title')).lower()).strip('-')
+YT_SVG = '<svg viewBox="0 0 28 20" aria-hidden="true"><rect x="1" y="1" width="26" height="18" rx="5"/><path d="M11.5 6.2v7.6L18 10z"/></svg>'
+res_tabs = ''.join('<button type="button" role="tab" aria-selected="%s" aria-controls="rt-%s" id="rtb-%s">%s</button>' % ('true' if i == 0 else 'false', gid(g), gid(g), t(g['title'])) for i, g in enumerate(RES_GROUPS))
+res_panels = ''.join('<div class="rpanel" role="tabpanel" id="rt-%s" aria-labelledby="rtb-%s"%s><p>%s</p><ul class="rlist">%s</ul></div>' % (gid(g), gid(g), '' if i == 0 else ' hidden', t(g.get('intro')), res_items(g)) for i, g in enumerate(RES_GROUPS))
+DTS_RES = f'''<section class="pad deeper" id="go-deeper"><div class="wrap">
+  <div class="rv deeper-head"><div><span class="kick">Go deeper before you come</span><h2>Read, watch and get to know the city.</h2><p class="lede">Teaching and articles on urban mission, and a feel for San Francisco, from our resource library.</p></div><a class="yt-btn" href="{YT_CHANNEL}" target="_blank" rel="noopener">{YT_SVG}<span>Our YouTube channel</span></a></div>
+  <div class="rtabs rv" data-tabs><div class="rtab-list" role="tablist" aria-label="Resources">{res_tabs}</div>{res_panels}</div>
+  <p class="deeper-foot rv"><a href="../about/resources/">See the full resource library →</a></p>
+</div></section>'''
 # ---------------------------------------------------------------- DTS (5 MONTH COURSE) — native page
 YT = 'lH3BLHA6dhI'
 YT_SRC = f'https://www.youtube-nocookie.com/embed/{YT}?autoplay=1&mute=1&loop=1&playlist={YT}&controls=0&modestbranding=1&playsinline=1&rel=0&start=10&iv_load_policy=3&disablekb=1&enablejsapi=1'
@@ -505,6 +532,8 @@ dts = f'''
   <p class="ready-foot rv">Want to see the place first? <a href="../volunteer/">Serve a shift on Ellis Street</a> or <a href="../teams/">come with a team</a>.</p>
 </div></section>
 
+{DTS_RES}
+
 <div class="modal" id="modal" aria-hidden="true"><div class="modal-box"><button class="modal-x" aria-label="Close">✕</button><div id="survey"></div></div></div>
 '''
 dts_scripts = f'<script>window.YWAM_DAY={day_data};window.YWAM_DTS={js(DTS_INFO)};</script><script src="../assets/survey.js?v={VER}"></script>'
@@ -516,7 +545,7 @@ open(os.path.join(OUT, 'course/index.html'), 'w').write(page('DTS (5 Month Cours
 CDN = C
 def subnav(cur, ab):
     """ab = relative path from the current page to the about/ folder"""
-    items = [(ab, 'Who We Are', 'who'), (ab + 'people/', 'Staff & Board', 'people'), (ab + 'news/', 'News & Events', 'news'), (ab + '../contact/', 'Contact', 'contact')]
+    items = [(ab, 'Who We Are', 'who'), (ab + 'people/', 'Staff & Board', 'people'), (ab + 'news/', 'News & Events', 'news'), (ab + 'resources/', 'Resources', 'resources'), (ab + '../contact/', 'Contact', 'contact')]
     return '<nav class="subnav" aria-label="About"><div class="wrap"><span>About</span>' + ''.join('<a href="%s"%s>%s</a>' % (h or './', ' aria-current="page"' if k == cur else '', t) for h, t, k in items) + '</div></nav>'
 
 def hero(img, alt, kick, h1, lede):
@@ -535,14 +564,14 @@ TIMELINE = [
  ('Today', 'Presence that restores', 'The Ellis Room, the food pantry, showers and haircuts, Bible study, Pop-Up Church and the DTS, all from the same 100-year-old building on Ellis Street.'),
 ]
 tl = ''.join(f'<li class="rv"><span class="yr">{y}</span><div><h3>{t}</h3><p>{d}</p></div></li>' for y, t, d in TIMELINE)
-who = hero(ph('signst', 2000), 'The YWAM San Francisco building at 357 Ellis Street', 'Who we are', 'We believe God loves San Francisco.', 'We believe God is pursuing real, transformational relationship with each and every person in our city, and we want to be a part of what God is already doing.') + subnav('who', '') + f'''
-<section class="pad"><div class="wrap"><span class="kick" style="text-align:center">Our mission</span><p class="lit" data-lit>Our mission is to engage San Francisco with a loving God.</p>
+who = subnav('who', '') + f'''
+<section class="pad" id="mission"><div class="wrap"><span class="kick" style="text-align:center">Our mission</span><p class="lit" data-lit>Our mission is to engage San Francisco with a loving God.</p>
 <p class="lede mission rv">We have a vision to birth unique, focused ministry throughout San Francisco, reaching each sphere of society in ways that are relevant and creative. In our city, mission is at our doorstep.</p></div></section>
-<section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How we engage the city</span><h2>Seven ways we show up.</h2></div>
+<section class="pad" id="engage" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How we engage the city</span><h2>Seven ways we show up.</h2></div>
 <ol class="ways rv">{"".join("<li>%s</li>" % w for w in WAYS)}<li class="q">In our city, mission is at our doorstep.</li></ol></div></section>
 <section class="pad" id="history"><div class="wrap hist"><div class="hist-head rv"><span class="kick">Our history</span><h2>Since 1987.</h2><blockquote>“The city of San Francisco is only 47 square miles in size, but its potential to reach the nations is endless.”</blockquote></div>
 <ol class="timeline">{tl}</ol></div></section>
-<section class="pad" style="background:var(--mist)"><div class="wrap family"><div class="rv"><span class="kick">Our family</span><h2>Part of something bigger.</h2><p class="lede">YWAM San Francisco is a non-profit and part of the YWAM San Francisco Bay Area family of ministries, which belongs to Youth With A Mission, a global, interdenominational movement of Christians from many cultures and churches.</p><div class="links-row"><a class="btn" href="https://ywamsfbayarea.org/" target="_blank" rel="noopener">YWAM SF Bay Area</a><a class="btn ghost" href="https://ywam.org/" target="_blank" rel="noopener">YWAM International</a></div></div>
+<section class="pad" id="family" style="background:var(--mist)"><div class="wrap family"><div class="rv"><span class="kick">Our family</span><h2>Part of something bigger.</h2><p class="lede">YWAM San Francisco is a non-profit and part of the YWAM San Francisco Bay Area family of ministries, which belongs to Youth With A Mission, a global, interdenominational movement of Christians from many cultures and churches.</p><div class="links-row"><a class="btn" href="https://ywamsfbayarea.org/" target="_blank" rel="noopener">YWAM SF Bay Area</a><a class="btn ghost" href="https://ywam.org/" target="_blank" rel="noopener">YWAM International</a></div></div>
 <div class="rings rv" aria-hidden="true"><span>Youth With A Mission</span><span>San Francisco Bay Area</span><span>YWAM San Francisco</span></div></div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Meet the people behind the work.</h2><p>Our staff serve on Ellis Street every day, with a board that helps guide and steward the ministry.</p><div class="row"><a class="btn light" href="people/">Staff &amp; Board</a><a class="btn ghost-light" href="../contact/">Contact us</a></div></div></section>
 '''
@@ -558,8 +587,8 @@ def face(p, w, cls='av'):
 lead = ''.join('<div class="person lead rv">' + face(p, 750, 'pp') + '<div class="pt"><h3>' + t(p.get('name')) + '</h3><p>' + t(p.get('role')) + '</p></div></div>' for p in STAFF.get('directors', []) if t(p.get('name')))
 teams_html = ''.join('<div class="crew rv"><h4>' + t(tm.get('name')) + '</h4><ul>' + ''.join('<li>' + face(p, 300) + t(p.get('name')) + '</li>' for p in tm.get('members', []) if t(p.get('name'))) + '</ul></div>' for tm in STAFF.get('teams', []) if tm.get('members'))
 board = ''.join('<article class="bm rv">%s<div><h3>%s</h3><small>%s</small><p>%s</p></div></article>' % (('<img src="%s" alt="%s" loading="lazy">' % (img(b.get('photo'), '../../', 500), t(b.get('name')))) if img(b.get('photo'), '../../', 500) else '<span class="bm-av">%s</span>' % t(initials(b.get('name'))), t(b.get('name')), t(b.get('role')), t(b.get('bio'))) for b in load('board.json').get('members', []) if t(b.get('name')))
-people = hero(ph('team', 2000), 'YWAM San Francisco staff and volunteers on outreach', 'Staff & Board', 'The people on Ellis Street.', 'A small team of staff, joined by students, volunteers and outreach teams, serves the Tenderloin every day. A board of experienced leaders helps steward the ministry.') + subnav('people', '../') + f'''
-<section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Leadership</span><h2>Our directors.</h2></div>
+people = subnav('people', '../') + f'''
+<section class="pad" id="staff"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Leadership</span><h2>Our directors.</h2></div>
 <div class="people4">{lead}</div>
 <div class="crews">{teams_html}</div></div></section>
 <section class="pad" style="background:var(--mist)" id="board"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Board of directors</span><h2>Guiding and stewarding the ministry.</h2><p class="lede">Our board brings decades of experience in missions, leadership and finance.</p></div>
@@ -583,20 +612,35 @@ POSTS = [
  ('lunch', 'Oct 22, 2019', 'Seniors of the TL', 'Stories from some of the Tenderloin’s longest-standing residents.', '/blog/2019/10/22/seniors-of-the-tl'),
 ]
 posts = ''.join(f'<a class="story rv" href="{LIVE}{u}" target="_blank" rel="noopener"><div class="ph"><img src="{ph(k,900)}" alt="" loading="lazy"></div><small class="date">{d}</small><h3>{t}</h3><p>{x}</p></a>' for k, d, t, x, u in POSTS)
-news = hero(ph('preach', 2000), 'Pop-Up Church on the sidewalk', 'News & Events', 'What’s happening on Ellis Street.', 'Updates from the ministry, stories from the neighborhood, and the gatherings anyone is welcome to join.') + subnav('news', '../') + f'''
-<section class="pad"><div class="wrap"><div class="update rv"><img src="{ph('timkarol',900)}" alt="Tim and Karol" loading="lazy"><div><span class="kick">Leadership update</span><h2>Thank you, Tim and Karol.</h2><p class="lede">After 18 faithful years leading YWAM in the Tenderloin, Tim and Karol are transitioning out of their leadership role. We’re deeply grateful for their years of love and service on Ellis Street.</p><a class="btn ghost" href="{LIVE}/blog" target="_blank" rel="noopener">Read the update</a></div></div></div></section>
-<section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Gatherings</span><h2>Come and join us.</h2><p class="lede">Everyone is welcome at 357 Ellis Street.</p></div>
+news = subnav('news', '../') + f'''
+<section class="pad" id="updates"><div class="wrap"><div class="update rv"><img src="{ph('timkarol',900)}" alt="Tim and Karol" loading="lazy"><div><span class="kick">Leadership update</span><h2>Thank you, Tim and Karol.</h2><p class="lede">After 18 faithful years leading YWAM in the Tenderloin, Tim and Karol are transitioning out of their leadership role. We’re deeply grateful for their years of love and service on Ellis Street.</p><a class="btn ghost" href="{LIVE}/blog" target="_blank" rel="noopener">Read the update</a></div></div></div></section>
+<section class="pad" id="events" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Gatherings</span><h2>Come and join us.</h2><p class="lede">Everyone is welcome at 357 Ellis Street.</p></div>
 <div class="events">
 {EVENTS}
 </div><div class="links-row"><a class="btn" href="{LIVE}/events" target="_blank" rel="noopener">See the events calendar</a></div></div></section>
-<section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">From the blog</span><h2>Stories from the street.</h2></div>
+<section class="pad" id="blog"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">From the blog</span><h2>Stories from the street.</h2></div>
 <div class="stories news-grid">{posts}</div>
-<div class="links-row"><a class="btn" href="{LIVE}/blog" target="_blank" rel="noopener">Read the blog</a><a class="btn ghost" href="{LIVE}/resources" target="_blank" rel="noopener">Resources</a></div></div></section>
+<div class="links-row"><a class="btn" href="{LIVE}/blog" target="_blank" rel="noopener">Read the blog</a><a class="btn ghost" href="../resources/">Resources</a></div></div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Be part of the next story.</h2><p>Serve a shift, bring a team, or give toward the work on Ellis Street.</p><div class="row"><a class="btn light" href="../../volunteer/">Volunteer</a><a class="btn ghost-light" href="../../give/">Give</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'about/news'), exist_ok=True)
 open(os.path.join(OUT, 'about/news/index.html'), 'w').write(page('News & Events — YWAM San Francisco', 'about', '../../', '../../../', news))
 
+
+# resources
+res_sections = ''.join('<section class="pad res-sec" id="%s"%s><div class="wrap res-grid"><div class="rv res-head"><span class="kick">%02d</span><h2>%s</h2><p>%s</p></div><ul class="rlist rv">%s</ul></div></section>' % (gid(g), ' style="background:var(--mist)"' if i % 2 == 0 else '', i + 1, t(g['title']), t(g.get('intro')), res_items(g)) for i, g in enumerate(RES_GROUPS))
+resources = subnav('resources', '../') + f'''
+<section class="pad yt-sec" id="youtube"><div class="wrap"><div class="yt-card rv">
+  <div class="yt-ic" aria-hidden="true">{YT_SVG}</div>
+  <div class="yt-copy"><span class="kick">Watch</span><h2>YWAM San Francisco on YouTube.</h2><p>Films from Ellis Street, stories from the neighborhood, DTS life and teaching on urban mission.</p></div>
+  <a class="btn" href="{YT_CHANNEL}" target="_blank" rel="noopener">Visit our YouTube channel ↗</a>
+</div>
+<nav class="res-jump rv" aria-label="Resource sections">{"".join('<a href="#%s">%s</a>' % (gid(g), t(g['title'])) for g in RES_GROUPS)}</nav></div></section>
+{res_sections}
+<section class="cta-band pad"><div class="wrap rv"><h2>Learn it on the streets, too.</h2><p>The best way to understand the city is to serve in it.</p><div class="row"><a class="btn light" href="../../course/">DTS (5 Month Course)</a><a class="btn ghost-light" href="../../volunteer/">Come volunteer</a></div></div></section>
+'''
+os.makedirs(os.path.join(OUT, 'about/resources'), exist_ok=True)
+open(os.path.join(OUT, 'about/resources/index.html'), 'w').write(page('Resources — YWAM San Francisco', 'about', '../../', '../../../', resources))
 
 # ---------------------------------------------------------------- PAY (placeholder until a payment processor is connected)
 pay = f'''

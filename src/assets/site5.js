@@ -414,3 +414,29 @@
 
 /* announcement bar: hide after its end date (San Francisco time) */
 (function () { var b = document.querySelector('.ann[data-until]'); if (!b) return; try { var t = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }); if (t > b.getAttribute('data-until')) b.remove(); } catch (e) {} })();
+/* About dropdown: tap to open on touch screens, Escape to close */
+(function () {
+  [].forEach.call(document.querySelectorAll('.tdd'), function (d) {
+    var b = d.querySelector('.tdd-btn');
+    function set(o) { d.classList.toggle('open', o); b.setAttribute('aria-expanded', String(o)); }
+    b.addEventListener('click', function (e) { if (matchMedia('(hover: none)').matches && !d.classList.contains('open')) { e.preventDefault(); set(true); } });
+    d.addEventListener('mouseenter', function () { b.setAttribute('aria-expanded', 'true'); });
+    d.addEventListener('mouseleave', function () { set(false); });
+    d.addEventListener('keydown', function (e) { if (e.key === 'Escape') { set(false); b.focus(); } });
+    document.addEventListener('click', function (e) { if (!d.contains(e.target)) set(false); });
+  });
+})();
+/* tabs (DTS resources) */
+(function () {
+  [].forEach.call(document.querySelectorAll('[data-tabs]'), function (box) {
+    var tabs = [].slice.call(box.querySelectorAll('[role=tab]'));
+    function show(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); }
+    tabs.forEach(function (t, i) {
+      t.tabIndex = i ? -1 : 0;
+      t.addEventListener('click', function () { show(t); });
+      t.addEventListener('keydown', function (e) { var k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (k) { e.preventDefault(); var n = tabs[(i + k + tabs.length) % tabs.length]; show(n); n.focus(); } });
+    });
+  });
+})();
+/* land exactly on a #section once images and reveals have settled */
+(function () { if (!location.hash || location.hash.length < 2) return; function go() { var el; try { el = document.querySelector(location.hash); } catch (e) {} if (el) el.scrollIntoView({ block: 'start' }); } addEventListener('load', function () { setTimeout(go, 60); setTimeout(go, 600); }); })();
