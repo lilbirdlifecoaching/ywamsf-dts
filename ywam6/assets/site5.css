@@ -1105,3 +1105,11 @@ html{scroll-padding-top:120px}
 @media (prefers-reduced-motion:reduce){.opt .dr path{transition:none}}
 /* round 33: vow windows always full colour, no light-up animation */
 .vf .art.glass .lit,.vow5:hover .vf .art.glass .lit,.vow5.in .vf .art.glass .lit{clip-path:none!important;-webkit-clip-path:none!important;transition:none;transform:none}
+/* round 34: staff photos */
+.person.lead{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.person .pp{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 25%;background:var(--fog)}
+.person span.pp{display:flex;align-items:center;justify-content:center;background:var(--slate);color:#fff;font:500 54px var(--display)}
+.person .pt{padding:18px 20px 22px}
+.crew .av{width:52px;height:52px;font-size:14px}
+.crew img.av{object-fit:cover;object-position:50% 25%;background:var(--fog)}
+@media (max-width:520px){.person .pp{aspect-ratio:1/1}}
