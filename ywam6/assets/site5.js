@@ -408,3 +408,5 @@
     var iv = setInterval(tick, 1000); tick();
   });
 })();
+
+(function(){var h=document.querySelector('.y5-head');if(!h)return;function t(){h.classList.toggle('scrolled',(window.scrollY||pageYOffset)>4)}addEventListener('scroll',t,{passive:true});t();})();

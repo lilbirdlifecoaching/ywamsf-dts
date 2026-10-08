@@ -962,3 +962,14 @@ img{max-width:100%}
 .cd-cta:hover{background:#f6cf94}
 @media (max-width:640px){.countdown{justify-content:center}.cd-units div{min-width:60px}.cd-units{gap:6px}}
 .board a.cd-cta{color:#1c2228}
+/* round 24: locked header (slate strip + menu), centered footer */
+.y5-head{position:sticky;top:0;z-index:60}
+.y5-head .y5-nav{position:relative;top:auto}
+.y5-nav .mini,.y5-nav.shadow .mini{display:none!important}
+@media (min-width:901px){.y5-nav .wrap{padding-left:24px}}
+.y5-nav.shadow{box-shadow:none}
+.y5-head.scrolled{box-shadow:0 8px 20px -14px rgba(0,0,0,.35)}
+html{scroll-padding-top:120px}
+.y5-foot .row{justify-content:center;text-align:center}
+.y5-foot .links{justify-content:center;width:100%}
+.y5-foot .addr{width:100%}
