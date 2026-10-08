@@ -1018,3 +1018,17 @@ html{scroll-padding-top:120px}
 .fld[hidden]{display:none}
 @media (max-width:860px){.pay-grid{grid-template-columns:1fr}}
 @media (max-width:520px){.pay-opts,.pay-card .two{grid-template-columns:1fr}}
+/* round 26: line drawings that draw themselves on hover */
+.card5.draw{position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s}
+.card5.draw .dr{display:block;width:84px;height:76px;margin:-4px 0 14px -6px;overflow:visible}
+.card5.draw .dr path{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;opacity:.25;transition:stroke-dashoffset 1.1s cubic-bezier(.6,.05,.3,1),opacity .4s}
+.card5.draw .dr path.r{stroke:var(--red)}
+.card5.draw .dr path:nth-child(2){transition-delay:.12s}.card5.draw .dr path:nth-child(3){transition-delay:.24s}.card5.draw .dr path:nth-child(4){transition-delay:.36s}.card5.draw .dr path:nth-child(5){transition-delay:.5s}.card5.draw .dr path:nth-child(6){transition-delay:.62s}
+.card5.draw:hover,.card5.draw:focus-within{transform:translateY(-6px);box-shadow:0 26px 44px -30px rgba(0,0,0,.45);border-color:var(--slate)}
+.card5.draw:hover .dr path,.card5.draw:focus-within .dr path{stroke-dashoffset:0;opacity:1}
+@media (hover:none){.card5.draw.in .dr path{stroke-dashoffset:0;opacity:1}}
+@media (prefers-reduced-motion:reduce){.card5.draw .dr path{transition:none;stroke-dashoffset:0;opacity:1}}
+.card5.draw .drw{position:relative;display:block;width:84px;height:76px;margin:-4px 0 14px -6px}
+.card5.draw .drw .dr{position:absolute;inset:0;margin:0}
+.card5.draw .dr.ghost path{stroke-dashoffset:0;opacity:.16;stroke-dasharray:none;transition:opacity .4s}
+.card5.draw:hover .dr.ghost path{opacity:0}
