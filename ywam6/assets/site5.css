@@ -1103,3 +1103,5 @@ html{scroll-padding-top:120px}
 .opt:hover .dr.ghost path,.opt input:checked+.o .dr.ghost path{opacity:0}
 .opt:hover .o{border-color:var(--slate)}
 @media (prefers-reduced-motion:reduce){.opt .dr path{transition:none}}
+/* round 33: vow windows always full colour, no light-up animation */
+.vf .art.glass .lit,.vow5:hover .vf .art.glass .lit,.vow5.in .vf .art.glass .lit{clip-path:none!important;-webkit-clip-path:none!important;transition:none;transform:none}
