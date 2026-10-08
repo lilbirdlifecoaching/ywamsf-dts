@@ -910,3 +910,10 @@ img{max-width:100%}
 .monastery .mon-sub:before{content:"";width:42px;height:1.5px;background:var(--red);flex:none}
 @media (max-width:600px){.monastery .mon-sub:before{display:none}}
 .monastery .mon-head{max-width:none}
+/* round 19: "Today" badge + subtle tint behind the volunteer carousel */
+.vol-ig{transition:background-color 1.4s ease}
+.ig-today{position:absolute;top:26px;left:26px;z-index:2;display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--ink);font:800 18px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;padding:12px 18px 12px 16px;border-radius:999px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
+.ig-today:before{content:"";width:12px;height:12px;border-radius:50%;background:#ff3a30;box-shadow:0 0 0 0 rgba(255,58,48,.6);animation:todayPulse 2s ease-out infinite}
+@keyframes todayPulse{0%{box-shadow:0 0 0 0 rgba(255,58,48,.6)}80%,100%{box-shadow:0 0 0 12px rgba(255,58,48,0)}}
+.shift-dots button.is-today:after{content:"Today";margin-left:8px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;background:#ff3a30;color:#fff;padding:2px 6px;border-radius:2px;vertical-align:1px}
+@media (prefers-reduced-motion:reduce){.ig-today:before{animation:none}.vol-ig{transition:none}}

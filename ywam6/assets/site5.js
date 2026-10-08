@@ -333,7 +333,19 @@
       $('[data-f="signup"]', panel).href = 'mailto:volunteer@ywamsanfrancisco.org?subject=' + encodeURIComponent(p.subject || p.title);
       [].forEach.call(dots.children, function (b, j) { b.setAttribute('aria-selected', i === j); });
     }
-    vstage.addEventListener('igcenter', function (e) { fill(e.detail.index); });
+    var vsec = vstage.closest('.vol-ig');
+    vstage.addEventListener('igcenter', function (e) { fill(e.detail.index); var t = P[e.detail.index % P.length].tint; if (vsec && t) vsec.style.backgroundColor = 'rgba(' + t + ',.09)'; });
+    function markToday() {
+      var now = sfNow(), DAY = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][now.getDay()], nth = Math.ceil(now.getDate() / 7);
+      [].forEach.call(vstage.querySelectorAll('.ig-card'), function (c, i) {
+        var p = YWAM_IG_POSTS[i]; if (!p || !p.days) return;
+        if (p.days.split(' ').indexOf(DAY) < 0) return;
+        if (p.rule === 'nth24' && [2, 4].indexOf(nth) < 0) return;
+        var b = document.createElement('span'); b.className = 'ig-today'; b.textContent = 'Today'; c.appendChild(b);
+      });
+      [].forEach.call(dots.children, function (b, i) { var p = P[i]; if (p && p.days && p.days.split(' ').indexOf(DAY) > -1 && (p.rule !== 'nth24' || [2, 4].indexOf(nth) > -1)) b.classList.add('is-today'); });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(markToday, 0); }); else setTimeout(markToday, 0);
     $$('tr[data-shift]').forEach(function (tr) { tr.addEventListener('click', function () { var b = dots.children[+tr.dataset.shift]; if (b) b.click(); }); });
     fill(0);
     vstage.addEventListener('click', function (e) {
