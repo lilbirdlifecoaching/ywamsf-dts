@@ -199,7 +199,7 @@ home = f'''
     <div class="fog" aria-hidden="true"><i></i><i></i><i></i></div>
   </div>
   <canvas class="rain" aria-hidden="true"></canvas>
-  <div class="dayctl" role="group" aria-label="Time of day on Ellis Street"><div class="dc-panel" id="dcpanel"><small><span>Midnight</span><span>Noon</span><span>Midnight</span></small><input type="range" min="0" max="1439" step="5" aria-label="Drag through the day on Ellis Street"><div class="dc-btns"><button type="button" class="dc-replay">Replay the day</button><button type="button" class="dc-live">Back to now</button></div></div><button type="button" class="dc-pill" aria-expanded="false" aria-controls="dcpanel"><span class="dc-dot" aria-hidden="true"></span><span class="dc-time">Ellis St</span><span class="dc-wx"></span></button></div>
+  <div class="dayctl" role="group" aria-label="Time of day on Ellis Street"><div class="dc-panel" id="dcpanel"><small><span>Midnight</span><span>Noon</span><span>Midnight</span></small><input type="range" min="0" max="1439" step="5" aria-label="Drag through the day on Ellis Street"><div class="dc-btns"><button type="button" class="dc-replay">Replay the day</button><button type="button" class="dc-live">Back to now</button></div></div><button type="button" class="dc-pill" aria-expanded="false" aria-controls="dcpanel"><span class="dc-dot" aria-hidden="true"></span><span class="dc-time">Ellis St</span><span class="dc-sep" aria-hidden="true"></span><span class="dc-ic" aria-hidden="true"></span><span class="dc-tmp"></span><span class="dc-wx"></span></button></div>
 </section>
 
 <section class="pad intro"><div class="wrap">

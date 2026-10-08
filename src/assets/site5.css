@@ -1184,3 +1184,13 @@ html{scroll-padding-top:120px}
 .neon-hero .sig{width:0;height:0}
 .neon-hero .sig:before{content:"";position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:radial-gradient(closest-side,var(--c),rgba(0,0,0,0));mix-blend-mode:screen}
 .neon-hero.dc .night>.sig.on{opacity:.9}
+/* round 39: weather in the clock pill */
+.dc-sep{width:1px;height:14px;background:rgba(255,255,255,.28);margin:0 1px}
+.dc-ic{display:inline-flex;width:18px;height:18px;margin-right:-3px}
+.dc-ic svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dc-ic svg .tw{stroke-width:1.2;opacity:.8}
+.dc-tmp{font:600 13px/1 var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums}
+.dc-tmp:empty{display:none}
+.dc-wx{text-transform:none;letter-spacing:.02em;font-size:12.5px}
+@media (max-width:420px){.dc-pill{gap:7px;padding:8px 12px 8px 10px}.dc-time{min-width:0}}
+@media (max-width:700px){.dayctl{top:12px;bottom:auto;right:12px}.dc-panel{top:calc(100% + 8px);bottom:auto;transform:translateY(-6px)}.dayctl.open .dc-panel{transform:none}}

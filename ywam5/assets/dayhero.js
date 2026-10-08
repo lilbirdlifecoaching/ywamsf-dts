@@ -94,10 +94,10 @@
     return w;
   }
   function loadWeather() {
-    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current=weather_code,cloud_cover&daily=sunrise,sunset&timezone=America%2FLos_Angeles&forecast_days=1';
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current=weather_code,cloud_cover,temperature_2m&temperature_unit=fahrenheit&daily=sunrise,sunset&timezone=America%2FLos_Angeles&forecast_days=1';
     return fetch(url, { cache: 'no-store', referrerPolicy: 'no-referrer' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.current) return;
-      wxReal = wxFrom(j.current.weather_code, j.current.cloud_cover);
+      wxReal = wxFrom(j.current.weather_code, j.current.cloud_cover); if (typeof j.current.temperature_2m === 'number') wxReal.temp = Math.round(j.current.temperature_2m); wxReal.storm = j.current.weather_code >= 95;
       try {
         var sr = j.daily.sunrise[0].split('T')[1].split(':'), ss = j.daily.sunset[0].split('T')[1].split(':');
         var a = +sr[0] + sr[1] / 60, b = +ss[0] + ss[1] / 60; if (a > 4 && a < 9 && b > 16 && b < 22) { SR = a; SS = b; }
@@ -154,10 +154,35 @@
 
   /* ---------------------------------------------------------------- clock control */
   var ctl = hero.querySelector('.dayctl'), tEl = ctl && ctl.querySelector('.dc-time'), wEl = ctl && ctl.querySelector('.dc-wx'), rng = ctl && ctl.querySelector('input'), liveB = ctl && ctl.querySelector('.dc-live'), repB = ctl && ctl.querySelector('.dc-replay'), tog = ctl && ctl.querySelector('.dc-pill');
+  /* weather icons: thin white line drawings to match the site */
+  var ICONS = {
+    sun: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+    moon: '<path d="M19.5 14.6A8 8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1z"/><path class="tw" d="M17.5 3.5v2M16.5 4.5h2"/>',
+    partsun: '<path d="M8.5 6.2V4.6M3.6 11H2M4.9 7.4 3.8 6.3M12.1 7.4l1.1-1.1"/><path d="M5.2 13.2a3.6 3.6 0 1 1 6.6-2.6"/><path d="M8.2 19.5h9.3a3.5 3.5 0 0 0 .3-7 5 5 0 0 0-9.6 1.4 2.8 2.8 0 0 0 0 5.6z"/>',
+    partmoon: '<path d="M11.8 9.6A4.6 4.6 0 0 1 6 3.8a4.6 4.6 0 1 0 5.8 5.8z"/><path d="M8.2 19.5h9.3a3.5 3.5 0 0 0 .3-7 5 5 0 0 0-9.6 1.4 2.8 2.8 0 0 0 0 5.6z"/>',
+    cloud: '<path d="M7 18.5h10.6a4 4 0 0 0 .4-8 5.6 5.6 0 0 0-10.8 1.6A3.2 3.2 0 0 0 7 18.5z"/>',
+    fog: '<path d="M7 13.5h10.6a3.6 3.6 0 0 0 .3-7.1 5 5 0 0 0-9.7 1.4A2.9 2.9 0 0 0 7 13.5z"/><path d="M4 17h12M8 20.5h12"/>',
+    rain: '<path d="M7 14.5h10.6a3.8 3.8 0 0 0 .4-7.6 5.3 5.3 0 0 0-10.3 1.5A3 3 0 0 0 7 14.5z"/><path d="M8.5 17.2l-1 2.6M12.5 17.2l-1 2.6M16.5 17.2l-1 2.6"/>',
+    storm: '<path d="M7 14h10.6a3.8 3.8 0 0 0 .4-7.6 5.3 5.3 0 0 0-10.3 1.5A3 3 0 0 0 7 14z"/><path d="M12.6 15.2 10.4 19h3l-1.8 3.2"/>'
+  };
+  var icEl = ctl && ctl.querySelector('.dc-ic'), tmpEl = ctl && ctl.querySelector('.dc-tmp'), lastIc = '';
+  function iconFor(w, night) {
+    var cl = Math.max(w.cloud, w.rain * .95);
+    if (w.storm && w.rain > .3) return ['storm', 'Storms'];
+    if (w.rain > .3) return ['rain', w.rain < .45 ? 'Drizzle' : w.rain < .7 ? 'Light rain' : 'Rain'];
+    if (w.fog > .4) return ['fog', 'Fog'];
+    if (cl >= .72) return ['cloud', 'Cloudy'];
+    if (cl > .32) return [night ? 'partmoon' : 'partsun', 'Partly cloudy'];
+    return [night ? 'moon' : 'sun', 'Clear'];
+  }
   function showClock(h, w, live) {
     if (!ctl) return;
     tEl.textContent = fmt(h);
-    wEl.textContent = live ? 'Now' + (w.label ? ' · ' + w.label : '') : (w.rain > .3 ? 'Rain' : w.fog > .4 ? 'Fog' : '');
+    var ic = iconFor(w, look(h).night > .5);
+    if (icEl && ic[0] !== lastIc) { lastIc = ic[0]; icEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[ic[0]] + '</svg>'; }
+    if (tmpEl) tmpEl.textContent = live && typeof w.temp === 'number' ? w.temp + '°' : '';
+    wEl.textContent = ic[1];
+    ctl.setAttribute('aria-label', 'Ellis Street, ' + fmt(h) + (live ? ', now' : '') + ': ' + ic[1] + (live && typeof w.temp === 'number' ? ', ' + w.temp + ' degrees' : ''));
     if (rng && document.activeElement !== rng) rng.value = Math.round((((h % 24) + 24) % 24) * 60);
     ctl.classList.toggle('live', !!live);
   }
