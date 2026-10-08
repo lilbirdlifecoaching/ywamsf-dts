@@ -154,7 +154,7 @@ SIGN = ('''<div class="spill" style="left:60px;top:150px;width:900px;height:640p
     <img class="tube wave" src="assets/img/neon-wave.png" alt="" style="left:185px;top:305px">
     <img class="tube text" src="assets/img/neon-text.png" alt="" style="left:185px;top:305px">''' if V == 5 else
  '''<div class="spill white" style="left:20px;top:110px;width:980px;height:700px"></div>
-    <img class="lit" src="assets/img/sign-lit.jpg" alt="" style="left:177px;top:285px;width:661px;height:367px">''')
+    <img class="lit" src="assets/img/sign-lit.png" alt="" style="left:177px;top:285px;width:661px;height:367px">''')
 if NX:
     _f = NX['_s'].strftime('%B ') + ordn(NX['_s'].day)
     CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="%s|%s" data-band="Next DTS · %s" data-flag="Our next 5-month adventure begins %s!" data-flag-cta="Check it out →" data-href="course/" aria-label="Our next 5-month adventure begins %s. Check out the DTS, our 5 Month Course."></div>' % (md(NX['_s']).upper(), md(NX['_e']).upper(), drange(NX['_s'], NX['_e']), _f, _f)
@@ -167,10 +167,12 @@ home = f'''
   <div class="frame" style="width:2500px;height:1424px">
     <img class="photo" src="assets/img/hero-ellis.jpg" alt="Ellis Street in the Tenderloin, with the YWAM San Francisco sign on the left" style="width:2500px;height:1424px">
     <div class="sky-c" aria-hidden="true"></div>
+    <div class="sky-w" aria-hidden="true"></div>
+    <div class="stars" aria-hidden="true"></div>
     <div class="sun-l" aria-hidden="true"><i class="sun"></i></div>
     <div class="tint" style="left:0;top:0;width:2500px;height:1424px"></div>
     <div class="sunwash" aria-hidden="true"></div>
-    <div class="wet" aria-hidden="true"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div>
+    <div class="wet" aria-hidden="true"></div>
     <div class="night" aria-hidden="true">
       <i class="win" style="left:1873px;top:462px;width:81px;height:72px;--d:3.0s"></i><i class="win" style="left:1885px;top:741px;width:77px;height:76px;--d:4.1s"></i><i class="win dim" style="left:1889px;top:872px;width:76px;height:79px;--d:5.2s"></i>
       <i class="win" style="left:2154px;top:576px;width:23px;height:154px;--d:3.6s"></i><i class="win dim" style="left:2108px;top:622px;width:15px;height:108px;--d:4.6s"></i><i class="win" style="left:1802px;top:480px;width:12px;height:67px;--d:3.3s"></i>
@@ -181,7 +183,7 @@ home = f'''
       <img class="sign" src="assets/img/n-coronado.png" alt="" style="left:611px;top:711px;--g:rgba(150,200,255,.7);--d:3.8s">
       <img class="sign" src="assets/img/n-mentone.png" alt="" style="left:805px;top:1071px;--g:rgba(255,120,90,.75);--d:4.9s">
     </div>
-    <img class="face" src="assets/img/sign-dim.jpg" alt="" style="left:177px;top:285px;width:661px;height:367px">
+    <img class="face" src="assets/img/sign-dim.png" alt="" style="left:177px;top:285px;width:661px;height:367px">
 {SIGN}
     <div class="fog" aria-hidden="true"><i></i><i></i><i></i></div>
   </div>

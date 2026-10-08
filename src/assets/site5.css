@@ -1170,3 +1170,10 @@ html{scroll-padding-top:120px}
 .dc-btns button:hover{background:rgba(255,255,255,.12)}
 @media (prefers-reduced-motion:reduce){.neon-hero.dc .on{animation:none!important;opacity:.85}.neon-hero .fog i{animation:none}.dayctl.live .dc-dot{animation:none}}
 .photo-stack.single img{left:0;top:0;width:100%;height:100%;border:0}
+/* round 37: softer sky edge (light wrap), stars, quieter wet street */
+.neon-hero .sky-w,.neon-hero .stars{left:0;top:0;width:2500px;height:1424px;pointer-events:none}
+.neon-hero .sky-w{mix-blend-mode:soft-light;opacity:.85;-webkit-mask:url(img/hero-sky-wrap.png) 0 0/100% 100% no-repeat;mask:url(img/hero-sky-wrap.png) 0 0/100% 100% no-repeat}
+.neon-hero .stars{opacity:0;mix-blend-mode:screen;background:url(img/hero-stars.png) 0 0/100% 100% no-repeat;-webkit-mask:url(img/hero-sky-mask.png) 0 0/100% 100% no-repeat;mask:url(img/hero-sky-mask.png) 0 0/100% 100% no-repeat;animation:twinkle 7s ease-in-out infinite alternate}
+@keyframes twinkle{0%{filter:brightness(1)}50%{filter:brightness(.82)}100%{filter:brightness(1.08)}}
+.neon-hero .wet{background:linear-gradient(180deg,rgba(150,170,190,0),rgba(170,185,200,.12))}
+@media (prefers-reduced-motion:reduce){.neon-hero .stars{animation:none}}

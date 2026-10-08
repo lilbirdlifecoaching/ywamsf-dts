@@ -9,7 +9,7 @@
   if (!hero || !window.requestAnimationFrame) return;
   var frame = hero.querySelector('.frame'), photo = hero.querySelector('.photo'), tint = hero.querySelector('.tint');
   var skyC = hero.querySelector('.sky-c'), sun = hero.querySelector('.sun'), wash = hero.querySelector('.sunwash');
-  var fog = hero.querySelector('.fog'), wet = hero.querySelector('.wet'), face = hero.querySelector('.face');
+  var skyW = hero.querySelector('.sky-w'), stars = hero.querySelector('.stars'), fog = hero.querySelector('.fog'), wet = hero.querySelector('.wet'), face = hero.querySelector('.face');
   if (!frame || !photo || !skyC) return;
   hero.classList.add('dc');
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -137,6 +137,8 @@
     var grey = mixc([150, 158, 168], [30, 34, 44], L.night);
     var top = mixc(L.top, grey, cl * .75), bot = mixc(L.bot, mixc(grey, [200, 204, 210], .4 * (1 - L.night)), cl * .7);
     skyC.style.background = 'linear-gradient(180deg,' + rgb(top) + ' 0%,' + rgb(bot) + ' 78%)';
+    if (skyW) skyW.style.background = skyC.style.background;
+    if (stars) stars.style.opacity = (Math.max(0, Math.min(1, (L.night - .55) / .45)) * (1 - cl) * (1 - Math.min(1, w.fog * 1.4)) * .9).toFixed(3);
     var br = L.br * (1 - .1 * cl) * (1 - .12 * w.rain) * (1 - .06 * w.fog), sat = L.sat * (1 - .25 * cl);
     photo.style.filter = 'brightness(' + br.toFixed(3) + ') saturate(' + sat.toFixed(3) + ') contrast(' + (1.02 + .05 * L.night).toFixed(3) + ')';
     tint.style.background = 'linear-gradient(180deg,' + rgb(L.gc, L.gs) + ',' + rgb(L.gc, L.gs * .35) + ' 60%,' + rgb(L.gc, L.gs * 1.1) + ')';
@@ -144,7 +146,7 @@
     if (sun) { sun.style.opacity = sunA.toFixed(3); sun.style.transform = 'translate(' + sx.toFixed(0) + 'px,' + sy.toFixed(0) + 'px)'; }
     if (wash) wash.style.opacity = (L.gold * (1 - cl * .8) * .9).toFixed(3);
     if (fog) fog.style.opacity = Math.min(1, w.fog).toFixed(3);
-    if (wet) { wet.style.opacity = Math.min(1, w.rain * 1.2).toFixed(3); wet.classList.toggle('lit', L.night > .5); }
+    if (wet) wet.style.opacity = Math.min(1, w.rain * 1.1).toFixed(3);
     setLights(L.night);
     rainAmt = w.rain; rainNight = L.night; kickRain();
     return L;
