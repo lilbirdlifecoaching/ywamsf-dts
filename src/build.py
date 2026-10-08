@@ -182,6 +182,17 @@ home = f'''
       <img class="sign" src="assets/img/n-hotel-r.png" alt="" style="left:1958px;top:778px;--g:rgba(255,70,60,.85);--d:4.4s">
       <img class="sign" src="assets/img/n-coronado.png" alt="" style="left:611px;top:711px;--g:rgba(150,200,255,.7);--d:3.8s">
       <img class="sign" src="assets/img/n-mentone.png" alt="" style="left:805px;top:1071px;--g:rgba(255,120,90,.75);--d:4.9s">
+      <img class="sign far" src="assets/img/n-far-blade.png" alt="" style="left:1097px;top:1017px;--g:rgba(255,80,70,.8);--d:4.2s">
+      <img class="sign far" src="assets/img/n-far-maroon.png" alt="" style="left:1052px;top:1072px;--g:rgba(255,90,90,.6);--d:4.7s">
+      <img class="sign far" src="assets/img/n-far-cyan.png" alt="" style="left:1078px;top:1106px;--g:rgba(90,220,255,.6);--d:3.9s">
+      <img class="sign far" src="assets/img/n-far-blue.png" alt="" style="left:1103px;top:1108px;--g:rgba(150,200,255,.55);--d:5.1s">
+      <img class="sign far" src="assets/img/n-far-ok.png" alt="" style="left:975px;top:1086px;--g:rgba(255,240,170,.55);--d:4.4s">
+      <img class="sign far" src="assets/img/n-far-red.png" alt="" style="left:980px;top:1183px;--g:rgba(255,120,110,.5);--d:5.3s">
+      <img class="sign far" src="assets/img/n-far-banner.png" alt="" style="left:1624px;top:958px;--g:rgba(120,170,255,.25);--d:4.0s">
+      <img class="sign far" src="assets/img/n-pepsi.png" alt="" style="left:1930px;top:1050px;--g:rgba(140,200,255,.55);--d:3.7s">
+      <img class="sign far" src="assets/img/n-liquor.png" alt="" style="left:1928px;top:1101px;--g:rgba(255,236,190,.5);--d:4.5s">
+      <i class="lamp xs" style="left:1100px;top:963px;--d:2.7s"></i><i class="lamp xs" style="left:1081px;top:904px;--d:3.1s"></i><i class="lamp xs" style="left:1603px;top:997px;--d:2.9s"></i>
+      <i class="sig" style="left:1722px;top:1185px;--c:rgba(70,255,180,.95);--d:2.8s"></i><i class="sig" style="left:1376px;top:1242px;--c:rgba(255,90,60,.95);--d:3.0s"></i>
     </div>
     <img class="face" src="assets/img/sign-dim.png" alt="" style="left:177px;top:285px;width:661px;height:367px">
 {SIGN}

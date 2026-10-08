@@ -1177,3 +1177,10 @@ html{scroll-padding-top:120px}
 @keyframes twinkle{0%{filter:brightness(1)}50%{filter:brightness(.82)}100%{filter:brightness(1.08)}}
 .neon-hero .wet{background:linear-gradient(180deg,rgba(150,170,190,0),rgba(170,185,200,.12))}
 @media (prefers-reduced-motion:reduce){.neon-hero .stars{animation:none}}
+/* round 38: distant lamps, signs and traffic lights */
+.neon-hero .sign.far{filter:drop-shadow(0 0 2px var(--g)) drop-shadow(0 0 7px var(--g))}
+.neon-hero .lamp.xs:before{left:-7px;top:-3px;width:14px;height:7px;box-shadow:0 0 9px 4px rgba(255,214,150,.12)}
+.neon-hero .lamp.xs:after{left:-26px;top:3px;width:52px;height:70px}
+.neon-hero .sig{width:0;height:0}
+.neon-hero .sig:before{content:"";position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:radial-gradient(closest-side,var(--c),rgba(0,0,0,0));mix-blend-mode:screen}
+.neon-hero.dc .night>.sig.on{opacity:.9}
