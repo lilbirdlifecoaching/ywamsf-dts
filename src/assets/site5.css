@@ -1287,3 +1287,15 @@ html.tb .icard .ic .a{fill:var(--rust)}
 html.tb .icard .ic .a.s{fill:none;stroke:var(--rust)}
 html.tb .yt-ic svg path,html.tb .yt-btn svg path{fill:var(--rust)}
 html.tb .dc-play svg{fill:var(--rust)}
+/* round 44: green cable car — smaller, no lettering; distant skyline sits low and light on the horizon */
+.cc-strip .cc{--cc-h:clamp(210px,17vw,270px);--cc-car-max:108px;--cc-sky-o:.42}
+.cc-strip .cc-sky{left:50%;width:min(1100px,82%);top:auto;bottom:13%;height:64%;margin-left:calc(min(1100px,82%) / -2);background-size:contain;background-repeat:no-repeat;background-position:center bottom;transform-origin:center bottom;-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+.cc-strip .cc-flag{font-size:clamp(16px,1.6vw,23px)}
+.cc-strip .cc-flag b{font-size:clamp(10px,.85vw,12px)}
+.cc-strip .cc-car{bottom:calc(13% - var(--ch) * .015)}
+@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(190px,26vw,240px);--cc-car-max:92px}.cc-strip .cc-sky{width:92%;margin-left:-46%}}
+@media (max-width:640px){.cc-strip .cc{--cc-h:180px;--cc-car-max:84px}.cc-strip .cc-sky{width:120%;margin-left:-60%;height:58%}}
+.cc-strip .cc{--cc-h:clamp(190px,14.5vw,232px)}
+.cc-strip .cc-sky{height:74%}
+@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(180px,24vw,220px)}}
+@media (max-width:640px){.cc-strip .cc{--cc-h:170px}.cc-strip .cc-sky{height:66%}}
