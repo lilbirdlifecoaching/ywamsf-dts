@@ -6,9 +6,11 @@
 (function () {
   var here = (document.currentScript && document.currentScript.src) || '';
   var DIR = here ? here.replace(/[^\/]*$/, '') + 'cablecar/' : 'cablecar/';
-  // geometry of car-green.webp (pixels): the green cable car, straightened to a true side view
-  var IW = 1300, IH = 555;
-  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'skyline.webp\')"></div>';
+  // geometry of car-55.webp (pixels): car #55 cut out of the painting, true side view
+  var IW = 1300, IH = 493;
+  // painted city: Transamerica end pinned left, Golden Gate end pinned right, a repeating hazy skyline between,
+  // so the city always spans the full width of the strip
+  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'city-left.webp\'),url(\'' + DIR + 'city-right.webp\'),url(\'' + DIR + 'city-mid.webp\')"></div>';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function pct(v, of) { return (v / of * 100).toFixed(3) + '%'; }
@@ -28,7 +30,7 @@
       '<a class="cc-car" href="' + esc(href) + '" aria-label="' + esc(label) + '">' +
         '<span class="cc-banner" aria-hidden="true"><span class="cc-flag">' + esc(flag) + (cta ? '<b>' + esc(cta) + '</b>' : '') + '</span><span class="cc-tow"><i></i><i></i></span></span>' +
         '<span class="cc-body">' +
-          '<img class="cc-img" src="' + DIR + 'car-green.webp" alt="" draggable="false">' +
+          '<img class="cc-img" src="' + DIR + 'car-55.webp" alt="" draggable="false">' +
           '<span class="cc-ding" aria-hidden="true"><i></i><i></i></span>' +
         '</span>' +
       '</a>';
@@ -51,7 +53,6 @@
     function draw() {
       var x = posAt(t);
       car.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
-      if (sky) sky.style.transform = 'translate3d(' + (-(x - xStart) * 0.02).toFixed(2) + 'px,0,0)';
       el.classList.toggle('cc-dinging', t > T_IN + 0.2 && t < T_IN + 1.5 && ((t * 4) % 1) < 0.55);
     }
     function frame(now) {
