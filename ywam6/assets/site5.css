@@ -1300,11 +1300,11 @@ html.tb .dc-play svg{fill:var(--rust)}
 @media (max-width:960px){.cc-strip .cc{--cc-h:clamp(180px,24vw,220px)}}
 @media (max-width:640px){.cc-strip .cc{--cc-h:170px}.cc-strip .cc-sky{height:66%}}
 
-/* round 46: original skyline stretched edge to edge, same background as the intro above, no tracks */
+/* round 47: painted city, larger, Transamerica only on the left, no tracks, intro background */
 .cc-strip{background:transparent}
-.cc-strip .cc{background:transparent;border:0;border-radius:0;padding:0;display:block;--cc-h:clamp(190px,15vw,250px);--cc-car-max:100px;--cc-sky-o:.5}
-.cc-strip .cc-sky{left:0;width:100%;margin-left:0;transform:none!important;top:auto;bottom:0;height:min(100%,calc(100vw / 9.25));background-size:cover;background-repeat:no-repeat;background-position:center bottom;-webkit-mask-image:none;mask-image:none}
+.cc-strip .cc{background:transparent;border:0;border-radius:0;padding:0;display:block;--cc-h:clamp(240px,20vw,320px);--cc-car-max:96px;--cc-sky-o:1}
+.cc-strip .cc-sky{left:0;width:100%;margin-left:0;transform:none!important;top:auto;bottom:0;height:100%;background-size:auto 100%,auto 100%,auto 100%;background-repeat:no-repeat,repeat-x,no-repeat;background-position:right 1.5% bottom,center bottom,9% bottom;-webkit-mask-image:none;mask-image:none}
 .cc-strip .cc-street{display:none}
-.cc-strip .cc-car{bottom:calc(var(--ch) * .05)}
-@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(170px,24vw,210px);--cc-car-max:86px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:100%}}
-@media (max-width:640px){.cc-strip .cc{--cc-h:160px;--cc-car-max:78px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:100%}}
+.cc-strip .cc-car{bottom:calc(var(--ch) * .06)}
+@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(210px,28vw,260px);--cc-car-max:84px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:100%}}
+@media (max-width:640px){.cc-strip .cc{--cc-h:190px;--cc-car-max:74px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:100%;background-position:right 1% bottom,center bottom,4% bottom}}
