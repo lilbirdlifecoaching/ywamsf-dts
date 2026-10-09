@@ -8,9 +8,8 @@
   var DIR = here ? here.replace(/[^\/]*$/, '') + 'cablecar/' : 'cablecar/';
   // geometry of car-55.webp (pixels): car #55 cut out of the painting, true side view
   var IW = 1300, IH = 493;
-  // painted city: Transamerica end pinned left, Golden Gate end pinned right, a repeating hazy skyline between,
-  // so the city always spans the full width of the strip
-  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'city-left.webp\'),url(\'' + DIR + 'city-right.webp\'),url(\'' + DIR + 'city-mid.webp\')"></div>';
+  // the original grey skyline, widened so it can stretch edge to edge
+  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'skyline-wide.webp\')"></div>';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function pct(v, of) { return (v / of * 100).toFixed(3) + '%'; }

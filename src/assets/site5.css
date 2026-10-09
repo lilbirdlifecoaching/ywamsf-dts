@@ -1300,12 +1300,11 @@ html.tb .dc-play svg{fill:var(--rust)}
 @media (max-width:960px){.cc-strip .cc{--cc-h:clamp(180px,24vw,220px)}}
 @media (max-width:640px){.cc-strip .cc{--cc-h:170px}.cc-strip .cc-sky{height:66%}}
 
-/* round 45: painted city from car #55 painting, full width */
-.cc-strip{background:linear-gradient(180deg,#F6F1E8,#F1EADF)}
-.cc-strip .cc{--cc-h:clamp(200px,15vw,250px);--cc-car-max:104px;--cc-sky-o:1;--cc-road:#B9B1A3;--cc-rail:#6E675C}
-.cc-strip .cc{background:transparent;border:0;border-radius:0;padding:0;display:block}
-.cc-strip .cc-sky{left:0;width:100%;margin-left:0;transform:none!important;top:auto;bottom:12.5%;height:86%;background-position:left bottom,right 1.5% bottom,center bottom;background-size:auto 100%,auto 100%,auto 86%;background-repeat:no-repeat,no-repeat,repeat-x;-webkit-mask-image:none;mask-image:none}
-.cc-strip .cc-street:before{background:rgba(255,255,255,.35)}
-.cc-strip .cc-rail{opacity:.55}.cc-strip .cc-slot{opacity:.35}
-@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(180px,24vw,220px);--cc-car-max:88px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:86%}}
-@media (max-width:640px){.cc-strip .cc{--cc-h:170px;--cc-car-max:80px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:84%}}
+/* round 46: original skyline stretched edge to edge, same background as the intro above, no tracks */
+.cc-strip{background:transparent}
+.cc-strip .cc{background:transparent;border:0;border-radius:0;padding:0;display:block;--cc-h:clamp(190px,15vw,250px);--cc-car-max:100px;--cc-sky-o:.5}
+.cc-strip .cc-sky{left:0;width:100%;margin-left:0;transform:none!important;top:auto;bottom:0;height:min(100%,calc(100vw / 9.25));background-size:cover;background-repeat:no-repeat;background-position:center bottom;-webkit-mask-image:none;mask-image:none}
+.cc-strip .cc-street{display:none}
+.cc-strip .cc-car{bottom:calc(var(--ch) * .05)}
+@media (max-width:960px){.cc-strip .cc{--cc-h:clamp(170px,24vw,210px);--cc-car-max:86px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:100%}}
+@media (max-width:640px){.cc-strip .cc{--cc-h:160px;--cc-car-max:78px}.cc-strip .cc-sky{left:0;width:100%;margin-left:0;height:100%}}
