@@ -99,7 +99,7 @@ LIVE = 'https://www.ywamsanfrancisco.org'
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'Ellis Room', 'neighbors')]
 
-TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('pay/', 'Pay', 'pay'), ('contact/', 'Connect with us', 'contact')]
+TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('pay/', 'Pay Fees', 'pay'), ('contact/', 'Connect with us', 'contact')]
 ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
 def header(cur, up):
     links = ''.join('<a href="%s%s"%s>%s</a>' % (up, h, ' aria-current="page"' if k == cur else '', t) for h, t, k in NAV)
@@ -123,12 +123,22 @@ def footer(up, root):
 <div class="concept">{CONCEPT}</div></div></div></div>
 {sw}'''
 
+BASE = os.environ.get('SITE_BASE') or 'https://ywamembers.org/ywam%d/' % V
+def meta_for(title):
+    m = META.get(title)
+    if not m: return title, '', '', 'assets/img/hero-ellis.jpg'
+    return m
 def page(title, cur, up, root, body, extra_head='', scripts=''):
+    title, desc, path, shot = meta_for(title)
+    url = BASE + path
+    seo = ('<meta name="description" content="%s"><link rel="canonical" href="%s">'
+           '<meta property="og:type" content="website"><meta property="og:site_name" content="YWAM San Francisco"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta name="twitter:card" content="summary_large_image">') % (t(desc), url, t(title), t(desc), url, BASE + shot) if desc else ''
+    title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
     return wire(f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<html lang="en"{' class="tb"' if V == 6 else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
-<title>{title}</title><link rel="icon" type="image/png" href="{root}favicon.png">
+<title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="{css}">{extra_head}</head><body>
 {banner_html()}{header(cur, up)}
@@ -152,15 +162,33 @@ def wire(h, up):
 
 def esc(s): return html.escape(s, quote=True)
 
+ALT_PH = {'blog_church': 'Hot chocolate, cookies and worship on the sidewalk on a Sunday morning', 'blog_food': 'Fresh groceries handed out at the food pantry', 'blog_cocoa': 'Hot chocolate outreach on a Tenderloin corner', 'night': 'The Ellis Room lit up on a rainy night', 'xmas': 'Neighbors around one long table at Christmas lunch', 'lunch': 'Neighbors sharing a community lunch'}
+# ---------------------------------------------------------------- PAGE TITLES & DESCRIPTIONS (search + sharing)
+_nx_date = (NX['_s'].strftime('%B ') + str(NX['_s'].day) + ', ' + str(NX['_s'].year)) if NX else ''
+META = {
+ 'HOME': ('YWAM San Francisco | Christian Nonprofit in the Tenderloin', 'Youth With A Mission San Francisco is a Christian nonprofit serving the Tenderloin: food pantry, the Ellis Room, outreach, volunteering and discipleship training.', '', 'assets/img/hero-ellis.jpg'),
+ 'Come Volunteer — YWAM San Francisco': ('Volunteer in San Francisco | Food Pantry & Outreach | YWAM SF', 'Serve with YWAM San Francisco in the Tenderloin: the Thursday food pantry, the Ellis Room, hot chocolate outreach, Pop-Up Church and more. Pick a shift and sign up.', 'volunteer/', 'assets/img/vol-header.jpg'),
+ 'Bring a Team — YWAM San Francisco': ('San Francisco Mission Trips for Church & Youth Teams | YWAM SF', "Bring your church, youth group or school to serve in San Francisco's Tenderloin. Housing, meals, orientation and ministry included, from %s per person per day." % money(MA_RATE), 'teams/', 'assets/img/team-overlook.jpg'),
+ 'DTS (5 Month Course) — YWAM San Francisco': ('Discipleship Training School (DTS) in San Francisco | YWAM SF', "A 5-month Discipleship Training School in San Francisco's Tenderloin: 3 months of training, then 2 months of outreach. " + ('Next school starts %s.' % _nx_date if NX else 'New school dates coming soon.'), 'course/', 'assets/img/phase-training.jpg'),
+ 'The Ellis Room — YWAM San Francisco': ('The Ellis Room: Community Space in the Tenderloin | YWAM SF', 'A safe place in the Tenderloin for coffee, showers, haircuts, Bible study and friendship, plus a free food pantry every Thursday at 357 Ellis Street.', 'ellis-room/', 'assets/img/er-hero.jpg'),
+ 'Who We Are — YWAM San Francisco': ('About YWAM San Francisco | Youth With A Mission Since 1987', 'Youth With A Mission San Francisco has served the city since 1987, and the Tenderloin from 357 Ellis Street since 1995. Our mission, history and family.', 'about/', 'assets/img/hero-ellis.jpg'),
+ 'Staff & Board — YWAM San Francisco': ('Staff & Board | YWAM San Francisco', "Meet the directors, staff and board who lead YWAM San Francisco's ministry in the Tenderloin, from neighborhood engagement to training and outreach.", 'about/people/', 'assets/img/team-overlook.jpg'),
+ 'News & Events — YWAM San Francisco': ('News & Events | YWAM San Francisco', 'Updates from YWAM San Francisco, stories from the Tenderloin, and community gatherings everyone is welcome to join at 357 Ellis Street.', 'about/news/', 'assets/img/er-room.jpg'),
+ 'Resources — YWAM San Francisco': ('Urban Mission Resources & Videos | YWAM San Francisco', "Articles, video teaching and guides on urban mission and San Francisco, including Tim Svoboda's series on the strategic nature of cities and our YouTube channel.", 'about/resources/', 'assets/img/hero-ellis.jpg'),
+ 'Give — YWAM San Francisco': ('Give to YWAM San Francisco | Support the Tenderloin', "Support food, showers and outreach in San Francisco's Tenderloin. Give online, by check, bank transfer, stock or in-kind gifts. Tax-deductible for U.S. donors.", 'give/', 'assets/img/er-room.jpg'),
+ 'Pay — YWAM San Francisco': ('Pay DTS & Mission Adventures Fees | YWAM San Francisco', 'Pay school or team trip fees for a DTS student or Mission Adventures participant. For general donations to YWAM San Francisco, please use our Give page.', 'pay/', 'assets/img/phase-training.jpg'),
+ 'Contact Us — YWAM San Francisco': ('Contact YWAM San Francisco | 357 Ellis St, Tenderloin', 'Visit, call or email YWAM San Francisco at 357 Ellis Street in the Tenderloin. Reach the right team for volunteering, mission trips, DTS or giving.', 'contact/', 'assets/img/er-door.jpg'),
+}
+
 # ---------------------------------------------------------------- HOME
 IG = load('instagram.json').get('posts', [])
 ig_js = 'window.YWAM_IG_POSTS=' + js([{'img': img(x.get('photo'), '', 750), 'caption': str(x.get('caption') or ''), 'href': lnk(x.get('url'), 'https://www.instagram.com/ywamsf/', raw=True)} for x in IG if img(x.get('photo'), '', 750)]) + ';'
 
 SIGN = ('''<div class="spill" style="left:60px;top:150px;width:900px;height:640px"></div>
-    <img class="tube wave" src="assets/img/neon-wave.png" alt="" style="left:185px;top:305px">
-    <img class="tube text" src="assets/img/neon-text.png" alt="" style="left:185px;top:305px">''' if V == 5 else
+    <img class="tube wave" src="assets/img/neon-wave.png" alt="" aria-hidden="true" style="left:185px;top:305px">
+    <img class="tube text" src="assets/img/neon-text.png" alt="" aria-hidden="true" style="left:185px;top:305px">''' if V == 5 else
  '''<div class="spill white" style="left:20px;top:110px;width:980px;height:700px"></div>
-    <img class="lit" src="assets/img/sign-lit.png" alt="" style="left:177px;top:285px;width:661px;height:367px">''')
+    <img class="lit" src="assets/img/sign-lit.png" alt="" aria-hidden="true" style="left:177px;top:285px;width:661px;height:367px">''')
 if NX:
     _f = NX['_s'].strftime('%B ') + ordn(NX['_s'].day)
     CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="%s|%s" data-band="Next DTS · %s" data-flag="Our next 5-month adventure begins %s!" data-flag-cta="Check it out →" data-href="course/" aria-label="Our next 5-month adventure begins %s. Check out the DTS, our 5 Month Course."></div>' % (md(NX['_s']).upper(), md(NX['_e']).upper(), drange(NX['_s'], NX['_e']), _f, _f)
@@ -200,7 +228,7 @@ home = f'''
       <i class="lamp xs" style="left:1100px;top:963px;--d:2.7s"></i><i class="lamp xs" style="left:1081px;top:904px;--d:3.1s"></i><i class="lamp xs" style="left:1603px;top:997px;--d:2.9s"></i>
       <i class="sig" style="left:1722px;top:1185px;--c:rgba(70,255,180,.95);--d:2.8s"></i><i class="sig" style="left:1376px;top:1242px;--c:rgba(255,90,60,.95);--d:3.0s"></i>
     </div>
-    <img class="face" src="assets/img/sign-dim.png" alt="" style="left:177px;top:285px;width:661px;height:367px">
+    <img class="face" src="assets/img/sign-dim.png" alt="" aria-hidden="true" style="left:177px;top:285px;width:661px;height:367px">
 {SIGN}
     <div class="fog" aria-hidden="true"><i></i><i></i><i></i></div>
   </div>
@@ -222,15 +250,15 @@ home = f'''
 <section class="wall-sec pad"><div class="wrap wall-grid">
   <div class="wall rv" data-qframe data-w="1400" data-h="1167" style="aspect-ratio:1400/1167">
     <img class="bg" src="assets/img/ellis-front.jpg" alt="The YWAM San Francisco building at 357 Ellis Street, with the film playing in its front window">
-    <div class="screen" data-quad="166,729 634,711 634,1009 166,989"><img class="poster" src="{ph('still', 750)}" alt=""></div>
+    <div class="screen" data-quad="166,729 634,711 634,1009 166,989"><img class="poster" src="{ph('still', 750)}" alt="Opening frame of the YWAM San Francisco film"></div>
     <div class="pane" data-quad="166,729 634,711 634,1009 166,989" aria-hidden="true"></div>
-    <img class="occ" src="assets/img/ellis-front-occ.png" alt="" style="left:9.857%;top:76.864%;width:14.857%">
+    <img class="occ" src="assets/img/ellis-front-occ.png" alt="" aria-hidden="true" style="left:9.857%;top:76.864%;width:14.857%">
     <button class="play" data-film style="left:79%;top:93.5%"><i></i>Watch the film</button>
   </div>
   <div class="rv">
     <span class="kick">Now showing on Ellis Street</span>
     <p class="vision">We envision a Tenderloin where neighbors and the neighborhood are <em>renewed</em>, and where the Church is mobilized to share the love of Christ.</p>
-    <p>Two minutes inside YWAM San Francisco: the people, the street, and the everyday work of loving our neighbors.</p>
+    <p id="film-desc">Two minutes inside YWAM San Francisco: the people, the street, and the everyday work of loving our neighbors in the Tenderloin.</p>
     <button class="btn" data-film>▶ Play full screen</button>
   </div>
 </div></section>
@@ -268,11 +296,11 @@ home = f'''
   <div class="ig-stage" data-ig tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
 </section>
 
-<div class="lightbox" role="dialog" aria-modal="true" aria-label="YWAM San Francisco film"><div class="box"><iframe title="YWAM San Francisco film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
+<div class="lightbox" role="dialog" aria-modal="true" aria-label="YWAM San Francisco film" aria-describedby="film-desc"><div class="box"><iframe title="YWAM San Francisco film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
 '''
 home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/cablecar.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
 os.makedirs(OUT, exist_ok=True)
-open(os.path.join(OUT, 'index.html'), 'w').write(page('YWAM San Francisco — Concept %d' % V, 'home', '', '../', home, scripts=home_scripts))
+open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../', home, scripts=home_scripts))
 
 # ---------------------------------------------------------------- VOLUNTEER
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]
@@ -335,9 +363,9 @@ teams = f'''
   <div class="cards3"><div class="card5 rv draw"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 30h52v34H14z"/><path pathLength="1" d="M30 30v-7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v7"/><path pathLength="1" d="M14 44h52"/><path pathLength="1" d="M34 40v8M46 40v8"/><path pathLength="1" class="r" d="M58 18l14 6-6 14-14-6z"/><path pathLength="1" class="r" d="M61 25l5 2"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 30h52v34H14z"/><path pathLength="1" d="M30 30v-7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v7"/><path pathLength="1" d="M14 44h52"/><path pathLength="1" d="M34 40v8M46 40v8"/><path pathLength="1" class="r" d="M58 18l14 6-6 14-14-6z"/><path pathLength="1" class="r" d="M61 25l5 2"/></svg></span><h3>All-inclusive</h3><p>We take care of the details so leaders can focus on their students and the ministry at hand.</p></div><div class="card5 rv draw"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 56c10-4 20-4 30 2 10-6 20-6 30-2V22c-10-4-20-4-30 2-10-6-20-6-30-2z"/><path pathLength="1" d="M40 24v34"/><path pathLength="1" class="r" d="M40 22c0-8 0-12-2-16"/><path pathLength="1" class="r" d="M39 12c-6-2-10 0-12 4 5 2 9 0 12-4zM40 9c4-4 9-4 12-1-3 4-8 4-12 1z"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 56c10-4 20-4 30 2 10-6 20-6 30-2V22c-10-4-20-4-30 2-10-6-20-6-30-2z"/><path pathLength="1" d="M40 24v34"/><path pathLength="1" class="r" d="M40 22c0-8 0-12-2-16"/><path pathLength="1" class="r" d="M39 12c-6-2-10 0-12 4 5 2 9 0 12-4zM40 9c4-4 9-4 12-1-3 4-8 4-12 1z"/></svg></span><h3>Discipleship focused</h3><p>Every part of the trip helps participants grow in their relationship with Jesus.</p></div><div class="card5 rv draw"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M6 62h68"/><path pathLength="1" d="M10 62V40h10v22M20 62V30h12v32M32 62V44h8v18M48 62V34h10v28M58 62V46h12v16"/><path pathLength="1" d="M24 36h4M24 42h4M24 48h4M52 40h3M52 46h3"/><path pathLength="1" class="r" d="M40 44V14M33 22h14"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M6 62h68"/><path pathLength="1" d="M10 62V40h10v22M20 62V30h12v32M32 62V44h8v18M48 62V34h10v28M58 62V46h12v16"/><path pathLength="1" d="M24 36h4M24 42h4M24 48h4M52 40h3M52 46h3"/><path pathLength="1" class="r" d="M40 44V14M33 22h14"/></svg></span><h3>Urban mission field</h3><p>The Tenderloin is a unique place to learn how the Gospel changes lives in real time.</p></div><div class="card5 rv draw"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 18h60v46H10z"/><path pathLength="1" d="M10 30h60"/><path pathLength="1" d="M24 12v10M56 12v10"/><path pathLength="1" d="M20 40h4M32 40h4M44 40h4M56 40h4M20 52h4M32 52h4"/><path pathLength="1" class="r" d="M30 50h22"/><path pathLength="1" class="r" d="M30 46v8M52 46v8"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 18h60v46H10z"/><path pathLength="1" d="M10 30h60"/><path pathLength="1" d="M24 12v10M56 12v10"/><path pathLength="1" d="M20 40h4M32 40h4M44 40h4M56 40h4M20 52h4M32 52h4"/><path pathLength="1" class="r" d="M30 50h22"/><path pathLength="1" class="r" d="M30 46v8M52 46v8"/></svg></span><h3>Flexible times</h3><p>Come for a weekend, a week, or longer.</p></div></div>
 </div></section>
 <section class="pad"><div class="wrap"><div class="rv" style="margin-bottom:30px"><span class="kick">Stories from the street</span><h2>What your team <em>will step into.</em></h2></div>
-  <div class="stories"><a class="story rv" href="{LIVE}/blog/2026/1/19/church-that-shows-up" target="_blank" rel="noopener"><div class="ph"><img src="{ph('blog_church',900)}" alt="" loading="lazy"></div><h3>Church that shows up</h3><p>Hot chocolate, cookies and worship on the sidewalk every Sunday.</p></a>
-  <a class="story rv" href="{LIVE}/blog/2026/1/19/feeding-our-city-with-hope" target="_blank" rel="noopener"><div class="ph"><img src="{ph('blog_food',900)}" alt="" loading="lazy"></div><h3>Feeding our city with hope</h3><p>More than 300 people a week, met with fresh food and warm smiles.</p></a>
-  <a class="story rv" href="{LIVE}/blog/2026/1/14/hot-chocolate-a-simple-ministry-making-a-real-impact-in-san-francisco" target="_blank" rel="noopener"><div class="ph"><img src="{ph('blog_cocoa',900)}" alt="" loading="lazy"></div><h3>Hot chocolate</h3><p>A simple ministry making a real impact, one conversation at a time.</p></a></div>
+  <div class="stories"><a class="story rv" href="{LIVE}/blog/2026/1/19/church-that-shows-up" target="_blank" rel="noopener"><div class="ph"><img src="{ph('blog_church',900)}" alt="{ALT_PH['blog_church']}" loading="lazy"></div><h3>Church that shows up</h3><p>Hot chocolate, cookies and worship on the sidewalk every Sunday.</p></a>
+  <a class="story rv" href="{LIVE}/blog/2026/1/19/feeding-our-city-with-hope" target="_blank" rel="noopener"><div class="ph"><img src="{ph('blog_food',900)}" alt="{ALT_PH['blog_food']}" loading="lazy"></div><h3>Feeding our city with hope</h3><p>More than 300 people a week, met with fresh food and warm smiles.</p></a>
+  <a class="story rv" href="{LIVE}/blog/2026/1/14/hot-chocolate-a-simple-ministry-making-a-real-impact-in-san-francisco" target="_blank" rel="noopener"><div class="ph"><img src="{ph('blog_cocoa',900)}" alt="{ALT_PH['blog_cocoa']}" loading="lazy"></div><h3>Hot chocolate</h3><p>A simple ministry making a real impact, one conversation at a time.</p></a></div>
 </div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Gather your team. Pray. <em>Say yes.</em></h2><p>We’ll take care of the rest. Email <a style="color:#fff" href="mailto:{OEMAIL}">{OEMAIL}</a> or call {PHONE}.</p><div class="row"><a class="btn light" href="{TEAM_FORM}" target="_blank" rel="noopener">Book your trip</a><a class="btn ghost-light" href="mailto:{OEMAIL}">Ask a question</a></div></div></section>
 '''
@@ -419,7 +447,7 @@ VOWS = [('god', 'i.', 'Love of God', 'We stay rooted in Him.', 'Before anyone op
         ('neighbor', 'ii.', 'Love of Neighbor', 'We practice compassionate presence.', 'You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That’s ministry too.'),
         ('humility', 'iii.', 'Humility in Action', 'We look first to the interests of others.', 'Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone’s face.'),
         ('multiply', 'iv.', 'Formation that Multiplies', 'We are disciples forming disciples.', 'A one-on-one with your mentor over coffee. Small group after dinner. What you’re learning becomes something you can pass on.')]
-vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" loading="lazy"><small>On an ordinary Tuesday</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
+vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>On an ordinary Tuesday</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
 HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scripture, silence and prayer for each other and for the block. We get rooted before we go out."),
          ("8:00", 480, "One table", "Breakfast together", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
          ("9:00", 540, "Teaching", "Speaker of the week", "Worship, then a new teacher each week on the character of God, identity, hearing His voice, the nations, justice and mercy."),
@@ -430,11 +458,12 @@ HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scrip
          ("21:00", 1260, "Rest", "…or the night shift", "Most nights, rest. Some rain nights the Ellis Room stays lit until morning.")]
 day = ''.join(f'<button type="button" class="hr" style="--x:{i/(len(HOURS)-1)*100:.2f}%" data-i="{i}"><span class="dot"></span><b>{t}</b><span class="nm">{n}</span></button>' for i, (t, m, n, s2, d) in enumerate(HOURS))
 day_data = js([{'t': t, 'n': n, 's': s2, 'd': d} for t, m, n, s2, d in HOURS])
+PHASE_ALT = {'local:phase-training': 'Students listening to a teaching session in a brick-walled classroom', 'team': 'An outreach team with backpacks on a city sidewalk', 'local:phase-debrief': 'Four students laughing together on a bench outdoors'}
 PHASES = [('i.', 'Training', 'About 3 months · San Francisco', 'local:phase-training', 'Weekly teaching and worship, small groups, one-on-one mentorship and local ministry in the Tenderloin, with a new speaker every week.'),
           ('ii.', 'Outreach', 'About 2 months · the cities of the world', 'team', 'Travel as a team to put what you’ve learned into practice, serving alongside local churches and ministries in urban centers.'),
           ('iii.', 'Debrief', 'The final days', 'local:phase-debrief', 'Reflect on all God has done and prepare for your next season, whether that’s work, college, joining YWAM or wherever He leads.')]
 def pimg(k): return '../assets/img/' + k[6:] + '.jpg' if k.startswith('local:') else ph(k, 900)
-phases = ''.join(f'<div class="phase rv"><div class="pimg"><img src="{pimg(img)}" alt="" loading="lazy"><span>{n}</span></div><h3>{t}</h3><small>{w}</small><p>{d}</p></div>' for n, t, w, img, d in PHASES)
+phases = ''.join(f'<div class="phase rv"><div class="pimg"><img src="{pimg(img)}" alt="{PHASE_ALT.get(img, "")}" loading="lazy"><span>{n}</span></div><h3>{t}</h3><small>{w}</small><p>{d}</p></div>' for n, t, w, img, d in PHASES)
 TESTI_REAL = [x for x in load('testimonials.json').get('testimonials', []) if t(x.get('quote'))]
 TESTI = [('Student story', 'DTS alumni quote goes here: one or two sentences in their own words about what changed.', 'Name · DTS year'),
          ('Student story', 'A second voice. Ideally someone who came unsure and left with a clearer sense of who God is.', 'Name · DTS year'),
@@ -611,7 +640,7 @@ POSTS = [
  ('xmas', 'Christmas', '209 neighbors at Christmas lunch', 'Thank you to the many volunteers who came and helped serve one long table.', '/blog'),
  ('lunch', 'Oct 22, 2019', 'Seniors of the TL', 'Stories from some of the Tenderloin’s longest-standing residents.', '/blog/2019/10/22/seniors-of-the-tl'),
 ]
-posts = ''.join(f'<a class="story rv" href="{LIVE}{u}" target="_blank" rel="noopener"><div class="ph"><img src="{ph(k,900)}" alt="" loading="lazy"></div><small class="date">{d}</small><h3>{t}</h3><p>{x}</p></a>' for k, d, t, x, u in POSTS)
+posts = ''.join(f'<a class="story rv" href="{LIVE}{u}" target="_blank" rel="noopener"><div class="ph"><img src="{ph(k,900)}" alt="{ALT_PH.get(k, "")}" loading="lazy"></div><small class="date">{d}</small><h3>{t}</h3><p>{x}</p></a>' for k, d, t, x, u in POSTS)
 news = subnav('news', '../') + f'''
 <section class="pad" id="updates"><div class="wrap"><div class="update rv"><img src="{ph('timkarol',900)}" alt="Tim and Karol" loading="lazy"><div><span class="kick">Leadership update</span><h2>Thank you, Tim and Karol.</h2><p class="lede">After 18 faithful years leading YWAM in the Tenderloin, Tim and Karol are transitioning out of their leadership role. We’re deeply grateful for their years of love and service on Ellis Street.</p><a class="btn ghost" href="{LIVE}/blog" target="_blank" rel="noopener">Read the update</a></div></div></div></section>
 <section class="pad" id="events" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Gatherings</span><h2>Come and join us.</h2><p class="lede">Everyone is welcome at 357 Ellis Street.</p></div>
@@ -645,7 +674,7 @@ open(os.path.join(OUT, 'about/resources/index.html'), 'w').write(page('Resources
 # ---------------------------------------------------------------- PAY (placeholder until a payment processor is connected)
 pay = f'''
 <section class="pay-sec"><div class="wrap pay-grid">
-  <div class="pay-intro rv"><span class="kick">Pay</span><h1>Make a payment.</h1>
+  <div class="pay-intro rv"><span class="kick">Pay fees · students &amp; teams</span><h1>Make a payment.</h1>
     <p class="lede">Pay school or trip fees for yourself or someone else. Choose what it’s for, tell us who it’s for, and we’ll make sure it’s applied to the right person.</p>
     <ul class="pay-notes"><li>Payments go straight to a student’s or participant’s account.</li><li>To support our work in general, please <a href="../give/">give here</a> instead.</li><li>Questions? Email <a href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</li></ul></div>
   <form class="pay-card rv" id="payform" novalidate>

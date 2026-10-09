@@ -1272,3 +1272,18 @@ main>.subnav:first-child + .pad{padding-top:clamp(40px,5vw,72px)}
 .rlist li{display:flex}.rlist .rlink{flex:1}
 /* round 42: nav row shares the top strip's edges: links under the logo, Sign Me Up under "Connect with us" */
 @media (min-width:901px){.y5-nav .wrap{padding-left:var(--pad,24px);justify-content:flex-start}.y5-nav .links{flex:1}.y5-nav .links .sign{margin-left:auto}}
+/* round 43: YWAM 6 in YWAM SF blue (html.tb). Deep blue = main accent, logo blue = thin details, red = secondary */
+html.tb{--red:#006D8C;--red-dk:#00566F;--sky:#01BCDE;--rust:#9A1E14}
+html.tb .btn.ghost:hover{background:rgba(0,109,140,.07)}
+html.tb .day.today{box-shadow:0 18px 30px -20px rgba(0,109,140,.5)}
+html.tb .cc-strip{--cc-flag-edge:#006D8C}
+/* the bright logo blue for hairlines and small marks only (never text) */
+html.tb .y5-nav a:after,html.tb .monastery .mon-sub:before,html.tb .rtab-list button[aria-selected="true"]{background:var(--sky);border-bottom-color:var(--sky)}
+html.tb .rtab-list button[aria-selected="true"]{background:none}
+html.tb .card5.gw .go,html.tb .deeper-foot a{border-bottom-color:var(--sky)}
+/* red, kept as the secondary colour: small icon accents and the YouTube mark */
+html.tb .card5.draw .dr path.r,html.tb .opt .dr path.r{stroke:var(--rust)}
+html.tb .icard .ic .a{fill:var(--rust)}
+html.tb .icard .ic .a.s{fill:none;stroke:var(--rust)}
+html.tb .yt-ic svg path,html.tb .yt-btn svg path{fill:var(--rust)}
+html.tb .dc-play svg{fill:var(--rust)}
