@@ -129,6 +129,7 @@ def footer(up, root):
     sw = '<nav class="switcher" aria-label="Design concepts"><span>Concepts</span>' + ''.join('<a href="%sywam%d/"><i>YWAM </i>%d</a>' % (root, i, i) for i in range(1, 5)) + ''.join('<a%s href="%sywam%d/"><i>YWAM </i>%d</a>' % (' class="on"' if i == V else '', root, i, i) for i in (5, 6)) + '</nav>'
     return f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
 <div class="links"><a href="{LIVE}/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
+<div class="tag">Presence that restores.</div>
 <div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div>
 <div class="concept">{CONCEPT}</div></div></div></div>
 {sw}'''
@@ -181,7 +182,7 @@ META = {
  'Bring a Team — YWAM San Francisco': ('San Francisco Mission Trips for Church & Youth Teams | YWAM SF', "Bring your church, youth group or school to serve in San Francisco's Tenderloin. Housing, meals, orientation and ministry included, from %s per person per day." % money(MA_RATE), 'teams/', 'assets/img/team-overlook.jpg'),
  'DTS (5 Month Course) — YWAM San Francisco': ('Discipleship Training School (DTS) in San Francisco | YWAM SF', "A 5-month Discipleship Training School in San Francisco's Tenderloin: 3 months of training, then 2 months of outreach. " + ('Next school starts %s.' % _nx_date if NX else 'New school dates coming soon.'), 'course/', 'assets/img/phase-training.jpg'),
  'The Ellis Room — YWAM San Francisco': ('The Ellis Room: Community Space in the Tenderloin | YWAM SF', 'A safe place in the Tenderloin for coffee, showers, haircuts, Bible study and friendship, plus a free food pantry every Thursday at 357 Ellis Street.', 'ellis-room/', 'assets/img/er-hero.jpg'),
- 'Who We Are — YWAM San Francisco': ('About YWAM San Francisco | Youth With A Mission Since 1987', 'Youth With A Mission San Francisco has served the city since 1987, and the Tenderloin from 357 Ellis Street since 1995. Our mission, history and family.', 'about/', 'assets/img/hero-ellis.jpg'),
+ 'Who We Are — YWAM San Francisco': ('About YWAM San Francisco | Youth With A Mission Since 1987', 'Rooted in the way of Jesus, YWAM San Francisco restores lives, forms whole persons and equips believers in the Tenderloin. Our mission, values and history.', 'about/', 'assets/img/hero-ellis.jpg'),
  'Staff & Board — YWAM San Francisco': ('Staff & Board | YWAM San Francisco', "Meet the directors, staff and board who lead YWAM San Francisco's ministry in the Tenderloin, from neighborhood engagement to training and outreach.", 'about/people/', 'assets/img/team-overlook.jpg'),
  'News & Events — YWAM San Francisco': ('News & Events | YWAM San Francisco', 'Updates from YWAM San Francisco, stories from the Tenderloin, and community gatherings everyone is welcome to join at 357 Ellis Street.', 'about/news/', 'assets/img/er-room.jpg'),
  'Resources — YWAM San Francisco': ('Urban Mission Resources & Videos | YWAM San Francisco', "Articles, video teaching and guides on urban mission and San Francisco, including Tim Svoboda's series on the strategic nature of cities and our YouTube channel.", 'about/resources/', 'assets/img/hero-ellis.jpg'),
@@ -276,6 +277,7 @@ home = f'''
 <section class="engage pad"><div class="wrap">
   <span class="kick rv">The Ellis Room · greatest hits</span>
   <h2 class="rv">Neighborhood engagement</h2>
+  <p class="engage-sub rv">The relational heart of the mission: presence, outreach, spaces and connections.</p>
   <div class="reel" aria-label="Ministry highlights"><div class="reel-track">{REEL}</div></div>
   <div class="reel-nav"><button class="reel-prev" aria-label="Previous">←</button><div class="reel-dots"></div><button class="reel-next" aria-label="Next">→</button></div>
 </div></section>
@@ -454,10 +456,10 @@ SVG = {
  'humility': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="124" rx="74" ry="8" class="glow"/><path d="M44 84h112l-12 32a8 8 0 0 1-8 6H64a8 8 0 0 1-8-6z" class="ln fillm"/><ellipse cx="100" cy="84" rx="56" ry="8" class="ln water"/><path d="M118 30h22a6 6 0 0 1 6 6v34" class="ln"/><path d="M130 36v40c0 5 6 7 10 4" class="ln fillm"/><path d="M134 46h8M134 56h8M134 66h8" class="ln thin"/><path d="M70 66c6-4 6-10 0-14M84 66c6-4 6-10 0-14" class="ln thin"/></svg>''',
  'multiply': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="128" rx="64" ry="7" class="glow"/><path d="M100 128V60" class="ln"/><path d="M100 96c-18-2-30-12-34-28 16 0 30 10 34 28zM100 84c18-2 30-12 34-28-16 0-30 10-34 28zM100 66c-12-2-20-10-22-22 11 1 20 9 22 22zM100 60c10-4 16-12 16-24-10 3-16 12-16 24z" class="ln leaf"/><circle cx="58" cy="118" r="5" class="seed"/><circle cx="142" cy="118" r="5" class="seed"/><circle cx="40" cy="124" r="3" class="seed"/><circle cx="160" cy="124" r="3" class="seed"/><path d="M58 113v-8c-4-2-6-6-6-10M142 113v-8c4-2 6-6 6-10" class="ln thin"/></svg>''',
 }
-VOWS = [('god', 'i.', 'Love of God', 'We stay rooted in Him.', 'Before anyone opens a door or a laptop, we’re in prayer: for each other, for the neighborhood, for the person we’ll meet by lunch.'),
+VOWS = [('god', 'i.', 'Love of God', 'We stay rooted in God.', 'Before anyone opens a door or a laptop, we’re in prayer: for each other, for the neighborhood, for the person we’ll meet by lunch.'),
         ('neighbor', 'ii.', 'Love of Neighbor', 'We practice compassionate presence.', 'You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That’s ministry too.'),
         ('humility', 'iii.', 'Humility in Action', 'We look first to the interests of others.', 'Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone’s face.'),
-        ('multiply', 'iv.', 'Formation that Multiplies', 'We are disciples forming disciples.', 'A one-on-one with your mentor over coffee. Small group after dinner. What you’re learning becomes something you can pass on.')]
+        ('multiply', 'iv.', 'Formation that Multiplies', 'We form disciples who form disciples.', 'A one-on-one with your mentor over coffee. Small group after dinner. What you’re learning becomes something you can pass on.')]
 vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>On an ordinary Tuesday</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
 HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scripture, silence and prayer for each other and for the block. We get rooted before we go out."),
          ("8:00", 480, "One table", "Breakfast together", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
@@ -540,7 +542,7 @@ dts = f'''
 </div></section>
 
 <section class="pad rule5" style="background:var(--mist)"><div class="wrap">
-  <div class="rv rule5-head"><div><span class="kick">Our rule of life</span><h2>Four vows. One rhythm.</h2></div><p>Every monastery has a rule. Ours is short. Turn a card over to see what it looks like on an ordinary Tuesday.</p></div>
+  <div class="rv rule5-head"><div><span class="kick">Our rule of life</span><h2>Four vows. One rhythm.</h2></div><p>Every monastery has a rule. Ours is YWAM San Francisco’s four values. Turn a card over to see what each looks like on an ordinary Tuesday.</p></div>
   <div class="vows5">{vows}</div>
   <div class="daybar rv" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
     <div class="sky"><div class="sun"></div>{day}</div>
@@ -603,12 +605,30 @@ TIMELINE = [
  ('2008', 'A full house', 'Two DTSs a year, Mission Adventures teams, Oakdale Youth House, the Street Team, a Discipleship Training Program and an Urban Internship.'),
  ('Today', 'Presence that restores', 'The Ellis Room, the food pantry, showers and haircuts, Bible study, Pop-Up Church and the DTS, all from the same 100-year-old building on Ellis Street.'),
 ]
+VALUES = [('Love of God', 'We draw life from Jesus through worship, Scripture, prayer, and healthy relationships.', 'We stay rooted in God.'),
+          ('Love of Neighbor', 'We show up for our neighbors through listening, welcome, and shared life.', 'We practice compassionate presence.'),
+          ('Humility in Action', 'We embrace every task as sacred and serve with joy and humility.', 'We look first to the interests of others.'),
+          ('Formation that Multiplies', 'We grow as followers of Jesus and help others do the same.', 'We form disciples who form disciples.')]
+VALS = ''.join(f'<li><h3>{a}</h3><p>{b}</p><p><b>{c}</b></p></li>' for a, b, c in VALUES)
+PILLARS = ''.join(f'<div><small>{a}</small><h3>{b}</h3><p>{c}</p></div>' for a, b, c in [
+    ('Community', 'Building relationships', 'We create spaces where neighbors experience belonging and friendship.'),
+    ('Resources', 'Connecting to support', 'We help neighbors access practical services and long-term pathways.'),
+    ('Church', 'Equipping &amp; mobilizing believers', 'We prepare and empower the Church for compassionate ministry in the Tenderloin.')])
+EXPR = ''.join(f'<a class="card5 rv" href="{h}"><h3>{a}</h3><p>{b}</p><span class="go">{g} →</span></a>' for a, b, h, g in [
+    ('Neighborhood engagement', 'The relational heart of the mission: presence, outreach, spaces and connections.', '../ellis-room/', 'The Ellis Room'),
+    ('Hosting &amp; hospitality', 'We welcome and equip teams, volunteers and guests as partners in ministry.', '../teams/', 'Bring a team'),
+    ('Training programs', 'We form disciples who live, serve and grow in the Tenderloin.', '../course/', 'The DTS')])
 tl = ''.join(f'<li class="rv"><span class="yr">{y}</span><div><h3>{t}</h3><p>{d}</p></div></li>' for y, t, d in TIMELINE)
 who = subnav('who', '') + f'''
-<section class="pad" id="mission"><div class="wrap"><span class="kick" style="text-align:center">Our mission</span><p class="lit" data-lit>Our mission is to engage San Francisco with a loving God.</p>
-<p class="lede mission rv">We have a vision to birth unique, focused ministry throughout San Francisco, reaching each sphere of society in ways that are relevant and creative. In our city, mission is at our doorstep.</p></div></section>
-<section class="pad" id="engage" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How we engage the city</span><h2>Seven ways we show up.</h2></div>
-<ol class="ways rv">{"".join("<li>%s</li>" % w for w in WAYS)}<li class="q">In our city, mission is at our doorstep.</li></ol></div></section>
+<section class="pad" id="mission"><div class="wrap"><span class="kick" style="text-align:center">Our mission</span><p class="lit" data-lit>Rooted in the way of Jesus, we seek to restore lives, form whole persons, and equip believers to be a compassionate and courageous presence in the world.</p>
+<div class="vision2 rv"><span class="kick">Our vision</span><p>We envision a Tenderloin where neighbors and the neighborhood are <em>renewed</em>, and where the Church is mobilized to share the love of Christ.</p></div></div></section>
+<section class="pad" id="values" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Our values</span><h2>Four movements that shape us.</h2><p class="lede">They shape our life with God, our posture toward neighbors, and our commitment to multiply disciples.</p></div>
+<ol class="vals rv">{VALS}</ol></div></section>
+<section class="pad" id="engage"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">How we live the mission</span><h2>Three pillars.</h2></div>
+<div class="pillars3 rv">{PILLARS}</div>
+<div class="rv" style="margin:clamp(48px,6vw,72px) 0 22px"><span class="kick">Where it happens</span><h3>Three ways to be part of it.</h3></div>
+<div class="phases expr3">{EXPR}</div></div></section>
+<section class="pad heart" style="background:var(--mist)"><div class="wrap"><span class="kick" style="text-align:center">Our heart</span><p class="lit" data-lit>We believe Jesus is renewing the Tenderloin: one person, one relationship, one act of love at a time.</p></div></section>
 <section class="pad" id="history"><div class="wrap hist"><div class="hist-head rv"><span class="kick">Our history</span><h2>Since 1987.</h2><blockquote>“The city of San Francisco is only 47 square miles in size, but its potential to reach the nations is endless.”</blockquote></div>
 <ol class="timeline">{tl}</ol></div></section>
 <section class="pad" id="family" style="background:var(--mist)"><div class="wrap family"><div class="rv"><span class="kick">Our family</span><h2>Part of something bigger.</h2><p class="lede">YWAM San Francisco is a non-profit and part of the YWAM San Francisco Bay Area family of ministries, which belongs to Youth With A Mission, a global, interdenominational movement of Christians from many cultures and churches.</p><div class="links-row"><a class="btn" href="https://ywamsfbayarea.org/" target="_blank" rel="noopener">YWAM SF Bay Area</a><a class="btn ghost" href="https://ywam.org/" target="_blank" rel="noopener">YWAM International</a></div></div>
