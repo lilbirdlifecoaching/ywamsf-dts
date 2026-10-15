@@ -9,7 +9,9 @@
   // geometry of car-55.webp (pixels): car #55 cut out of the painting, true side view
   var IW = 1300, IH = 493;
   // painted city from the car #55 painting: Golden Gate pinned right, Transamerica on the left, painted skyline repeating between
-  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'city-right.webp\'),url(\'' + DIR + 'city-mid.webp\'),url(\'' + DIR + 'city-ta.webp\')"></div>';
+  // YWAM 6 (html.tb) sits on a white page, so it gets layers whose mist fades to white instead of fog grey
+  var HZ = document.documentElement.classList.contains('tb') ? '-w' : '';
+  var SKYLINE = '<div class="cc-sky" aria-hidden="true" style="background-image:url(\'' + DIR + 'city-right' + HZ + '.webp\'),url(\'' + DIR + 'city-mid' + HZ + '.webp\'),url(\'' + DIR + 'city-ta.webp\')"></div>';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function pct(v, of) { return (v / of * 100).toFixed(3) + '%'; }

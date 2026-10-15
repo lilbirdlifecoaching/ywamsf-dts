@@ -18,7 +18,17 @@ _h = hashlib.sha1()
 for d, _, fs in sorted(os.walk(os.path.join(ROOT, 'src', 'assets'))):
     for f in sorted(fs):
         if f.endswith(('.css', '.js')): _h.update(open(os.path.join(d, f), 'rb').read())
+# YWAM 6 brand palette (Oct 2026): white page, logo cyan as the anchor, deep teal for weight, red only for tiny "today" marks.
+# The shared stylesheet is written for YWAM 5's fog palette; YWAM 6 gets the same file with these colour literals swapped.
+TB_SWAP = [('rgba(234,237,240,', 'rgba(255,255,255,'), ('#dfe6ec', '#E3F3F5'), ('rgba(154,30,20,', 'rgba(11,126,144,'),
+           ('#ff3a30', '#C81D1B'), ('rgba(255,58,48,', 'rgba(200,29,27,'), ('rgba(70,83,97,', 'rgba(8,64,79,'),
+           ('rgba(247,248,249,', 'rgba(241,248,249,')]
+if V == 6: _h.update(repr(TB_SWAP).encode())
 VER = _h.hexdigest()[:10]
+if V == 6:
+    _cp = os.path.join(OUT, 'assets', 'site5.css'); _css = open(_cp).read()
+    for a, b in TB_SWAP: _css = _css.replace(a, b)
+    open(_cp, 'w').write(_css)
 
 # ---------------------------------------------------------------- CONTENT (edited in /admin)
 def js(o): return json.dumps(o).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
@@ -374,6 +384,7 @@ open(os.path.join(OUT, 'teams/index.html'), 'w').write(page('Bring a Team — YW
 
 # ---------------------------------------------------------------- SERVING OUR NEIGHBORS
 CAT = {'room': ('#465361', 'Ellis Room'), 'word': ('#9A1E14', 'Church & Bible study'), 'care': ('#6E9CBF', 'Showers, haircuts & care'), 'food': ('#C99634', 'Food'), 'out': ('#2E7D6B', 'Street & SRO outreach')}
+if V == 6: CAT = {'room': ('#08404F', CAT['room'][1]), 'word': ('#0B7E90', CAT['word'][1]), 'care': ('#24AFBE', CAT['care'][1]), 'food': ('#C99634', CAT['food'][1]), 'out': ('#86B6BE', CAT['out'][1])}
 DN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 WEEK = {d: [] for d in range(7)}
 for e in load('ellis_week.json').get('entries', []):
