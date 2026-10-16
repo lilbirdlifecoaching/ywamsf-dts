@@ -1,0 +1,35 @@
+{
+  "intro": "Five months is a long time to be somewhere new. Here’s the place you’ll call home.",
+  "places": [
+    {
+      "title": "The city",
+      "text": "San Francisco packs fog, hills, ocean and dozens of neighborhoods into 47 square miles. On days off, students head for the Golden Gate, Ocean Beach, Chinatown and the trails of the Presidio.",
+      "photo": "uploads/life-city.jpg"
+    },
+    {
+      "title": "The neighborhood",
+      "text": "The Tenderloin sits in the middle of downtown, a few blocks from Union Square. It’s home to families, immigrants, seniors and neighbors walking through hard seasons. It’s loud and it’s real, and it’s where you’ll learn your neighbors by name.",
+      "photo": "uploads/life-neighborhood.jpg"
+    },
+    {
+      "title": "The building",
+      "text": "357 Ellis Street has been our home since 1995. The Ellis Room fills the ground floor: coffee, pool, conversation and a welcome for anyone who walks in.",
+      "photo": "uploads/life-building.jpg"
+    },
+    {
+      "title": "Where you’ll live",
+      "text": "You’ll live at 357 Ellis with the rest of your school, sharing rooms, chores and the everyday stuff of community. Staff are on site, so help is never far away.",
+      "photo": "uploads/life-home.jpg"
+    },
+    {
+      "title": "Where you’ll eat",
+      "text": "Meals are planned and shared at the base, around one table with YWAM staff. Everyone takes a turn in the kitchen and at the sink.",
+      "photo": "uploads/life-table.jpg"
+    },
+    {
+      "title": "Where you’ll learn",
+      "text": "Teaching happens in our classroom on site, with a different speaker each week. Then you work it out on the street, in small groups and over coffee with your mentor.",
+      "photo": "uploads/life-classroom.jpg"
+    }
+  ]
+}

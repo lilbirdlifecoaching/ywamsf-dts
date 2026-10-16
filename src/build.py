@@ -403,9 +403,9 @@ nb = f'''
 <section class="pad"><div class="wrap"><p class="lit" data-lit>Everyone has value. Everyone has a place. Everyone has <em>something</em> <em>to</em> <em>give,</em> and everyone has something to receive.</p>
 <div class="stats5 rv" style="margin-top:20px"><div><b data-count="400">0</b><span>tons of food shared</span></div><div><b data-count="300" data-suffix="+">0</b><span>neighbors each week</span></div><div><b data-count="209">0</b><span>served at Christmas lunch</span></div><div><b data-count="6">0</b><span>days a week, doors open</span></div></div></div></section>
 <section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="margin-bottom:30px"><span class="kick">Restoration initiatives · tap a card</span><h2>Restore. Empower. <em>Serve.</em></h2></div>
-<div class="pillars"><div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-restore.jpg" alt="A neighbor in glasses hugging her dog, who is wearing pink glasses" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>i.</small><h3>Restore</h3><em>Tap to read</em></span></div><div class="b"><p>Our heart is for people to be restored to God, their families and others: restored dignity and restored identity.</p></div></div></div>
-<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-empower.jpg" alt="A neighbor with a long white beard, smiling and flexing" loading="lazy" style="object-position:50% 30%"><span class="plab"><small>ii.</small><h3>Empower</h3><em>Tap to read</em></span></div><div class="b"><p>We equip people with tools for a stable life, to pursue work, employment and housing, and to be their true selves.</p></div></div></div>
-<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-serve.jpg" alt="A smiling neighbor in a white jacket over a leopard-print hoodie" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>iii.</small><h3>Serve</h3><em>Tap to read</em></span></div><div class="b"><p>First by being good listeners. Free haircuts, showers and prayer. We go with people to the hospital, court and rehab.</p></div></div></div></div></div></section>
+<div class="pillars"><div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-restore.jpg" alt="A neighbor in glasses hugging her dog, who is wearing pink glasses" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>01</small><h3>Restore</h3><em>Tap to read</em></span></div><div class="b"><p>Our heart is for people to be restored to God, their families and others: restored dignity and restored identity.</p></div></div></div>
+<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-empower.jpg" alt="A neighbor with a long white beard, smiling and flexing" loading="lazy" style="object-position:50% 30%"><span class="plab"><small>02</small><h3>Empower</h3><em>Tap to read</em></span></div><div class="b"><p>We equip people with tools for a stable life, to pursue work, employment and housing, and to be their true selves.</p></div></div></div>
+<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-serve.jpg" alt="A smiling neighbor in a white jacket over a leopard-print hoodie" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>03</small><h3>Serve</h3><em>Tap to read</em></span></div><div class="b"><p>First by being good listeners. Free haircuts, showers and prayer. We go with people to the hospital, court and rehab.</p></div></div></div></div></div></section>
 <section class="pad"><div class="wrap"><div class="rv" style="margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap"><div><span class="kick">The week at 357 Ellis</span><h2>Come by. <em>The door is open.</em></h2></div><p style="max-width:420px;margin:0">The proclamation of the Gospel and the activity of the Gospel, side by side. Today, and anything happening right now, is highlighted in San Francisco time.</p></div>
 <div class="nownext rv" aria-live="polite"></div><div class="week-wrap rv"><div class="week">{week}</div></div><div class="legend">{legend}</div></div></section>
 <section class="pad voices5"><div class="wrap"><div class="rv" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px"><div><span class="kick">Love your neighbor(hood)</span><h2>Lessons learned on these streets.</h2></div><div class="varrows"><button aria-label="Previous" data-dir="-1">←</button><button aria-label="Next" data-dir="1">→</button></div></div>
@@ -456,10 +456,10 @@ SVG = {
  'humility': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="124" rx="74" ry="8" class="glow"/><path d="M44 84h112l-12 32a8 8 0 0 1-8 6H64a8 8 0 0 1-8-6z" class="ln fillm"/><ellipse cx="100" cy="84" rx="56" ry="8" class="ln water"/><path d="M118 30h22a6 6 0 0 1 6 6v34" class="ln"/><path d="M130 36v40c0 5 6 7 10 4" class="ln fillm"/><path d="M134 46h8M134 56h8M134 66h8" class="ln thin"/><path d="M70 66c6-4 6-10 0-14M84 66c6-4 6-10 0-14" class="ln thin"/></svg>''',
  'multiply': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="128" rx="64" ry="7" class="glow"/><path d="M100 128V60" class="ln"/><path d="M100 96c-18-2-30-12-34-28 16 0 30 10 34 28zM100 84c18-2 30-12 34-28-16 0-30 10-34 28zM100 66c-12-2-20-10-22-22 11 1 20 9 22 22zM100 60c10-4 16-12 16-24-10 3-16 12-16 24z" class="ln leaf"/><circle cx="58" cy="118" r="5" class="seed"/><circle cx="142" cy="118" r="5" class="seed"/><circle cx="40" cy="124" r="3" class="seed"/><circle cx="160" cy="124" r="3" class="seed"/><path d="M58 113v-8c-4-2-6-6-6-10M142 113v-8c4-2 6-6 6-10" class="ln thin"/></svg>''',
 }
-VOWS = [('god', 'i.', 'Love of God', 'We stay rooted in God.', 'Before anyone opens a door or a laptop, we’re in prayer: for each other, for the neighborhood, for the person we’ll meet by lunch.'),
-        ('neighbor', 'ii.', 'Love of Neighbor', 'We practice compassionate presence.', 'You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That’s ministry too.'),
-        ('humility', 'iii.', 'Humility in Action', 'We look first to the interests of others.', 'Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone’s face.'),
-        ('multiply', 'iv.', 'Formation that Multiplies', 'We form disciples who form disciples.', 'A one-on-one with your mentor over coffee. Small group after dinner. What you’re learning becomes something you can pass on.')]
+VOWS = [('god', '01', 'Love of God', 'We stay rooted in God.', 'Before anyone opens a door or a laptop, we’re in prayer: for each other, for the neighborhood, for the person we’ll meet by lunch.'),
+        ('neighbor', '02', 'Love of Neighbor', 'We practice compassionate presence.', 'You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That’s ministry too.'),
+        ('humility', '03', 'Humility in Action', 'We look first to the interests of others.', 'Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone’s face.'),
+        ('multiply', '04', 'Formation that Multiplies', 'We form disciples who form disciples.', 'A one-on-one with your mentor over coffee. Small group after dinner. What you’re learning becomes something you can pass on.')]
 vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>On an ordinary Tuesday</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
 HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scripture, silence and prayer for each other and for the block. We get rooted before we go out."),
          ("8:00", 480, "One table", "Breakfast together", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
@@ -472,9 +472,9 @@ HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scrip
 day = ''.join(f'<button type="button" class="hr" style="--x:{i/(len(HOURS)-1)*100:.2f}%" data-i="{i}"><span class="dot"></span><b>{t}</b><span class="nm">{n}</span></button>' for i, (t, m, n, s2, d) in enumerate(HOURS))
 day_data = js([{'t': t, 'n': n, 's': s2, 'd': d} for t, m, n, s2, d in HOURS])
 PHASE_ALT = {'local:phase-training': 'Students listening to a teaching session in a brick-walled classroom', 'team': 'An outreach team with backpacks on a city sidewalk', 'local:phase-debrief': 'Four students laughing together on a bench outdoors'}
-PHASES = [('i.', 'Training', 'About 3 months · San Francisco', 'local:phase-training', 'Weekly teaching and worship, small groups, one-on-one mentorship and local ministry in the Tenderloin, with a new speaker every week.'),
-          ('ii.', 'Outreach', 'About 2 months · the cities of the world', 'team', 'Travel as a team to put what you’ve learned into practice, serving alongside local churches and ministries in urban centers.'),
-          ('iii.', 'Debrief', 'The final days', 'local:phase-debrief', 'Reflect on all God has done and prepare for your next season, whether that’s work, college, joining YWAM or wherever He leads.')]
+PHASES = [('01', 'Training', 'About 3 months · San Francisco', 'local:phase-training', 'Weekly teaching and worship, small groups, one-on-one mentorship and local ministry in the Tenderloin, with a new speaker every week.'),
+          ('02', 'Outreach', 'About 2 months · the cities of the world', 'team', 'Travel as a team to put what you’ve learned into practice, serving alongside local churches and ministries in urban centers.'),
+          ('03', 'Debrief', 'The final days', 'local:phase-debrief', 'Reflect on all God has done and prepare for your next season, whether that’s work, college, joining YWAM or wherever He leads.')]
 def pimg(k): return '../assets/img/' + k[6:] + '.jpg' if k.startswith('local:') else ph(k, 900)
 phases = ''.join(f'<div class="phase rv"><div class="pimg"><img src="{pimg(img)}" alt="{PHASE_ALT.get(img, "")}" loading="lazy"><span>{n}</span></div><h3>{t}</h3><small>{w}</small><p>{d}</p></div>' for n, t, w, img, d in PHASES)
 TESTI_REAL = [x for x in load('testimonials.json').get('testimonials', []) if t(x.get('quote'))]
@@ -496,6 +496,12 @@ if NX:
 else:
     COUNTDOWN_OPEN = '<div class="countdown" hidden aria-live="off">'; COUNTDOWN_CLOSE = ''
 BOARD_NOTE = ('Tap a school to apply.' if len(UPCOMING) > 1 else 'Tap the school to apply. More dates coming soon.') if UPCOMING else 'New dates coming soon. Email ' + DEMAIL + ' to hear first.'
+_FQ = load('faq.json')
+PARENTS = ''.join('<details><summary>%s</summary><p>%s</p></details>' % (t(q.get('question')), t(q.get('answer'))) for q in _FQ.get('parents', []) if t(q.get('question')))
+PARENTS_INTRO = t(_FQ.get('parents_intro'))
+_LIFE = load('dts_life.json') if os.path.exists(os.path.join(CONTENT, 'dts_life.json')) else {}
+LIFE = ''.join('<div class="phase rv">%s<h3>%s</h3><p>%s</p></div>' % (('<div class="pimg"><img src="%s" alt="%s" loading="lazy"></div>' % (img(x.get('photo'), '../', 900), t(x.get('title')))) if img(x.get('photo'), '../', 900) else '', t(x.get('title')), t(x.get('text'))) for x in _LIFE.get('places', []) if t(x.get('title')))
+LIFE_INTRO = t(_LIFE.get('intro'))
 FAQ = ''.join('<details%s><summary>%s</summary><p>%s</p></details>' % (' open' if i == 0 else '', t(q.get('question')), t(q.get('answer'))) for i, q in enumerate(x for x in load('faq.json').get('questions', []) if t(x.get('question'))))
 DTS_INFO = {'range': drange(NX['_s'], NX['_e']) if NX else 'over five months', 'cost': money(DTS_COST), 'month': (NX['_s'].strftime('%B ') + str(NX['_s'].year)) if NX else 'the next school', 'start': md(NX['_s']) if NX else 'soon', 'apply': NX_APPLY, 'email': DEMAIL}
 dts = f'''
@@ -553,7 +559,9 @@ dts = f'''
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Three parts, one journey</span><h2>From the neighborhood to the nations.</h2></div>
   <div class="phases">{phases}</div></div></section>
 
-<section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">In their words</span><h2>Stories from past students.</h2></div>
+{('<section class="pad life5" id="life" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">What it’s like</span><h2>Your home for five months.</h2>' + ('<p class="lede">' + LIFE_INTRO + '</p>' if LIFE_INTRO else '') + '</div><div class="phases life6">' + LIFE + '</div></div></section>') if LIFE else ''}
+
+<section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">In their words</span><h2>Stories from past students.</h2></div>
   <div class="testis">{testi}</div></div></section>
 
 <section class="pad" id="cost"><div class="wrap numbers5">
@@ -563,6 +571,8 @@ dts = f'''
     {FAQ}
   </div>
 </div></section>
+
+{('<section class="pad parents5" id="parents" style="background:var(--mist)"><div class="wrap numbers5"><div class="rv"><span class="kick">For parents</span><h2>Questions from families.</h2>' + ('<p class="lede">' + PARENTS_INTRO + '</p>' if PARENTS_INTRO else '') + '<div class="price5 pcontact"><p><b>Talk with our DTS team</b></p><p><a href="mailto:dts@ywamsanfrancisco.org">dts@ywamsanfrancisco.org</a><br><a href="' + TEL + '">' + PHONE + '</a></p></div></div><div class="faq5 rv">' + PARENTS + '</div></div></section>') if PARENTS else ''}
 
 <section class="ready pad"><div class="wrap">
   <div class="rv ready-head"><span class="kick">The door is open</span><h2>How do I know I’m ready for a DTS?</h2><p>You don’t have to figure it out alone. Start wherever feels right.</p></div>
@@ -602,7 +612,7 @@ TIMELINE = [
  ('1996', 'Training in the Tenderloin', 'The first DTS at 357 Ellis Street runs in the fall. A second annual school is added in January 2002.'),
  ('1998–2004', 'Reaching across the city', 'The Street Team opens “The Refuge” discipleship house on Girard Street (1998), then The Pharos on Polk Street (2001). The base director moves to Bayview–Hunters Point (1999), and Oakdale Youth House opens there with after-school programs and summer camps (2003). The Street Team returns to Ellis Street in 2004.'),
  ('2007', '1,600 on mission', 'Mission Adventures hosts more than 1,600 participants in a single year.'),
- ('2008', 'A full house', 'Two DTSs a year, Mission Adventures teams, Oakdale Youth House, the Street Team, a Discipleship Training Program and an Urban Internship.'),
+ ('2008', 'A full house', 'Two DTSes a year, Mission Adventures teams, Oakdale Youth House, the Street Team, a Discipleship Training Program and an Urban Internship.'),
  ('Today', 'Presence that restores', 'The Ellis Room, the food pantry, showers and haircuts, Bible study, Pop-Up Church and the DTS, all from the same 100-year-old building on Ellis Street.'),
 ]
 VALUES = [('Love of God', 'We draw life from Jesus through worship, Scripture, prayer, and healthy relationships.', 'We stay rooted in God.'),

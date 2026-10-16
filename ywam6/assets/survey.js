@@ -26,7 +26,7 @@ var Q=[
    {t:"I want to learn the sleeping man's name.",s:3,n:"That instinct — toward the person, not the problem — is what the Tenderloin needs and what we'll help you grow."},
    {t:"I'm nervous, but I want to be the kind of person who stays.",s:2,n:"Nervous and willing is a great place to start. Nobody is sent out alone; you'll learn presence alongside staff who've been here for years."},
    {t:"Honestly, I'd want to walk faster.",s:1,n:"Thanks for being honest. Most of us had to unlearn hurry. This would be real stretching — worth talking through with the team."},
-   {t:"I'd rather serve somewhere that feels safer.",s:0,n:"That's a fair and honest answer. There are YWAM DTSs all over the world — our team would gladly help you find one that fits."}
+   {t:"I'd rather serve somewhere that feels safer.",s:0,n:"That's a fair and honest answer. There are YWAM DTSes all over the world — our team would gladly help you find one that fits."}
   ]},
  {dim:"witness",context:"Faith on your sleeve, not in someone's face.",
   q:"When someone doesn't believe what you believe, your first instinct is to…",

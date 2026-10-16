@@ -233,7 +233,12 @@
       intro: 'Student stories on the DTS page. Until you add some, three marked placeholders are shown.',
       fields: [{ k: 'testimonials', l: 'Testimonials', t: 'list', add: 'Add a testimonial', title: function (x) { return x.name || 'New testimonial'; }, sub: function (x) { return x.detail || ''; }, blank: { quote: '', name: '', detail: '' }, fields: [F.area('quote', 'Quote', { req: true }), F.text('name', 'Name'), F.text('detail', 'Detail', { hint: 'e.g. DTS 2024' })] }] },
     { id: 'faq', grp: 'DTS', file: 'faq.json', title: 'DTS FAQ', page: 'course/#cost',
-      fields: [{ k: 'questions', l: 'Questions', t: 'list', add: 'Add a question', title: function (x) { return x.question || 'New question'; }, blank: { question: '', answer: '' }, fields: [F.text('question', 'Question', { req: true, full: true }), F.area('answer', 'Answer')] }] },
+      fields: [{ k: 'questions', l: 'Questions', t: 'list', add: 'Add a question', title: function (x) { return x.question || 'New question'; }, blank: { question: '', answer: '' }, fields: [F.text('question', 'Question', { req: true, full: true }), F.area('answer', 'Answer')] },
+        F.area('parents_intro', 'For parents: intro'),
+        { k: 'parents', l: 'For parents: questions', t: 'list', add: 'Add a question', title: function (x) { return x.question || 'New question'; }, blank: { question: '', answer: '' }, fields: [F.text('question', 'Question', { req: true, full: true }), F.area('answer', 'Answer')] }] },
+    { id: 'dts_life', grp: 'DTS', file: 'dts_life.json', title: 'What it’s like', page: 'course/#life',
+      intro: 'The “What it’s like” cards on the DTS page: the city, the building, where students live, eat and learn.',
+      fields: [F.area('intro', 'Intro'), { k: 'places', l: 'Cards', t: 'list', add: 'Add a card', title: function (x) { return x.title || 'New card'; }, blank: { title: '', text: '', photo: '' }, fields: [F.text('title', 'Title', { req: true }), F.area('text', 'Text'), F.photo('photo', 'Photo', { hint: 'Landscape works best. It’s cropped to 4:3.' })] }] },
     { id: 'staff', grp: 'People', file: 'staff.json', title: 'Staff', page: 'about/people/',
       intro: 'Directors appear with a large photo. Everyone else is grouped by team with a small round photo. Without a photo, initials are shown.',
       fields: [

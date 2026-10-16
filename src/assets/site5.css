@@ -1323,7 +1323,7 @@ html.tb .dc-play svg{fill:var(--rust)}
 .vision2 em{color:var(--red)}
 .vals{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;counter-reset:v}
 .vals li{background:#fff;padding:28px 24px 30px;counter-increment:v}
-.vals li:before{content:counter(v,lower-roman) ".";display:block;font:italic 500 22px/1 var(--display);color:var(--red);margin-bottom:14px}
+.vals li:before{content:counter(v,decimal-leading-zero);display:block;font:800 11.5px/1 var(--sans);letter-spacing:.2em;color:var(--red);margin-bottom:14px}
 .vals h3{font-style:italic;margin-bottom:12px}
 .vals p{font-size:15.5px;margin:0 0 10px}.vals p:last-child{margin:0;color:var(--ink)}
 .pillars3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}
@@ -1337,3 +1337,10 @@ html.tb .dc-play svg{fill:var(--rust)}
 @media (max-width:960px){.vals{grid-template-columns:1fr 1fr}.pillars3{grid-template-columns:1fr}}
 @media (max-width:560px){.vals{grid-template-columns:1fr}}
 #mission .lit,.heart .lit{font-size:clamp(28px,3.3vw,44px);line-height:1.22;max-width:920px;margin-inline:auto}
+
+/* round 50: DTS — What it's like (6 cards) and For parents */
+.life6 .phase p{font-size:15.5px}
+.parents5 .pcontact{margin-top:24px}
+.parents5 .pcontact a{color:#fff}
+.parents5 .pcontact p{margin:0 0 6px}
+html.tb .hit-t small{color:#7FD6E0}

@@ -16,5 +16,32 @@
       "question": "What happens after DTS?",
       "answer": "The debrief sets you up for your next season: a job, college, joining YWAM, or wherever God is leading."
     }
+  ],
+  "parents_intro": "Sending someone you love across the country, or across the world, is a big step. Here are the questions parents ask us most. If yours isn’t here, call or email us. We’re always glad to talk with families.",
+  "parents": [
+    {
+      "question": "Who will be looking out for my son or daughter?",
+      "answer": "Every student is part of a small group led by our DTS staff and meets one-on-one with a staff mentor each week. Our staff teach, eat and serve alongside students every day, and several have lived and served on Ellis Street for years."
+    },
+    {
+      "question": "Is the Tenderloin safe?",
+      "answer": "It’s a real neighborhood with real struggles, and we don’t pretend otherwise. Students never do street ministry alone, always go out in teams with staff, and learn from people who know these blocks well. Most of all, we teach them to see neighbors, not danger."
+    },
+    {
+      "question": "Where will they live and eat?",
+      "answer": "Students live together at our base at 357 Ellis Street and share meals there with staff. See “What it’s like” above for a look at the building, the kitchen and the neighborhood."
+    },
+    {
+      "question": "How will we stay in touch?",
+      "answer": "Students can keep in touch with home throughout the school. Before outreach begins, we let families know where teams are going and how to reach them while they’re away."
+    },
+    {
+      "question": "Who is YWAM San Francisco?",
+      "answer": "We’ve run Discipleship Training Schools in San Francisco since 1991, and at 357 Ellis Street since 1996. We’re part of Youth With A Mission, a global, interdenominational Christian movement with locations in more than 180 nations."
+    },
+    {
+      "question": "How do we help with the cost?",
+      "answer": "Most students raise some or all of their fees through friends, family and churches. Our team will walk your student through fundraising, and you’re welcome to ask us about payment options too."
+    }
   ]
 }
