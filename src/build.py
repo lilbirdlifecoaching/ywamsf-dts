@@ -110,7 +110,7 @@ FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('pay/', 'Pay Fees', 'pay'), ('contact/', 'Connect with us', 'contact')]
-ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
+ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('join-staff/', 'Join Staff'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
 def header(cur, up):
     links = ''.join('<a href="%s%s"%s>%s</a>' % (up, h, ' aria-current="page"' if k == cur else '', t) for h, t, k in NAV)
     def tl(h, t, k):
@@ -188,6 +188,7 @@ META = {
  'Resources — YWAM San Francisco': ('Urban Mission Resources & Videos | YWAM San Francisco', "Articles, video teaching and guides on urban mission and San Francisco, including Tim Svoboda's series on the strategic nature of cities and our YouTube channel.", 'about/resources/', 'assets/img/hero-ellis.jpg'),
  'Give — YWAM San Francisco': ('Give to YWAM San Francisco | Support the Tenderloin', "Support food, showers and outreach in San Francisco's Tenderloin. Give online, by check, bank transfer, stock or in-kind gifts. Tax-deductible for U.S. donors.", 'give/', 'assets/img/er-room.jpg'),
  'Pay — YWAM San Francisco': ('Pay DTS & Mission Adventures Fees | YWAM San Francisco', 'Pay school or team trip fees for a DTS student or Mission Adventures participant. For general donations to YWAM San Francisco, please use our Give page.', 'pay/', 'assets/img/phase-training.jpg'),
+ 'Join Staff — YWAM San Francisco': ('Join Staff | Serve Long-Term in San Francisco | YWAM SF', 'Join the YWAM San Francisco staff: make the Tenderloin your home, love your neighbors and help train disciples at 357 Ellis Street.', 'join-staff/', ''),
  'Contact Us — YWAM San Francisco': ('Contact YWAM San Francisco | 357 Ellis St, Tenderloin', 'Visit, call or email YWAM San Francisco at 357 Ellis Street in the Tenderloin. Reach the right team for volunteering, mission trips, DTS or giving.', 'contact/', 'assets/img/er-door.jpg'),
 }
 
@@ -251,7 +252,7 @@ home = f'''
 <section class="pad intro"><div class="wrap">
   <h1 class="kick intro-kick">The love of Jesus is meant to be lived!</h1>
   <p class="lit plain lines"><span>We believe people can change,</span> <span>neighborhoods can heal,</span> <span>and love can make a difference.</span></p>
-  <div class="intro-body rv"><p>We’re here to be part of that. Our neighborhood is called <b>the Tenderloin</b>. We build relationships, create places to belong, meet practical needs, and share the love of Jesus with our neighbors.</p><a class="btn come-btn" href="{DTS_APPLY}" target="_blank" rel="noopener">Come and live this with us <span aria-hidden="true">→</span></a></div>
+  <div class="intro-body rv"><p>We’re here to be part of that. Our neighborhood is called <b>the Tenderloin</b>, and it’s a place to learn the way of Jesus by living it: loving our neighbors, meeting practical needs, and building relationships that bring lasting change.</p><a class="btn come-btn" href="{DTS_APPLY}" target="_blank" rel="noopener">Come and live this with us <span aria-hidden="true">→</span></a></div>
 </div></section>
 
 <section class="cc-strip" aria-label="Next 5-month course">
@@ -282,6 +283,13 @@ home = f'''
   <div class="reel-nav"><button class="reel-prev" aria-label="Previous">←</button><div class="reel-dots"></div><button class="reel-next" aria-label="Next">→</button></div>
 </div></section>
 
+<section class="pad mon-home"><div class="wrap mon-home-grid">
+  <div class="rv"><span class="kick">The Monastery</span><h2>A place of peace, right in the middle of it.</h2></div>
+  <div class="rv"><p class="lede">Not an escape from the chaos, but a steady, welcoming presence inside it. A place to encounter Jesus through prayer and community, where someone can walk in on their hardest day and know they’ll be loved and received.</p>
+  <p>Neighbors, students, volunteers, churches and staff all share this way of life, and carry it back out into the world.</p>
+  <a class="btn ghost" href="course/#monastery">See the Monastery <span aria-hidden="true">→</span></a></div>
+</div></section>
+
 <section class="verse pad"><div class="fogs" aria-hidden="true"><i></i><i></i><i></i></div><div class="wrap">
   <blockquote data-verse>Follow God’s example, therefore, as dearly loved children and walk in the way of <em>love,</em> just as Christ loved us and gave himself up for us as a fragrant offering and sacrifice to God.</blockquote>
   <cite>Ephesians 5:1–2 · NIV</cite>
@@ -303,6 +311,17 @@ home = f'''
   </div>
   <span class="where"></span><div class="bar"></div>
 </section>
+
+<section class="pad stories5-home"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Stories from Ellis Street</span><h2>God is already at work here.</h2><p class="lede">Real people, real neighbors, and the lives being touched in the Tenderloin.</p></div>
+  <div class="stories3"><article class="story5 rv"><div class="sph"><img src="assets/img/er-pool.jpg" alt="" loading="lazy" style="object-position:50% 40%"><span class="ph-badge">Example photo</span></div><small>Example story · The Ellis Room</small><h3>“This is the first place I didn’t feel watched.”</h3><p>[Placeholder] A neighbor who came in for coffee and stayed for a game of pool now helps set up chairs every Tuesday. A real story and name, with permission, will go here.</p></article><article class="story5 rv"><div class="sph"><img src="assets/img/er-restore.jpg" alt="" loading="lazy" style="object-position:50% 25%"><span class="ph-badge">Example photo</span></div><small>Example story · Food pantry</small><h3>From the pantry line to the prayer table.</h3><p>[Placeholder] Months of Thursday conversations turned into friendship, and one day, a request for prayer. A real story will go here.</p></article><article class="story5 rv"><div class="sph"><img src="assets/img/er-empower.jpg" alt="" loading="lazy" style="object-position:50% 30%"><span class="ph-badge">Example photo</span></div><small>Example story · Connecting to support</small><h3>Someone to walk with him to court.</h3><p>[Placeholder] Staff went with a neighbor to his hearing, then to his first appointment for housing. A real story will go here.</p></article></div></div></section>
+
+<section class="pad involve5" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Get involved</span><h2>There’s a place for you here.</h2></div>
+  <div class="involve4">
+    <a class="card5 rv" href="join-staff/"><h3>Join staff</h3><p>Make the Tenderloin your home and serve with us long term.</p><span class="go">Explore staff →</span></a>
+    <a class="card5 rv" href="volunteer/"><h3>Volunteer</h3><p>Pick a shift at the pantry, the Ellis Room or on the street.</p><span class="go">Come volunteer →</span></a>
+    <a class="card5 rv" href="give/"><h3>Give</h3><p>Keep the doors open, the showers running and the pantry full.</p><span class="go">Give →</span></a>
+    <a class="card5 rv" href="teams/"><h3>Bring a team</h3><p>Church groups, youth groups and YWAM schools from other locations.</p><span class="go">Bring a team →</span></a>
+  </div></div></section>
 
 <section class="ig5"><div class="wrap head rv"><span class="kick">@ywamsf on Instagram</span><h2>Life on Ellis Street, <em>this week.</em></h2><a class="handle" href="https://www.instagram.com/ywamsf/" target="_blank" rel="noopener">Follow @ywamsf →</a></div>
   <div class="ig-stage" data-ig tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
@@ -356,9 +375,16 @@ open(os.path.join(OUT, 'volunteer/index.html'), 'w').write(page('Come Volunteer 
 
 # ---------------------------------------------------------------- BRING A TEAM
 teams = f'''
-<section class="page-hero"><div class="ph-img"><img src="../assets/img/team-overlook.jpg" alt="A team smiling together on a hilltop overlooking San Francisco and the downtown skyline" style="object-position:50% 58%"></div><div class="copy"><div class="wrap"><span class="kick">Bring a team · Mission Adventures</span><h1>Step into mission. <em>Step into transformation.</em></h1><p class="lede">A short-term outreach for youth groups, church teams and individuals who want to encounter God in the heart of San Francisco.</p></div></div></section>
-<section class="pad"><div class="wrap">
-  <div class="rv" style="max-width:720px;margin-bottom:34px"><span class="kick">We take care of the details</span><h2>Your team focuses on <em>loving God and loving people.</em></h2></div>
+<section class="page-hero"><div class="ph-img"><img src="../assets/img/team-overlook.jpg" alt="A team smiling together on a hilltop overlooking San Francisco and the downtown skyline" style="object-position:50% 58%"></div><div class="copy"><div class="wrap"><span class="kick">Bring a team</span><h1>Step into mission. <em>Step into transformation.</em></h1><p class="lede">Short-term outreach in the heart of San Francisco: Mission Adventures for church and youth groups, and a city base for YWAM teams from other locations.</p></div></div></section>
+<section class="pad tracks5"><div class="wrap">
+  <div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Two ways to come</span><h2>Who’s coming?</h2></div>
+  <div class="tracks2">
+    <a class="track rv" href="#ma"><small>Church, youth &amp; school groups</small><h3>Mission Adventures</h3><p>A weekend, a week or longer serving in the Tenderloin. We plan the ministry, meals and housing so your team can focus on loving God and loving people.</p><span class="go">Plan a Mission Adventure ↓</span></a>
+    <a class="track rv" href="#ywam-teams"><small>YWAM schools &amp; teams</small><h3>YWAM teams from other locations</h3><p>Bring your DTS or school to the city for a final lecture week, a local outreach, or a launch point before you head overseas.</p><span class="go">Plan a YWAM team visit ↓</span></a>
+  </div>
+</div></section>
+<section class="pad" id="ma" style="padding-top:0"><div class="wrap">
+  <div class="rv" style="max-width:720px;margin-bottom:34px"><span class="kick">Mission Adventures · We take care of the details</span><h2>Your team focuses on <em>loving God and loving people.</em></h2></div>
   <div class="cards3"><div class="card5 rv icard"><div class="ic"><span class="icw"><svg class="ghost" viewBox="0 0 64 64" aria-hidden="true"><circle pathLength="1" cx="32" cy="32" r="22" class="l"/><circle pathLength="1" cx="32" cy="32" r="15" class="l t"/><path pathLength="1" d="M32 5v7M32 52v7M5 32h7M52 32h7" class="l"/><path pathLength="1" d="M39 25l-10 4-4 10 10-4z" class="a"/><circle pathLength="1" cx="32" cy="32" r="1.8" class="dot"/></svg><svg class="live" viewBox="0 0 64 64" aria-hidden="true"><circle pathLength="1" cx="32" cy="32" r="22" class="l"/><circle pathLength="1" cx="32" cy="32" r="15" class="l t"/><path pathLength="1" d="M32 5v7M32 52v7M5 32h7M52 32h7" class="l"/><path pathLength="1" d="M39 25l-10 4-4 10 10-4z" class="a"/><circle pathLength="1" cx="32" cy="32" r="1.8" class="dot"/></svg></span></div><h3>Orientation</h3><p>We prepare your team for the Tenderloin before you ever step onto the street.</p></div><div class="card5 rv icard"><div class="ic"><span class="icw"><svg class="ghost" viewBox="0 0 64 64" aria-hidden="true"><path pathLength="1" d="M12 34h40c0 10-8 18-20 18S12 44 12 34z" class="l"/><path pathLength="1" d="M8 34h48M24 57h16" class="l"/><path pathLength="1" d="M24 27c-3-4 3-6 0-10M32 27c-3-4 3-6 0-10M40 27c-3-4 3-6 0-10" class="a s"/></svg><svg class="live" viewBox="0 0 64 64" aria-hidden="true"><path pathLength="1" d="M12 34h40c0 10-8 18-20 18S12 44 12 34z" class="l"/><path pathLength="1" d="M8 34h48M24 57h16" class="l"/><path pathLength="1" d="M24 27c-3-4 3-6 0-10M32 27c-3-4 3-6 0-10M40 27c-3-4 3-6 0-10" class="a s"/></svg></span></div><h3>Food planning</h3><p>Meals planned and shared at our base, with YWAM staff around the table.</p></div><div class="card5 rv icard"><div class="ic"><span class="icw"><svg class="ghost" viewBox="0 0 64 64" aria-hidden="true"><path pathLength="1" d="M9 30L32 11l23 19" class="l"/><path pathLength="1" d="M16 26v28h32V26" class="l"/><path pathLength="1" d="M27 54V41h10v13" class="l"/><rect pathLength="1" x="20.5" y="30" width="8" height="7" rx="1" class="win"/><rect pathLength="1" x="35.5" y="30" width="8" height="7" rx="1" class="win"/><path pathLength="1" d="M42 18v-7h5v11" class="l t"/></svg><svg class="live" viewBox="0 0 64 64" aria-hidden="true"><path pathLength="1" d="M9 30L32 11l23 19" class="l"/><path pathLength="1" d="M16 26v28h32V26" class="l"/><path pathLength="1" d="M27 54V41h10v13" class="l"/><rect pathLength="1" x="20.5" y="30" width="8" height="7" rx="1" class="win"/><rect pathLength="1" x="35.5" y="30" width="8" height="7" rx="1" class="win"/><path pathLength="1" d="M42 18v-7h5v11" class="l t"/></svg></span></div><h3>Housing</h3><p>Stay at the YWAM San Francisco base, right in the heart of the city.</p></div><div class="card5 rv icard"><div class="ic"><span class="icw"><svg class="ghost" viewBox="0 0 64 64" aria-hidden="true"><path pathLength="1" d="M5 45l10-10c3-3 7-3 10 0l4 4h11c3 0 3 5 0 5H28" class="l"/><path pathLength="1" d="M5 55l6-6h19l14-10c3-2 6 2 3 5L32 57H16" class="l"/><path pathLength="1" d="M42 29c-4-3-10-6-10-12 0-3 2-5 5-5 2 0 4 1 5 3 1-2 3-3 5-3 3 0 5 2 5 5 0 6-6 9-10 12z" class="a"/></svg><svg class="live" viewBox="0 0 64 64" aria-hidden="true"><path pathLength="1" d="M5 45l10-10c3-3 7-3 10 0l4 4h11c3 0 3 5 0 5H28" class="l"/><path pathLength="1" d="M5 55l6-6h19l14-10c3-2 6 2 3 5L32 57H16" class="l"/><path pathLength="1" d="M42 29c-4-3-10-6-10-12 0-3 2-5 5-5 2 0 4 1 5 3 1-2 3-3 5-3 3 0 5 2 5 5 0 6-6 9-10 12z" class="a"/></svg></span></div><h3>Ministry</h3><p>Real opportunities to serve alongside local ministries every day.</p></div></div>
 </div></section>
 <section class="pad" style="background:var(--mist)"><div class="wrap" style="display:grid;gap:clamp(28px,4vw,56px)">
@@ -369,6 +395,12 @@ teams = f'''
   <div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Plan your trip</span><h2>A weekend, a week, <em>or longer.</em></h2><p class="lede">{money(MA_RATE)} per participant per day, including food, accommodation and ministry supplies. Slide to estimate your team’s trip.</p></div>
   <div class="calc rv" data-rate="{MA_RATE}"><div><div class="ctl"><label for="calcPeople">Team size <output id="outPeople">12</output></label><input id="calcPeople" type="range" min="1" max="40" value="12"></div><div class="ctl"><label for="calcDays">Days <output id="outDays">5</output></label><input id="calcDays" type="range" min="1" max="21" value="5"></div><p style="font-size:14px;color:var(--muted);margin:0">Estimate only. We’ll confirm details when you book.</p></div>
   <div class="total"><span class="kick" style="color:rgba(255,255,255,.7)">Estimated trip cost</span><b id="calcTotal">{money(MA_RATE * 60)}</b><small id="calcPer"></small><a class="btn light" style="margin-top:20px" href="{TEAM_FORM}" target="_blank" rel="noopener">Book today</a></div></div>
+</div></section>
+<section class="pad ywamteams" id="ywam-teams"><div class="wrap fit-grid">
+  <div class="rv"><span class="kick">For YWAM schools &amp; teams</span><h2>Finish strong in the city, <em>or launch from it.</em></h2></div>
+  <div class="rv"><p class="lede">YWAM San Francisco hosts schools and outreach teams from other YWAM locations. Spend time in a real urban neighborhood, alongside staff who have served these blocks for years.</p>
+  <ul class="ticks"><li><b>A final lecture week.</b> Close your lecture phase with a week of teaching and ministry in the Tenderloin.</li><li><b>A city outreach.</b> Serve in the Ellis Room, the food pantry and on the street.</li><li><b>A launch point overseas.</b> Transition through San Francisco on your way to international outreach.</li></ul>
+  <div class="links-row"><a class="btn" href="mailto:{OEMAIL}?subject=YWAM%20team%20visit">Plan a YWAM team visit</a></div></div>
 </div></section>
 <section class="pad" style="background:var(--mist)"><div class="wrap">
   <div class="rv" style="margin-bottom:30px"><span class="kick">Why Mission Adventures?</span><h2>More than a trip.</h2></div>
@@ -383,6 +415,29 @@ teams = f'''
 '''
 os.makedirs(os.path.join(OUT, 'teams'), exist_ok=True)
 open(os.path.join(OUT, 'teams/index.html'), 'w').write(page('Bring a Team — YWAM San Francisco', 'teams', '../', '../../', teams))
+
+# ---------------------------------------------------------------- JOIN STAFF
+staffp = f'''
+<section class="page-hero"><div class="ph-img"><img src="../assets/img/vol-crew.jpg" alt="YWAM San Francisco staff and volunteers together at 357 Ellis Street" style="object-position:50% 40%"></div><div class="copy"><div class="wrap"><span class="kick">Join staff · 357 Ellis Street</span><h1>Make the Tenderloin <em>your home.</em></h1><p class="lede">Love God, love your neighbors and help form disciples, for the long haul. If you sense a call to the city, we’d love to talk.</p></div></div></section>
+<section class="pad"><div class="wrap fit-grid"><div class="rv"><span class="kick">Why staff here</span><h2>Presence that restores, <em>over years.</em></h2></div>
+  <div class="rv"><p class="lede">The most important things on Ellis Street happen slowly: a neighbor who learns your name, a friendship that holds through a hard season, a student who finally gets what it means to live their faith. Staff are the people who stay.</p>
+  <p>You’ll be part of a community rooted in the way of Jesus, serving alongside people who have given years to this neighborhood, and helping others learn to do the same.</p></div></div></section>
+<section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Where you could serve</span><h2>Three teams, one mission.</h2></div>
+  <div class="cards3 three">
+    <div class="card5 rv"><h3>Neighborhood engagement</h3><p>The Ellis Room, the food pantry, showers and haircuts, hot chocolate and outreach on the street.</p></div>
+    <div class="card5 rv"><h3>Training &amp; outreach</h3><p>Staffing the DTS, hosting Mission Adventures and YWAM teams, and leading teams into the city.</p></div>
+    <div class="card5 rv"><h3>Operations</h3><p>Kitchen, hospitality, maintenance, office, communications and finance: the work that keeps the doors open.</p></div>
+  </div></div></section>
+<section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How to start</span><h2>Three steps.</h2></div>
+  <div class="ready3 steps3">
+    <div class="rcard rv"><small>01</small><b>Complete a DTS</b><span>Like all YWAM staff, you’ll start with a Discipleship Training School, here or at any YWAM location.</span><em><a href="../course/">Our DTS →</a></em></div>
+    <div class="rcard rv"><small>02</small><b>Start a conversation</b><span>Tell us about yourself and what’s drawing you to San Francisco. We’ll talk through roles, timing and fit.</span><em><a href="mailto:{EMAIL}?subject=Joining%20staff">Email us →</a></em></div>
+    <div class="rcard rv"><small>03</small><b>Come and see</b><span>Spend time on Ellis Street before you commit. Like all YWAM staff, our team raises personal support, and we’ll help you build yours.</span><em><a href="../contact/">Plan a visit →</a></em></div>
+  </div></div></section>
+<section class="cta-band pad"><div class="wrap rv"><h2>Sensing a call to the city?</h2><p>We’d love to hear your story. Email <a style="color:#fff" href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</p><div class="row"><a class="btn light" href="mailto:{EMAIL}?subject=Joining%20staff">Talk with us about staff</a><a class="btn ghost-light" href="../about/people/">Meet the staff</a></div></div></section>
+'''
+os.makedirs(os.path.join(OUT, 'join-staff'), exist_ok=True)
+open(os.path.join(OUT, 'join-staff/index.html'), 'w').write(page('Join Staff — YWAM San Francisco', 'about', '../', '../../', staffp))
 
 # ---------------------------------------------------------------- SERVING OUR NEIGHBORS
 CAT = {'room': ('#465361', 'Ellis Room'), 'word': ('#9A1E14', 'Church & Bible study'), 'care': ('#6E9CBF', 'Showers, haircuts & care'), 'food': ('#C99634', 'Food'), 'out': ('#2E7D6B', 'Street & SRO outreach')}
@@ -399,13 +454,13 @@ def ev_html(e):
 week = ''.join('<div class="day" data-d="%d"><h4>%s</h4>%s</div>' % (d, DN[d], ''.join(ev_html(e) for e in WEEK[d]) or '<div class="ev" style="--c:var(--line)"><b>Rest &amp; prep</b><small>No public services</small></div>') for d in [1, 2, 3, 4, 5, 6, 0])
 legend = ''.join('<span style="--c:%s">%s</span>' % v for v in CAT.values())
 nb = f'''
-<section class="page-hero"><div class="ph-img"><img src="../assets/img/er-hero.jpg" alt="Tables and chairs on the sidewalk outside 357 Ellis Street, with a chalkboard sign: Welcome to the Ellis Room" style="object-position:50% 64%"></div><div class="copy"><div class="wrap"><span class="kick">The Ellis Room · 357 Ellis Street</span><h1>Building relationships that lead to <em>lasting transformation.</em></h1><p class="lede">God is restoring, empowering and serving in our neighborhood, and we’re following His lead.</p></div></div></section>
+<section class="page-hero"><div class="ph-img"><img src="../assets/img/er-hero.jpg" alt="Tables and chairs on the sidewalk outside 357 Ellis Street, with a chalkboard sign: Welcome to the Ellis Room" style="object-position:50% 64%"></div><div class="copy"><div class="wrap"><span class="kick">The Ellis Room · 357 Ellis Street</span><h1>Building relationships that lead to <em>lasting transformation.</em></h1><p class="lede">Friendship over coffee, a full pantry, a hot shower, someone to pray with and help connecting to the support people need. God is restoring, empowering and serving in our neighborhood, and we’re following His lead.</p></div></div></section>
 <section class="pad"><div class="wrap"><p class="lit" data-lit>Everyone has value. Everyone has a place. Everyone has <em>something</em> <em>to</em> <em>give,</em> and everyone has something to receive.</p>
 <div class="stats5 rv" style="margin-top:20px"><div><b data-count="400">0</b><span>tons of food shared</span></div><div><b data-count="300" data-suffix="+">0</b><span>neighbors each week</span></div><div><b data-count="209">0</b><span>served at Christmas lunch</span></div><div><b data-count="6">0</b><span>days a week, doors open</span></div></div></div></section>
 <section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="margin-bottom:30px"><span class="kick">Restoration initiatives · tap a card</span><h2>Restore. Empower. <em>Serve.</em></h2></div>
 <div class="pillars"><div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-restore.jpg" alt="A neighbor in glasses hugging her dog, who is wearing pink glasses" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>01</small><h3>Restore</h3><em>Tap to read</em></span></div><div class="b"><p>Our heart is for people to be restored to God, their families and others: restored dignity and restored identity.</p></div></div></div>
-<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-empower.jpg" alt="A neighbor with a long white beard, smiling and flexing" loading="lazy" style="object-position:50% 30%"><span class="plab"><small>02</small><h3>Empower</h3><em>Tap to read</em></span></div><div class="b"><p>We equip people with tools for a stable life, to pursue work, employment and housing, and to be their true selves.</p></div></div></div>
-<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-serve.jpg" alt="A smiling neighbor in a white jacket over a leopard-print hoodie" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>03</small><h3>Serve</h3><em>Tap to read</em></span></div><div class="b"><p>First by being good listeners. Free haircuts, showers and prayer. We go with people to the hospital, court and rehab.</p></div></div></div></div></div></section>
+<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-empower.jpg" alt="A neighbor with a long white beard, smiling and flexing" loading="lazy" style="object-position:50% 30%"><span class="plab"><small>02</small><h3>Empower</h3><em>Tap to read</em></span></div><div class="b"><p>We equip people with tools for a stable life: connecting neighbors with housing, recovery, benefits and job support, and walking with them through it.</p></div></div></div>
+<div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-serve.jpg" alt="A smiling neighbor in a white jacket over a leopard-print hoodie" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>03</small><h3>Serve</h3><em>Tap to read</em></span></div><div class="b"><p>First by being good listeners and friends. Free haircuts, showers and prayer. We go with people to the hospital, court and rehab.</p></div></div></div></div></div></section>
 <section class="pad"><div class="wrap"><div class="rv" style="margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap"><div><span class="kick">The week at 357 Ellis</span><h2>Come by. <em>The door is open.</em></h2></div><p style="max-width:420px;margin:0">The proclamation of the Gospel and the activity of the Gospel, side by side. Today, and anything happening right now, is highlighted in San Francisco time.</p></div>
 <div class="nownext rv" aria-live="polite"></div><div class="week-wrap rv"><div class="week">{week}</div></div><div class="legend">{legend}</div></div></section>
 <section class="pad voices5"><div class="wrap"><div class="rv" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px"><div><span class="kick">Love your neighbor(hood)</span><h2>Lessons learned on these streets.</h2></div><div class="varrows"><button aria-label="Previous" data-dir="-1">←</button><button aria-label="Next" data-dir="1">→</button></div></div>
@@ -456,11 +511,11 @@ SVG = {
  'humility': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="124" rx="74" ry="8" class="glow"/><path d="M44 84h112l-12 32a8 8 0 0 1-8 6H64a8 8 0 0 1-8-6z" class="ln fillm"/><ellipse cx="100" cy="84" rx="56" ry="8" class="ln water"/><path d="M118 30h22a6 6 0 0 1 6 6v34" class="ln"/><path d="M130 36v40c0 5 6 7 10 4" class="ln fillm"/><path d="M134 46h8M134 56h8M134 66h8" class="ln thin"/><path d="M70 66c6-4 6-10 0-14M84 66c6-4 6-10 0-14" class="ln thin"/></svg>''',
  'multiply': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="128" rx="64" ry="7" class="glow"/><path d="M100 128V60" class="ln"/><path d="M100 96c-18-2-30-12-34-28 16 0 30 10 34 28zM100 84c18-2 30-12 34-28-16 0-30 10-34 28zM100 66c-12-2-20-10-22-22 11 1 20 9 22 22zM100 60c10-4 16-12 16-24-10 3-16 12-16 24z" class="ln leaf"/><circle cx="58" cy="118" r="5" class="seed"/><circle cx="142" cy="118" r="5" class="seed"/><circle cx="40" cy="124" r="3" class="seed"/><circle cx="160" cy="124" r="3" class="seed"/><path d="M58 113v-8c-4-2-6-6-6-10M142 113v-8c4-2 6-6 6-10" class="ln thin"/></svg>''',
 }
-VOWS = [('god', '01', 'Love of God', 'We stay rooted in God.', 'Before anyone opens a door or a laptop, we’re in prayer: for each other, for the neighborhood, for the person we’ll meet by lunch.'),
-        ('neighbor', '02', 'Love of Neighbor', 'We practice compassionate presence.', 'You learn which neighbor takes two sugars in their cocoa. Next week, you remember. That’s ministry too.'),
-        ('humility', '03', 'Humility in Action', 'We look first to the interests of others.', 'Mopping the Ellis Room floor. Stacking pantry boxes. Listening more than talking. Faith on your sleeve, not in anyone’s face.'),
-        ('multiply', '04', 'Formation that Multiplies', 'We form disciples who form disciples.', 'A one-on-one with your mentor over coffee. Small group after dinner. What you’re learning becomes something you can pass on.')]
-vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>On an ordinary Tuesday</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
+VOWS = [('god', '01', 'A place to encounter God', 'Prayer, reflection and Jesus, amid the noise.', 'In a neighborhood that never goes quiet, we make room to slow down, pray, sit with Scripture and meet Jesus. Not as a lesson to learn, but as a Person to know.'),
+        ('neighbor', '02', 'A place of peace in the Tenderloin', 'Not an escape from the neighborhood. A steady presence within it.', 'Someone should be able to walk through our doors in grief, uncertainty or crisis and know they will be loved and received. That’s the kind of place we’re becoming.'),
+        ('humility', '03', 'A way of life rooted in Jesus', 'Love God. Love your neighbor.', 'Mercy, humility, forgiveness and friendship. Loving people in the realities of their everyday lives is how Jesus made disciples, and it’s how we learn to follow Him.'),
+        ('multiply', '04', 'Formed here, sent out', 'You don’t just learn compassion. You practice it.', 'Neighbors, students, volunteers, churches and staff all share this way of life. What you learn here won’t stay in San Francisco: you’ll carry it wherever God leads you next.')]
+vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>What it looks like</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
 HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scripture, silence and prayer for each other and for the block. We get rooted before we go out."),
          ("8:00", 480, "One table", "Breakfast together", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
          ("9:00", 540, "Teaching", "Speaker of the week", "Worship, then a new teacher each week on the character of God, identity, hearing His voice, the nations, justice and mercy."),
@@ -504,6 +559,8 @@ LIFE = ''.join('<div class="phase rv">%s<h3>%s</h3><p>%s</p></div>' % (('<div cl
 LIFE_INTRO = t(_LIFE.get('intro'))
 FAQ = ''.join('<details%s><summary>%s</summary><p>%s</p></details>' % (' open' if i == 0 else '', t(q.get('question')), t(q.get('answer'))) for i, q in enumerate(x for x in load('faq.json').get('questions', []) if t(x.get('question'))))
 DTS_INFO = {'range': drange(NX['_s'], NX['_e']) if NX else 'over five months', 'cost': money(DTS_COST), 'month': (NX['_s'].strftime('%B ') + str(NX['_s'].year)) if NX else 'the next school', 'start': md(NX['_s']) if NX else 'soon', 'apply': NX_APPLY, 'email': DEMAIL}
+_sp = int(num(NX.get('spots'))) if NX and num(NX.get('spots')) > 0 else 0
+SPOTS = ('%d spots' % _sp) if _sp else ''
 dts = f'''
 <section class="bb" aria-label="DTS film on a billboard over San Francisco">
   <div class="bb-frame" data-qframe data-w="2000" data-h="1162">
@@ -516,13 +573,14 @@ dts = f'''
 
 <section class="pad heart"><div class="wrap heart-grid">
   <div class="rv"><span class="kick">DTS · The 5 Month Course{(' · ' + drange(NX['_s'], NX['_e'])) if NX else ''}</span>
-    <h1>Do you find yourself longing for more?</h1>
-    <p class="more"><span>More from life.</span> <span>More of Jesus.</span> <span>More of the world beyond your own.</span></p></div>
+    <h1>What if your faith was meant to be <em>lived?</em></h1>
+    <p class="more"><span>{(SPOTS + '.') if SPOTS else ''}</span> <span>One neighborhood.</span> <span>A faith that gets lived out.</span></p></div>
   <div class="rv heart-copy">
-    <p class="lede">A Discipleship Training School (DTS) is five months set apart to know God and to make Him known. Three months of training here in the Tenderloin, two months of outreach in the cities of the world, then a debrief to send you into whatever comes next.</p>
-    <p>We go to the edges, to the people most of the world walks past, not as heroes or fixers but as learners and neighbors. We listen first. We serve alongside local churches who were there long before us and will be there long after. And again and again we find that Jesus was already there too.</p>
+    <p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p>
+    <p>A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: three months of training here in the Tenderloin, two months of outreach in the cities of the world, then a debrief to send you into whatever comes next.</p>
+    <p>This is discipleship with your feet on the ground. You’ll learn alongside people who have spent years serving this neighborhood, and discover what it means to live the way of Jesus in the everyday moments of life.</p>
     <div class="links-row"><a class="btn" href="{NX_APPLY}" target="_blank" rel="noopener">Apply for DTS</a><button class="btn ghost" type="button" data-survey>Am I ready?</button></div>
-    <dl class="facts"><div><dt>Dates</dt><dd>{drange(NX['_s'], NX['_e']) if NX else 'Coming soon'}</dd></div><div><dt>Length</dt><dd>About 5 months</dd></div><div><dt>Cost</dt><dd>{money(DTS_COST)} USD</dd></div><div><dt>Where</dt><dd>{ADDR}</dd></div></dl>
+    <dl class="facts">{('<div><dt>Spots</dt><dd>' + str(_sp) + ' available</dd></div>') if _sp else ''}<div><dt>Dates</dt><dd>{drange(NX['_s'], NX['_e']) if NX else 'Coming soon'}</dd></div><div><dt>Length</dt><dd>About 5 months</dd></div><div><dt>Cost</dt><dd>{money(DTS_COST)} USD</dd></div><div><dt>Where</dt><dd>{ADDR}</dd></div></dl>
   </div>
 </div></section>
 
@@ -535,21 +593,22 @@ dts = f'''
   <p class="board-note">{BOARD_NOTE}</p>
 </div></section>
 
-<section class="pad monastery"><div class="wrap">
-  <div class="mon-head rv"><h2>A monastery without walls</h2><p class="mon-sub">Live amid the chaos. Stay grounded in His presence.</p></div>
-  <div class="mon-copy rv"><p class="lede">Monks used to build their monasteries far from the noise. We built ours in the middle of it. Sirens, shouting on the corner, a neighbor who needs to talk: the city doesn’t go quiet for us.</p>
-  <p>So we keep a rhythm that holds. Morning prayer before the street wakes. One shared table. Silence, Scripture and work done with our hands. Over five months you learn what the old monks knew: stillness isn’t somewhere you go. It’s Someone you stay close to, wherever you are.</p></div>
+<section class="pad monastery" id="monastery"><div class="wrap">
+  <div class="mon-head rv"><h2>A monastery without walls</h2><p class="mon-sub">Peace in the middle of the chaos, not an escape from it.</p></div>
+  <div class="mon-copy rv"><p class="lede">Monks used to build their monasteries far from the noise. We built ours in the middle of it. Sirens, shouting on the corner, a neighbor who needs to talk: the city doesn’t go quiet for us, and we don’t want it to.</p>
+  <p>We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Morning prayer before the street wakes. One shared table. Scripture, reflection and work done with our hands. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p></div>
   <div class="rhythm" aria-label="The rhythm of a DTS week">
     <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-pray.jpg" alt="Students worshipping with a guitar in a city park" loading="lazy" style="object-position:58% 50%"></div><figcaption><b>Pray</b><span>Worship in the open air, in the middle of the city.</span></figcaption></figure>
     <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-study.jpg" alt="Two students studying together at a table" loading="lazy" style="object-position:42% 50%"></div><figcaption><b>Study</b><span>Scripture, journals and long conversations.</span></figcaption></figure>
     <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-serve.jpg" alt="A student kneeling to talk with a neighbor wrapped in a blanket" loading="lazy" style="object-position:52% 40%"></div><figcaption><b>Serve</b><span>Presence first. Names remembered.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-rest.jpg" alt="Students on a coastal trail looking out at the Golden Gate Bridge" loading="lazy" style="object-position:33% 60%"></div><figcaption><b>Rest</b><span>Sabbath, and the city from a distance.</span></figcaption></figure>
+    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-rest.jpg" alt="Students on a coastal trail looking out at the Golden Gate Bridge" loading="lazy" style="object-position:33% 60%"></div><figcaption><b>Rest &amp; play</b><span>Sabbath, days off and the city from a distance.</span></figcaption></figure>
   </div>
 </div></section>
 
 <section class="pad rule5" style="background:var(--mist)"><div class="wrap">
-  <div class="rv rule5-head"><div><span class="kick">Our rule of life</span><h2>Four vows. One rhythm.</h2></div><p>Every monastery has a rule. Ours is YWAM San Francisco’s four values. Turn a card over to see what each looks like on an ordinary Tuesday.</p></div>
+  <div class="rv rule5-head"><div><span class="kick">The Monastery</span><h2>A place of peace, right in the middle of it.</h2></div><p>A place to find peace in the midst of life, encounter Jesus through community, and be formed to carry that peace into the world. Turn a card over to see what it looks like.</p></div>
   <div class="vows5">{vows}</div>
+  <figure class="return5 rv"><span class="kick">05 · A presence people can return to</span><blockquote>“[Story placeholder] A man who’d been part of our community for years came back through our doors on the worst day of his life. He said he came because he knew the people here would love him.”</blockquote><figcaption>The Monastery isn’t just what happens during a program. It’s becoming a trusted place of refuge and relationship, over years. <em>Story to be replaced with a real one.</em></figcaption></figure>
   <div class="daybar rv" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
     <div class="sky"><div class="sun"></div>{day}</div>
     <div class="hour5" aria-live="polite"><small data-h="t"></small><h3 data-h="n"></h3><p data-h="d"></p></div>
@@ -560,6 +619,17 @@ dts = f'''
   <div class="phases">{phases}</div></div></section>
 
 {('<section class="pad life5" id="life" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">What it’s like</span><h2>Your home for five months.</h2>' + ('<p class="lede">' + LIFE_INTRO + '</p>' if LIFE_INTRO else '') + '</div><div class="phases life6">' + LIFE + '</div></div></section>') if LIFE else ''}
+
+<section class="pad real5" id="real"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">The real San Francisco</span><h2>Honest about the hard parts.</h2><p class="lede">San Francisco is a city of breathtaking beauty, rich culture and striking contrasts. In the heart of it lies the Tenderloin: often overlooked, and full of people, stories and opportunities for connection.</p></div>
+  <div class="real2">
+    <div class="rv"><h3>What you’ll see</h3><ul><li>Neighbors living on the street, in single-room hotels and in crisis.</li><li>Addiction, mental illness and poverty, up close and by name.</li><li>Noise, mess and a city that doesn’t slow down.</li><li>Grief and hard stories, alongside a lot of joy, humor and resilience.</li></ul></div>
+    <div class="rv"><h3>What holds you</h3><ul><li>You never serve alone: always in teams, alongside staff who know these blocks.</li><li>A weekly mentor, a small group and a community that prays together.</li><li>Rhythms of rest: Sabbath, free time and days off to explore the city.</li><li>A purpose: becoming a steady, caring presence in the lives of people others pass by.</li></ul></div>
+  </div></div></section>
+
+<section class="pad fit5" style="background:var(--mist)"><div class="wrap fit-grid"><div class="rv"><span class="kick">Is this for you?</span><h2>You don’t need years of ministry experience.</h2></div>
+  <div class="rv"><p class="lede">You do need a heart that’s ready to learn, a faith you’re willing to put into practice, and a desire to love people well.</p>
+  <p>If you’re serious about following Jesus, exploring a call to ministry, or wanting to understand what it means to love your neighbor in practical, everyday ways, we’d love to hear from you.</p>
+  <p class="spots-line">{('Only ' + SPOTS + ' for this school. ') if SPOTS else ''}<a href="{NX_APPLY}" target="_blank" rel="noopener">Apply now to reserve your spot →</a></p></div></div></section>
 
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">In their words</span><h2>Stories from past students.</h2></div>
   <div class="testis">{testi}</div></div></section>
@@ -579,7 +649,7 @@ dts = f'''
   <div class="ready3">
     <button class="rcard rv" type="button" data-survey><small>01 · Reflect</small><b>Take the 3-minute check-in</b><span>Seven honest questions with a gentle, personal read on where you are.</span><em>Start →</em></button>
     <a class="rcard rv" href="{COACH}"><small>02 · Talk</small><b>Talk to a DTS coach</b><span>A real conversation with someone from our DTS staff. Ask anything, no pressure.</span><em>Email a coach →</em></a>
-    <a class="rcard rv solid" href="{NX_APPLY}" target="_blank" rel="noopener"><small>03 · Apply</small><b>{('Apply for ' + NX['_s'].strftime('%B')) if NX else 'Apply for DTS'}</b><span>{('Applications are open for the ' + NX['_s'].strftime('%B ') + str(NX['_s'].day) + ', ' + str(NX['_s'].year) + ' school.') if NX else 'New school dates are coming soon. Get in touch and we’ll let you know.'}</span><em>Apply now →</em></a>
+    <a class="rcard rv solid" href="{NX_APPLY}" target="_blank" rel="noopener"><small>03 · Apply</small><b>{('Apply for ' + NX['_s'].strftime('%B')) if NX else 'Apply for DTS'}</b><span>{('Applications are open for the ' + NX['_s'].strftime('%B ') + str(NX['_s'].day) + ', ' + str(NX['_s'].year) + ' school' + (', with ' + SPOTS + '.' if SPOTS else '.')) if NX else 'New school dates are coming soon. Get in touch and we’ll let you know.'}</span><em>Apply now →</em></a>
   </div>
   <p class="ready-foot rv">Want to see the place first? <a href="../volunteer/">Serve a shift on Ellis Street</a> or <a href="../teams/">come with a team</a>.</p>
 </div></section>
@@ -663,7 +733,7 @@ people = subnav('people', '../') + f'''
 <div class="crews">{teams_html}</div></div></section>
 <section class="pad" style="background:var(--mist)" id="board"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Board of directors</span><h2>Guiding and stewarding the ministry.</h2><p class="lede">Our board brings decades of experience in missions, leadership and finance.</p></div>
 <div class="board-grid">{board}</div></div></section>
-<section class="cta-band pad"><div class="wrap rv"><h2>Join the staff.</h2><p>Most of our staff first came for a DTS. If you’re sensing a call to serve in the city, start a conversation with us.</p><div class="row"><a class="btn light" href="../../course/">DTS (5 Month Course)</a><a class="btn ghost-light" href="../../contact/">Get in touch</a></div></div></section>
+<section class="cta-band pad"><div class="wrap rv"><h2>Join the staff.</h2><p>Most of our staff first came for a DTS. If you’re sensing a call to serve in the city, start a conversation with us.</p><div class="row"><a class="btn light" href="../../join-staff/">Join staff</a><a class="btn ghost-light" href="../../contact/">Get in touch</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'about/people'), exist_ok=True)
 open(os.path.join(OUT, 'about/people/index.html'), 'w').write(page('Staff & Board — YWAM San Francisco', 'about', '../../', '../../../', people))
