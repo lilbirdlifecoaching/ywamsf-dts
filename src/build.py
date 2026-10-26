@@ -541,8 +541,8 @@ COACH = 'mailto:' + DEMAIL + '?subject=I%E2%80%99d%20like%20to%20talk%20to%20a%2
 def _row(x):
     st = 'In session' if x['_s'] <= TODAY else (t(x.get('status')) or 'Applications open')
     href = lnk(x.get('apply_url'), DTS_APPLY)
-    return '  <tr data-days="" data-href="%s" data-newtab="1"><td><span class="flap">%s</span></td><td><span class="flap">%s</span></td><td>%s</td><td><span class="status">%s</span></td></tr>' % (href, x['_s'].strftime('%b ').upper() + str(x['_s'].day) + ' ' + str(x['_s'].year), t(x.get('name') or 'Discipleship Training School').upper(), x['_e'].strftime('%b ').upper() + str(x['_e'].day) + ' ' + str(x['_e'].year), st)
-DTS_ROWS = '\n'.join(_row(x) for x in ACTIVE) or '  <tr data-days=""><td><span class="flap">COMING SOON</span></td><td><span class="flap">DISCIPLESHIP TRAINING SCHOOL</span></td><td></td><td><span class="status">Dates TBA</span></td></tr>'
+    return '  <tr data-days="" data-href="%s" data-newtab="1"><td><span class="flap">%s</span></td><td><span class="flap">%s</span></td><td>%s</td><td class="seats">%s</td><td><span class="status">%s</span></td></tr>' % (href, x['_s'].strftime('%b ').upper() + str(x['_s'].day) + ' ' + str(x['_s'].year), t(x.get('name') or 'Discipleship Training School').upper(), x['_e'].strftime('%b ').upper() + str(x['_e'].day) + ' ' + str(x['_e'].year), ('<span class="flap">%d LEFT</span>' % int(num(x.get('spots')))) if num(x.get('spots')) > 0 and x['_s'] > TODAY else '—', st)
+DTS_ROWS = '\n'.join(_row(x) for x in ACTIVE) or '  <tr data-days=""><td><span class="flap">COMING SOON</span></td><td><span class="flap">DISCIPLESHIP TRAINING SCHOOL</span></td><td></td><td class="seats">—</td><td><span class="status">Dates TBA</span></td></tr>'
 if NX:
     _hm = re.fullmatch(r'(\d{1,2}):(\d{2})', str(NX.get('start_time') or '09:00').strip()) or re.fullmatch(r'(\d+):(\d+)', '09:00')
     _start = datetime.datetime(NX['_s'].year, NX['_s'].month, NX['_s'].day, int(_hm.group(1)), int(_hm.group(2)), tzinfo=SF)
@@ -586,7 +586,7 @@ dts = f'''
 
 <section class="pad" style="padding-top:0"><div class="wrap">
   <div class="board rv"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
-  <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Status</th></tr></thead><tbody>
+  <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
 {DTS_ROWS}
   </tbody></table>
   {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}" target="_blank" rel="noopener">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>

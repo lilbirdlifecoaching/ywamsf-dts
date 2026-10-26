@@ -226,7 +226,7 @@
           blank: { name: 'Discipleship Training School', start: '', end: '', start_time: '09:00', cost: 8000, spots: '', status: 'Applications open', apply_url: '' },
           fields: [F.text('name', 'School name'), { k: 'start', l: 'First day', t: 'date', req: true }, { k: 'end', l: 'Last day', t: 'date', req: true }, { k: 't', l: '', t: 'none' },
             { k: 'start_time', l: 'Start time (for the countdown)', t: 'time' }, { k: 'cost', l: 'Cost (USD)', t: 'number' },
-            { k: 'spots', l: 'Spots available', t: 'number', hint: 'Shown as “15 spots” on the DTS page. Leave blank to hide.' },
+            { k: 'spots', l: 'Spots available', t: 'number', hint: 'Shown as “15 spots” on the DTS page and “15 LEFT” on the departures board. Update it as places fill. Leave blank to hide.' },
             { k: 'status', l: 'Status on the board', t: 'select', opts: ['Applications open', 'Now boarding', 'Almost full', 'Full', 'Waitlist'] },
             { k: 'apply_url', l: 'Application link (optional)', t: 'url', hint: 'Leave blank to use the main DTS application link from Settings.', full: true }] },
         F.area('cost_note', 'Small print under the cost')] },

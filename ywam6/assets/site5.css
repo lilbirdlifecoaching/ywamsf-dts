@@ -1383,3 +1383,4 @@ html.tb .hit-t small{color:#7FD6E0}
 .steps3 .rcard span{color:var(--body)}.steps3 .rcard em a{color:var(--red)}
 @media (max-width:760px){.tracks2{grid-template-columns:1fr}}
 .cards3.three{grid-template-columns:repeat(3,1fr)}@media (max-width:860px){.cards3.three{grid-template-columns:1fr}}
+.board td.seats{color:#f2be73}
