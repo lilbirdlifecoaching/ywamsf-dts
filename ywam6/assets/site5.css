@@ -1407,3 +1407,10 @@ html.tb .hit-t small{color:#7FD6E0}
 .glass-stick img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:3px}
 .glass-stick figcaption{font:500 italic 18px/1.25 var(--display);color:var(--ink);margin-top:9px;text-align:center}
 @media (max-width:980px){.staff-layout{grid-template-columns:1fr}.glass-stick{position:static;grid-template-columns:1fr 1fr}.glass-stick .kick{grid-column:1/-1}.glass-stick img{aspect-ratio:1}}
+
+/* round 54: DTS monastery — write-up left with the stained glass beneath; rhythm moved above parents */
+.monastery .mon-copy.mon-one{display:block;max-width:760px}
+.monastery .mon-copy.mon-one p+p{margin-top:16px}
+.monastery .mon-hint{font-size:15.5px;color:var(--muted)}
+.monastery .vows5{margin-top:clamp(30px,4vw,48px)}
+.rhythm5 .rhythm{margin-top:clamp(28px,4vw,48px)}

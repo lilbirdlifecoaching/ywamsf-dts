@@ -608,25 +608,20 @@ dts = f'''
 
 <section class="pad monastery" id="monastery"><div class="wrap">
   <div class="mon-head rv"><h2>A monastery without walls</h2><p class="mon-sub">Peace in the middle of the chaos, not an escape from it.</p></div>
-  <div class="mon-copy rv"><p class="lede">Monks used to build their monasteries far from the noise. We built ours in the middle of it. Sirens, shouting on the corner, a neighbor who needs to talk: the city doesn’t go quiet for us, and we don’t want it to.</p>
-  <p>We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Morning prayer before the street wakes. One shared table. Scripture, reflection and work done with our hands. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p></div>
-  <div class="rhythm" aria-label="The rhythm of a DTS week">
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-pray.jpg" alt="Students worshipping with a guitar in a city park" loading="lazy" style="object-position:58% 50%"></div><figcaption><b>Pray</b><span>Worship in the open air, in the middle of the city.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-study.jpg" alt="Two students studying together at a table" loading="lazy" style="object-position:42% 50%"></div><figcaption><b>Study</b><span>Scripture, journals and long conversations.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-serve.jpg" alt="A student kneeling to talk with a neighbor wrapped in a blanket" loading="lazy" style="object-position:52% 40%"></div><figcaption><b>Serve</b><span>Presence first. Names remembered.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-rest.jpg" alt="Students on a coastal trail looking out at the Golden Gate Bridge" loading="lazy" style="object-position:33% 60%"></div><figcaption><b>Rest &amp; play</b><span>Sabbath, days off and the city from a distance.</span></figcaption></figure>
-  </div>
+  <div class="mon-copy mon-one rv"><p class="lede">Monks used to build their monasteries far from the noise. We built ours in the middle of it. Sirens, shouting on the corner, a neighbor who needs to talk: the city doesn’t go quiet for us, and we don’t want it to.</p>
+  <p class="mon-hint">A place to find peace in the midst of life, encounter Jesus through community, and be formed to carry that peace into the world. Turn a card over to see what it looks like.</p></div>
+  <div class="vows5">{vows}</div>
+  <figure class="return5 rv"><span class="kick">05 · A presence people can return to</span><blockquote>“[Story placeholder] A man who’d been part of our community for years came back through our doors on the worst day of his life. He said he came because he knew the people here would love him.”</blockquote><figcaption>The Monastery isn’t just what happens during a program. It’s becoming a trusted place of refuge and relationship, over years. <em>Story to be replaced with a real one.</em></figcaption></figure>
 </div></section>
 
 <section class="pad rule5" style="background:var(--mist)"><div class="wrap">
-  <div class="rv rule5-head"><div><span class="kick">The Monastery</span><h2>A place of peace, right in the middle of it.</h2></div><p>A place to find peace in the midst of life, encounter Jesus through community, and be formed to carry that peace into the world. Turn a card over to see what it looks like.</p></div>
-  <div class="vows5">{vows}</div>
-  <figure class="return5 rv"><span class="kick">05 · A presence people can return to</span><blockquote>“[Story placeholder] A man who’d been part of our community for years came back through our doors on the worst day of his life. He said he came because he knew the people here would love him.”</blockquote><figcaption>The Monastery isn’t just what happens during a program. It’s becoming a trusted place of refuge and relationship, over years. <em>Story to be replaced with a real one.</em></figcaption></figure>
   <div class="daybar rv" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
     <div class="sky"><div class="sun"></div>{day}</div>
     <div class="hour5" aria-live="polite"><small data-h="t"></small><h3 data-h="n"></h3><p data-h="d"></p></div>
     <p class="note-small">A sample day. Rhythms shift week to week, and every week has free time and a Sabbath.</p></div>
+
 </div></section>
+
 
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Three parts, one journey</span><h2>From the neighborhood to the nations.</h2></div>
   <div class="phases">{phases}</div></div></section>
@@ -653,6 +648,18 @@ dts = f'''
   <div class="faq5 rv"><span class="kick">FAQ</span>
     {FAQ}
   </div>
+</div></section>
+
+<section class="pad monastery rhythm5"><div class="wrap">
+  <div class="rv mon-copy mon-one"><span class="kick">The rhythm</span>
+  <p class="lede">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Morning prayer before the street wakes. One shared table. Scripture, reflection and work done with our hands. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p></div>
+  <div class="rhythm" aria-label="The rhythm of a DTS week">
+    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-pray.jpg" alt="Students worshipping with a guitar in a city park" loading="lazy" style="object-position:58% 50%"></div><figcaption><b>Pray</b><span>Worship in the open air, in the middle of the city.</span></figcaption></figure>
+    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-study.jpg" alt="Two students studying together at a table" loading="lazy" style="object-position:42% 50%"></div><figcaption><b>Study</b><span>Scripture, journals and long conversations.</span></figcaption></figure>
+    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-serve.jpg" alt="A student kneeling to talk with a neighbor wrapped in a blanket" loading="lazy" style="object-position:52% 40%"></div><figcaption><b>Serve</b><span>Presence first. Names remembered.</span></figcaption></figure>
+    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-rest.jpg" alt="Students on a coastal trail looking out at the Golden Gate Bridge" loading="lazy" style="object-position:33% 60%"></div><figcaption><b>Rest &amp; play</b><span>Sabbath, days off and the city from a distance.</span></figcaption></figure>
+  </div>
+
 </div></section>
 
 {('<section class="pad parents5" id="parents" style="background:var(--mist)"><div class="wrap numbers5"><div class="rv"><span class="kick">For parents</span><h2>Questions from families.</h2>' + ('<p class="lede">' + PARENTS_INTRO + '</p>' if PARENTS_INTRO else '') + '<div class="price5 pcontact"><p><b>Talk with our DTS team</b></p><p><a href="mailto:dts@ywamsanfrancisco.org">dts@ywamsanfrancisco.org</a><br><a href="' + TEL + '">' + PHONE + '</a></p></div></div><div class="faq5 rv">' + PARENTS + '</div></div></section>') if PARENTS else ''}
