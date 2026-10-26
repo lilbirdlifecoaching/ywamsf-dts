@@ -107,7 +107,7 @@ TEAM_FORM = lnk(S.get('team_booking_url'), 'https://www.tfaforms.com/4652564')
 NX_APPLY = lnk((NX or {}).get('apply_url'), DTS_APPLY)
 LIVE = 'https://www.ywamsanfrancisco.org'
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
-NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'Ellis Room', 'neighbors')]
+NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('pay/', 'Pay Fees', 'pay'), ('contact/', 'Connect with us', 'contact')]
 ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('join-staff/', 'Join Staff'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
@@ -419,9 +419,17 @@ open(os.path.join(OUT, 'teams/index.html'), 'w').write(page('Bring a Team — YW
 # ---------------------------------------------------------------- JOIN STAFF
 staffp = f'''
 <section class="page-hero"><div class="ph-img"><img src="../assets/img/vol-crew.jpg" alt="YWAM San Francisco staff and volunteers together at 357 Ellis Street" style="object-position:50% 40%"></div><div class="copy"><div class="wrap"><span class="kick">Join staff · 357 Ellis Street</span><h1>Make the Tenderloin <em>your home.</em></h1><p class="lede">Love God, love your neighbors and help form disciples, for the long haul. If you sense a call to the city, we’d love to talk.</p></div></div></section>
-<section class="pad"><div class="wrap fit-grid"><div class="rv"><span class="kick">Why staff here</span><h2>Presence that restores, <em>over years.</em></h2></div>
-  <div class="rv"><p class="lede">The most important things on Ellis Street happen slowly: a neighbor who learns your name, a friendship that holds through a hard season, a student who finally gets what it means to live their faith. Staff are the people who stay.</p>
-  <p>You’ll be part of a community rooted in the way of Jesus, serving alongside people who have given years to this neighborhood, and helping others learn to do the same.</p></div></div></section>
+<section class="pad"><div class="wrap staff-heart"><div class="rv"><span class="kick">Why staff here</span><h2>Come and build <em>this with us.</em></h2>
+  <p class="lede">Joining staff isn’t just taking a role. It’s adopting a way of life: becoming a place of peace in the middle of the Tenderloin, a presence people know they can return to.</p>
+  <p>The most important things on Ellis Street happen slowly: a neighbor who learns your name, a friendship that holds through a hard season, a student who finally gets what it means to live their faith. Staff are the people who stay, and who shape the community that everyone else encounters.</p>
+  <p>You’ll be rooted in the way of Jesus alongside people who have given years to this neighborhood, and you’ll help form the students, volunteers and teams who carry that heart back out into the world.</p>
+  <a class="btn ghost" href="../course/#monastery">More about the Monastery <span aria-hidden="true">→</span></a></div>
+  <div class="glass4 rv" aria-label="The heart of the Monastery">
+    <figure><img src="../assets/img/vow-god.jpg" alt="" loading="lazy"><figcaption>A place to encounter God</figcaption></figure>
+    <figure><img src="../assets/img/vow-neighbor.jpg" alt="" loading="lazy"><figcaption>A place of peace in the Tenderloin</figcaption></figure>
+    <figure><img src="../assets/img/vow-humility.jpg" alt="" loading="lazy"><figcaption>A way of life rooted in Jesus</figcaption></figure>
+    <figure><img src="../assets/img/vow-multiply.jpg" alt="" loading="lazy"><figcaption>Formed here, sent out</figcaption></figure>
+  </div></div></section>
 <section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Where you could serve</span><h2>Three teams, one mission.</h2></div>
   <div class="cards3 three">
     <div class="card5 rv"><h3>Neighborhood engagement</h3><p>The Ellis Room, the food pantry, showers and haircuts, hot chocolate and outreach on the street.</p></div>
@@ -454,7 +462,7 @@ def ev_html(e):
 week = ''.join('<div class="day" data-d="%d"><h4>%s</h4>%s</div>' % (d, DN[d], ''.join(ev_html(e) for e in WEEK[d]) or '<div class="ev" style="--c:var(--line)"><b>Rest &amp; prep</b><small>No public services</small></div>') for d in [1, 2, 3, 4, 5, 6, 0])
 legend = ''.join('<span style="--c:%s">%s</span>' % v for v in CAT.values())
 nb = f'''
-<section class="page-hero"><div class="ph-img"><img src="../assets/img/er-hero.jpg" alt="Tables and chairs on the sidewalk outside 357 Ellis Street, with a chalkboard sign: Welcome to the Ellis Room" style="object-position:50% 64%"></div><div class="copy"><div class="wrap"><span class="kick">The Ellis Room · 357 Ellis Street</span><h1>Building relationships that lead to <em>lasting transformation.</em></h1><p class="lede">Friendship over coffee, a full pantry, a hot shower, someone to pray with and help connecting to the support people need. God is restoring, empowering and serving in our neighborhood, and we’re following His lead.</p></div></div></section>
+<section class="page-hero"><div class="ph-img"><img src="../assets/img/er-hero.jpg" alt="Tables and chairs on the sidewalk outside 357 Ellis Street, with a chalkboard sign: Welcome to the Ellis Room" style="object-position:50% 64%"></div><div class="copy"><div class="wrap"><span class="kick">357 Ellis Street</span><h1>The <em>Ellis Room</em></h1><p class="lede"><b>Building relationships that lead to lasting transformation.</b> Friendship over coffee, a full pantry, a hot shower, someone to pray with and help connecting to the support people need. God is restoring, empowering and serving in our neighborhood, and we’re following His lead.</p></div></div></section>
 <section class="pad"><div class="wrap"><p class="lit" data-lit>Everyone has value. Everyone has a place. Everyone has <em>something</em> <em>to</em> <em>give,</em> and everyone has something to receive.</p>
 <div class="stats5 rv" style="margin-top:20px"><div><b data-count="400">0</b><span>tons of food shared</span></div><div><b data-count="300" data-suffix="+">0</b><span>neighbors each week</span></div><div><b data-count="209">0</b><span>served at Christmas lunch</span></div><div><b data-count="6">0</b><span>days a week, doors open</span></div></div></div></section>
 <section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="margin-bottom:30px"><span class="kick">Restoration initiatives · tap a card</span><h2>Restore. Empower. <em>Serve.</em></h2></div>
