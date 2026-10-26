@@ -1,8 +1,9 @@
 /* YWAM SF · "a full day on Ellis Street" for the home hero.
-   On load the street plays the last 24 hours as a short time-lapse (fog in the morning,
-   sun, a passing shower, golden hour, neon at night) and settles on the real time and
-   weather in San Francisco. After that it stays live. A small clock lets anyone scrub
-   through the day or replay it. Weather: Open-Meteo (free, no key). */
+   The street opens on the real time and weather in San Francisco and stays live.
+   "Watch the last 24 hours" replays the actual last 24 hours as a time-lapse: the real
+   hourly cloud, fog, rain and temperature from Open-Meteo, and the real sunrise and sunset,
+   so the light, the neon and the weather change exactly as they did on Ellis Street.
+   The clock slider scrubs through the same real day. Weather: Open-Meteo (free, no key). */
 (function () {
   'use strict';
   var hero = document.querySelector('.neon-hero');
@@ -81,7 +82,7 @@
   }
 
   /* ---------------------------------------------------------------- weather */
-  var WX = { cloud: .3, rain: 0, fog: 0, label: '' }, wxReal = null;
+  var WX = { cloud: .3, rain: 0, fog: 0, label: '' }, wxReal = null, HOURLY = null;   // HOURLY[0] = yesterday 00:00 in SF
   function wxFrom(code, cover) {
     var w = { cloud: Math.min(1, (cover || 0) / 100), rain: 0, fog: 0, label: 'Clear' };
     if (cover > 30) w.label = 'Partly cloudy';
@@ -93,13 +94,37 @@
     if (w.rain) w.cloud = Math.max(w.cloud, .85);
     return w;
   }
+  // one hour of real weather, with fog from low visibility and rain scaled by how much actually fell
+  function wxHour(code, cover, precip, vis, temp) {
+    var w = wxFrom(code, cover);
+    if (typeof vis === 'number' && vis < 4000) { w.fog = Math.max(w.fog, Math.min(.9, (4000 - vis) / 3000)); w.cloud = Math.max(w.cloud, .6); }
+    if (typeof precip === 'number' && precip > 0.05 && !w.rain) { w.rain = precip < .5 ? .35 : precip < 2 ? .6 : .9; w.cloud = Math.max(w.cloud, .85); }
+    if (typeof temp === 'number') w.temp = Math.round(temp);
+    w.storm = code >= 95;
+    return w;
+  }
+  // real weather at hour h (hours from today's midnight in SF; negative = yesterday), blended between hours
+  function wxAt(h) {
+    if (!HOURLY) return null;
+    var x = h + 24, i = Math.floor(x), f = x - i, a = HOURLY[Math.max(0, Math.min(HOURLY.length - 1, i))], b = HOURLY[Math.max(0, Math.min(HOURLY.length - 1, i + 1))];
+    if (!a || !b) return null;
+    var w = { cloud: mix(a.cloud, b.cloud, f), rain: mix(a.rain, b.rain, f), fog: mix(a.fog, b.fog, f), storm: f < .5 ? a.storm : b.storm, label: f < .5 ? a.label : b.label };
+    if (typeof a.temp === 'number' && typeof b.temp === 'number') w.temp = Math.round(mix(a.temp, b.temp, f));
+    return w;
+  }
   function loadWeather() {
-    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current=weather_code,cloud_cover,temperature_2m&temperature_unit=fahrenheit&daily=sunrise,sunset&timezone=America%2FLos_Angeles&forecast_days=1';
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current=weather_code,cloud_cover,temperature_2m&hourly=weather_code,cloud_cover,precipitation,visibility,temperature_2m&temperature_unit=fahrenheit&daily=sunrise,sunset&timezone=America%2FLos_Angeles&past_days=1&forecast_days=1';
     return fetch(url, { cache: 'no-store', referrerPolicy: 'no-referrer' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.current) return;
       wxReal = wxFrom(j.current.weather_code, j.current.cloud_cover); if (typeof j.current.temperature_2m === 'number') wxReal.temp = Math.round(j.current.temperature_2m); wxReal.storm = j.current.weather_code >= 95;
       try {
-        var sr = j.daily.sunrise[0].split('T')[1].split(':'), ss = j.daily.sunset[0].split('T')[1].split(':');
+        var hz = j.hourly, out = [];
+        for (var q = 0; q < hz.time.length && q < 48; q++) out.push(wxHour(hz.weather_code[q], hz.cloud_cover[q], hz.precipitation && hz.precipitation[q], hz.visibility && hz.visibility[q], hz.temperature_2m && hz.temperature_2m[q]));
+        if (out.length >= 30) HOURLY = out;
+      } catch (e) {}
+      try {
+        var di = j.daily.sunrise.length - 1;
+        var sr = j.daily.sunrise[di].split('T')[1].split(':'), ss = j.daily.sunset[di].split('T')[1].split(':');
         var a = +sr[0] + sr[1] / 60, b = +ss[0] + ss[1] / 60; if (a > 4 && a < 9 && b > 16 && b < 22) { SR = a; SS = b; }
       } catch (e) {}
     }).catch(function () {});
@@ -213,9 +238,9 @@
     tEl.textContent = fmt(h);
     var ic = iconFor(w, look(h).night > .5);
     if (icEl && ic[0] !== lastIc) { lastIc = ic[0]; icEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[ic[0]] + '</svg>'; }
-    if (tmpEl) tmpEl.textContent = live && typeof w.temp === 'number' ? w.temp + '°' : '';
+    if (tmpEl) tmpEl.textContent = typeof w.temp === 'number' ? w.temp + '°' : '';
     wEl.textContent = ic[1];
-    ctl.setAttribute('aria-label', 'Ellis Street, ' + fmt(h) + (live ? ', now' : '') + ': ' + ic[1] + (live && typeof w.temp === 'number' ? ', ' + w.temp + ' degrees' : ''));
+    ctl.setAttribute('aria-label', 'Ellis Street, ' + fmt(h) + (live ? ', now' : '') + ': ' + ic[1] + (typeof w.temp === 'number' ? ', ' + w.temp + ' degrees' : ''));
     if (rng && document.activeElement !== rng) rng.value = Math.round((((h % 24) + 24) % 24) * 60);
     ctl.classList.toggle('live', !!live);
   }
@@ -226,25 +251,30 @@
   function bell(x, c, wdt) { var d = (x - c) / wdt; return Math.exp(-d * d); }
   function intro() {
     cancelAnimationFrame(raf); mode = 'intro'; if (typeof setPlay === 'function') setTimeout(setPlay, 0);
-    var H = sfParts(new Date()).h, span = 22, start = H - span, steps = 440, cum = [0];
-    // a shower: prefer the evening (neon on, wet street), else the afternoon or late morning
-    var showerAt = null;
-    [[20.4, 22.6], [14, 16.5], [9.5, 13]].some(function (win) {
-      for (var j = 0; j <= steps; j++) { var pj = j / steps, rj = refHour(start + span * pj); if (pj > .08 && pj < .78 && rj > win[0] && rj < win[1]) { showerAt = pj + .025; return true; } }
-      return false;
-    });
-    if (showerAt == null) showerAt = .45;
-    // time runs slower through dawn, dusk and the shower, faster through the dead of night
-    for (var i = 1; i <= steps; i++) { var pi = i / steps, hh = start + span * pi; var rr = refHour(hh); cum.push(cum[i - 1] + (nightish(hh) ? .6 : 1) + 2.4 * bell(rr, 19.6, .75) + 3.2 * bell(pi, showerAt, .055)); }
+    if (!HOURLY) { wxP.then(function () { if (mode === 'intro') introRun(); }); return; }
+    introRun();
+  }
+  function introRun() {
+    var H = sfParts(new Date()).h, span = 24, start = H - span, steps = 480, cum = [0];
+    // without the real hourly record (offline, blocked), fall back to a typical day
+    var scriptedAt = null;
+    if (!HOURLY) {
+      var showerAt = .45;
+      scriptedAt = function (pos, r) { return { cloud: .25 + .6 * bell(pos, showerAt, .08), rain: .9 * bell(pos, showerAt, .055), fog: .8 * bell(r, 8.1, 1.4) + .3 * bell(r, 21.5, 1.2) }; };
+    }
+    // time runs slower through dawn, dusk and any real rain, faster through the dead of night
+    for (var i = 1; i <= steps; i++) {
+      var pi = i / steps, hh = start + span * pi, rr = refHour(hh), wr = HOURLY ? wxAt(hh) : null;
+      cum.push(cum[i - 1] + (nightish(hh) ? .6 : 1) + 2.4 * bell(rr, 19.6, .75) + 1.6 * bell(rr, 7, .6) + (wr ? 2.2 * wr.rain : 0));
+    }
     var total = cum[steps], DUR = 50000, t0 = performance.now();
     function frameAt(now) {
       var u = Math.min(1, (now - t0) / DUR), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
       var target = e * total, k = 0; while (k < steps && cum[k + 1] < target) k++;
       var frac = k < steps ? (target - cum[k]) / (cum[k + 1] - cum[k] || 1) : 0, pos = (k + frac) / steps, h = start + span * pos;
-      var r = refHour(h);
-      var scripted = { cloud: .25 + .6 * bell(pos, showerAt, .08), rain: .9 * bell(pos, showerAt, .055), fog: .8 * bell(r, 8.1, 1.4) + .3 * bell(r, 21.5, 1.2) };
-      var real = wxReal || WX, b = Math.max(0, (pos - .84) / .16);
-      var w = { cloud: mix(scripted.cloud, real.cloud, b), rain: mix(scripted.rain, real.rain, b), fog: mix(scripted.fog, real.fog, b), label: real.label };
+      var w = (HOURLY && wxAt(h)) || scriptedAt(pos, refHour(h));
+      var real = wxReal || WX, b = Math.max(0, (pos - .94) / .06);   // land exactly on the current conditions
+      w = { cloud: mix(w.cloud, real.cloud, b), rain: mix(w.rain, real.rain, b), fog: mix(w.fog, real.fog, b), storm: w.storm, temp: b > .5 && typeof real.temp === 'number' ? real.temp : w.temp, label: real.label };
       render(h, w); showClock(h, w, false);
       if (u < 1) raf = requestAnimationFrame(frameAt); else goLive();
     }
@@ -257,7 +287,7 @@
     render(h, w); showClock(h, w, true);
     clearInterval(liveT); liveT = setInterval(function () { if (mode === 'live') { var hh = sfParts(new Date()).h, ww = wxReal || WX; render(hh, ww); showClock(hh, ww, true); } }, 60000);
   }
-  function scrub(h) { cancelAnimationFrame(raf); mode = 'scrub'; setTimeout(setPlay, 0); var w = wxReal || WX; render(h, w); showClock(h, w, false); }
+  function scrub(h) { cancelAnimationFrame(raf); mode = 'scrub'; setTimeout(setPlay, 0); var H = sfParts(new Date()).h, hr = h > H ? h - 24 : h; var w = wxAt(hr) || wxReal || WX; render(h, w); showClock(h, w, false); }
 
   var playB = hero.querySelector('.dc-play');
   function setPlay() { if (!playB) return; var on = mode === 'intro'; playB.classList.toggle('on', on); playB.querySelector('.lbl').textContent = on ? 'Skip to now' : 'Watch the last 24 hours'; playB.setAttribute('aria-pressed', String(on)); }
