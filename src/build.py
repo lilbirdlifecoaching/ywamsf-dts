@@ -419,29 +419,34 @@ open(os.path.join(OUT, 'teams/index.html'), 'w').write(page('Bring a Team — YW
 # ---------------------------------------------------------------- JOIN STAFF
 staffp = f'''
 <section class="page-hero"><div class="ph-img"><img src="../assets/img/vol-crew.jpg" alt="YWAM San Francisco staff and volunteers together at 357 Ellis Street" style="object-position:50% 40%"></div><div class="copy"><div class="wrap"><span class="kick">Join staff · 357 Ellis Street</span><h1>Make the Tenderloin <em>your home.</em></h1><p class="lede">Love God, love your neighbors and help form disciples, for the long haul. If you sense a call to the city, we’d love to talk.</p></div></div></section>
-<section class="pad"><div class="wrap staff-heart"><div class="rv"><span class="kick">Why staff here</span><h2>Come and build <em>this with us.</em></h2>
+<section class="pad staff-wrap"><div class="wrap staff-layout">
+<div class="staff-main">
+<div class="sblock"><div class="rv"><span class="kick">Why staff here</span><h2>Come and build <em>this with us.</em></h2>
   <p class="lede">Joining staff isn’t just taking a role. It’s adopting a way of life: becoming a place of peace in the middle of the Tenderloin, a presence people know they can return to.</p>
   <p>The most important things on Ellis Street happen slowly: a neighbor who learns your name, a friendship that holds through a hard season, a student who finally gets what it means to live their faith. Staff are the people who stay, and who shape the community that everyone else encounters.</p>
   <p>You’ll be rooted in the way of Jesus alongside people who have given years to this neighborhood, and you’ll help form the students, volunteers and teams who carry that heart back out into the world.</p>
   <a class="btn ghost" href="../course/#monastery">More about the Monastery <span aria-hidden="true">→</span></a></div>
-  <div class="glass4 rv" aria-label="The heart of the Monastery">
-    <figure><img src="../assets/img/vow-god.jpg" alt="" loading="lazy"><figcaption>A place to encounter God</figcaption></figure>
-    <figure><img src="../assets/img/vow-neighbor.jpg" alt="" loading="lazy"><figcaption>A place of peace in the Tenderloin</figcaption></figure>
-    <figure><img src="../assets/img/vow-humility.jpg" alt="" loading="lazy"><figcaption>A way of life rooted in Jesus</figcaption></figure>
-    <figure><img src="../assets/img/vow-multiply.jpg" alt="" loading="lazy"><figcaption>Formed here, sent out</figcaption></figure>
-  </div></div></section>
-<section class="pad" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Where you could serve</span><h2>Three teams, one mission.</h2></div>
+</div>
+<div class="sblock panel"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Where you could serve</span><h2>Three teams, one mission.</h2></div>
   <div class="cards3 three">
     <div class="card5 rv"><h3>Neighborhood engagement</h3><p>The Ellis Room, the food pantry, showers and haircuts, hot chocolate and outreach on the street.</p></div>
     <div class="card5 rv"><h3>Training &amp; outreach</h3><p>Staffing the DTS, hosting Mission Adventures and YWAM teams, and leading teams into the city.</p></div>
     <div class="card5 rv"><h3>Operations</h3><p>Kitchen, hospitality, maintenance, office, communications and finance: the work that keeps the doors open.</p></div>
-  </div></div></section>
-<section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How to start</span><h2>Three steps.</h2></div>
+  </div></div>
+<div class="sblock"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How to start</span><h2>Three steps.</h2></div>
   <div class="ready3 steps3">
     <div class="rcard rv"><small>01</small><b>Complete a DTS</b><span>Like all YWAM staff, you’ll start with a Discipleship Training School, here or at any YWAM location.</span><em><a href="../course/">Our DTS →</a></em></div>
     <div class="rcard rv"><small>02</small><b>Start a conversation</b><span>Tell us about yourself and what’s drawing you to San Francisco. We’ll talk through roles, timing and fit.</span><em><a href="mailto:{EMAIL}?subject=Joining%20staff">Email us →</a></em></div>
     <div class="rcard rv"><small>03</small><b>Come and see</b><span>Spend time on Ellis Street before you commit. Like all YWAM staff, our team raises personal support, and we’ll help you build yours.</span><em><a href="../contact/">Plan a visit →</a></em></div>
-  </div></div></section>
+  </div></div>
+</div>
+<aside class="glass-col" aria-label="The heart of the Monastery"><div class="glass-stick"><span class="kick">The Monastery</span>
+<figure><img src="../assets/img/vow-god.jpg" alt="" loading="lazy"><figcaption>A place to encounter God</figcaption></figure>
+    <figure><img src="../assets/img/vow-neighbor.jpg" alt="" loading="lazy"><figcaption>A place of peace in the Tenderloin</figcaption></figure>
+    <figure><img src="../assets/img/vow-humility.jpg" alt="" loading="lazy"><figcaption>A way of life rooted in Jesus</figcaption></figure>
+    <figure><img src="../assets/img/vow-multiply.jpg" alt="" loading="lazy"><figcaption>Formed here, sent out</figcaption></figure>
+</div></aside>
+</div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Sensing a call to the city?</h2><p>We’d love to hear your story. Email <a style="color:#fff" href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</p><div class="row"><a class="btn light" href="mailto:{EMAIL}?subject=Joining%20staff">Talk with us about staff</a><a class="btn ghost-light" href="../about/people/">Meet the staff</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'join-staff'), exist_ok=True)
