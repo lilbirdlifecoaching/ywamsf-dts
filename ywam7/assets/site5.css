@@ -1500,3 +1500,14 @@ html.tb .hit-t small{color:#7FD6E0}
   .y5-nav a:after{height:3px;bottom:1px}
 }
 @media (min-width:901px) and (max-width:1120px){.y5-nav .links a:not(.sign){font-size:12.5px;letter-spacing:.06em}.y5-nav .links{gap:16px}}
+/* YWAM 7 DTS: departures board grounded on the skyline (replaces the billboard) */
+.dts-top{position:relative;padding-bottom:clamp(8px,1.5vw,20px)}
+.dts-sky{height:clamp(220px,24vw,360px);background:url(img/dts-skyline.jpg) center 30%/cover no-repeat;position:relative}
+.dts-sky:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:#E10F06}
+.dts-board-wrap{margin-top:calc(-1 * clamp(110px,10vw,150px));position:relative;z-index:2}
+.dts-top .board{box-shadow:0 30px 50px -30px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.06)}
+.dts-top .board:before{content:"";position:absolute;left:12%;right:12%;top:-14px;height:14px;background:linear-gradient(90deg,transparent 0 6%,#2a3138 6% 8%,transparent 8% 92%,#2a3138 92% 94%,transparent 94%)}
+.dts-top .board{position:relative;overflow:visible}
+.dts-top .board table{display:table}
+.dts-top + .pad.heart{padding-top:clamp(36px,4vw,56px)}
+@media (max-width:700px){.dts-top .board{overflow-x:auto}.dts-top .board:before{display:none}}

@@ -540,13 +540,17 @@ DTS_INFO = {'range': drange(NX['_s'], NX['_e']) if NX else 'over five months', '
 _sp = int(num(NX.get('spots'))) if NX and num(NX.get('spots')) > 0 else 0
 SPOTS = ('%d spots' % _sp) if _sp else ''
 dts = f'''
-<section class="bb" aria-label="DTS film on a billboard over San Francisco">
-  <div class="bb-frame" data-qframe data-w="2000" data-h="1162">
-    <img class="bg" src="../assets/img/dts-billboard.jpg" alt="A rooftop billboard in front of the San Francisco skyline, playing the YWAM San Francisco DTS film">
-    <div class="bb-screen" data-quad="426.5,353.9 1733.2,381.1 1708.7,995.5 440.1,830.3"><div class="vposter" style="background-image:url('{CDN}1767778466252-U9HEDNEUX7JRPHIDTQR6/image-asset.jpeg?format=1500w')"></div><iframe id="dtsfilm" src="{YT_SRC}" title="YWAM San Francisco DTS film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" tabindex="-1"></iframe></div>
-    <button type="button" class="bb-hit" data-quad="426.5,353.9 1733.2,381.1 1708.7,995.5 440.1,830.3" aria-label="Play the DTS film from the beginning with sound"></button>
+<section class="dts-top" aria-label="Next DTS departures">
+  <div class="dts-sky" role="img" aria-label="The San Francisco skyline"></div>
+  <div class="wrap dts-board-wrap">
+  <div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
+  <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
+{DTS_ROWS}
+  </tbody></table>
+  {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}" target="_blank" rel="noopener">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>
+  <p class="board-note">{BOARD_NOTE}</p>
+
   </div>
-  <div class="vctl"><button type="button" class="vsound" aria-pressed="false"><span class="ico" aria-hidden="true"></span><span class="lbl">Play with sound</span></button><button type="button" class="vfull" aria-label="Watch full screen"><span class="ico" aria-hidden="true"></span></button><button type="button" class="vplay" aria-pressed="false" aria-label="Pause film"><span class="ico" aria-hidden="true"></span></button></div>
 </section>
 
 <section class="pad heart"><div class="wrap heart-grid">
@@ -557,19 +561,12 @@ dts = f'''
     <p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p>
     <p>A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: three months of training here in the Tenderloin, two months of outreach in the cities of the world, then a debrief to send you into whatever comes next.</p>
     <p>This is discipleship with your feet on the ground. You’ll learn alongside people who have spent years serving this neighborhood, and discover what it means to live the way of Jesus in the everyday moments of life.</p>
-    <div class="links-row"><a class="btn" href="{NX_APPLY}" target="_blank" rel="noopener">Apply for DTS</a><button class="btn ghost" type="button" data-survey>Am I ready?</button></div>
+    <div class="links-row"><a class="btn" href="{NX_APPLY}" target="_blank" rel="noopener">Apply for DTS</a><button class="btn ghost" type="button" data-survey>Am I ready?</button><button class="btn ghost" type="button" data-film="lH3BLHA6dhI">▶ Watch the DTS film</button></div>
     <dl class="facts">{('<div><dt>Spots</dt><dd>' + str(_sp) + ' available</dd></div>') if _sp else ''}<div><dt>Dates</dt><dd>{drange(NX['_s'], NX['_e']) if NX else 'Coming soon'}</dd></div><div><dt>Length</dt><dd>About 5 months</dd></div><div><dt>Cost</dt><dd>{money(DTS_COST)} USD</dd></div><div><dt>Where</dt><dd>{ADDR}</dd></div></dl>
   </div>
 </div></section>
 
-<section class="pad" style="padding-top:0"><div class="wrap">
-  <div class="board rv"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
-  <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
-{DTS_ROWS}
-  </tbody></table>
-  {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}" target="_blank" rel="noopener">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>
-  <p class="board-note">{BOARD_NOTE}</p>
-</div></section>
+
 
 <section class="pad monastery" id="monastery"><div class="wrap">
   <div class="mon-head rv"><h2>A monastery without walls</h2><p class="mon-sub">Peace in the middle of the chaos, not an escape from it.</p></div>
@@ -642,6 +639,7 @@ dts = f'''
 {DTS_RES}
 
 <div class="modal" id="modal" aria-hidden="true"><div class="modal-box"><button class="modal-x" aria-label="Close">✕</button><div id="survey"></div></div></div>
+<div class="lightbox" role="dialog" aria-modal="true" aria-label="DTS film"><div class="box"><iframe title="YWAM San Francisco DTS film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
 '''
 dts_scripts = f'<script>window.YWAM_DAY={day_data};window.YWAM_DTS={js(DTS_INFO)};</script><script src="../assets/survey.js?v={VER}"></script>'
 dts_head = f'<link rel="stylesheet" href="../assets/survey.css?v={VER}">'
