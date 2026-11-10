@@ -1456,3 +1456,15 @@ html.tb .hit-t small{color:#7FD6E0}
 @media (max-width:560px){.pillars.four{grid-template-columns:1fr}.films7{width:auto;left:auto}.film7{padding:5px 10px 5px 5px;gap:8px}.film7 .th{width:50px;height:34px}.film7 b{font-size:14px}.film7 small{font-size:9px}.chat7-btn span{display:none}.chat7-btn{padding:13px}}
 /* YWAM 7: keep the clock in the image's bottom-right on phones too (the films sit top-right) */
 @media (max-width:700px){.hero7 .dayctl{top:auto;bottom:10px}.hero7 .dc-panel{top:auto;bottom:calc(100% + 8px)}}
+
+/* YWAM 7: larger, squarer film cards — preview on top, title below, side by side in the top-right */
+.films7{flex-direction:row;width:auto;gap:10px;align-items:flex-start}
+.film7{flex-direction:column;align-items:stretch;gap:0;width:clamp(150px,13vw,190px);padding:6px;border-radius:12px}
+.film7:hover,.film7:focus-visible{transform:translateY(-3px)}
+.film7 .th{width:100%;height:auto;aspect-ratio:4/3;border-radius:8px}
+.film7 .pl{width:44px;height:44px;margin:-22px 0 0 -22px}
+.film7 .pl:after{left:17px;top:13px;border-left-width:14px;border-top-width:9px;border-bottom-width:9px}
+.film7 .tx{padding:9px 6px 5px}
+.film7 b{font-size:17px;line-height:1.15}
+@media (max-width:900px){.film7{width:clamp(130px,30vw,170px)}}
+@media (max-width:560px){.films7{gap:6px}.film7{width:100px;padding:4px}.film7 .th{width:100%;height:auto}.film7 .pl{width:32px;height:32px;margin:-16px 0 0 -16px}.film7 .pl:after{left:12px;top:9px;border-left-width:10px;border-top-width:7px;border-bottom-width:7px}.film7 .tx{padding:5px 3px 2px}.film7 b{font-size:12px}.film7 small{font-size:8px;letter-spacing:.1em}}
