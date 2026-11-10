@@ -211,7 +211,6 @@ else:
 MIN = load('ministries.json').get('ministries', [])
 REEL = ''.join('<a class="hit" href="ellis-room/"><img src="%s" alt="%s" loading="lazy"><span class="hit-t"><small>%s</small><b>%s</b><span>%s</span></span></a>' % (img(m.get('photo'), '', 1500), t(m.get('title')), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')))
 SPOTS_TXT = ('%d spots' % int(num(NX.get('spots')))) if NX and num(NX.get('spots')) > 0 else ''
-ENG7 = ''.join('<div class="pillar rv"><div class="in"><div class="f"><img src="%s" alt="" loading="lazy"><span class="plab"><small>%s</small><h3>%s</h3><em>Tap to read</em></span></div><div class="b"><p>%s</p></div></div></div>' % (img(m.get('photo'), '', 900), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')) and img(m.get('photo'), '', 900))
 NEXT7 = ('<p class="next7">Next DTS begins ' + mdy(NX['_s']) + ('. ' + SPOTS_TXT + '.' if SPOTS_TXT else '.') + '</p>') if NX else '<p class="next7">New DTS dates are coming soon.</p>'
 home = f'''
 <section class="hero7"><div class="hero7-grid">
@@ -273,20 +272,22 @@ home = f'''
 </div>
 </div></section>
 
-<section class="pad engage7"><div class="wrap">
-  <div class="rv engage7-head"><span class="kick">Neighborhood engagement</span><h2>A place of peace, right in the middle of it.</h2><p class="lede">Not an escape from the chaos, but a steady, welcoming presence inside it. This is what that looks like on Ellis Street each week.</p></div>
-  <div class="pillars four">{ENG7}</div>
-  <p class="engage7-more rv"><a class="btn ghost" href="ellis-room/">See the week at The Ellis Room <span aria-hidden="true">→</span></a></p>
-</div></section>
-
-<section class="verse pad"><div class="fogs" aria-hidden="true"><i></i><i></i><i></i></div><div class="wrap">
-  <blockquote data-verse>Follow God’s example, therefore, as dearly loved children and walk in the way of <em>love,</em> just as Christ loved us and gave himself up for us as a fragrant offering and sacrifice to God.</blockquote>
-  <cite>Ephesians 5:1–2 · NIV</cite>
+<section class="engage pad"><div class="wrap">
+  <span class="kick rv">Neighborhood engagement</span>
+  <h2 class="rv">A place of peace, right in the middle of it.</h2>
+  <p class="engage-sub rv">Not an escape from the chaos, but a steady, welcoming presence inside it.</p>
+  <div class="reel" aria-label="Ministry highlights"><div class="reel-track">{REEL}</div></div>
+  <div class="reel-nav"><button class="reel-prev" aria-label="Previous">←</button><div class="reel-dots"></div><button class="reel-next" aria-label="Next">→</button></div>
 </div></section>
 
 <section class="ig5"><div class="wrap head rv"><span class="kick">@ywamsf on Instagram</span><h2>Life on Ellis Street, <em>this week.</em></h2><a class="handle" href="https://www.instagram.com/ywamsf/" target="_blank" rel="noopener">Follow @ywamsf →</a></div>
   <div class="ig-stage" data-ig tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
 </section>
+
+<section class="verse pad"><div class="fogs" aria-hidden="true"><i></i><i></i><i></i></div><div class="wrap">
+  <blockquote data-verse>Follow God’s example, therefore, as dearly loved children and walk in the way of <em>love,</em> just as Christ loved us and gave himself up for us as a fragrant offering and sacrifice to God.</blockquote>
+  <cite>Ephesians 5:1–2 · NIV</cite>
+</div></section>
 
 <div class="lightbox" role="dialog" aria-modal="true" aria-label="YWAM San Francisco film"><div class="box"><iframe title="YWAM San Francisco film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
 '''
