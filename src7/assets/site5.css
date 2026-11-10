@@ -1490,3 +1490,13 @@ html.tb .hit-t small{color:#7FD6E0}
 .engage .reel{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
 .engage .reel-track{padding-inline:calc(50vw - 110px)}
 @media (max-width:560px){.engage .reel-track{padding-inline:19vw}}
+/* YWAM 7: clearer main menu — bigger, darker links, right-aligned beside Sign Me Up */
+@media (min-width:901px){
+  .y5-nav .wrap{min-height:70px}
+  .y5-nav .links{justify-content:flex-end;gap:clamp(20px,2.4vw,36px)}
+  .y5-nav .links .sign{margin-left:clamp(8px,1vw,16px)}
+  .y5-nav .links a:not(.sign){font-size:14px;font-weight:800;letter-spacing:.1em;color:var(--ink);padding:10px 0}
+  .y5-nav .links a:not(.sign):hover{color:var(--red)}
+  .y5-nav a:after{height:3px;bottom:1px}
+}
+@media (min-width:901px) and (max-width:1120px){.y5-nav .links a:not(.sign){font-size:12.5px;letter-spacing:.06em}.y5-nav .links{gap:16px}}
