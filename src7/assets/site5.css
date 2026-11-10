@@ -1487,3 +1487,6 @@ html.tb .hit-t small{color:#7FD6E0}
 .engage{border-top:0}
 .hero7-media{box-shadow:-2px 2px 0 #E10F06,0 30px 60px -40px rgba(8,40,50,.55)}
 @media (max-width:560px){.hero7-media{box-shadow:-1.5px 1.5px 0 #E10F06,0 24px 40px -30px rgba(8,40,50,.5)}}
+.engage .reel{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+.engage .reel-track{padding-inline:calc(50vw - 110px)}
+@media (max-width:560px){.engage .reel-track{padding-inline:19vw}}

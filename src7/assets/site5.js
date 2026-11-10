@@ -169,31 +169,48 @@
     p.addEventListener('input', upd); d.addEventListener('input', upd); upd();
   });
 })();
-/* greatest-hits reel */
+/* greatest-hits reel — endless: the cards are copied before and after, so the row is always full;
+   when the reel settles on a copy it jumps silently to the matching real card */
 (function () {
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   [].forEach.call(document.querySelectorAll('.reel'), function (reel) {
-    var hits = [].slice.call(reel.querySelectorAll('.hit')), sec = reel.parentNode, dots = sec.querySelector('.reel-dots'), cur = 0, paused = false, visible = false, lock = 0, settle;
-    hits.forEach(function (_, i) { var d = document.createElement('i'); d.onclick = function () { go(i); }; dots.appendChild(d); });
+    var track = reel.querySelector('.reel-track'), real = [].slice.call(track.querySelectorAll('.hit')), n = real.length;
+    var sec = reel.parentNode, dots = sec.querySelector('.reel-dots');
+    if (!n) return;
+    function clone(h) { var c = h.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.tabIndex = -1; c.classList.add('clone'); return c; }
+    var before = real.map(clone), after = real.map(clone);
+    before.forEach(function (c) { track.insertBefore(c, real[0]); });
+    after.forEach(function (c) { track.appendChild(c); });
+    var all = before.concat(real, after);           // physical order; logical index = k % n
+    var cur = n, paused = false, visible = false, lock = 0, settle;
+    for (var i = 0; i < n; i++) (function (i) { var d = document.createElement('i'); d.onclick = function () { go(nearestOf(i)); }; dots.appendChild(d); })(i);
     var ds = [].slice.call(dots.children);
-    function mark(i) { cur = i; hits.forEach(function (h, k) { h.classList.toggle('on', k === i); }); ds.forEach(function (d, k) { d.classList.toggle('on', k === i); }); }
+    function mark(k) { cur = k; all.forEach(function (h, j) { h.classList.toggle('on', j === k); }); ds.forEach(function (d, j) { d.classList.toggle('on', j === k % n); }); }
+    function offsetFor(h) { var r = reel.getBoundingClientRect(), b = h.getBoundingClientRect(); return reel.scrollLeft + (b.left + b.width / 2) - (r.left + r.width / 2); }
     function nearest() {
-      var r = reel.getBoundingClientRect(), mid = r.left + r.width / 2, best = 0, bd = 1e9;
-      hits.forEach(function (h, i) { var b = h.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid); if (d < bd) { bd = d; best = i; } });
+      var r = reel.getBoundingClientRect(), mid = r.left + r.width / 2, best = cur, bd = 1e9;
+      all.forEach(function (h, j) { var b = h.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid); if (d < bd) { bd = d; best = j; } });
       return best;
     }
-    function offsetFor(h) { var r = reel.getBoundingClientRect(), b = h.getBoundingClientRect(); return reel.scrollLeft + (b.left + b.width / 2) - (r.left + r.width / 2); }
-    function go(i, instant) {
-      i = (i + hits.length) % hits.length; mark(i);
+    function nearestOf(i) { var c = [i, i + n, i + 2 * n]; return c.reduce(function (a, b) { return Math.abs(b - cur) < Math.abs(a - cur) ? b : a; }); }
+    function recenter() {                         // on a copy? hop to the same card in the real set, without animation
+      if (cur >= n && cur < 2 * n) return;
+      var k = n + (cur % n), was = reel.style.scrollSnapType;
+      reel.style.scrollSnapType = 'none';
+      reel.scrollLeft += offsetFor(all[k]) - offsetFor(all[cur]);
+      mark(k); reel.style.scrollSnapType = was;
+    }
+    function go(k, instant) {
+      k = Math.max(0, Math.min(all.length - 1, k)); mark(k);
       lock = Date.now() + 900;
-      reel.scrollTo({ left: offsetFor(hits[i]), behavior: (reduce || instant) ? 'auto' : 'smooth' });
+      reel.scrollTo({ left: offsetFor(all[k]), behavior: (reduce || instant) ? 'auto' : 'smooth' });
     }
     reel.addEventListener('scroll', function () {
       clearTimeout(settle);
-      settle = setTimeout(function () { lock = 0; var n = nearest(); if (n !== cur) mark(n); }, 140);
-      if (Date.now() > lock) { var n = nearest(); if (n !== cur) mark(n); }
+      settle = setTimeout(function () { lock = 0; var k = nearest(); if (k !== cur) mark(k); recenter(); }, 160);
+      if (Date.now() > lock) { var k = nearest(); if (k !== cur) mark(k); }
     }, { passive: true });
-    hits.forEach(function (h, i) { h.addEventListener('click', function (e) { if (i !== cur) { e.preventDefault(); go(i); } }); });
+    all.forEach(function (h, j) { h.addEventListener('click', function (e) { if (j !== cur) { e.preventDefault(); go(j); } }); });
     sec.querySelector('.reel-prev').onclick = function () { go(cur - 1); };
     sec.querySelector('.reel-next').onclick = function () { go(cur + 1); };
     reel.addEventListener('mouseenter', function () { paused = true; });
@@ -203,7 +220,7 @@
     [sec.querySelector('.reel-prev'), sec.querySelector('.reel-next'), dots].forEach(function (b) { b.addEventListener('click', function () { paused = true; clearTimeout(b._r); b._r = setTimeout(function () { paused = false; }, 8000); }); });
     function tick() { if (!paused && visible && !reduce && Date.now() > lock) go(cur + 1); }
     new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .4 }).observe(reel);
-    var start = Math.min(1, hits.length - 1); mark(start); setTimeout(function () { go(start, true); }, 60);
+    mark(n); setTimeout(function () { go(n, true); }, 60);
     window.addEventListener('resize', function () { go(cur, true); });
     setInterval(tick, 3800);
   });
