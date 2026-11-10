@@ -9,7 +9,11 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 
 - Owners: Luke Haythorpe and Angela (Ange) Haythorpe. Ange presents the site to YWAM SF
   (director: Steve). A creative director gives design feedback.
-- **YWAM 6 (`ywam6/`) is the chosen site.** YWAM 5 (`ywam5/`) is its twin: every change goes
+- **YWAM 7 (`ywam7/`, Nov 2026) is a copy of YWAM 6 for the big simplification after the org's feedback.**
+  It has its own generator and assets in `src7/` (`python3 src7/build.py`) and shares `content/` (and so
+  the admin page) with 5 and 6. Changes for the simpler direction go in `src7/` only; leave `src/` alone unless
+  the user asks for a change on 5/6 too.
+- **YWAM 6 (`ywam6/`) is the current approved-direction site.** YWAM 5 (`ywam5/`) is its twin: every change goes
   to both, *except colours* (YWAM 6 is white/cyan/teal; YWAM 5 keeps the older fog/red look so
   the team can compare). `ywam1/`–`ywam4/` are frozen early explorations: don't touch them.
 - Direction: "a place to learn the way of Jesus by living it". The DTS is framed around

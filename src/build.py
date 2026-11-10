@@ -126,7 +126,7 @@ CONCEPT = 'Design concept YWAM 5 for the YWAM San Francisco refresh — not the 
 def footer(up, root):
     wave = '<svg viewBox="0 0 1600 90" preserveAspectRatio="none"><path d="M0,40 C100,10 200,10 300,40 C400,70 500,70 600,40 C700,10 800,10 900,40 C1000,70 1100,70 1200,40 C1300,10 1400,10 1500,40 C1550,55 1580,62 1600,62 L1600,90 L0,90Z" fill="#5aa8cf"/></svg>'
     wave2 = wave.replace('#5aa8cf', '#8cc6e2')
-    sw = '<nav class="switcher" aria-label="Design concepts"><span>Concepts</span>' + ''.join('<a href="%sywam%d/"><i>YWAM </i>%d</a>' % (root, i, i) for i in range(1, 5)) + ''.join('<a%s href="%sywam%d/"><i>YWAM </i>%d</a>' % (' class="on"' if i == V else '', root, i, i) for i in (5, 6)) + '</nav>'
+    sw = '<nav class="switcher" aria-label="Design concepts"><span>Concepts</span>' + ''.join('<a href="%sywam%d/"><i>YWAM </i>%d</a>' % (root, i, i) for i in range(1, 5)) + ''.join('<a%s href="%sywam%d/"><i>YWAM </i>%d</a>' % (' class="on"' if i == V else '', root, i, i) for i in (5, 6, 7)) + '</nav>'
     return f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
 <div class="links"><a href="{LIVE}/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
 <div class="tag">Presence that restores.</div>
