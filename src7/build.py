@@ -256,7 +256,7 @@ home = f'''
 </div>
   <div class="films7" aria-label="Watch">
     <button type="button" class="film7" data-film="esouyuxQv8M" aria-label="Play See what we do, a 2-minute film about YWAM San Francisco"><span class="th" style="background-image:url('{ph('still', 750)}')"><i class="pl" aria-hidden="true"></i></span><span class="tx"><small>2-min film</small><b>See what we do</b></span></button>
-    <button type="button" class="film7" data-film="lH3BLHA6dhI" aria-label="Play the DTS film: Come live this with us"><span class="th" style="background-image:url('{C}1767778466252-U9HEDNEUX7JRPHIDTQR6/image-asset.jpeg?format=750w')"><i class="pl" aria-hidden="true"></i></span><span class="tx"><small>The DTS film</small><b>Come live this with us</b></span></button>
+    <button type="button" class="film7" data-film="lH3BLHA6dhI" aria-label="Play the DTS film: Come join us"><span class="th" style="background-image:url('{C}1767778466252-U9HEDNEUX7JRPHIDTQR6/image-asset.jpeg?format=750w')"><i class="pl" aria-hidden="true"></i></span><span class="tx"><small>The DTS film</small><b>Come join us</b></span></button>
   </div>
 </div>
 <div class="hero7-copy">
