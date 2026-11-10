@@ -120,7 +120,7 @@ def header(cur, up):
         menu = ''.join('<a href="%s%s" role="menuitem">%s</a>' % (up, mh, mt) for mh, mt in ABOUT_MENU)
         return '<span class="tdd"><a href="%sabout/" class="tdd-btn" aria-haspopup="true" aria-expanded="false"%s>About<i aria-hidden="true"></i></a><span class="tdd-menu" role="menu" aria-label="About">%s</span></span>' % (up, ' aria-current="page"' if k == cur else '', menu)
     top = ''.join(tl(h, t, k) for h, t, k in TOP)
-    return f'''<header class="y5-head"><div class="y5-top"><div class="wrap"><span class="tbrand"><a class="tlogo" href="{up or './'}" aria-label="YWAM San Francisco home"></a><img class="tsky" src="{up}assets/img/sf-skyline.svg" alt="" aria-hidden="true" width="223" height="30"></span><span class="tlinks">{top}</span></div></div>
+    return f'''<header class="y5-head"><div class="y5-top"><div class="wrap"><a class="tlogo" href="{up or './'}" aria-label="YWAM San Francisco home"></a><span class="tlinks">{top}</span></div></div>
 <nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links">{links}<a class="sign" href="{SIGNUP}" target="_blank" rel="noopener">Sign Me Up!</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>'''
 
 CONCEPT = 'Design concept YWAM 7 (a simpler YWAM 6) for the YWAM San Francisco refresh — not the live site' if V == 7 else 'Design concept YWAM 5 for the YWAM San Francisco refresh — not the live site' if V == 5 else 'Design concept YWAM 6 (YWAM 5 with a backlit sign) for the YWAM San Francisco refresh — not the live site'

@@ -1517,9 +1517,3 @@ html.tb .hit-t small{color:#7FD6E0}
 .dts-top .board:before{display:none}
 .hero7-media{box-shadow:0 30px 60px -40px rgba(8,40,50,.55)}
 @media (max-width:560px){.hero7-media{box-shadow:0 24px 40px -30px rgba(8,40,50,.5)}}
-/* YWAM 7: SF skyline line drawing running out of the final stroke of the logo's M.
-   Logo 385x120 shown 34px high (scale .283): the M's last stroke ends at about (105px, 19px).
-   Skyline 520x70 shown 30px high (scale .429): its deck line starts at (0.9px, 25.7px). */
-.y5-top .tbrand{display:flex;align-items:flex-start;flex:none}
-.y5-top .tsky{display:block;height:30px;width:auto;max-width:none;margin:-6.7px 0 0 -7.5px;pointer-events:none}
-@media (max-width:860px){.y5-top .tsky{display:none}}
