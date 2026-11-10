@@ -1468,3 +1468,18 @@ html.tb .hit-t small{color:#7FD6E0}
 .film7 b{font-size:17px;line-height:1.15}
 @media (max-width:900px){.film7{width:clamp(130px,30vw,170px)}}
 @media (max-width:560px){.films7{gap:6px}.film7{width:100px;padding:4px}.film7 .th{width:100%;height:auto}.film7 .pl{width:32px;height:32px;margin:-16px 0 0 -16px}.film7 .pl:after{left:12px;top:9px;border-left-width:10px;border-top-width:7px;border-bottom-width:7px}.film7 .tx{padding:5px 3px 2px}.film7 b{font-size:12px}.film7 small{font-size:8px;letter-spacing:.1em}}
+/* YWAM 7: slimmer engagement reel — about the hero's height, 4–5 cards in view, bridge-red line above */
+.engage{border-top:3px solid #E10F06;padding-block:clamp(40px,4vw,56px)}
+.engage h2{font-size:clamp(30px,3vw,44px);margin-bottom:6px}
+.engage .engage-sub{max-width:none;margin:0 auto 6px}
+@media (min-width:760px){.engage .engage-sub{white-space:nowrap}}
+.engage .reel{margin-top:18px}
+.engage .reel-track{gap:14px;padding:14px max(24px,calc(50% - 115px)) 20px}
+.engage .hit{flex-basis:220px;height:290px;transform:scale(.93);opacity:.62;filter:saturate(.55)}
+.engage .hit.on{transform:scale(1);opacity:1;filter:none}
+.engage .hit-t{padding:16px}
+.engage .hit-t small{font-size:10px;letter-spacing:.16em;margin-bottom:4px}
+.engage .hit-t b{font-size:23px}
+.engage .hit-t span{font-size:13px;line-height:1.4;margin-top:6px}
+.engage .reel-nav button{width:38px;height:38px;font-size:16px}
+@media (max-width:560px){.engage .hit{flex-basis:62vw;height:300px}.engage .reel-track{padding-inline:19vw}}
