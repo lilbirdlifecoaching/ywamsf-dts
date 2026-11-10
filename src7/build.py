@@ -156,6 +156,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 {banner_html()}{header(cur, up)}
 <main id="main">{body}</main>
 {footer(up, root)}
+<div class="chat7"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Chat with us</span></button><div class="chat7-p" id="chat7-p" hidden><b>Live chat is coming soon</b><p>For now, we’d love to hear from you by email or phone.</p><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{TEL}">{PHONE}</a></div></div>
 {scripts}<script src="{up}assets/site5.js?v={VER}"></script></body></html>''', up)
 
 def banner_html():
@@ -209,8 +210,13 @@ else:
     CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="NEXT DTS|SOON" data-band="Next DTS · dates coming soon" data-flag="New DTS dates are coming soon!" data-flag-cta="Find out more →" data-href="course/" aria-label="New DTS dates are coming soon. Find out more about the DTS, our 5 Month Course."></div>'
 MIN = load('ministries.json').get('ministries', [])
 REEL = ''.join('<a class="hit" href="ellis-room/"><img src="%s" alt="%s" loading="lazy"><span class="hit-t"><small>%s</small><b>%s</b><span>%s</span></span></a>' % (img(m.get('photo'), '', 1500), t(m.get('title')), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')))
+SPOTS_TXT = ('%d spots' % int(num(NX.get('spots')))) if NX and num(NX.get('spots')) > 0 else ''
+ENG7 = ''.join('<div class="pillar rv"><div class="in"><div class="f"><img src="%s" alt="" loading="lazy"><span class="plab"><small>%s</small><h3>%s</h3><em>Tap to read</em></span></div><div class="b"><p>%s</p></div></div></div>' % (img(m.get('photo'), '', 900), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')) and img(m.get('photo'), '', 900))
+NEXT7 = ('<p class="next7">Next DTS begins ' + mdy(NX['_s']) + ('. ' + SPOTS_TXT + '.' if SPOTS_TXT else '.') + '</p>') if NX else '<p class="next7">New DTS dates are coming soon.</p>'
 home = f'''
-<section class="neon-hero" aria-label="YWAM San Francisco sign on Ellis Street">
+<section class="hero7"><div class="hero7-grid">
+<div class="hero7-media">
+<div class="neon-hero" role="img" aria-label="Ellis Street in the Tenderloin, with the YWAM San Francisco sign, in today’s real light and weather">
   <div class="frame" style="width:2500px;height:1424px">
     <img class="photo" src="assets/img/hero-ellis.jpg" alt="Ellis Street in the Tenderloin, with the YWAM San Francisco sign on the left" style="width:2500px;height:1424px">
     <div class="sky-c" aria-hidden="true"></div>
@@ -248,47 +254,29 @@ home = f'''
   <div class="rainhaze" aria-hidden="true"></div>
   <canvas class="rain" aria-hidden="true"></canvas>
   <div class="dayctl" role="group" aria-label="Time of day on Ellis Street"><button type="button" class="dc-play" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l10.5-6.5z"/><path class="sk" d="M6.5 6v12M11 6l7 6-7 6z"/></svg><span class="lbl">Watch the last 24 hours</span></button><div class="dc-panel" id="dcpanel"><small><span>Midnight</span><span>Noon</span><span>Midnight</span></small><input type="range" min="0" max="1439" step="5" aria-label="Drag through the day on Ellis Street"><div class="dc-btns"><button type="button" class="dc-replay">Replay the day</button><button type="button" class="dc-live">Back to now</button></div></div><button type="button" class="dc-pill" aria-expanded="false" aria-controls="dcpanel"><span class="dc-dot" aria-hidden="true"></span><span class="dc-time">Ellis St</span><span class="dc-sep" aria-hidden="true"></span><span class="dc-ic" aria-hidden="true"></span><span class="dc-tmp"></span><span class="dc-wx"></span></button></div>
-</section>
-
-<section class="pad intro"><div class="wrap">
-  <h1 class="kick intro-kick">The love of Jesus is meant to be lived!</h1>
-  <p class="lit plain lines"><span>We believe people can change,</span> <span>neighborhoods can heal,</span> <span>and love can make a difference.</span></p>
-  <div class="intro-body rv"><p>We’re here to be part of that. Our neighborhood is called <b>the Tenderloin</b>, and it’s a place to learn the way of Jesus by living it: loving our neighbors, meeting practical needs, and building relationships that bring lasting change.</p><a class="btn come-btn" href="{DTS_APPLY}" target="_blank" rel="noopener">Come and live this with us <span aria-hidden="true">→</span></a></div>
-</div></section>
-
-<section class="cc-strip" aria-label="Next 5-month course">
-  {CABLECAR}
-</section>
-
-<section class="wall-sec pad"><div class="wrap wall-grid">
-  <div class="wall rv" data-qframe data-w="1400" data-h="1167" style="aspect-ratio:1400/1167">
-    <img class="bg" src="assets/img/ellis-front.jpg" alt="The YWAM San Francisco building at 357 Ellis Street, with the film playing in its front window">
-    <div class="screen" data-quad="166,729 634,711 634,1009 166,989"><img class="poster" src="{ph('still', 750)}" alt="Opening frame of the YWAM San Francisco film"></div>
-    <div class="pane" data-quad="166,729 634,711 634,1009 166,989" aria-hidden="true"></div>
-    <img class="occ" src="assets/img/ellis-front-occ.png" alt="" aria-hidden="true" style="left:9.857%;top:76.864%;width:14.857%">
-    <button class="play" data-film style="left:79%;top:93.5%"><i></i>Watch the film</button>
+</div>
+  <div class="films7" aria-label="Watch">
+    <button type="button" class="film7" data-film="esouyuxQv8M" aria-label="Play Inside YWAM San Francisco, a 2-minute film"><span class="th" style="background-image:url('{ph('still', 500)}')"><i class="pl" aria-hidden="true"></i></span><span class="tx"><small>2-min film</small><b>Inside YWAM SF</b></span></button>
+    <button type="button" class="film7" data-film="lH3BLHA6dhI" aria-label="Play the DTS film"><span class="th" style="background-image:url('{C}1767778466252-U9HEDNEUX7JRPHIDTQR6/image-asset.jpeg?format=500w')"><i class="pl" aria-hidden="true"></i></span><span class="tx"><small>The DTS film</small><b>5 months in the city</b></span></button>
   </div>
-  <div class="rv">
-    <span class="kick">Now showing on Ellis Street</span>
-    <p class="vision">We envision a Tenderloin where neighbors and the neighborhood are <em>renewed</em>, and where the Church is mobilized to share the love of Christ.</p>
-    <p id="film-desc">Two minutes inside YWAM San Francisco: the people, the street, and the everyday work of loving our neighbors in the Tenderloin.</p>
-    <button class="btn" data-film>▶ Play full screen</button>
+</div>
+<div class="hero7-copy">
+  <span class="kick">We believe</span>
+  <h1 class="believe7"><span>People can change.</span> <span>Neighborhoods can heal.</span> <span>Love can make a difference.</span></h1>
+  <p>The love of Jesus is meant to be lived. In the Tenderloin, we learn His way by living it: loving our neighbors, meeting practical needs, and building relationships that bring lasting change.</p>
+  <div class="cta7">
+    <a class="btn" href="course/">Join our DTS</a>
+    <a class="btn ghost" href="give/">Give</a>
+    <a class="btn ghost" href="volunteer/">Volunteer</a>
   </div>
+  {NEXT7}
+</div>
 </div></section>
 
-<section class="engage pad"><div class="wrap">
-  <span class="kick rv">The Ellis Room · greatest hits</span>
-  <h2 class="rv">Neighborhood engagement</h2>
-  <p class="engage-sub rv">The relational heart of the mission: presence, outreach, spaces and connections.</p>
-  <div class="reel" aria-label="Ministry highlights"><div class="reel-track">{REEL}</div></div>
-  <div class="reel-nav"><button class="reel-prev" aria-label="Previous">←</button><div class="reel-dots"></div><button class="reel-next" aria-label="Next">→</button></div>
-</div></section>
-
-<section class="pad mon-home"><div class="wrap mon-home-grid">
-  <div class="rv"><span class="kick">The Monastery</span><h2>A place of peace, right in the middle of it.</h2></div>
-  <div class="rv"><p class="lede">Not an escape from the chaos, but a steady, welcoming presence inside it. A place to encounter Jesus through prayer and community, where someone can walk in on their hardest day and know they’ll be loved and received.</p>
-  <p>Neighbors, students, volunteers, churches and staff all share this way of life, and carry it back out into the world.</p>
-  <a class="btn ghost" href="course/#monastery">See the Monastery <span aria-hidden="true">→</span></a></div>
+<section class="pad engage7"><div class="wrap">
+  <div class="rv engage7-head"><span class="kick">Neighborhood engagement</span><h2>A place of peace, right in the middle of it.</h2><p class="lede">Not an escape from the chaos, but a steady, welcoming presence inside it. This is what that looks like on Ellis Street each week.</p></div>
+  <div class="pillars four">{ENG7}</div>
+  <p class="engage7-more rv"><a class="btn ghost" href="ellis-room/">See the week at The Ellis Room <span aria-hidden="true">→</span></a></p>
 </div></section>
 
 <section class="verse pad"><div class="fogs" aria-hidden="true"><i></i><i></i><i></i></div><div class="wrap">
@@ -296,41 +284,13 @@ home = f'''
   <cite>Ephesians 5:1–2 · NIV</cite>
 </div></section>
 
-<section class="believe" aria-label="What we believe">
-  <div class="slides">
-    <figure data-where="Outreach team · Ellis Street"><img src="{ph('team',2000)}" alt="An outreach team with backpacks on a city sidewalk"></figure>
-    <figure data-where="Community lunch"><img src="{ph('lunch',2000)}" alt="Neighbors sharing a meal" loading="lazy"></figure>
-    <figure data-where="In the kitchen"><img src="{ph('kitchen',2000)}" alt="Volunteers preparing food" loading="lazy"></figure>
-    <figure data-where="Pop-Up Church"><img src="{ph('preach',2000)}" alt="Pop-Up Church on the sidewalk" loading="lazy"></figure>
-    <figure data-where="Food pantry day"><img src="{ph('queue',2000)}" alt="Neighbors outside the building on food pantry day" loading="lazy"></figure>
-  </div>
-  <div class="copy">
-    <p>We believe restoration starts with <em>relationship.</em></p>
-    <p>We believe everyone matters, everyone belongs, and everyone has <em>something to give.</em></p>
-    <p>We believe love can change a <em>neighborhood.</em></p>
-    <a class="btn light" href="{SIGNUP}" target="_blank" rel="noopener">Sign me up!</a>
-  </div>
-  <span class="where"></span><div class="bar"></div>
-</section>
-
-<section class="pad stories5-home"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Stories from Ellis Street</span><h2>God is already at work here.</h2><p class="lede">Real people, real neighbors, and the lives being touched in the Tenderloin.</p></div>
-  <div class="stories3"><article class="story5 rv"><div class="sph"><img src="assets/img/er-pool.jpg" alt="" loading="lazy" style="object-position:50% 40%"><span class="ph-badge">Example photo</span></div><small>Example story · The Ellis Room</small><h3>“This is the first place I didn’t feel watched.”</h3><p>[Placeholder] A neighbor who came in for coffee and stayed for a game of pool now helps set up chairs every Tuesday. A real story and name, with permission, will go here.</p></article><article class="story5 rv"><div class="sph"><img src="assets/img/er-restore.jpg" alt="" loading="lazy" style="object-position:50% 25%"><span class="ph-badge">Example photo</span></div><small>Example story · Food pantry</small><h3>From the pantry line to the prayer table.</h3><p>[Placeholder] Months of Thursday conversations turned into friendship, and one day, a request for prayer. A real story will go here.</p></article><article class="story5 rv"><div class="sph"><img src="assets/img/er-empower.jpg" alt="" loading="lazy" style="object-position:50% 30%"><span class="ph-badge">Example photo</span></div><small>Example story · Connecting to support</small><h3>Someone to walk with him to court.</h3><p>[Placeholder] Staff went with a neighbor to his hearing, then to his first appointment for housing. A real story will go here.</p></article></div></div></section>
-
-<section class="pad involve5" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Get involved</span><h2>There’s a place for you here.</h2></div>
-  <div class="involve4">
-    <a class="card5 rv" href="join-staff/"><h3>Join staff</h3><p>Make the Tenderloin your home and serve with us long term.</p><span class="go">Explore staff →</span></a>
-    <a class="card5 rv" href="volunteer/"><h3>Volunteer</h3><p>Pick a shift at the pantry, the Ellis Room or on the street.</p><span class="go">Come volunteer →</span></a>
-    <a class="card5 rv" href="give/"><h3>Give</h3><p>Keep the doors open, the showers running and the pantry full.</p><span class="go">Give →</span></a>
-    <a class="card5 rv" href="teams/"><h3>Bring a team</h3><p>Church groups, youth groups and YWAM schools from other locations.</p><span class="go">Bring a team →</span></a>
-  </div></div></section>
-
 <section class="ig5"><div class="wrap head rv"><span class="kick">@ywamsf on Instagram</span><h2>Life on Ellis Street, <em>this week.</em></h2><a class="handle" href="https://www.instagram.com/ywamsf/" target="_blank" rel="noopener">Follow @ywamsf →</a></div>
   <div class="ig-stage" data-ig tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
 </section>
 
-<div class="lightbox" role="dialog" aria-modal="true" aria-label="YWAM San Francisco film" aria-describedby="film-desc"><div class="box"><iframe title="YWAM San Francisco film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
+<div class="lightbox" role="dialog" aria-modal="true" aria-label="YWAM San Francisco film"><div class="box"><iframe title="YWAM San Francisco film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><button class="x" aria-label="Close film">✕</button></div>
 '''
-home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/cablecar.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
+home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
 os.makedirs(OUT, exist_ok=True)
 open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../', home, scripts=home_scripts))
 
@@ -477,6 +437,9 @@ nb = f'''
 <div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-serve.jpg" alt="A smiling neighbor in a white jacket over a leopard-print hoodie" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>03</small><h3>Serve</h3><em>Tap to read</em></span></div><div class="b"><p>First by being good listeners and friends. Free haircuts, showers and prayer. We go with people to the hospital, court and rehab.</p></div></div></div></div></div></section>
 <section class="pad"><div class="wrap"><div class="rv" style="margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap"><div><span class="kick">The week at 357 Ellis</span><h2>Come by. <em>The door is open.</em></h2></div><p style="max-width:420px;margin:0">The proclamation of the Gospel and the activity of the Gospel, side by side. Today, and anything happening right now, is highlighted in San Francisco time.</p></div>
 <div class="nownext rv" aria-live="polite"></div><div class="week-wrap rv"><div class="week">{week}</div></div><div class="legend">{legend}</div></div></section>
+<section class="pad stories5-home er-stories"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Stories from Ellis Street</span><h2>God is already at work here.</h2><p class="lede">Real people, real neighbors, and the lives being touched in the Tenderloin.</p></div>
+  <div class="stories3"><article class="story5 rv"><div class="sph"><img src="../assets/img/er-pool.jpg" alt="" loading="lazy" style="object-position:50% 40%"><span class="ph-badge">Example photo</span></div><small>Example story · The Ellis Room</small><h3>“This is the first place I didn’t feel watched.”</h3><p>[Placeholder] A neighbor who came in for coffee and stayed for a game of pool now helps set up chairs every Tuesday. A real story and name, with permission, will go here.</p></article><article class="story5 rv"><div class="sph"><img src="../assets/img/er-restore.jpg" alt="" loading="lazy" style="object-position:50% 25%"><span class="ph-badge">Example photo</span></div><small>Example story · Food pantry</small><h3>From the pantry line to the prayer table.</h3><p>[Placeholder] Months of Thursday conversations turned into friendship, and one day, a request for prayer. A real story will go here.</p></article><article class="story5 rv"><div class="sph"><img src="../assets/img/er-empower.jpg" alt="" loading="lazy" style="object-position:50% 30%"><span class="ph-badge">Example photo</span></div><small>Example story · Connecting to support</small><h3>Someone to walk with him to court.</h3><p>[Placeholder] Staff went with a neighbor to his hearing, then to his first appointment for housing. A real story will go here.</p></article></div></div></section>
+
 <section class="pad voices5"><div class="wrap"><div class="rv" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px"><div><span class="kick">Love your neighbor(hood)</span><h2>Lessons learned on these streets.</h2></div><div class="varrows"><button aria-label="Previous" data-dir="-1">←</button><button aria-label="Next" data-dir="1">→</button></div></div>
 <div class="vtrack">
 <a class="voice5" href="{LIVE}/blog/emilyg" target="_blank" rel="noopener"><blockquote>“…choose hurry instead of human in these moments.”</blockquote><cite><b>Restaurants of the TL</b>From the YWAM SF blog</cite></a>

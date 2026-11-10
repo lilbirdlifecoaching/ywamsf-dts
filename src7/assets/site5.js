@@ -86,9 +86,11 @@
 
   /* living wall video */
   var lb = $('.lightbox');
-  function openFilm() {
+  function openFilm(e) {
     if (!lb) return;
-    $('iframe', lb).src = 'https://www.youtube-nocookie.com/embed/' + VIDEO + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    var id = (e && e.currentTarget && e.currentTarget.getAttribute('data-film')) || '';
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) id = VIDEO;   // data-film="" plays the main film
+    $('iframe', lb).src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
     lb.classList.add('open'); document.body.style.overflow = 'hidden'; $('.x', lb).focus();
   }
   function closeFilm() { if (!lb) return; lb.classList.remove('open'); $('iframe', lb).src = 'about:blank'; document.body.style.overflow = ''; }
@@ -439,4 +441,12 @@
   });
 })();
 /* land exactly on a #section once images and reveals have settled */
-(function () { if (!location.hash || location.hash.length < 2) return; function go() { var el; try { el = document.querySelector(location.hash); } catch (e) {} if (el) el.scrollIntoView({ block: 'start' }); } addEventListener('load', function () { setTimeout(go, 60); setTimeout(go, 600); }); })();
+(function () { if (!location.hash || location.hash.length < 2) return; function go() { var el; try { el = document.querySelector(location.hash); } catch (e) {} if (el) el.scrollIntoView({ block: 'start' }); } addEventListener('load', function () { setTimeout(go, 60); setTimeout(go, 600); }); 
+  /* contact chat: placeholder until a chat service is chosen */
+  $$('.chat7').forEach(function (c) {
+    var b = $('.chat7-btn', c), p = $('.chat7-p', c);
+    function set(o) { b.setAttribute('aria-expanded', String(o)); p.hidden = !o; c.classList.toggle('open', o); }
+    b.addEventListener('click', function () { set(p.hidden); });
+    addEventListener('keydown', function (e) { if (e.key === 'Escape' && !p.hidden) { set(false); b.focus(); } });
+  });
+})();

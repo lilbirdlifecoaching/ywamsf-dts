@@ -1414,3 +1414,41 @@ html.tb .hit-t small{color:#7FD6E0}
 .monastery .mon-hint{font-size:15.5px;color:var(--muted)}
 .monastery .vows5{margin-top:clamp(30px,4vw,48px)}
 .rhythm5 .rhythm{margin-top:clamp(28px,4vw,48px)}
+
+/* ===== YWAM 7 round 1 (Nov 2026): simpler home ===== */
+.hero7{padding:clamp(16px,2.4vw,32px) clamp(16px,3vw,40px) clamp(28px,4vw,56px)}
+.hero7-grid{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.hero7-media{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 30px 60px -40px rgba(8,40,50,.55)}
+.hero7 .neon-hero{height:clamp(380px,40vw,580px);min-height:0}
+.films7{position:absolute;left:clamp(10px,1.6vw,20px);bottom:clamp(10px,1.6vw,20px);z-index:5;display:flex;gap:10px;flex-wrap:wrap}
+.film7{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border:0;border-radius:8px;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--ink);cursor:pointer;text-align:left;box-shadow:0 10px 26px -14px rgba(0,0,0,.55);transition:transform .25s,box-shadow .25s}
+.film7:hover,.film7:focus-visible{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(0,0,0,.6)}
+.film7 .th{position:relative;width:74px;height:46px;border-radius:5px;background:#233 center/cover no-repeat;flex:none}
+.film7 .pl{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(255,255,255,.95)}
+.film7 .pl:after{content:"";position:absolute;left:10px;top:7px;border-left:9px solid var(--deep,#08404F);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.film7 small{display:block;font:800 10px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.film7 b{display:block;font:500 18px/1.15 var(--display);color:var(--ink)}
+.hero7 .dayctl{top:clamp(10px,1.6vw,18px);bottom:auto}
+.hero7-copy .kick{margin-bottom:12px}
+.believe7{font:500 clamp(34px,3.6vw,54px)/1.06 var(--display);color:var(--ink);margin:0 0 18px}
+.believe7 span{display:block}
+.believe7 span:last-child{color:var(--red)}
+.hero7-copy p{max-width:46ch}
+.cta7{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 10px}
+.next7{font-size:14px;color:var(--muted);margin:0}
+.engage7{background:var(--mist)}
+.engage7-head{max-width:760px;margin-bottom:30px}
+.pillars.four{grid-template-columns:repeat(4,1fr)}
+.pillars.four .pillar{height:300px}
+.pillars.four .pillar .f .plab h3{font-size:26px}
+.pillars.four .pillar .b p{font-size:19px}
+.engage7-more{margin:28px 0 0}
+.er-stories{background:var(--mist)}
+.chat7{position:fixed;right:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,24px);z-index:60;font-family:var(--sans)}
+.chat7-btn{display:flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border:0;border-radius:999px;background:var(--deep,#08404F);color:#fff;font:700 13px var(--sans);cursor:pointer;box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+.chat7-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+.chat7-p{position:absolute;right:0;bottom:calc(100% + 10px);width:260px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;box-shadow:0 20px 40px -20px rgba(0,0,0,.4);font-size:14.5px}
+.chat7-p b{display:block;color:var(--ink);margin-bottom:4px}.chat7-p p{margin:0 0 10px}.chat7-p a{display:block;color:var(--red);margin-top:4px}
+@media (max-width:1100px){.pillars.four{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:900px){.hero7-grid{grid-template-columns:1fr}.hero7 .neon-hero{height:clamp(320px,62vw,460px)}}
+@media (max-width:560px){.pillars.four{grid-template-columns:1fr}.film7 .th{width:56px;height:36px}.film7 b{font-size:15px}.chat7-btn span{display:none}.chat7-btn{padding:13px}}
