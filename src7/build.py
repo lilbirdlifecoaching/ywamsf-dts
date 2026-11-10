@@ -541,7 +541,6 @@ _sp = int(num(NX.get('spots'))) if NX and num(NX.get('spots')) > 0 else 0
 SPOTS = ('%d spots' % _sp) if _sp else ''
 dts = f'''
 <section class="dts-top" aria-label="Next DTS departures">
-  <div class="dts-sky" role="img" aria-label="The San Francisco skyline"></div>
   <div class="wrap dts-board-wrap">
   <div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
   <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
