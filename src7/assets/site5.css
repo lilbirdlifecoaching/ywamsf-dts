@@ -1483,3 +1483,7 @@ html.tb .hit-t small{color:#7FD6E0}
 .engage .hit-t span{font-size:13px;line-height:1.4;margin-top:6px}
 .engage .reel-nav button{width:38px;height:38px;font-size:16px}
 @media (max-width:560px){.engage .hit{flex-basis:62vw;height:300px}.engage .reel-track{padding-inline:19vw}}
+/* YWAM 7: bridge-red offset border on the hero image (left + bottom); no line between sections */
+.engage{border-top:0}
+.hero7-media{box-shadow:-8px 8px 0 #E10F06,0 30px 60px -40px rgba(8,40,50,.55)}
+@media (max-width:560px){.hero7-media{box-shadow:-5px 5px 0 #E10F06,0 24px 40px -30px rgba(8,40,50,.5)}}
