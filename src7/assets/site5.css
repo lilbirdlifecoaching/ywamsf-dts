@@ -1533,3 +1533,14 @@ html.tb .hit-t small{color:#7FD6E0}
 .form-fallback a{color:var(--red)}
 .or-inq{display:block;font-weight:500;color:var(--muted);margin-top:6px}
 @media (max-width:900px){.form-grid{grid-template-columns:1fr}.form-side{position:static}.fa-frame[style]{height:2900px!important}}
+
+/* round 7-12: Click & Pledge form embedded on the Give page */
+.give-form-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,64px);align-items:start}
+.give-side{position:sticky;top:110px}
+.give-side h2{margin:6px 0 12px}
+.give-facts{list-style:none;padding:0;margin:22px 0;display:grid;gap:10px}
+.give-facts li{position:relative;padding-left:22px;font-size:15px;line-height:1.5;color:var(--ink2,#3A4A50)}
+.give-facts li:before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--cyan,#24AFBE)}
+.cnp-frame{background:#fff;border:1px solid rgba(8,64,79,.12);border-radius:12px;overflow:hidden}
+.cnp-iframe{display:block;width:1px;min-width:100%;min-height:900px;border:0}
+@media (max-width:900px){.give-form-grid{grid-template-columns:1fr}.give-side{position:static}}
