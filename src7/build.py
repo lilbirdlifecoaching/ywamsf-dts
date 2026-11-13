@@ -105,7 +105,9 @@ DTS_APPLY = lnk(S.get('dts_apply_url'), 'https://www.tfaforms.com/4827504')
 GIVE_ONLINE = lnk(S.get('give_online_url'), 'https://www.ywamsanfrancisco.org/give')
 SIGNUP = DTS_APPLY   # Sign Me Up buttons go straight to the DTS application
 TEAM_FORM = lnk(S.get('team_booking_url'), 'https://www.tfaforms.com/4652564')
-NX_APPLY = lnk((NX or {}).get('apply_url'), DTS_APPLY)
+DTS_INQUIRY_FORM = lnk(S.get('dts_inquiry_url'), 'https://www.tfaforms.com/4827504')
+DTS_APPLICATION_FORM = lnk((NX or {}).get('apply_url') or S.get('dts_application_url'), 'https://www.tfaforms.com/4827904')
+NX_APPLY = 'apply/'      # YWAM 7: the application is embedded at /course/apply/, the inquiry at /course/inquire/
 LIVE = 'https://www.ywamsanfrancisco.org'
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
@@ -121,7 +123,7 @@ def header(cur, up):
         return '<span class="tdd"><a href="%sabout/" class="tdd-btn" aria-haspopup="true" aria-expanded="false"%s>About<i aria-hidden="true"></i></a><span class="tdd-menu" role="menu" aria-label="About">%s</span></span>' % (up, ' aria-current="page"' if k == cur else '', menu)
     top = ''.join(tl(h, t, k) for h, t, k in TOP)
     return f'''<header class="y5-head"><div class="y5-top"><div class="wrap"><a class="tlogo" href="{up or './'}" aria-label="YWAM San Francisco home"></a><span class="tlinks">{top}</span></div></div>
-<nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links">{links}<a class="sign" href="{SIGNUP}" target="_blank" rel="noopener">Sign Me Up!</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>'''
+<nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links">{links}<a class="sign" href="{up}course/inquire/">Sign Me Up!</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>'''
 
 CONCEPT = 'Design concept YWAM 7 (a simpler YWAM 6) for the YWAM San Francisco refresh — not the live site' if V == 7 else 'Design concept YWAM 5 for the YWAM San Francisco refresh — not the live site' if V == 5 else 'Design concept YWAM 6 (YWAM 5 with a backlit sign) for the YWAM San Francisco refresh — not the live site'
 def footer(up, root):
@@ -149,7 +151,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     css = f'{up}assets/site5.css?v={VER}'
     return wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com; frame-src https://www.tfaforms.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="{css}">{extra_head}</head><body>
@@ -190,6 +192,8 @@ META = {
  'Resources — YWAM San Francisco': ('Urban Mission Resources & Videos | YWAM San Francisco', "Articles, video teaching and guides on urban mission and San Francisco, including Tim Svoboda's series on the strategic nature of cities and our YouTube channel.", 'about/resources/', 'assets/img/hero-ellis.jpg'),
  'Give — YWAM San Francisco': ('Give to YWAM San Francisco | Support the Tenderloin', "Support food, showers and outreach in San Francisco's Tenderloin. Give online, by check, bank transfer, stock or in-kind gifts. Tax-deductible for U.S. donors.", 'give/', 'assets/img/er-room.jpg'),
  'Pay — YWAM San Francisco': ('Pay DTS & Mission Adventures Fees | YWAM San Francisco', 'Pay school or team trip fees for a DTS student or Mission Adventures participant. For general donations to YWAM San Francisco, please use our Give page.', 'pay/', 'assets/img/phase-training.jpg'),
+ 'Apply for the DTS — YWAM San Francisco': ('Apply for the DTS | YWAM San Francisco', 'Apply for the YWAM San Francisco Discipleship Training School: five months of faith lived out in the Tenderloin and the nations.', 'course/apply/', ''),
+ 'DTS Inquiry — YWAM San Francisco': ('DTS Inquiry | YWAM San Francisco', 'Curious about a Discipleship Training School in San Francisco? Send a quick inquiry and our DTS team will be in touch.', 'course/inquire/', ''),
  'Join Staff — YWAM San Francisco': ('Join Staff | Serve Long-Term in San Francisco | YWAM SF', 'Join the YWAM San Francisco staff: make the Tenderloin your home, love your neighbors and help train disciples at 357 Ellis Street.', 'join-staff/', ''),
  'Contact Us — YWAM San Francisco': ('Contact YWAM San Francisco | 357 Ellis St, Tenderloin', 'Visit, call or email YWAM San Francisco at 357 Ellis Street in the Tenderloin. Reach the right team for volunteering, mission trips, DTS or giving.', 'contact/', 'assets/img/er-door.jpg'),
 }
@@ -480,6 +484,39 @@ DTS_RES = f'''<section class="pad deeper" id="go-deeper"><div class="wrap">
   <div class="rtabs rv" data-tabs><div class="rtab-list" role="tablist" aria-label="Resources">{res_tabs}</div>{res_panels}</div>
   <p class="deeper-foot rv"><a href="../about/resources/">See the full resource library →</a></p>
 </div></section>'''
+# ---------------------------------------------------------------- DTS APPLY + INQUIRE (FormAssembly forms, embedded)
+def form_page(kick, h1, lede, prep, form_url, title, alt_link, h):
+    return f'''
+<section class="pad formpage"><div class="wrap form-grid">
+  <aside class="form-side rv">
+    <span class="kick">{kick}</span><h1>{h1}</h1><p class="lede">{lede}</p>
+    {prep}
+    <p class="form-help">Questions? Email <a href="mailto:{DEMAIL}">{DEMAIL}</a> or call <a href="{TEL}">{PHONE}</a>.</p>
+    <p class="form-alt">{alt_link}</p>
+  </aside>
+  <div class="form-frame">
+    <iframe class="fa-frame" src="{form_url}" title="{title}" style="height:{h}px" loading="eager" allow="clipboard-write"></iframe>
+    <p class="form-fallback">Form not showing? <a href="{form_url}" target="_blank" rel="noopener">Open it in a new tab ↗</a></p>
+  </div>
+</div></section>
+<script src="https://www.tfaforms.com/js/iframe_resize_helper.js"></script>
+'''
+APPLY_PREP = '''<div class="prep"><b>Before you start</b><ul>
+<li>Set aside about 30–40 minutes. There are 7 short sections.</li>
+<li>Have ready: your passport details, your pastor’s or church leader’s contact details, an emergency contact and your health insurance information.</li>
+<li>The last section asks how you plan to cover lecture and outreach fees. No payment is taken here.</li>
+</ul></div>'''
+applyp = form_page('DTS · Application' + ((' · ' + drange(NX['_s'], NX['_e'])) if NX else ''), 'Apply for the <em>DTS</em>',
+    ('Applications are open for the ' + NX['_s'].strftime('%B ') + str(NX['_s'].year) + ' school' + (', with ' + SPOTS_TXT + '.' if SPOTS_TXT else '.')) if NX else 'Applications for the next school open soon.',
+    APPLY_PREP, DTS_APPLICATION_FORM, 'YWAM San Francisco DTS application', 'Not ready to apply yet? <a href="../inquire/">Send us an inquiry</a> and a DTS staff member will be in touch.', 2400)
+inquirep = form_page('DTS · Inquiry', 'Curious about the <em>DTS?</em>',
+    'Tell us a little about you and a DTS staff member will be in touch to answer your questions. This isn’t the application.',
+    '<div class="prep"><b>Takes about a minute</b><ul><li>Name, email, phone and where you are in the world.</li><li>Which school you’re interested in.</li></ul></div>',
+    DTS_INQUIRY_FORM, 'YWAM San Francisco DTS inquiry', 'Ready to apply? <a href="../apply/">Start your application</a>.', 1150)
+for _d, _body, _t in (('course/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('course/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
+    os.makedirs(os.path.join(OUT, _d), exist_ok=True)
+    open(os.path.join(OUT, _d, 'index.html'), 'w').write(page(_t, 'course', '../../', '../../../', _body))
+
 # ---------------------------------------------------------------- DTS (5 MONTH COURSE) — native page
 YT = 'lH3BLHA6dhI'
 YT_SRC = f'https://www.youtube-nocookie.com/embed/{YT}?autoplay=1&mute=1&loop=1&playlist={YT}&controls=0&modestbranding=1&playsinline=1&rel=0&start=10&iv_load_policy=3&disablekb=1&enablejsapi=1'
@@ -518,8 +555,8 @@ testi = ''.join('<figure class="testi rv"><blockquote>“%s”</blockquote><figc
 COACH = 'mailto:' + DEMAIL + '?subject=I%E2%80%99d%20like%20to%20talk%20to%20a%20DTS%20coach'
 def _row(x):
     st = 'In session' if x['_s'] <= TODAY else (t(x.get('status')) or 'Applications open')
-    href = lnk(x.get('apply_url'), DTS_APPLY)
-    return '  <tr data-days="" data-href="%s" data-newtab="1"><td><span class="flap">%s</span></td><td><span class="flap">%s</span></td><td>%s</td><td class="seats">%s</td><td><span class="status">%s</span></td></tr>' % (href, x['_s'].strftime('%b ').upper() + str(x['_s'].day) + ' ' + str(x['_s'].year), t(x.get('name') or 'Discipleship Training School').upper(), x['_e'].strftime('%b ').upper() + str(x['_e'].day) + ' ' + str(x['_e'].year), ('<span class="flap">%d LEFT</span>' % int(num(x.get('spots')))) if num(x.get('spots')) > 0 and x['_s'] > TODAY else '—', st)
+    href = 'apply/'   # YWAM 7: the embedded application page
+    return '  <tr data-days="" data-href="%s"><td><span class="flap">%s</span></td><td><span class="flap">%s</span></td><td>%s</td><td class="seats">%s</td><td><span class="status">%s</span></td></tr>' % (href, x['_s'].strftime('%b ').upper() + str(x['_s'].day) + ' ' + str(x['_s'].year), t(x.get('name') or 'Discipleship Training School').upper(), x['_e'].strftime('%b ').upper() + str(x['_e'].day) + ' ' + str(x['_e'].year), ('<span class="flap">%d LEFT</span>' % int(num(x.get('spots')))) if num(x.get('spots')) > 0 and x['_s'] > TODAY else '—', st)
 DTS_ROWS = '\n'.join(_row(x) for x in ACTIVE) or '  <tr data-days=""><td><span class="flap">COMING SOON</span></td><td><span class="flap">DISCIPLESHIP TRAINING SCHOOL</span></td><td></td><td class="seats">—</td><td><span class="status">Dates TBA</span></td></tr>'
 if NX:
     _hm = re.fullmatch(r'(\d{1,2}):(\d{2})', str(NX.get('start_time') or '09:00').strip()) or re.fullmatch(r'(\d+):(\d+)', '09:00')
@@ -546,7 +583,7 @@ dts = f'''
   <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
 {DTS_ROWS}
   </tbody></table>
-  {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}" target="_blank" rel="noopener">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>
+  {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>
   <p class="board-note">{BOARD_NOTE}</p>
 
   </div>
@@ -560,7 +597,7 @@ dts = f'''
     <p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p>
     <p>A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: three months of training here in the Tenderloin, two months of outreach in the cities of the world, then a debrief to send you into whatever comes next.</p>
     <p>This is discipleship with your feet on the ground. You’ll learn alongside people who have spent years serving this neighborhood, and discover what it means to live the way of Jesus in the everyday moments of life.</p>
-    <div class="links-row"><a class="btn" href="{NX_APPLY}" target="_blank" rel="noopener">Apply for DTS</a><button class="btn ghost" type="button" data-survey>Am I ready?</button><button class="btn ghost" type="button" data-film="lH3BLHA6dhI">▶ Watch the DTS film</button></div>
+    <div class="links-row"><a class="btn" href="{NX_APPLY}">Apply for DTS</a><a class="btn ghost" href="inquire/">Inquire</a><button class="btn ghost" type="button" data-survey>Am I ready?</button><button class="btn ghost" type="button" data-film="lH3BLHA6dhI">▶ Watch the DTS film</button></div>
     <dl class="facts">{('<div><dt>Spots</dt><dd>' + str(_sp) + ' available</dd></div>') if _sp else ''}<div><dt>Dates</dt><dd>{drange(NX['_s'], NX['_e']) if NX else 'Coming soon'}</dd></div><div><dt>Length</dt><dd>About 5 months</dd></div><div><dt>Cost</dt><dd>{money(DTS_COST)} USD</dd></div><div><dt>Where</dt><dd>{ADDR}</dd></div></dl>
   </div>
 </div></section>
@@ -598,7 +635,7 @@ dts = f'''
 <section class="pad fit5" style="background:var(--mist)"><div class="wrap fit-grid"><div class="rv"><span class="kick">Is this for you?</span><h2>You don’t need years of ministry experience.</h2></div>
   <div class="rv"><p class="lede">You do need a heart that’s ready to learn, a faith you’re willing to put into practice, and a desire to love people well.</p>
   <p>If you’re serious about following Jesus, exploring a call to ministry, or wanting to understand what it means to love your neighbor in practical, everyday ways, we’d love to hear from you.</p>
-  <p class="spots-line">{('Only ' + SPOTS + ' for this school. ') if SPOTS else ''}<a href="{NX_APPLY}" target="_blank" rel="noopener">Apply now to reserve your spot →</a></p></div></div></section>
+  <p class="spots-line">{('Only ' + SPOTS + ' for this school. ') if SPOTS else ''}<a href="{NX_APPLY}">Apply now to reserve your spot →</a> <span class="or-inq">Not ready yet? <a href="inquire/">Send us an inquiry</a>.</span></p></div></div></section>
 
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">In their words</span><h2>Stories from past students.</h2></div>
   <div class="testis">{testi}</div></div></section>
@@ -630,7 +667,7 @@ dts = f'''
   <div class="ready3">
     <button class="rcard rv" type="button" data-survey><small>01 · Reflect</small><b>Take the 3-minute check-in</b><span>Seven honest questions with a gentle, personal read on where you are.</span><em>Start →</em></button>
     <a class="rcard rv" href="{COACH}"><small>02 · Talk</small><b>Talk to a DTS coach</b><span>A real conversation with someone from our DTS staff. Ask anything, no pressure.</span><em>Email a coach →</em></a>
-    <a class="rcard rv solid" href="{NX_APPLY}" target="_blank" rel="noopener"><small>03 · Apply</small><b>{('Apply for ' + NX['_s'].strftime('%B')) if NX else 'Apply for DTS'}</b><span>{('Applications are open for the ' + NX['_s'].strftime('%B ') + str(NX['_s'].day) + ', ' + str(NX['_s'].year) + ' school' + (', with ' + SPOTS + '.' if SPOTS else '.')) if NX else 'New school dates are coming soon. Get in touch and we’ll let you know.'}</span><em>Apply now →</em></a>
+    <a class="rcard rv solid" href="{NX_APPLY}"><small>03 · Apply</small><b>{('Apply for ' + NX['_s'].strftime('%B')) if NX else 'Apply for DTS'}</b><span>{('Applications are open for the ' + NX['_s'].strftime('%B ') + str(NX['_s'].day) + ', ' + str(NX['_s'].year) + ' school' + (', with ' + SPOTS + '.' if SPOTS else '.')) if NX else 'New school dates are coming soon. Get in touch and we’ll let you know.'}</span><em>Apply now →</em></a>
   </div>
   <p class="ready-foot rv">Want to see the place first? <a href="../volunteer/">Serve a shift on Ellis Street</a> or <a href="../teams/">come with a team</a>.</p>
 </div></section>

@@ -1,0 +1,137 @@
+/* YWAM San Francisco: FormAssembly theme to match the website (YWAM 7)
+   Used by: DTS Application (tfaforms.com/4827904) and DTS Inquiry (tfaforms.com/4827504).
+
+   How to apply (someone with the FormAssembly login):
+   1. Open the form in FormAssembly > Theme (or Form Builder > Properties > Theme).
+   2. Create a new theme (or copy the current one) named "YWAM SF website".
+   3. Paste this whole file into the theme's Custom CSS box and save.
+   4. Select that theme for the form and publish. Repeat for the other form.
+   If the plan has no Custom CSS box, use the theme editor's own settings instead:
+   font Manrope (or Arial), text #3A4A50, headings #0B2A33, buttons #24AFBE with text #062F3A.
+
+   Colours follow the site until the brand guide arrives; swap the values in :root if needed. */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+:root {
+  --ywam-ink: #0B2A33;
+  --ywam-body: #3A4A50;
+  --ywam-muted: #5D7178;
+  --ywam-cyan: #24AFBE;
+  --ywam-teal: #0B7E90;
+  --ywam-deep: #08404F;
+  --ywam-mist: #F1F8F9;
+  --ywam-line: rgba(8, 64, 79, .16);
+  --ywam-error: #B3261E;
+}
+
+/* page and container: white, no frame, since the website supplies the card around it */
+html, body { background: #fff !important; }
+body, .wFormContainer, .wFormContainer .wForm {
+  font-family: "Manrope", Arial, Helvetica, sans-serif !important;
+  color: var(--ywam-body) !important;
+  font-size: 16px !important;
+  line-height: 1.55 !important;
+}
+.wFormContainer { max-width: 760px !important; margin: 0 auto !important; padding: 28px 28px 36px !important; }
+.wFormContainer .wForm { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+
+/* the website already shows the heading, so hide the form's own title */
+.wFormContainer .wFormTitle, .wFormContainer .wFormHeader { display: none !important; }
+
+/* section headings and page titles */
+.wFormContainer fieldset { border: 0 !important; border-top: 1px solid var(--ywam-line) !important; margin: 28px 0 0 !important; padding: 22px 0 0 !important; background: transparent !important; }
+.wFormContainer fieldset:first-of-type { border-top: 0 !important; margin-top: 0 !important; padding-top: 0 !important; }
+.wFormContainer legend, .wFormContainer .wfPageTitle, .wFormContainer h2, .wFormContainer h3 {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-weight: 600 !important;
+  font-size: 28px !important;
+  line-height: 1.15 !important;
+  color: var(--ywam-ink) !important;
+  padding: 0 !important;
+  margin: 0 0 14px !important;
+}
+.wFormContainer .htmlSection, .wFormContainer .htmlContent { color: var(--ywam-body) !important; }
+
+/* labels and help text */
+.wFormContainer .oneField { margin: 0 0 18px !important; padding: 0 !important; }
+.wFormContainer .label, .wFormContainer label.preField {
+  display: block !important;
+  font-weight: 700 !important;
+  font-size: 14.5px !important;
+  color: var(--ywam-ink) !important;
+  margin: 0 0 6px !important;
+}
+.wFormContainer .reqMark:after, .wFormContainer .reqMark { color: var(--ywam-teal) !important; }
+.wFormContainer .field-hint, .wFormContainer .supportInfo, .wFormContainer .hint { color: var(--ywam-muted) !important; font-size: 13.5px !important; }
+
+/* inputs */
+.wFormContainer input[type="text"], .wFormContainer input[type="email"], .wFormContainer input[type="tel"],
+.wFormContainer input[type="number"], .wFormContainer input[type="date"], .wFormContainer input[type="url"],
+.wFormContainer select, .wFormContainer textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  font: inherit !important;
+  color: var(--ywam-ink) !important;
+  background: #fff !important;
+  border: 1px solid var(--ywam-line) !important;
+  border-radius: 8px !important;
+  padding: 11px 13px !important;
+  box-shadow: none !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+.wFormContainer textarea { min-height: 120px !important; }
+.wFormContainer input:focus, .wFormContainer select:focus, .wFormContainer textarea:focus {
+  outline: none !important;
+  border-color: var(--ywam-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(36, 175, 190, .22) !important;
+}
+.wFormContainer input[type="checkbox"], .wFormContainer input[type="radio"] { accent-color: var(--ywam-teal); width: 18px; height: 18px; }
+.wFormContainer .oneChoice { margin: 4px 0 !important; }
+
+/* buttons: submit, next, previous */
+.wFormContainer .primaryAction, .wFormContainer input[type="submit"], .wFormContainer .wfPageNextButton, .wFormContainer .wfPagePreviousButton {
+  font-family: "Manrope", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 12.5px !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  border-radius: 6px !important;
+  padding: 14px 26px !important;
+  cursor: pointer !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: background .2s, color .2s !important;
+}
+.wFormContainer .primaryAction, .wFormContainer input[type="submit"], .wFormContainer .wfPageNextButton {
+  background: var(--ywam-cyan) !important;
+  color: #062F3A !important;
+}
+.wFormContainer .primaryAction:hover, .wFormContainer input[type="submit"]:hover, .wFormContainer .wfPageNextButton:hover {
+  background: var(--ywam-deep) !important;
+  color: #fff !important;
+}
+.wFormContainer .wfPagePreviousButton {
+  background: transparent !important;
+  color: var(--ywam-teal) !important;
+  box-shadow: inset 0 0 0 1.5px var(--ywam-teal) !important;
+}
+.wFormContainer .primaryAction:disabled, .wFormContainer input[type="submit"]:disabled { opacity: .5 !important; cursor: not-allowed !important; }
+.wFormContainer .actions, .wFormContainer .wfPagingButtons { margin-top: 24px !important; display: flex !important; gap: 12px !important; flex-wrap: wrap !important; }
+
+/* page progress ("Page 2 of 7") */
+.wFormContainer .wfPagingIndicator, .wFormContainer .wfPageIndicator { color: var(--ywam-muted) !important; font-size: 13px !important; letter-spacing: .08em !important; }
+
+/* errors */
+.wFormContainer .errFld input, .wFormContainer .errFld select, .wFormContainer .errFld textarea { border-color: var(--ywam-error) !important; }
+.wFormContainer .errMsg, .wFormContainer .error { color: var(--ywam-error) !important; font-size: 13.5px !important; }
+
+/* links and the small footer links (contact, GDPR) */
+.wFormContainer a { color: var(--ywam-teal) !important; }
+.wFormContainer .wFormFooter, .wFormContainer .supportInfo { font-size: 13px !important; }
+
+@media (max-width: 600px) {
+  .wFormContainer { padding: 18px 16px 28px !important; }
+  .wFormContainer legend, .wFormContainer .wfPageTitle { font-size: 24px !important; }
+}
