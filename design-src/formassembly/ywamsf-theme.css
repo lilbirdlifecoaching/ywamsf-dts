@@ -46,6 +46,9 @@
 
 /* buttons */
 #tfaContent .wForm .wfPagingButtons, #tfaContent .wForm .actions { display: flex !important; gap: 12px !important; flex-wrap: wrap !important; margin: 28px 0 0 !important; padding: 0 !important; }
+/* keep FormAssembly's own hiding of the submit area and last-page buttons until they're needed */
+#tfaContent .wForm .actions.wfHideSubmit, #tfaContent .wForm .wfPagingButtons.wfHideSubmit { display: none !important; }
+#tfaContent .wForm .actions { flex-direction: column !important; align-items: flex-start !important; }
 #tfaContent .wForm .wfPageNextButton, #tfaContent .wForm .wfPagePreviousButton, #tfaContent .wForm .primaryAction, #tfaContent .wForm input[type="submit"] {
   font: 800 12.5px "Manrope", Arial, sans-serif !important; letter-spacing: .14em !important; text-transform: uppercase !important;
   border-radius: 6px !important; padding: 15px 28px !important; height: auto !important; min-height: 0 !important; cursor: pointer !important; border: 0 !important; box-shadow: none !important; text-shadow: none !important; background-image: none !important; }
