@@ -358,6 +358,7 @@
       var su = $('[data-f="signup"]', panel);
       if (p.signup && /^https:\/\//.test(p.signup)) { su.href = p.signup; su.target = '_blank'; su.rel = 'noopener'; }
       else { su.href = 'mailto:' + (p.email || 'volunteer@ywamsanfrancisco.org') + '?subject=' + encodeURIComponent(p.subject || p.title); su.removeAttribute('target'); }
+      su.textContent = (p.signup && /^https:\/\//.test(p.signup)) ? 'Sign up for this shift ↗' : 'Sign up for this shift';
       [].forEach.call(dots.children, function (b, j) { b.setAttribute('aria-selected', i === j); });
       $$('tr[data-shift]').forEach(function (tr) { var on = +tr.dataset.shift === i; tr.classList.toggle('sel', on); tr.setAttribute('aria-current', on ? 'true' : 'false'); });
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Builds YWAM 7: a copy of YWAM 6 (src/) to try big simplifications without touching YWAM 5 and 6.
 Shares content/ (and so the admin page) with YWAM 5 and 6; has its own styles and scripts in src7/assets."""
-import os, re, html, shutil, json, hashlib, datetime
+import os, re, html, shutil, json, hashlib, datetime, urllib.parse
 from zoneinfo import ZoneInfo
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 V = 7   # this generator only builds YWAM 7
@@ -117,7 +117,7 @@ DTS_APPLICATION_FORM = lnk((NX or {}).get('apply_url') or S.get('dts_application
 NX_APPLY = 'apply/'      # YWAM 7: the application is embedded at /course/apply/, the inquiry at /course/inquire/
 LIVE = 'https://www.ywamsanfrancisco.org'
 # Shifts with their own sign-up form (keyed by shift title, lower case). Used on the Volunteer page, the Ellis Room schedule and in the chat.
-VOLUNTEER_FORM = 'https://tl-connect-volunteer-stewardship.replit.app/'   # one sign-up form for every volunteer activity (Nov 2026)
+VOLUNTEER_FORM = 'https://tl-connect-volunteer-stewardship.replit.app/'   # Tenderloin Connect's sign-up form (Nov 2026: only TL Connect uses it; other shifts sign up by email)
 # Ellis Room schedule items that link straight to the form (the rest of that schedule is for neighbors, so it stays plain)
 SIGNUP_LINKS = {'tenderloin connect': VOLUNTEER_FORM}
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
@@ -315,12 +315,16 @@ open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../',
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]
 DAYS = ('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT')
 def sdays(x): return ' '.join(d for d in (str(v).upper()[:3] for v in x.get('days') or []) if d in DAYS)
-board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-shift="{i}" tabindex="0" role="button" aria-label="Show {t(x.get('title'))} above"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td><td class="su"><a class="row-su" href="{VOLUNTEER_FORM}" target="_blank" rel="noopener" aria-label="Sign up for {t(x.get('title'))} (opens the volunteer form)"><span class="su-t">Sign up</span> ↗</a></td></tr>''' for i, x in enumerate(SHIFTS))
+def _row_su(x):
+    ti = t(x.get('title')); su = SIGNUP_LINKS.get(str(x.get('title') or '').strip().lower())
+    if su: return '<a class="row-su" href="%s" target="_blank" rel="noopener" aria-label="Sign up for %s (opens the sign-up form)"><span class="su-t">Sign up</span> ↗</a>' % (su, ti)
+    return '<a class="row-su" href="mailto:%s?subject=%s" aria-label="Email to sign up for %s"><span class="su-t">Sign up</span> ✉</a>' % (VEMAIL, urllib.parse.quote(str(x.get('title') or '').strip() + ' volunteer'), ti)
+board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-shift="{i}" tabindex="0" role="button" aria-label="Show {t(x.get('title'))} above"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td><td class="su">{_row_su(x)}</td></tr>''' for i, x in enumerate(SHIFTS))
 import json
 def rgb(hx):
     m = re.fullmatch(r'#?([0-9a-fA-F]{6})', str(hx or '').strip())
     return ','.join(str(int(m.group(1)[i:i + 2], 16)) for i in (0, 2, 4)) if m else '70,83,97'
-vol_posts = [{'img': img(x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': VOLUNTEER_FORM} for x in SHIFTS]
+vol_posts = [{'img': img(x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': SIGNUP_LINKS.get(str(x['title']).strip().lower(), '')} for x in SHIFTS]
 vol_js = '<script>window.YWAM_VOL_N=%d;window.YWAM_IG_POSTS=' % len(vol_posts) + js(vol_posts * 2) + ';</script>'
 vol = f'''
 <section class="page-hero"><div class="ph-img still"><img src="../assets/img/vol-header.jpg" alt="A smiling neighbor holding a box of groceries at the food pantry" style="object-position:60% 30%"></div><div class="copy"><div class="wrap"><span class="kick">Come volunteer</span><h1>Come for a shift. Stay for the people.</h1><p class="lede">Every day we open our doors to serve our neighbors, our students and our outreach teams. It’s a big job, and we can’t do it alone.</p></div></div></section>
@@ -336,7 +340,7 @@ vol = f'''
   <div class="wrap"><div class="shift" id="shift" aria-live="polite">
     <div class="shift-when"><small>When</small><b data-f="when"></b><span data-f="time"></span></div>
     <div class="shift-body"><h3 data-f="title"></h3><p data-f="desc"></p><div class="meta" data-f="meta"></div></div>
-    <div class="shift-cta"><a class="btn" data-f="signup" href="{VOLUNTEER_FORM}" target="_blank" rel="noopener">Sign up to volunteer ↗</a><small>Or email <a href="mailto:{VEMAIL}">{VEMAIL}</a></small></div>
+    <div class="shift-cta"><a class="btn" data-f="signup" href="mailto:{VEMAIL}">Sign up for this shift</a><small>Or email <a href="mailto:{VEMAIL}">{VEMAIL}</a></small></div>
   </div>
   <div class="shift-dots" role="tablist" aria-label="Choose a shift" hidden></div>
   <div class="vol-board vb7">
@@ -459,7 +463,7 @@ nb = f'''
 <div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-empower.jpg" alt="A neighbor with a long white beard, smiling and flexing" loading="lazy" style="object-position:50% 30%"><span class="plab"><small>02</small><h3>Dignity</h3><em>Tap to read</em></span></div><div class="b"><p>Every person who walks through our door is made in the image of God. We meet people where they are and honor their stories.</p></div></div></div>
 <div class="pillar rv"><div class="in"><div class="f"><img src="../assets/img/er-serve.jpg" alt="A smiling neighbor in a white jacket over a leopard-print hoodie" loading="lazy" style="object-position:50% 25%"><span class="plab"><small>03</small><h3>Mutual respect</h3><em>Tap to read</em></span></div><div class="b"><p>We’re not here to fix the Tenderloin. We’re here to be good neighbors in it. We learn from our neighbors as much as they learn from us, because everyone has something to give and something to receive. We believe that’s when change will come to our beloved neighborhood.</p></div></div></div></div></div></section>
 <section class="pad"><div class="wrap"><div class="rv" style="margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap"><div><span class="kick">The week at 357 Ellis</span><h2>Come by. <em>The door is open.</em></h2></div><p style="max-width:420px;margin:0">The proclamation of the Gospel and the activity of the Gospel, side by side. Today, and anything happening right now, is highlighted in San Francisco time.</p></div>
-<div class="nownext rv" aria-live="polite"></div><div class="week-wrap rv"><div class="week">{week}</div></div><div class="legend">{legend}</div><p class="week-serve">Want to serve with us? <a href="{VOLUNTEER_FORM}" target="_blank" rel="noopener">Sign up to volunteer ↗</a></p></div></section>
+<div class="nownext rv" aria-live="polite"></div><div class="week-wrap rv"><div class="week">{week}</div></div><div class="legend">{legend}</div><p class="week-serve">Want to serve with us? <a href="../volunteer/">Find a volunteer shift →</a></p></div></section>
 <section class="pad stories5-home er-stories"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">Stories from Ellis Street</span><h2>God is already at work here.</h2><p class="lede">Real people, real neighbors, and the lives being touched in the Tenderloin.</p></div>
   <div class="stories3"><article class="story5 rv"><div class="sph"><img src="../assets/img/er-pool.jpg" alt="" loading="lazy" style="object-position:50% 40%"><span class="ph-badge">Example photo</span></div><small>Example story · The Ellis Room</small><h3>“This is the first place I didn’t feel watched.”</h3><p>[Placeholder] A neighbor who came in for coffee and stayed for a game of pool now helps set up chairs every Tuesday. A real story and name, with permission, will go here.</p></article><article class="story5 rv"><div class="sph"><img src="../assets/img/er-restore.jpg" alt="" loading="lazy" style="object-position:50% 25%"><span class="ph-badge">Example photo</span></div><small>Example story · Food pantry</small><h3>From the pantry line to the prayer table.</h3><p>[Placeholder] Months of Thursday conversations turned into friendship, and one day, a request for prayer. A real story will go here.</p></article><article class="story5 rv"><div class="sph"><img src="../assets/img/er-empower.jpg" alt="" loading="lazy" style="object-position:50% 30%"><span class="ph-badge">Example photo</span></div><small>Example story · Connecting to support</small><h3>Someone to walk with him to court.</h3><p>[Placeholder] Staff went with a neighbor to his hearing, then to his first appointment for housing. A real story will go here.</p></article></div></div></section>
 
@@ -1001,9 +1005,9 @@ kb('dts', 'Who are the DTS staff?', 'staff leaders directors who runs team', 'Ou
 
 # Volunteers
 for x in _shifts:
-    _su = VOLUNTEER_FORM
+    _su = SIGNUP_LINKS.get(U(x.get('title')).lower())
     kb('volunteer', 'What is the %s shift?' % U(x.get('title')), U(x.get('title')) + ' shift volunteer ' + U(x.get('when')), '%s, %s. %s' % (U(x.get('when')), U(x.get('time')), U(x.get('description'))), ([('Sign up for ' + U(x.get('title')), _su)] if _su else []) + [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)], [U(x.get('title')).lower()])
-kb('volunteer', 'How do I volunteer?', 'volunteer serve help sign up shift join bay area local', 'Sign up on our volunteer form, or email our volunteer team. Weekly shifts: ' + '; '.join('%s (%s, %s)' % (U(x.get('title')), U(x.get('when')), U(x.get('time'))) for x in _shifts) + '.', [('Sign up to volunteer', VOLUNTEER_FORM), ('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)])
+kb('volunteer', 'How do I volunteer?', 'volunteer serve help sign up shift join bay area local', 'Pick a shift on the Volunteer page and email our volunteer team to sign up. Weekly shifts: ' + '; '.join('%s (%s, %s)' % (U(x.get('title')), U(x.get('when')), U(x.get('time'))) for x in _shifts) + '.', [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)])
 kb('volunteer', 'I don’t live in the Bay Area. Can I still serve?', 'summer season long term outside bay area mission builders skills maintenance cooking room board', 'Yes. Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.', [('Summer of Service', 'https://www.ywamsanfrancisco.org/summerservice'), ('Mission Builders', 'https://www.missionbuilders.org/location/?LID=149')])
 kb('volunteer', 'Can I volunteer with my group or church?', 'group church friends youth together volunteer team', 'Teams are welcome at the Thursday food pantry. For a weekend, a week or longer with your church or youth group, look at Mission Adventures on the Bring a Team page.', [('Bring a team', 'teams/'), ('Email ' + VE, 'mailto:' + VE)])
 
