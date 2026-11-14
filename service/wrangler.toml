@@ -1,0 +1,17 @@
+# YWAM SF admin service. Deploy: see service/README.md
+name = "ywamsf-admin"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+REPO = "lilbirdlifecoaching/ywamsf-dts"
+BRANCH = "main"
+ALLOWED_ORIGINS = "https://ywamembers.org,https://www.ywamembers.org,https://ywamsanfrancisco.org,https://www.ywamsanfrancisco.org"
+ADMIN_URL = "https://ywamembers.org/admin/"
+SITE_URL = "https://ywamembers.org/ywam7/"
+MAIL_FROM = "YWAM SF website <website@ywamsanfrancisco.org>"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ywamsf-admin"
+database_id = "REPLACE-WITH-THE-ID-FROM-wrangler-d1-create"
