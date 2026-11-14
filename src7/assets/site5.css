@@ -1888,3 +1888,8 @@ a.ev.ev-link small{font-weight:700}
 .ann.run .ann-item::after{content:'';position:absolute;right:-3px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(255,255,255,.55)}
 .ann.run:hover .ann-track,.ann.run:focus-within .ann-track{animation-play-state:paused}
 @keyframes annScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* round 7-40: announcement bar in Golden Gate "International Orange" (the bridge red) */
+.ann{background:#C0362C;color:#fff}
+.ann a{color:#fff}
+.ann.run .ann-item::after{background:rgba(255,255,255,.6)}
