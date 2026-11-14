@@ -297,6 +297,7 @@ home = f'''
   <div class="reel-nav"><button class="reel-prev" aria-label="Previous">←</button><div class="reel-dots"></div><button class="reel-next" aria-label="Next">→</button></div>
 </div></section>
 
+<section class="nl7" aria-label="Newsletter"><div class="wrap rv"><div class="nl7-inner"><p><b>Stay close to Ellis Street.</b> Stories, event invites and ministry updates in your inbox.</p><a class="nl7-go" href="newsletter/">Get the newsletter →</a></div></div></section>
 <section class="ig5"><div class="wrap head rv"><span class="kick">@ywamsf on Instagram</span><h2>Life on Ellis Street, <em>this week.</em></h2><a class="handle" href="https://www.instagram.com/ywamsf/" target="_blank" rel="noopener">Follow @ywamsf →</a></div>
   <div class="ig-stage" data-ig tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
 </section>
@@ -310,7 +311,7 @@ home = f'''
 '''
 home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
 os.makedirs(OUT, exist_ok=True)
-open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../', home, scripts=home_scripts))
+open(os.path.join(OUT, 'index.html'), 'w').write(re.sub(r'<section class="news7".*?</section>', '', page('HOME', 'home', '', '../', home, scripts=home_scripts), count=1, flags=re.S))   # home has its own simpler newsletter line above Instagram
 
 # ---------------------------------------------------------------- VOLUNTEER
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]

@@ -1722,3 +1722,12 @@ a.ev.ev-link small{font-weight:700}
 .team7{margin-top:clamp(26px,3vw,40px)}
 .team7 h3{font:800 12px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 @media (max-width:560px){.pgrid{grid-template-columns:1fr 1fr;gap:12px}.pc-t{padding:10px 12px 12px}.pc-t b{font-size:17px}.pc-t small{font-size:12px}.pcard span.pc-img{font-size:34px}}
+
+/* round 7-23: home page newsletter line above Instagram */
+.nl7{padding:clamp(18px,2.4vw,28px) 0}
+.nl7-row{display:flex;align-items:center;justify-content:space-between;gap:10px 28px;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0}
+.nl7 p{margin:0;font-size:16px;color:var(--muted)}
+.nl7 p b{font:500 22px var(--display);color:var(--ink);margin-right:6px}
+.nl7-go{font:800 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--red,#0B7E90);text-decoration:none;white-space:nowrap}
+.nl7-go:hover{text-decoration:underline}
+.nl7-inner{display:flex;align-items:center;justify-content:space-between;gap:10px 28px;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0}
