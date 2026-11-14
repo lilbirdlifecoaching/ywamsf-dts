@@ -320,9 +320,15 @@
       sky.style.setProperty('--sx', 'calc(6% + ' + hrs[i].style.getPropertyValue('--x') + ' * .88)');
       sky.classList.toggle('night', i >= hrs.length - 1);
       $('[data-h="t"]', card).textContent = h.t + ' · ' + h.s; $('[data-h="n"]', card).textContent = h.n; $('[data-h="d"]', card).textContent = h.d;
+      /* YWAM 7: the photo and the weekly rhythm that belong to this hour */
+      var im = $('[data-h="img"]', card); if (im && h.img) { im.src = h.img; im.alt = h.alt || ''; }
+      var rh = $('[data-h="rh"]', card); if (rh) { rh.hidden = !h.rn; if (h.rn) { $('[data-h="rn"]', rh).textContent = h.rn; $('[data-h="rd"]', rh).textContent = h.rd; } }
+      $$('.rh7 [data-go]').forEach(function (g) { var on = +g.dataset.go === i; g.classList.toggle('on', on); g.setAttribute('aria-pressed', on); });
       if (card.animate && !reduce) card.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'ease-out' });
     }
     hrs.forEach(function (b, i) { b.addEventListener('click', function () { show(i); clearInterval(auto); auto = null; }); });
+    $$('.rh7 [data-go]').forEach(function (g) { g.addEventListener('click', function () { show(+g.dataset.go); clearInterval(auto); auto = null; }); });
+    YWAM_DAY.forEach(function (h) { if (h.img) { var p = new Image(); p.src = h.img; } });
     show(0);
     if (!reduce && window.IntersectionObserver) new IntersectionObserver(function (es) { es.forEach(function (e) { clearInterval(auto); auto = null; if (e.isIntersecting) auto = setInterval(function () { show((cur + 1) % hrs.length); }, 4800); }); }, { threshold: .5 }).observe(sky);
   }

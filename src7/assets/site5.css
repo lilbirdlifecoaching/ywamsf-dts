@@ -1600,3 +1600,24 @@ a.ev.ev-link:hover b,a.ev.ev-link:focus-visible b{text-decoration:underline}
 a.ev.ev-link small{font-weight:700}
 .week-serve{margin:14px 0 0;font-size:15px;color:var(--muted)}.week-serve a{font-weight:700;color:var(--red)}
 .kpanel .daybar{margin-top:clamp(36px,5vw,56px)}
+
+/* round 7-16: day in the life drives the photo below it (rhythm tab) */
+.kpanel .daybar.day7{margin-top:0;padding:clamp(18px,2.4vw,26px)}
+.day7 .sky{height:84px;margin:6px 0 16px}
+.day7 .sky .sun{top:12px;width:20px;height:20px;margin-left:-10px}
+.day7 .hr{bottom:8px}
+.hour7{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:center}
+.h7-img{aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--mist)}
+.h7-img img{width:100%;height:100%;object-fit:cover;display:block}
+.hour7 h3{font-size:clamp(26px,3vw,34px)}
+.h7-rh{margin-top:16px;padding:12px 14px;border-left:3px solid var(--cyan,#24AFBE);background:#F1F8F9;border-radius:0 8px 8px 0}
+.h7-rh small{display:block;font:800 10.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.h7-rh b{display:block;font:500 22px/1.2 var(--display);color:var(--ink);margin:2px 0 3px}
+.h7-rh span{display:block;font-size:15px;line-height:1.5}
+.rh7{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+.rh7 small{font:800 10.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.rh7 button{border:1.5px solid rgba(8,64,79,.18);background:#fff;color:var(--ink);border-radius:999px;padding:7px 14px;font:700 13px var(--sans);cursor:pointer}
+.rh7 button:hover{border-color:var(--cyan,#24AFBE)}
+.rh7 button.on{background:var(--cyan,#24AFBE);border-color:var(--cyan,#24AFBE);color:#062F3A}
+.rh-close{max-width:760px;margin:26px 0 0;font-size:17px;line-height:1.6;color:var(--muted)}
+@media (max-width:760px){.hour7{grid-template-columns:1fr}}

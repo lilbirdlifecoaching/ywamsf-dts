@@ -553,7 +553,26 @@ HOURS = [("7:00", 420, "Quiet Time", "Before the neighborhood wakes", "Time alon
          ("19:00", 1140, "Reflection", "Small groups", "Where did you see God today? Small groups, mentorship and honest prayer close the day."),
          ("21:00", 1260, "Rest", "…or the night shift", "Most nights, rest. Some rain nights the Ellis Room stays lit until morning.")]
 day = ''.join(f'<button type="button" class="hr" style="--x:{i/(len(HOURS)-1)*100:.2f}%" data-i="{i}"><span class="dot"></span><b>{t}</b><span class="nm">{n}</span></button>' for i, (t, m, n, s2, d) in enumerate(HOURS))
-day_data = js([{'t': t, 'n': n, 's': s2, 'd': d} for t, m, n, s2, d in HOURS])
+# YWAM 7: each hour has a photo; four hours carry one of the weekly rhythms (their photo and the team's copy)
+HOUR_PIC = {'7:00': ('../assets/img/rhythm-pray.jpg', 'Students worshipping with a guitar in a city park', 'pray'),
+            '8:00': ('../assets/uploads/life-table.jpg', 'Two students cooking together in the base kitchen', ''),
+            '9:00': ('../assets/img/phase-training.jpg', 'Students listening to a teaching session in a brick-walled classroom', ''),
+            '12:30': ('../assets/uploads/eng-community-meals.jpg', 'Staff and friends grilling lunch on the sidewalk', ''),
+            '13:30': ('../assets/img/rhythm-serve.jpg', 'A student kneeling to talk with a neighbor wrapped in a blanket', 'serve'),
+            '17:30': ('../assets/img/vol-crew.jpg', 'Four friends with their arms around each other, smiling', ''),
+            '19:00': ('../assets/img/rhythm-study.jpg', 'Two students talking together at a table', 'reflect'),
+            '21:00': ('../assets/img/rhythm-rest.jpg', 'Students on a coastal trail looking out at the Golden Gate Bridge', 'rest')}
+RHYTHM_TXT = {'pray': ('Pray', 'Weekly prayer walks around our neighborhood and intercessory prayer throughout the week.'),
+              'reflect': ('Reflect', 'At the end of your day, sit or go on a walk with God as you reflect on your day.'),
+              'serve': ('Serve', 'Whether it’s playing a game of pool, handing out a cup of coffee or being a listening ear, your presence is making a difference.'),
+              'rest': ('Sabbath & Rest', 'Enjoy your day off by doing what brings you to a place of rest.')}
+def _hd(t_, m, n, s2, d):
+    im, alt, rk = HOUR_PIC.get(t_, ('', '', ''))
+    o = {'t': t_, 'n': n, 's': s2, 'd': d, 'img': im, 'alt': alt}
+    if rk: o['rn'], o['rd'] = RHYTHM_TXT[rk]
+    return o
+day_data = js([_hd(*h) for h in HOURS])
+RH_GO = ''.join('<button type="button" data-go="%d">%s</button>' % (next(i for i, h in enumerate(HOURS) if HOUR_PIC.get(h[0], ('', '', ''))[2] == k), html.escape(RHYTHM_TXT[k][0])) for k in ('pray', 'serve', 'reflect', 'rest'))
 PHASE_ALT = {'local:phase-training': 'Students listening to a teaching session in a brick-walled classroom', 'team': 'An outreach team with backpacks on a city sidewalk', 'local:phase-debrief': 'Four students laughing together on a bench outdoors'}
 PHASES = [('01', 'Training', 'About 3 months · San Francisco', 'local:phase-training', 'Weekly teaching and worship, small groups, one-on-one mentorship and local ministry in the Tenderloin, with a new speaker every week.'),
           ('02', 'Outreach', 'About 2 months · the cities of the world', 'team', 'Travel as a team to put what you’ve learned into practice, serving alongside local churches and ministries in urban centers.'),
@@ -619,16 +638,17 @@ RHYTHM7 = [('pray', 'Pray', 'Weekly prayer walks around our neighborhood and int
            ('serve', 'Serve', 'Whether it’s playing a game of pool, handing out a cup of coffee or being a listening ear, your presence is making a difference.', 'A student kneeling to talk with a neighbor wrapped in a blanket', '52% 40%'),
            ('rest', 'Sabbath &amp; Rest', 'Enjoy your day off by doing what brings you to a place of rest.', 'Students on a coastal trail looking out at the Golden Gate Bridge', '33% 60%')]
 _rhythm = ''.join(f'<figure><div class="rph"><img src="../assets/img/rhythm-{k}.jpg" alt="{alt}" loading="lazy" style="object-position:{pos}"></div><figcaption><b>{n}</b><span>{d}</span></figcaption></figure>' for k, n, d, alt, pos in RHYTHM7)
-DAYBAR = f'''  <div class="daybar" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
+DAYBAR = f'''<div class="daybar day7" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
     <div class="sky"><div class="sun"></div>{day}</div>
-    <div class="hour5" aria-live="polite"><small data-h="t"></small><h3 data-h="n"></h3><p data-h="d"></p></div>
+    <div class="hour5 hour7" aria-live="polite"><div class="h7-img"><img data-h="img" src="../assets/img/rhythm-pray.jpg" alt="" width="900" height="675"></div><div class="h7-txt"><small data-h="t"></small><h3 data-h="n"></h3><p data-h="d"></p><div class="h7-rh" data-h="rh" hidden><small>Our weekly rhythm</small><b data-h="rn"></b><span data-h="rd"></span></div></div></div>
+    <div class="rh7"><small>Our weekly rhythm</small>{RH_GO}</div>
     <p class="note-small">A sample day. Rhythms shift week to week, and every week has free time and a Sabbath.</p></div>'''
 _parents_html = PARENTS.replace('See “What it’s like” above', 'See the “Your home” tab above')
 _REAL = ('<div class="real2">'
     '<div><h3>What you’ll see</h3><ul><li>Neighbors living on the street, in single-room hotels and in crisis.</li><li>Addiction, mental illness and poverty, up close and by name.</li><li>Noise, mess and a city that doesn’t slow down.</li><li>Grief and hard stories, alongside a lot of joy, humor and resilience.</li></ul></div>'
     '<div><h3>What holds you</h3><ul><li>You never serve alone: always in teams, alongside staff who know these blocks.</li><li>A weekly mentor, a small group and a community that prays together.</li><li>Rhythms of rest: Sabbath, free time and days off to explore the city.</li><li>A purpose: becoming a steady, caring presence in the lives of people others pass by.</li></ul></div>'
     '</div>')
-KTABS = [('rhythm', 'The rhythm', '<p class="lede">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p><div class="rhythm" aria-label="The rhythm of a DTS week">' + _rhythm + '</div>' + DAYBAR),
+KTABS = [('rhythm', 'The rhythm', DAYBAR + '<p class="rh-close">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p>'),
          ('home', 'Your home', '<p class="lede">' + (LIFE_INTRO or 'Five months is a long time to be somewhere new. Here’s the place you’ll call home.') + '</p><div class="phases life6">' + ''.join(_place(x) for x in _home_places) + '</div>'),
          ('neighborhood', 'The neighborhood', '<p class="lede">San Francisco is a city of breathtaking beauty, rich culture and striking contrasts. In the heart of it lies the Tenderloin: often overlooked, and full of people, stories and opportunities for connection. We’re honest about the hard parts.</p><div class="hood7">' + ''.join(_place(x) for x in _hood_places) + _REAL + '</div>'),
          ('faq', 'Common questions', FAQ + '<p class="faq-more">Still wondering about something? Ask in the chat, or email <a href="mailto:' + DEMAIL + '">' + DEMAIL + '</a>.</p>'),
