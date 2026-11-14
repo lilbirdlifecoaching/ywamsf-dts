@@ -376,8 +376,8 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(markToday, 0); }); else setTimeout(markToday, 0);
     $$('tr[data-shift]').forEach(function (tr) {
       function pick() { var b = dots.children[+tr.dataset.shift]; if (b) b.click(); vstage.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); }
-      tr.addEventListener('click', pick);
-      tr.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+      tr.addEventListener('click', function (e) { if (e.target.closest('a')) return; pick(); });
+      tr.addEventListener('keydown', function (e) { if (e.target !== tr) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
     });
     fill(0);
     vstage.addEventListener('click', function (e) {

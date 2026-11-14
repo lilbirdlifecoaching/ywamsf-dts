@@ -315,7 +315,7 @@ open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../',
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]
 DAYS = ('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT')
 def sdays(x): return ' '.join(d for d in (str(v).upper()[:3] for v in x.get('days') or []) if d in DAYS)
-board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-shift="{i}" tabindex="0" role="button" aria-label="Show {t(x.get('title'))} above"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td></tr>''' for i, x in enumerate(SHIFTS))
+board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-shift="{i}" tabindex="0" role="button" aria-label="Show {t(x.get('title'))} above"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td><td class="su"><a class="row-su" href="{VOLUNTEER_FORM}" target="_blank" rel="noopener" aria-label="Sign up for {t(x.get('title'))} (opens the volunteer form)"><span class="su-t">Sign up</span> ↗</a></td></tr>''' for i, x in enumerate(SHIFTS))
 import json
 def rgb(hx):
     m = re.fullmatch(r'#?([0-9a-fA-F]{6})', str(hx or '').strip())
@@ -341,8 +341,8 @@ vol = f'''
   <div class="shift-dots" role="tablist" aria-label="Choose a shift" hidden></div>
   <div class="vol-board vb7">
     <div class="board"><div class="board-head"><span>All shifts · 357 Ellis St</span><span class="clock"></span></div>
-    <table><thead><tr><th>When</th><th>Shift</th><th>Time</th><th>Status</th></tr></thead><tbody>{board_rows}</tbody></table></div>
-    <p class="board-note">Tap a shift to see it above.</p>
+    <table><thead><tr><th>When</th><th>Shift</th><th>Time</th><th>Status</th><th><span class="sr">Sign up</span></th></tr></thead><tbody>{board_rows}</tbody></table></div>
+    <p class="board-note">Tap a shift to see it above, or sign up straight from the list.</p>
   </div></div>
 </section>
 <section class="cta-band pad"><div class="wrap rv"><span class="kick" style="color:rgba(255,255,255,.7)">Live outside the Bay Area?</span><h2>Serve for a summer, or a season.</h2><p>Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.</p><div class="row"><a class="btn light" href="{LIVE}/summerservice" target="_blank" rel="noopener">Summer of Service</a><a class="btn ghost-light" href="https://www.missionbuilders.org/location/?LID=149" target="_blank" rel="noopener">Mission Builders</a></div></div></section>

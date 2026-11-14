@@ -1823,3 +1823,13 @@ a.ev.ev-link small{font-weight:700}
 }
 @media (max-width:640px){.vb7 .board td{white-space:nowrap;font-size:10.5px;letter-spacing:0;padding:10px 6px}.vb7 .board .flap i{min-width:.6em}}
 @media (max-width:640px){.vb7 .board td{font-size:10px;padding:10px 5px}}
+
+/* round 7-35: sign-up button on each departures row */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.vb7 .board td.su{text-align:right;width:1%;white-space:nowrap}
+.vb7 .board td:nth-child(4){text-align:right}
+.vb7 .row-su{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:3px;background:#f2be73;color:#1c2228!important;font:800 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none}
+.vb7 .row-su:hover{background:#f6cf94}
+.vb7 .row-su:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media (max-width:640px){.vb7 .row-su{padding:6px 8px}.vb7 .row-su .su-t{display:none}.vb7 .board td.su{padding-left:4px}}
+@media (max-width:640px){.vb7 .board td{padding:9px 4px}.vb7 .board td:first-child{font-size:9px}.vb7 .row-su{padding:5px 6px}.vb7 .board{padding:12px 8px}}
