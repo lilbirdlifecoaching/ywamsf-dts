@@ -144,8 +144,7 @@ def footer(up, root):
     return f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
 <div class="links"><a href="{LIVE}/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
 <div class="tag">Presence that restores.</div>
-<a class="foot-news" href="{up}newsletter/">Get updates</a>
-<div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div>
+<div class="foot-contact"><div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div><a class="foot-news" href="{up}newsletter/">Get updates</a></div>
 <div class="concept">{CONCEPT}</div></div></div></div>
 {sw}'''
 

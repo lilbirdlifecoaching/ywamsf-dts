@@ -1773,3 +1773,10 @@ a.ev.ev-link small{font-weight:700}
 .accred-row a{display:block;line-height:0}
 .accred-row img{display:block;height:auto}
 .accred-row a:hover img{opacity:.85}
+
+/* round 7-29: footer - tagline on its own larger line; "Get updates" beside the address */
+.y5-foot .tag{flex-basis:100%;text-align:center;font-size:clamp(24px,2.4vw,30px)!important}
+.y5-foot .foot-contact{flex-basis:100%;display:flex;align-items:center;justify-content:center;gap:14px 28px;flex-wrap:wrap}
+.y5-foot .foot-contact .addr{text-align:left}
+@media (max-width:560px){.y5-foot .foot-contact{flex-direction:column}.y5-foot .foot-contact .addr{text-align:center}}
+.y5-foot .foot-contact .addr{width:auto;flex:0 1 auto}
