@@ -315,7 +315,7 @@ open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../',
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]
 DAYS = ('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT')
 def sdays(x): return ' '.join(d for d in (str(v).upper()[:3] for v in x.get('days') or []) if d in DAYS)
-board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-href="#shift" data-shift="{i}"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td></tr>''' for i, x in enumerate(SHIFTS))
+board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-shift="{i}" tabindex="0" role="button" aria-label="Show {t(x.get('title'))} above"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td></tr>''' for i, x in enumerate(SHIFTS))
 import json
 def rgb(hx):
     m = re.fullmatch(r'#?([0-9a-fA-F]{6})', str(hx or '').strip())
@@ -331,21 +331,20 @@ vol = f'''
     <figure class="rv"><img src="../assets/img/vol-kitchen.jpg" alt="Two volunteers cooking at the stoves" loading="lazy" style="object-position:50% 45%"><figcaption>In the kitchen</figcaption></figure>
   
 </div></section>
-<section class="vol-board"><div class="wrap">
-  <div class="board rv"><div class="board-head"><span>Volunteer departures · 357 Ellis St</span><span class="clock"></span></div>
-  <table><thead><tr><th>When</th><th>Shift</th><th>Time</th><th>Status</th></tr></thead><tbody>{board_rows}</tbody></table></div>
-  <p class="board-note">Tap a row to see the details and sign up.</p>
-</div></section>
-<section class="ig5 vol-ig"><div class="wrap head rv"><span class="kick">Ways to serve · for Bay Area volunteers</span><h2>Pick a shift. We’ll save you a seat.</h2><p class="lede" style="margin:10px auto 0;max-width:560px">Swipe or use the arrows. The card in the middle shows when it happens, with the details just below.</p></div>
+<section class="ig5 vol-ig"><div class="wrap head rv"><span class="kick">Ways to serve · for Bay Area volunteers</span><h2>Pick a shift. We’ll save you a seat.</h2><p class="lede" style="margin:10px auto 0;max-width:560px">Swipe the cards or tap a shift in the list below. The details and sign-up are right under the cards.</p></div>
   <div class="ig-stage" data-ig data-vol tabindex="0" aria-label="Volunteer opportunities. Use the left and right arrow keys to browse."></div>
   <div class="wrap"><div class="shift" id="shift" aria-live="polite">
     <div class="shift-when"><small>When</small><b data-f="when"></b><span data-f="time"></span></div>
     <div class="shift-body"><h3 data-f="title"></h3><p data-f="desc"></p><div class="meta" data-f="meta"></div></div>
     <div class="shift-cta"><a class="btn" data-f="signup" href="{VOLUNTEER_FORM}" target="_blank" rel="noopener">Sign up to volunteer ↗</a><small>Or email <a href="mailto:{VEMAIL}">{VEMAIL}</a></small></div>
   </div>
-  <div class="shift-dots" role="tablist" aria-label="Choose a shift"></div></div>
+  <div class="shift-dots" role="tablist" aria-label="Choose a shift" hidden></div>
+  <div class="vol-board vb7">
+    <div class="board"><div class="board-head"><span>All shifts · 357 Ellis St</span><span class="clock"></span></div>
+    <table><thead><tr><th>When</th><th>Shift</th><th>Time</th><th>Status</th></tr></thead><tbody>{board_rows}</tbody></table></div>
+    <p class="board-note">Tap a shift to see it above.</p>
+  </div></div>
 </section>
-<section class="stats5-sec"><div class="wrap"><div class="stats5 rv"><div><b data-count="400">0</b><span>tons of food served</span></div><div><b data-count="300" data-suffix="+">0</b><span>neighbors a week at the pantry</span></div><div><b data-count="4">0</b><span>days a week the Ellis Room is open</span></div><div><b data-count="100" data-suffix=" yrs">0</b><span>our ministry center’s age</span></div></div></div></section>
 <section class="cta-band pad"><div class="wrap rv"><span class="kick" style="color:rgba(255,255,255,.7)">Live outside the Bay Area?</span><h2>Serve for a summer, or a season.</h2><p>Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.</p><div class="row"><a class="btn light" href="{LIVE}/summerservice" target="_blank" rel="noopener">Summer of Service</a><a class="btn ghost-light" href="https://www.missionbuilders.org/location/?LID=149" target="_blank" rel="noopener">Mission Builders</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'volunteer'), exist_ok=True)
