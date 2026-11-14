@@ -824,10 +824,11 @@ KNOW = ('<section class="pad know7" id="know" style="background:var(--mist)"><di
         + '</div></div></section>')
 
 dts = f'''
-<section class="page-hero dts-ph"><div class="ph-img still dts7"><img src="../assets/img/dts-header-7.jpg" alt="DTS students sitting in a row on a hilltop at sunrise, looking out over the San Francisco skyline" style="object-position:50% 62%"></div><div class="copy"><div class="wrap"><span class="kick">DTS · The 5 Month Course{(' · ' + drange(NX['_s'], NX['_e'])) if NX else ''}</span><h1>What if your faith was meant to be <em>lived?</em></h1><p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p></div></div></section>
+<section class="page-hero dts-ph"><div class="ph-img still dts7"><img src="../assets/img/dts-header-7.jpg" alt="DTS students sitting in a row on a hilltop at sunrise, looking out over the San Francisco skyline" style="object-position:50% 62%"></div><div class="copy"><div class="wrap"><span class="kick">DTS · The 5 Month Course{(' · ' + drange(NX['_s'], NX['_e'])) if NX else ''}</span><h1>What if your faith was meant to be <em>lived?</em></h1></div></div></section>
 
 <section class="pad heart" data-sec-name="Intro and next DTS board"><div class="wrap heart-grid">
   <div class="rv">
+    <p class="lede dts-lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p>
     <p class="more more7"><span>Next DTS</span></p>
     <div class="dts-board7"><div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
   <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>

@@ -1929,3 +1929,8 @@ a.ev.ev-link small{font-weight:700}
 .heart-copy{padding-top:0}
 .heart-copy>p:first-child{margin-top:2px}
 @media (min-width:901px){.dts-ph + .pad.heart{padding-top:clamp(20px,2.4vw,32px)}}
+
+/* round 7-45: DTS intro: the subheading ("You love Jesus…") opens the left column, level with the paragraph on the right */
+.heart .dts-lede{font-size:clamp(19px,1.5vw,22px);line-height:1.6;color:var(--body);margin:0 0 clamp(26px,3vw,40px);max-width:none}
+@media (min-width:901px){.dts-ph + .pad.heart{padding-top:clamp(8px,1.2vw,18px)}}
+.dts-ph .copy{padding-bottom:0}
