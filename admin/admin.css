@@ -234,3 +234,13 @@ ol.basics li{margin-bottom:8px}
   .panel{break-inside:avoid;border:0;padding:8px 0}
   body{background:#fff}
 }
+/* show or hide sections */
+.switches{display:flex;flex-direction:column}
+.swrow{margin:0;padding:12px 2px;border-bottom:1px solid var(--line)}
+.swrow:last-child{border-bottom:0}
+.swl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.swl small{font-weight:600;color:var(--ok);font-size:12px}
+.swrow.off .swl>span{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(79,107,115,.4)}
+.swrow.off .swl small{color:var(--danger)}
+.swhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
+.swhead h2{font-size:26px}

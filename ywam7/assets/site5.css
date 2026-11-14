@@ -1905,3 +1905,11 @@ a.ev.ev-link small{font-weight:700}
 .neon-hero.lite .tint{animation:none!important}
 .neon-hero.lite .win{opacity:.8}
 .neon-hero.lite .lamp:before,.neon-hero.lite .lamp:after{opacity:.55}
+
+/* round 7-42: on phones the page title sits higher, so it can be read without scrolling */
+@media (max-width:700px){
+  .page-hero .ph-img,.page-hero .ph-img.tall,.page-hero .ph-img.zoomout{height:min(34vh,270px)!important;min-height:200px!important}
+  .page-hero .copy{margin-top:-64px}
+  .page-hero .kick{padding:5px 9px}
+  .page-hero .lede{margin-top:10px}
+}

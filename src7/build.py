@@ -187,8 +187,52 @@ def localize(html_text, up):
         u = m.group(0).split('?')[0]; name = _mirror.local_name(u)
         return up + 'assets/' + name if os.path.exists(os.path.join(ROOT, 'src7', 'assets', name)) else m.group(0)
     return _SQ_RE.sub(sub, html_text)
+# Show or hide sections (admin page → "Show or hide sections"). Every top-level <section> on a page gets an id
+# from its page and its small heading (kick) or title; ids listed in settings.json "hidden_sections" are left
+# out of the page. The list of sections is written to sections.json for the admin page.
+SECTION_INDEX = []
+PAGE_NAMES = {'': 'Home', 'volunteer/': 'Come Volunteer', 'teams/': 'Bring a Team', 'course/': 'DTS', 'course/apply/': 'DTS application', 'course/inquire/': 'DTS inquiry', 'ellis-room/': 'The Ellis Room', 'join-staff/': 'Join Staff', 'about/': 'About: Who we are', 'about/people/': 'About: Staff & Board', 'about/news/': 'About: News & Events', 'about/resources/': 'About: Resources', 'give/': 'Give', 'pay/': 'Pay fees', 'contact/': 'Contact', 'newsletter/': 'Newsletter'}
+_HIDDEN = set(str(x) for x in (S.get('hidden_sections') or []) if isinstance(x, str))
+def _plain(x): return html.unescape(re.sub(r'<[^>]+>', ' ', x)).replace('\u00a0', ' ').strip()
+def _sections(body):
+    out, depth, start = [], 0, None
+    for m in re.finditer(r'<(/?)section\b[^>]*>', body):
+        if not m.group(1):
+            if depth == 0: start = m.start()
+            depth += 1
+        else:
+            depth -= 1
+            if depth == 0 and start is not None: out.append((start, m.end())); start = None
+    return out
+def section_switches(page_title, path, body):
+    if re.match(r'about/resources/.+', path) or path in ('privacy/',): return body
+    key = (path.strip('/') or 'home')
+    seen, items, cut = {}, [], []
+    for a, b in _sections(body):
+        chunk = body[a:b]; opening = re.match(r'<section\b[^>]*>', chunk).group(0)
+        if re.search(r'class="[^"]*\b(page-hero|hero7)\b', opening): continue          # the header stays
+        kick = re.search(r'class="kick[^"]*"[^>]*>(.*?)</span>', chunk, re.S)
+        head = re.search(r'<h[12][^>]*>(.*?)</h[12]>', chunk, re.S)
+        k, hd = (_plain(kick.group(1)) if kick else ''), (_plain(head.group(1)) if head else '')
+        name = k or hd
+        if not name:                                   # no heading: name it by its first words
+            words = re.sub(r'\s+', ' ', _plain(re.sub(r'<(script|style)\b.*?</\1>', '', chunk, flags=re.S)))
+            if not words: continue
+            name = words[:60].rsplit(' ', 1)[0] + '…' if len(words) > 60 else words
+        sid = key + ':' + (re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')[:48] or 'section')
+        seen[sid] = seen.get(sid, 0) + 1
+        if seen[sid] > 1: sid += '-' + str(seen[sid])
+        label = (k + ': ' + hd) if (k and hd and hd.lower() != k.lower()) else name
+        items.append({'id': sid, 'label': re.sub(r'\s+', ' ', label)[:140]})
+        if sid in _HIDDEN: cut.append((a, b))
+    if items and not any(x['path'] == path for x in SECTION_INDEX):
+        SECTION_INDEX.append({'path': path, 'page': PAGE_NAMES.get(path) or re.sub(r'\s+—\s+YWAM San Francisco$', '', page_title), 'sections': items})
+    for a, b in reversed(cut): body = body[:a] + body[b:]
+    return body
 def page(title, cur, up, root, body, extra_head='', scripts=''):
+    _short = title
     title, desc, path, shot = meta_for(title)
+    body = section_switches(_short, path, body)
     url = BASE + path
     seo = ('<meta name="description" content="%s"><link rel="canonical" href="%s">'
            '<meta property="og:type" content="website"><meta property="og:site_name" content="YWAM San Francisco"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta name="twitter:card" content="summary_large_image">') % (t(desc), url, t(title), t(desc), url, BASE + shot) if desc else ''
@@ -978,7 +1022,7 @@ give = f'''
   </div>
 </div></section>
 <script src="https://resources.connect.clickandpledge.com/Library/iframeResizer.min.js"></script>
-<script>(function(){{var f=document.getElementById('CnP_inlineiframe');function go(){{if(window.iFrameResize)iFrameResize({{log:false,checkOrigin:['https://connect.clickandpledge.com']}},f);}}if(f.contentWindow&&document.readyState!=='loading')go();f.addEventListener('load',go);}})();</script>
+<script>(function(){{var f=document.getElementById('CnP_inlineiframe');if(!f)return;function go(){{if(window.iFrameResize)iFrameResize({{log:false,checkOrigin:['https://connect.clickandpledge.com']}},f);}}if(f.contentWindow&&document.readyState!=='loading')go();f.addEventListener('load',go);}})();</script>
 <section class="pay-strip7"><div class="wrap"><div class="ps7 rv"><p><b>Looking to pay for your school?</b> DTS and Mission Adventures fees go through our Pay page, not the giving form.</p><a class="btn" href="../pay/">Pay school fees →</a></div></div></section>
 <section class="pad give-ways" style="padding-top:0"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:26px"><span class="kick">Other ways to give</span><h2>However you’d like to help.</h2></div>
 <div class="gw-grid"><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg></span><h3>By check</h3><p>Payable to YWAM San Francisco, mailed to {ADDR}, {CITY}.</p><a class="go" href="mailto:{FEMAIL}?subject=Giving%20by%20check">Ask a question →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg></span><h3>Recurring bank transfer</h3><p>Give monthly straight from your bank account (ACH). We’ll send you a short form.</p><a class="go" href="mailto:{FEMAIL}?subject=Recurring%20bank%20transfer%20(ACH)%20giving%20form">Request the form →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg></span><h3>In-kind gifts</h3><p>New socks, toiletries and more for neighbors who visit the Ellis Room.</p><a class="go" href="#in-kind">See what we need →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg></span><h3>Employer matching</h3><p>Many employers match gifts, so yours could go twice as far.</p><a class="go" href="mailto:{FEMAIL}?subject=Setting%20up%20an%20employer%20matching%20gift">Set up a matching gift →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg></span><h3>Wire transfer</h3><p>Domestic or international. Ask us for the instructions.</p><a class="go" href="mailto:{FEMAIL}?subject=Wire%20transfer%20instructions">Ask for instructions →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg></span><h3>Stocks & securities</h3><p>Contact our finance office to give appreciated stock, or call <a class="tel" href="{TEL}">{PHONE}</a>.</p><a class="go" href="mailto:{FEMAIL}?subject=Giving%20stocks%20or%20securities">Email our finance office →</a></div></div>
@@ -1172,3 +1216,6 @@ _kb = {'topics': KB_TOPICS, 'items': KB, 'contact': {'email': E, 'phone': PH, 't
 open(os.path.join(OUT, 'assets', 'chat-kb.js'), 'w').write('window.YWAM_KB=' + js(_kb) + ';')
 
 print('built', V, VER, len(KB), 'chat answers')
+
+# the section list for the admin page's "Show or hide sections"
+open(os.path.join(OUT, 'sections.json'), 'w').write(json.dumps({'pages': SECTION_INDEX}, ensure_ascii=False, indent=1))

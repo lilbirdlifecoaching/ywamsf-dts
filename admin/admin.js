@@ -405,7 +405,7 @@
   ];
   // Show or hide whole sections of the website (administrators; others' changes wait for approval).
   SECTIONS.splice(SECTIONS.length - 1, 0, { id: 'switches', grp: 'Site', file: 'settings.json', title: 'Show or hide sections', page: '#',
-    intro: 'Turn whole sections of the website on or off. A hidden section keeps its content, so you can turn it back on any time.',
+    intro: 'Turn any section of any page on or off. A hidden section keeps its content, so you can turn it back on any time.',
     fields: [{ k: 'show_testimonial_placeholders', l: 'DTS page: show the student testimonials section even before real testimonials are added', t: 'bool' },
       { k: 'show_ellis_stories', l: 'Ellis Room page: show the example neighbor stories', t: 'bool' }] });
   SECTIONS.forEach(function (s) { if (s.id === 'settings') s.fields = s.fields.filter(function (f) { return !/^show_/.test(f.k); }); if (s.id === 'banner') s.intro = 'A slim bar that scrolls across the top of every page, for closures, big events or a call for volunteers.'; });
@@ -427,7 +427,7 @@
     instagram: ['Save a photo from an Instagram post, upload it here, and paste the link to the post.', 'Six to eight posts is plenty.'],
     resources: ['Resources are grouped. Each group becomes a tab.', 'Paste the link to a video, PDF or article. YouTube, Vimeo and PDF links are labelled automatically.'],
     banner: ['Tick “Show the announcement bar”, write a short message, and add a link if people should click through.', 'Set “Hide automatically after” so you don’t have to remember to turn it off.', 'The message scrolls across the top of every page.'],
-    switches: ['Untick a section to hide it from the website. Its content is kept.', 'Only administrators can publish these switches; other changes wait for an administrator.'],
+    switches: ['Every section of every page is listed here, page by page. Switch one off to hide it from the website; its content is kept, so you can switch it back on any time.', 'Press Publish at the bottom. The page updates in about two minutes.', 'The header photo at the top of each page always shows.'],
     settings: ['Contact details, key links and prices used all over the site.', 'Change these carefully: they appear on many pages.'],
     approvals: ['Each card is a change someone submitted. “See what changed” shows the old and new text side by side.', 'Approve it to publish it, or Send back with a short note saying what to change.', 'They get an email either way.'],
     mine: ['Changes you submitted that are waiting for approval, and ones that were sent back with a note.', 'To fix a sent-back change, open that section: your version is still there. Make the change and submit it again.'],
@@ -583,9 +583,41 @@
     main.appendChild(howto(s.id));
     if (note) main.appendChild(note);
     main.appendChild(h('div', { id: 'pubstatus' }));
+    if (s.id === 'switches') { renderSwitches(s, main); return; }
     var panel = h('div', { class: 'panel', 'data-tour': 'form' });
     panel.appendChild(fieldsFor(s.fields, DATA));
     main.appendChild(panel);
+  }
+  /* Show or hide sections: one switch per section of every page (the list comes from the site build). */
+  function renderSwitches(s, main) {
+    if (!Array.isArray(DATA.hidden_sections)) DATA.hidden_sections = [];
+    var hidden = DATA.hidden_sections;
+    var ph = h('div', { class: 'panel', 'data-tour': 'form' }, h('h2', { text: 'Placeholders' }), h('p', { class: 'hint', text: 'Sections that are hidden until real stories are ready.' }), fieldsFor(s.fields, DATA));
+    main.appendChild(ph);
+    var box = h('div', null, h('p', { class: 'loading', text: 'Loading the list of sections…' })); main.appendChild(box);
+    fetch(SITE.replace(/^https:\/\/[^/]+/, '..') + 'sections.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      box.textContent = '';
+      var hiddenCount = 0;
+      d.pages.forEach(function (pg) {
+        var list = h('div', { class: 'switches' });
+        pg.sections.forEach(function (sec) {
+          var on = hidden.indexOf(sec.id) < 0; if (!on) hiddenCount++;
+          var cb = h('input', { type: 'checkbox', checked: on });
+          var row = h('label', { class: 'toggle swrow' + (on ? '' : ' off') }, cb, h('span', { class: 'sw', 'aria-hidden': 'true' }), h('span', { class: 'swl' }, h('span', { text: sec.label }), h('small', { text: on ? 'Showing' : 'Hidden' })));
+          cb.addEventListener('change', function () {
+            var i = hidden.indexOf(sec.id);
+            if (cb.checked && i >= 0) hidden.splice(i, 1);
+            if (!cb.checked && i < 0) hidden.push(sec.id);
+            row.classList.toggle('off', !cb.checked); row.querySelector('small').textContent = cb.checked ? 'Showing' : 'Hidden';
+            changed();
+          });
+          list.appendChild(row);
+        });
+        box.appendChild(h('div', { class: 'panel' }, h('div', { class: 'swhead' }, h('h2', { text: pg.page }), h('a', { class: 'link', href: SITE + pg.path, target: '_blank', rel: 'noopener', text: 'View page ↗' })), list));
+      });
+      if (hiddenCount) box.insertBefore(h('div', { class: 'notice warn' }, hiddenCount + (hiddenCount === 1 ? ' section is' : ' sections are') + ' hidden right now.'), box.firstChild);
+      box.appendChild(h('p', { class: 'hint', text: 'The page header (the photo at the top of each page) always shows. If a section’s heading is reworded, its switch starts again as “Showing”.' }));
+    }).catch(function () { box.textContent = ''; box.appendChild(h('p', { class: 'err', text: 'Couldn’t load the list of sections. Try again in a minute.' })); });
   }
   function changed() { setDirty(true); }
   function fieldsFor(fields, obj) {

@@ -68,13 +68,13 @@ function policy(path) {
   if (JSON_PATH.test(path)) return { reviewers: 'admin' };
   return null;
 }
-// Section on/off switches are administrator-only: they live as show_* keys in settings.json.
+// Section on/off switches are administrator-only: show_* keys and the hidden_sections list in settings.json.
 function touchesSwitches(path, oldText, newText) {
   if (path !== 'content/settings.json') return false;
   let a = {}, b = {};
   try { a = JSON.parse(oldText || '{}'); } catch (e) {}
   try { b = JSON.parse(newText || '{}'); } catch (e) {}
-  const keys = new Set([...Object.keys(a), ...Object.keys(b)].filter((k) => /^show_/.test(k)));
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)].filter((k) => /^show_|^hidden_sections$/.test(k)));
   for (const k of keys) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) return true;
   return false;
 }
