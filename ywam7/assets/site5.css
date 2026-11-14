@@ -1659,3 +1659,15 @@ a.ev.ev-link small{font-weight:700}
 .ready-pic img{width:100%;height:auto;display:block;border-radius:10px;box-shadow:0 24px 50px -28px rgba(0,0,0,.6)}
 @media (max-width:820px){.ready-top{grid-template-columns:1fr}.ready-pic{justify-self:start}}
 @media (max-width:480px){.dts-hero7 .board-head .clock{display:none}}
+
+/* round 7-18: DTS header fades into the page like the other page headers */
+.dts-hero7 .dh-img:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--fog) 0%,rgba(255,255,255,.6) 14%,rgba(255,255,255,0) 38%);pointer-events:none}
+.dts-hero7 .dh-img{height:min(68vh,640px);min-height:440px}
+.dts-hero7 .dh-img img{object-position:50% 62%}
+.dts-hero7 .dts-board-wrap{bottom:clamp(70px,11vh,120px)}
+.dts-hero7 .board-note{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.75)}
+@media (max-width:900px){.dts-hero7 .dh-img{height:clamp(240px,62vw,460px);min-height:0}.dts-hero7 .dts-board-wrap{margin-top:-40px}.dts-hero7 .board-note{color:var(--muted);text-shadow:none}}
+@media (min-width:901px){.dts-hero7 + .pad.heart{padding-top:0;margin-top:-34px;position:relative;z-index:1}}
+.dts-hero7 + .pad.heart{background:transparent}
+.dts-hero7 .dh-img:after{background:linear-gradient(0deg,#fff 0%,rgba(255,255,255,.88) 10%,rgba(255,255,255,.55) 24%,rgba(255,255,255,.2) 38%,rgba(255,255,255,0) 52%)}
+.dts-hero7 .board-note{color:var(--ink);text-shadow:0 0 10px rgba(255,255,255,.9);font-weight:600}
