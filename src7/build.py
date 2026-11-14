@@ -662,14 +662,11 @@ KNOW = ('<section class="pad know7" id="know" style="background:var(--mist)"><di
         + '</div></div></section>')
 
 dts = f'''
-<section class="dts-top dts-hero7" aria-label="DTS header photo">
-  <div class="dh-img"><img src="../assets/img/dts-header-7.jpg" alt="DTS students sitting in a row on a hilltop at sunrise, looking out over the San Francisco skyline" width="2400" height="1800" fetchpriority="high"></div>
-</section>
+<section class="page-hero dts-ph"><div class="ph-img still dts7"><img src="../assets/img/dts-header-7.jpg" alt="DTS students sitting in a row on a hilltop at sunrise, looking out over the San Francisco skyline" style="object-position:50% 62%"></div><div class="copy"><div class="wrap"><span class="kick">DTS · The 5 Month Course{(' · ' + drange(NX['_s'], NX['_e'])) if NX else ''}</span><h1>What if your faith was meant to be <em>lived?</em></h1><p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p></div></div></section>
 
 <section class="pad heart"><div class="wrap heart-grid">
-  <div class="rv"><span class="kick">DTS · The 5 Month Course{(' · ' + drange(NX['_s'], NX['_e'])) if NX else ''}</span>
-    <h1>What if your faith was meant to be <em>lived?</em></h1>
-    <p class="more"><span>{(SPOTS + '.') if SPOTS else ''}</span> <span>One neighborhood.</span> <span>A faith that gets lived out.</span></p>
+  <div class="rv">
+    <p class="more more7"><span>{(SPOTS + '.') if SPOTS else ''}</span> <span>One neighborhood.</span> <span>A faith that gets lived out.</span></p>
     <div class="dts-board7"><div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
   <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
 {DTS_ROWS}
@@ -677,7 +674,6 @@ dts = f'''
   {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>
   <p class="board-note">{BOARD_NOTE}</p></div></div>
   <div class="rv heart-copy">
-    <p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p>
     <p>A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: three months of training here in the Tenderloin, two months of outreach in the cities of the world, then a debrief to send you into whatever comes next.</p>
     <p>This is discipleship with your feet on the ground. You’ll learn alongside people who have spent years serving this neighborhood, and discover what it means to live the way of Jesus in the everyday moments of life.</p>
     <div class="links-row"><a class="btn" href="{NX_APPLY}">Apply for DTS</a><a class="btn ghost" href="inquire/">Inquire</a><button class="btn ghost" type="button" data-survey>Am I ready?</button><button class="btn ghost" type="button" data-film="lH3BLHA6dhI">▶ Watch the DTS film</button></div>

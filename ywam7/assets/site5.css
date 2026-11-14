@@ -1692,3 +1692,8 @@ a.ev.ev-link small{font-weight:700}
 .dts-hero7 .dh-img{height:min(62vh,580px);min-height:380px}
 @media (max-width:480px){.dts-board7 .board th:nth-child(3),.dts-board7 .board td:nth-child(3),.dts-board7 .board-head .clock{display:none}.dts-board7 .cd-cta{width:100%;text-align:center}}
 @media (max-width:900px){.dts-hero7 .dh-img{height:clamp(220px,58vw,420px);min-height:0}}
+
+/* round 7-20: DTS header uses the same page header as the other pages; longer fade for this darker photo */
+.page-hero .ph-img.dts7:after{background:linear-gradient(0deg,var(--fog) 0%,rgba(255,255,255,.85) 12%,rgba(255,255,255,.5) 26%,rgba(255,255,255,.15) 40%,rgba(255,255,255,0) 54%)}
+.heart .more7{margin-top:0}
+.heart .more7 + .dts-board7{margin-top:clamp(22px,2.6vw,34px)}
