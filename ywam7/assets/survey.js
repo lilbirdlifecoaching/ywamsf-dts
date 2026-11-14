@@ -36,7 +36,7 @@ var Q=[
    {t:"Make sure they hear the truth. It feels urgent.",s:1,n:"Your passion matters. Here, we'll invite you to lead with presence — to earn trust before words. It changes how the truth is heard."},
    {t:"Keep my faith to myself. It feels private.",s:1,n:"Totally understandable. DTS is a place to discover that sharing faith can be gentle, natural and never forced."}
   ]},
- {dim:"together",context:"Monastery life means shared life.",
+ {dim:"together",context:"Community life means shared life.",
   q:"For five months you'll share rooms, meals, dishes and prayer with people you didn't choose. That sounds…",
   o:[
    {t:"Like what I need. I grow best with people.",s:3,n:"You'll thrive in the rhythm of shared life — and help others thrive too."},

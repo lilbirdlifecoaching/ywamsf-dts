@@ -19,8 +19,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 - **YWAM 6 (`ywam6/`) is the current approved-direction site.** YWAM 5 (`ywam5/`) is its twin: every change goes
   to both, *except colours* (YWAM 6 is white/cyan/teal; YWAM 5 keeps the older fog/red look so
   the team can compare). `ywam1/`–`ywam4/` are frozen early explorations: don't touch them.
-- Direction: "a place to learn the way of Jesus by living it". The DTS is framed around
-  **the Monastery**: a place of peace in the middle of the Tenderloin, not an escape from it.
+- Direction: "a place to learn the way of Jesus by living it": a place of peace in the middle of the
+  Tenderloin, not an escape from it. **Don't use "Monastery" language in YWAM 7** (Nov 2026: the org isn't ready
+  to introduce it; it was removed from the DTS page, Join Staff, the chat and the readiness quiz).
 
 ## Never do
 

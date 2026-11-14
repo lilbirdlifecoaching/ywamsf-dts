@@ -396,16 +396,26 @@ teams = f'''
 os.makedirs(os.path.join(OUT, 'teams'), exist_ok=True)
 open(os.path.join(OUT, 'teams/index.html'), 'w').write(page('Bring a Team — YWAM San Francisco', 'teams', '../', '../../', teams))
 
+def subnav(cur, ab):
+    """ab = relative path from the current page to the about/ folder"""
+    items = [(ab, 'Who We Are', 'who'), (ab + 'people/', 'Staff & Board', 'people'), (ab + '../join-staff/', 'Join Staff', 'joinstaff'), (ab + 'news/', 'News & Events', 'news'), (ab + 'resources/', 'Resources', 'resources'), (ab + '../contact/', 'Contact', 'contact')]
+    return '<nav class="subnav" aria-label="About"><div class="wrap"><span>About</span>' + ''.join('<a href="%s"%s>%s</a>' % (h or './', ' aria-current="page"' if k == cur else '', t) for h, t, k in items) + '</div></nav>'
+# Stained-glass flip cards (Nov 2026: shown on Join Staff; the DTS Monastery section was removed)
+VOWS = [('god', '01', 'A place to encounter God', 'Prayer, reflection and Jesus, amid the noise.', 'In a neighborhood that never goes quiet, we make room to slow down, pray, sit with Scripture and meet Jesus. Not as a lesson to learn, but as a Person to know.'),
+        ('neighbor', '02', 'A place of peace in the Tenderloin', 'Not an escape from the neighborhood. A steady presence within it.', 'Someone should be able to walk through our doors in grief, uncertainty or crisis and know they will be loved and received. That’s the kind of place we’re becoming.'),
+        ('humility', '03', 'A way of life rooted in Jesus', 'Love God. Love your neighbor.', 'Mercy, humility, forgiveness and friendship. Loving people in the realities of their everyday lives is how Jesus made disciples, and it’s how we learn to follow Him.'),
+        ('multiply', '04', 'Formed here, sent out', 'You don’t just learn compassion. You practice it.', 'Neighbors, students, volunteers, churches and staff all share this way of life. What you learn here won’t stay in San Francisco: you’ll carry it wherever God leads you next.')]
+vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>What it looks like</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
+
 # ---------------------------------------------------------------- JOIN STAFF
-staffp = f'''
+staffp = subnav('joinstaff', '../about/') + f'''
 <section class="page-hero"><div class="ph-img"><img src="../assets/img/vol-crew.jpg" alt="YWAM San Francisco staff and volunteers together at 357 Ellis Street" style="object-position:50% 40%"></div><div class="copy"><div class="wrap"><span class="kick">Join staff · 357 Ellis Street</span><h1>Make the Tenderloin <em>your home.</em></h1><p class="lede">Love God, love your neighbors and help form disciples, for the long haul. If you sense a call to the city, we’d love to talk.</p></div></div></section>
 <section class="pad staff-wrap"><div class="wrap staff-layout">
 <div class="staff-main">
 <div class="sblock"><div class="rv"><span class="kick">Why staff here</span><h2>Come and build <em>this with us.</em></h2>
   <p class="lede">Joining staff isn’t just taking a role. It’s adopting a way of life: becoming a place of peace in the middle of the Tenderloin, a presence people know they can return to.</p>
   <p>The most important things on Ellis Street happen slowly: a neighbor who learns your name, a friendship that holds through a hard season, a student who finally gets what it means to live their faith. Staff are the people who stay, and who shape the community that everyone else encounters.</p>
-  <p>You’ll be rooted in the way of Jesus alongside people who have given years to this neighborhood, and you’ll help form the students, volunteers and teams who carry that heart back out into the world.</p>
-  <a class="btn ghost" href="../course/#monastery">More about the Monastery <span aria-hidden="true">→</span></a></div>
+  <p>You’ll be rooted in the way of Jesus alongside people who have given years to this neighborhood, and you’ll help form the students, volunteers and teams who carry that heart back out into the world.</p></div>
 </div>
 <div class="sblock panel"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Where you could serve</span><h2>Three teams, one mission.</h2></div>
   <div class="cards3 three">
@@ -420,12 +430,7 @@ staffp = f'''
     <div class="rcard rv"><small>03</small><b>Come and see</b><span>Spend time on Ellis Street before you commit. Like all YWAM staff, our team raises personal support, and we’ll help you build yours.</span><em><a href="../contact/">Plan a visit →</a></em></div>
   </div></div>
 </div>
-<aside class="glass-col" aria-label="The heart of the Monastery"><div class="glass-stick"><span class="kick">The Monastery</span>
-<figure><img src="../assets/img/vow-god.jpg" alt="" loading="lazy"><figcaption>A place to encounter God</figcaption></figure>
-    <figure><img src="../assets/img/vow-neighbor.jpg" alt="" loading="lazy"><figcaption>A place of peace in the Tenderloin</figcaption></figure>
-    <figure><img src="../assets/img/vow-humility.jpg" alt="" loading="lazy"><figcaption>A way of life rooted in Jesus</figcaption></figure>
-    <figure><img src="../assets/img/vow-multiply.jpg" alt="" loading="lazy"><figcaption>Formed here, sent out</figcaption></figure>
-</div></aside>
+<aside class="glass-col" aria-label="Our way of life"><div class="glass-cards"><span class="kick">Our way of life</span><p class="gc-hint">Tap a card to turn it over.</p><div class="vows5 vows-col">{vows}</div></div></aside>
 </div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Sensing a call to the city?</h2><p>We’d love to hear your story. Email <a style="color:#fff" href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</p><div class="row"><a class="btn light" href="mailto:{EMAIL}?subject=Joining%20staff">Talk with us about staff</a><a class="btn ghost-light" href="../about/people/">Meet the staff</a></div></div></section>
 '''
@@ -550,11 +555,6 @@ SVG = {
  'humility': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="124" rx="74" ry="8" class="glow"/><path d="M44 84h112l-12 32a8 8 0 0 1-8 6H64a8 8 0 0 1-8-6z" class="ln fillm"/><ellipse cx="100" cy="84" rx="56" ry="8" class="ln water"/><path d="M118 30h22a6 6 0 0 1 6 6v34" class="ln"/><path d="M130 36v40c0 5 6 7 10 4" class="ln fillm"/><path d="M134 46h8M134 56h8M134 66h8" class="ln thin"/><path d="M70 66c6-4 6-10 0-14M84 66c6-4 6-10 0-14" class="ln thin"/></svg>''',
  'multiply': '''<svg viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="128" rx="64" ry="7" class="glow"/><path d="M100 128V60" class="ln"/><path d="M100 96c-18-2-30-12-34-28 16 0 30 10 34 28zM100 84c18-2 30-12 34-28-16 0-30 10-34 28zM100 66c-12-2-20-10-22-22 11 1 20 9 22 22zM100 60c10-4 16-12 16-24-10 3-16 12-16 24z" class="ln leaf"/><circle cx="58" cy="118" r="5" class="seed"/><circle cx="142" cy="118" r="5" class="seed"/><circle cx="40" cy="124" r="3" class="seed"/><circle cx="160" cy="124" r="3" class="seed"/><path d="M58 113v-8c-4-2-6-6-6-10M142 113v-8c4-2 6-6 6-10" class="ln thin"/></svg>''',
 }
-VOWS = [('god', '01', 'A place to encounter God', 'Prayer, reflection and Jesus, amid the noise.', 'In a neighborhood that never goes quiet, we make room to slow down, pray, sit with Scripture and meet Jesus. Not as a lesson to learn, but as a Person to know.'),
-        ('neighbor', '02', 'A place of peace in the Tenderloin', 'Not an escape from the neighborhood. A steady presence within it.', 'Someone should be able to walk through our doors in grief, uncertainty or crisis and know they will be loved and received. That’s the kind of place we’re becoming.'),
-        ('humility', '03', 'A way of life rooted in Jesus', 'Love God. Love your neighbor.', 'Mercy, humility, forgiveness and friendship. Loving people in the realities of their everyday lives is how Jesus made disciples, and it’s how we learn to follow Him.'),
-        ('multiply', '04', 'Formed here, sent out', 'You don’t just learn compassion. You practice it.', 'Neighbors, students, volunteers, churches and staff all share this way of life. What you learn here won’t stay in San Francisco: you’ll carry it wherever God leads you next.')]
-vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>What it looks like</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
 HOURS = [("7:00", 420, "Quiet Time", "Before the neighborhood wakes", "Time alone with God: Scripture, silence and prayer. We get rooted before we go out."),
          ("8:00", 480, "Breakfast", "One table", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
          ("9:00", 540, "Teaching", "Speaker of the week", "Worship, then a new teacher each week on the character of God, identity, hearing His voice, the nations, justice and mercy."),
@@ -694,12 +694,7 @@ dts = f'''
 
 
 
-<section class="pad monastery" id="monastery"><div class="wrap">
-  <div class="mon-head rv"><h2>A monastery without walls</h2><p class="mon-sub">Peace in the middle of the chaos, not an escape from it.</p></div>
-  <div class="mon-copy mon-one rv"><p class="lede">Monks used to build their monasteries far from the noise. We built ours in the middle of it. Sirens, shouting on the corner, a neighbor who needs to talk: the city doesn’t go quiet for us, and we don’t want it to.</p>
-  <p class="mon-hint">A place to find peace in the midst of life, encounter Jesus through community, and be formed to carry that peace into the world. Turn a card over to see what it looks like.</p></div>
-  <div class="vows5">{vows}</div>
-</div></section>
+
 
 
 
@@ -743,10 +738,6 @@ open(os.path.join(OUT, 'course/index.html'), 'w').write(page('DTS (5 Month Cours
 
 # ---------------------------------------------------------------- ABOUT SECTION (Who We Are + History · Staff & Board · News & Events)
 CDN = C
-def subnav(cur, ab):
-    """ab = relative path from the current page to the about/ folder"""
-    items = [(ab, 'Who We Are', 'who'), (ab + 'people/', 'Staff & Board', 'people'), (ab + 'news/', 'News & Events', 'news'), (ab + 'resources/', 'Resources', 'resources'), (ab + '../contact/', 'Contact', 'contact')]
-    return '<nav class="subnav" aria-label="About"><div class="wrap"><span>About</span>' + ''.join('<a href="%s"%s>%s</a>' % (h or './', ' aria-current="page"' if k == cur else '', t) for h, t, k in items) + '</div></nav>'
 
 def hero(img, alt, kick, h1, lede):
     return f'''<section class="page-hero"><div class="ph-img"><img src="{img}" alt="{alt}"></div><div class="copy"><div class="wrap"><span class="kick">{kick}</span><h1>{h1}</h1><p class="lede">{lede}</p></div></div></section>'''
@@ -1004,7 +995,6 @@ kb('dts', 'What does a day look like?', 'day schedule daily routine timetable ty
 kb('dts', 'What is the weekly rhythm?', 'rhythm week pray reflect serve sabbath rest weekly prayer walk', ' '.join('%s: %s' % (U(n), U(d)) for k, n, d, alt, pos in RHYTHM7), [('The rhythm', 'course/#rhythm')])
 kb('dts', 'What do you learn in the teaching?', 'teach teaching learn lecture speaker class topics curriculum', 'Worship, then a new teacher each week on topics like the character of God, identity, hearing His voice, the nations, justice and mercy. Then you work it out on the street, in small groups and with a weekly mentor.', [L_DTS])
 kb('dts', 'Where will I live and eat?', 'live housing accommodation apartment eat food meals kitchen stay', 'You’ll live on site at ' + U(ADDR) + ' with the rest of your school, sharing a room with a few other students. Meals are planned and shared at the base around one table with YWAM staff, and everyone takes a turn in the kitchen.', [('Your home', 'course/#home')])
-kb('dts', 'What is the Monastery?', 'monastery without walls peace vision', 'The Monastery is how we describe the DTS: a place of peace in the middle of the Tenderloin, not an escape from it. A place to encounter God, a place of peace in the neighborhood, a way of life rooted in Jesus, and being formed here and sent out.', [('The Monastery', 'course/#monastery')])
 kb('dts', 'Am I ready for a DTS?', 'ready readiness sure unsure quiz check-in right for me should i', 'Take the 3-minute check-in on the DTS page: seven honest questions with a gentle, personal read on where you are. Or talk to someone from our DTS staff, with no pressure.', [L_DTS, ('Email a DTS coach', 'mailto:' + DE)])
 kb('dts', 'Can international students come?', 'international overseas visa foreign country abroad passport', 'We welcome students from overseas. You’re responsible for organizing your own travel to San Francisco. For visas and anything specific to your country, please email our DTS team. ' + U(_DTS.get('cost_note') or ''), [L_DMAIL])
 kb('dts', 'How do I pay my DTS fees?', 'pay fees payment deposit invoice', 'Use the Pay Fees page: choose what the payment is for and who it’s for, and our finance team makes sure it reaches the right account.', [('Pay fees', 'pay/')])
