@@ -13,6 +13,12 @@
   var skyW = hero.querySelector('.sky-w'), stars = hero.querySelector('.stars'), fog = hero.querySelector('.fog'), wet = hero.querySelector('.wet'), face = hero.querySelector('.face');
   if (!frame || !photo || !skyC) return;
   hero.classList.add('dc');
+  /* Phones and tablets get a lighter hero (see round 7-41 in site5.css): no blend modes, masks or filters,
+     which iOS Safari has to hold in memory at the full 2500px size. The photo is dimmed with a plain
+     dark layer instead of a CSS filter. */
+  var LITE = !!(window.matchMedia && matchMedia('(max-width: 820px), (pointer: coarse)').matches);
+  var shade = null;
+  if (LITE) { hero.classList.add('lite'); shade = document.createElement('div'); shade.className = 'shade'; shade.setAttribute('aria-hidden', 'true'); tint.parentNode.insertBefore(shade, tint); }
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var TZ = 'America/Los_Angeles', LAT = 37.785, LON = -122.413;
 
@@ -134,7 +140,7 @@
      Drops live at different depths: far ones are short, faint and slow; near ones are long,
      soft and fast. The wind gusts, near drops splash on the street, and a light haze softens
      the distance while it rains. */
-  var cv = hero.querySelector('.rain'), cx = cv && cv.getContext && cv.getContext('2d'), haze = hero.querySelector('.rainhaze');
+  var cv = LITE ? null : hero.querySelector('.rain'), cx = cv && cv.getContext && cv.getContext('2d'), haze = hero.querySelector('.rainhaze');
   var drops = [], splashes = [], rainAmt = 0, rainNight = 0, rainOn = false, vis = true, lastT = 0;
   function sizeCanvas() { if (!cv) return; var r = 1; cv.width = hero.clientWidth * r; cv.height = hero.clientHeight * r; cx && cx.setTransform(r, 0, 0, r, 0, 0); }
   function newDrop(W, H, anywhere) {
@@ -198,8 +204,14 @@
     if (skyW) skyW.style.background = skyC.style.background;
     if (stars) stars.style.opacity = (Math.max(0, Math.min(1, (L.night - .55) / .45)) * (1 - cl) * (1 - Math.min(1, w.fog * 1.4)) * .9).toFixed(3);
     var br = L.br * (1 - .1 * cl) * (1 - .12 * w.rain) * (1 - .06 * w.fog), sat = L.sat * (1 - .25 * cl);
-    photo.style.filter = 'brightness(' + br.toFixed(3) + ') saturate(' + sat.toFixed(3) + ') contrast(' + (1.02 + .05 * L.night).toFixed(3) + ')';
-    tint.style.background = 'linear-gradient(180deg,' + rgb(L.gc, L.gs) + ',' + rgb(L.gc, L.gs * .35) + ' 60%,' + rgb(L.gc, L.gs * 1.1) + ')';
+    if (LITE) {
+      shade.style.opacity = Math.max(0, Math.min(.72, 1 - br)).toFixed(3);
+      var gs = L.gs * .55;
+      tint.style.background = 'linear-gradient(180deg,' + rgb(L.gc, gs) + ',' + rgb(L.gc, gs * .35) + ' 60%,' + rgb(L.gc, gs * 1.1) + ')';
+    } else {
+      photo.style.filter = 'brightness(' + br.toFixed(3) + ') saturate(' + sat.toFixed(3) + ') contrast(' + (1.02 + .05 * L.night).toFixed(3) + ')';
+      tint.style.background = 'linear-gradient(180deg,' + rgb(L.gc, L.gs) + ',' + rgb(L.gc, L.gs * .35) + ' 60%,' + rgb(L.gc, L.gs * 1.1) + ')';
+    }
     var sunA = L.sun * (1 - cl * .9), sx = 2050 - Math.max(0, Math.min(1, (L.ref - 7) / 11.75)) * 1150, sy = 760 - Math.sin(Math.max(0, Math.min(1, (L.ref - 7) / 11.75)) * Math.PI) * 600;
     if (sun) { sun.style.opacity = sunA.toFixed(3); sun.style.transform = 'translate(' + sx.toFixed(0) + 'px,' + sy.toFixed(0) + 'px)'; }
     if (wash) wash.style.opacity = (L.gold * (1 - cl * .8) * .9).toFixed(3);

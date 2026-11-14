@@ -268,7 +268,7 @@ home = f'''
 <div class="hero7-media">
 <div class="neon-hero" role="img" aria-label="Ellis Street in the Tenderloin, with the YWAM San Francisco sign, in today’s real light and weather">
   <div class="frame" style="width:2500px;height:1424px">
-    <img class="photo" src="assets/img/hero-ellis.jpg" alt="Ellis Street in the Tenderloin, with the YWAM San Francisco sign on the left" style="width:2500px;height:1424px">
+    <img class="photo" src="assets/img/hero-ellis.jpg" srcset="assets/img/hero-ellis-1250.jpg 1250w, assets/img/hero-ellis.jpg 2500w" sizes="(max-width: 820px) 400px, 2500px" alt="Ellis Street in the Tenderloin, with the YWAM San Francisco sign on the left" style="width:2500px;height:1424px">
     <div class="sky-c" aria-hidden="true"></div>
     <div class="sky-w" aria-hidden="true"></div>
     <div class="stars" aria-hidden="true"></div>

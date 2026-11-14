@@ -1893,3 +1893,15 @@ a.ev.ev-link small{font-weight:700}
 .ann{background:#C0362C;color:#fff}
 .ann a{color:#fff}
 .ann.run .ann-item::after{background:rgba(255,255,255,.6)}
+
+/* round 7-41: lighter home hero on phones and tablets (dayhero.js adds .lite). iOS Safari keeps every blended,
+   masked or filtered layer of the 2500px street scene in memory at full size, and phones with less memory
+   close the page ("appears then disappears"). Here: no blend modes, masks, filters or looping animations;
+   the sky, sun, stars, wet street and rain layers are left out; the photo is dimmed by a plain dark layer. */
+.neon-hero.lite .frame *,.neon-hero.lite .frame *::before,.neon-hero.lite .frame *::after{mix-blend-mode:normal!important;filter:none!important;-webkit-mask:none!important;mask:none!important;will-change:auto!important;animation-iteration-count:1!important}
+.neon-hero.lite .photo{filter:none!important;animation:none!important}
+.neon-hero.lite .sky-c,.neon-hero.lite .sky-w,.neon-hero.lite .stars,.neon-hero.lite .sun-l,.neon-hero.lite .sunwash,.neon-hero.lite .wet,.neon-hero.lite .fog,.neon-hero.lite .rain,.neon-hero.lite .rainhaze,.neon-hero.lite .spill{display:none!important}
+.neon-hero.lite .shade{left:0;top:0;width:2500px;height:1424px;background:#0a1020;opacity:.3;pointer-events:none}
+.neon-hero.lite .tint{animation:none!important}
+.neon-hero.lite .win{opacity:.8}
+.neon-hero.lite .lamp:before,.neon-hero.lite .lamp:after{opacity:.55}
