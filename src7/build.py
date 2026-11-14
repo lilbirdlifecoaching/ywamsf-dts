@@ -670,7 +670,6 @@ dts = f'''
   <div class="mon-copy mon-one rv"><p class="lede">Monks used to build their monasteries far from the noise. We built ours in the middle of it. Sirens, shouting on the corner, a neighbor who needs to talk: the city doesn’t go quiet for us, and we don’t want it to.</p>
   <p class="mon-hint">A place to find peace in the midst of life, encounter Jesus through community, and be formed to carry that peace into the world. Turn a card over to see what it looks like.</p></div>
   <div class="vows5">{vows}</div>
-  <figure class="return5 rv"><span class="kick">05 · A presence people can return to</span><blockquote>“[Story placeholder] A man who’d been part of our community for years came back through our doors on the worst day of his life. He said he came because he knew the people here would love him.”</blockquote><figcaption>The Monastery isn’t just what happens during a program. It’s becoming a trusted place of refuge and relationship, over years. <em>Story to be replaced with a real one.</em></figcaption></figure>
 </div></section>
 
 <section class="pad rule5" style="background:var(--mist)"><div class="wrap">
