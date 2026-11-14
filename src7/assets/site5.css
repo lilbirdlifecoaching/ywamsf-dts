@@ -1780,3 +1780,7 @@ a.ev.ev-link small{font-weight:700}
 .y5-foot .foot-contact .addr{text-align:left}
 @media (max-width:560px){.y5-foot .foot-contact{flex-direction:column}.y5-foot .foot-contact .addr{text-align:center}}
 .y5-foot .foot-contact .addr{width:auto;flex:0 1 auto}
+
+/* round 7-30: Ellis Room blog quotes sit last, just above the footer, on their own light tint */
+.voices5.voices-end,.pad + .pad.voices5.voices-end{background:#E6F4F6;padding-top:clamp(56px,7vw,96px);padding-bottom:clamp(56px,7vw,96px)}
+.voices-end .voice5{background:#fff}
