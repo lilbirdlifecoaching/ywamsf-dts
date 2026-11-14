@@ -428,7 +428,7 @@ vol = f'''
     <p class="board-note">Tap a shift to see it above, or sign up straight from the list.</p>
   </div></div>
 </section>
-<section class="cta-band pad"><div class="wrap rv"><span class="kick" style="color:rgba(255,255,255,.7)">Live outside the Bay Area?</span><h2>Serve for a summer, or a season.</h2><p>Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.</p><div class="row"><a class="btn light" href="mailto:{VEMAIL}?subject=Summer%20of%20Service">Ask about Summer of Service</a><a class="btn ghost-light" href="https://www.missionbuilders.org/location/?LID=149" target="_blank" rel="noopener">Mission Builders</a></div></div></section>
+<section class="cta-band pad"><div class="wrap rv"><span class="kick" style="color:rgba(255,255,255,.7)">Live outside the Bay Area?</span><h2>Serve for a summer, or a season.</h2><p>Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.</p><div class="row"><a class="btn light" href="mailto:{VEMAIL}?subject=Summer%20of%20Service">Ask about Summer of Service</a><a class="btn ghost-light" href="https://mbi.my.site.com/volunteer/location-page?profileId=a2iJw00000VJmbmIAD&amp;dts=" target="_blank" rel="noopener">Mission Builders</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'volunteer'), exist_ok=True)
 open(os.path.join(OUT, 'volunteer/index.html'), 'w').write(page('Come Volunteer — YWAM San Francisco', 'volunteer', '../', '../../', vol, scripts=vol_js + f'<script src="../assets/igcarousel.js?v={VER}"></script>'))
@@ -772,7 +772,7 @@ dts = f'''
 
 <section class="pad heart"><div class="wrap heart-grid">
   <div class="rv">
-    <p class="more more7"><span>{(SPOTS + '.') if SPOTS else ''}</span> <span>One neighborhood.</span> <span>A faith that gets lived out.</span></p>
+    <p class="more more7"><span>Next DTS</span></p>
     <div class="dts-board7"><div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
   <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
 {DTS_ROWS}
@@ -1177,7 +1177,7 @@ for x in _shifts:
     _su = SIGNUP_LINKS.get(U(x.get('title')).lower())
     kb('volunteer', 'What is the %s shift?' % U(x.get('title')), U(x.get('title')) + ' shift volunteer ' + U(x.get('when')), '%s, %s. %s' % (U(x.get('when')), U(x.get('time')), U(x.get('description'))), ([('Sign up for ' + U(x.get('title')), _su)] if _su else []) + [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)], [U(x.get('title')).lower()])
 kb('volunteer', 'How do I volunteer?', 'volunteer serve help sign up shift join bay area local', 'Pick a shift on the Volunteer page and email our volunteer team to sign up. Weekly shifts: ' + '; '.join('%s (%s, %s)' % (U(x.get('title')), U(x.get('when')), U(x.get('time'))) for x in _shifts) + '.', [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)])
-kb('volunteer', 'I don’t live in the Bay Area. Can I still serve?', 'summer season long term outside bay area mission builders skills maintenance cooking room board', 'Yes. Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.', [('Ask about Summer of Service', 'mailto:' + VE + '?subject=Summer%20of%20Service'), ('Mission Builders', 'https://www.missionbuilders.org/location/?LID=149')])
+kb('volunteer', 'I don’t live in the Bay Area. Can I still serve?', 'summer season long term outside bay area mission builders skills maintenance cooking room board', 'Yes. Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.', [('Ask about Summer of Service', 'mailto:' + VE + '?subject=Summer%20of%20Service'), ('Mission Builders', 'https://mbi.my.site.com/volunteer/location-page?profileId=a2iJw00000VJmbmIAD&amp;dts=')])
 kb('volunteer', 'Can I volunteer with my group or church?', 'group church friends youth together volunteer team', 'Teams are welcome at the Thursday food pantry. For a weekend, a week or longer with your church or youth group, look at Mission Adventures on the Bring a Team page.', [('Bring a team', 'teams/'), ('Email ' + VE, 'mailto:' + VE)])
 
 # Churches & teams

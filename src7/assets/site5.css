@@ -1913,3 +1913,12 @@ a.ev.ev-link small{font-weight:700}
   .page-hero .kick{padding:5px 9px}
   .page-hero .lede{margin-top:10px}
 }
+
+/* round 7-43: Ellis Room flip cards on phones: smaller title label, tucked into the bottom corner so faces show */
+@media (max-width:700px){
+  .pillar .f{justify-content:flex-end}
+  .pillar .f .plab{margin-top:auto;padding:8px 12px 7px}
+  .pillar .f .plab small{font-size:15px}
+  .pillar .f .plab h3{font-size:24px}
+  .pillar .f .plab em{font-size:9px}
+}
