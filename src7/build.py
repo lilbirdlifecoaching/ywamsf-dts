@@ -662,7 +662,8 @@ KNOW = ('<section class="pad know7" id="know" style="background:var(--mist)"><di
         + '</div></div></section>')
 
 dts = f'''
-<section class="dts-top" aria-label="Next DTS departures">
+<section class="dts-top dts-hero7" aria-label="DTS · next departures">
+  <div class="dh-img"><img src="../assets/img/dts-header-7.jpg" alt="DTS students sitting in a row on a hilltop at sunrise, looking out over the San Francisco skyline" width="2400" height="1800" fetchpriority="high"></div>
   <div class="wrap dts-board-wrap">
   <div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
   <table><thead><tr><th>Departs</th><th>School</th><th>Returns</th><th>Spots</th><th>Status</th></tr></thead><tbody>
@@ -717,7 +718,7 @@ dts = f'''
 </div></section>
 
 <section class="ready pad"><div class="wrap">
-  <div class="rv ready-head"><span class="kick">The door is open</span><h2>How do I know I’m ready for a DTS?</h2><p>You don’t have to figure it out alone. Start wherever feels right.</p></div>
+  <div class="ready-top"><div class="rv ready-head"><span class="kick">The door is open</span><h2>How do I know I’m ready for a DTS?</h2><p>You don’t have to figure it out alone. Start wherever feels right.</p></div><figure class="ready-pic rv"><img src="../assets/img/dts-ready.jpg" alt="A group of students and staff smiling together in the base kitchen" width="485" height="388" loading="lazy"></figure></div>
   <div class="ready3">
     <button class="rcard rv" type="button" data-survey><small>01 · Reflect</small><b>Take the 3-minute check-in</b><span>Seven honest questions with a gentle, personal read on where you are.</span><em>Start →</em></button>
     <a class="rcard rv" href="{COACH}"><small>02 · Talk</small><b>Talk to a DTS coach</b><span>A real conversation with someone from our DTS staff. Ask anything, no pressure.</span><em>Email a coach →</em></a>
