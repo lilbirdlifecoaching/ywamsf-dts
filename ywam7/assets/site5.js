@@ -349,7 +349,9 @@
       $('[data-f="when"]', panel).textContent = p.when; $('[data-f="time"]', panel).textContent = p.time || '';
       $('[data-f="title"]', panel).textContent = p.title; $('[data-f="desc"]', panel).textContent = p.desc;
       var mt = $('[data-f="meta"]', panel); mt.textContent = ''; (p.meta || []).forEach(function (m) { var sp = document.createElement('span'); sp.textContent = m; mt.appendChild(sp); });
-      $('[data-f="signup"]', panel).href = 'mailto:' + (p.email || 'volunteer@ywamsanfrancisco.org') + '?subject=' + encodeURIComponent(p.subject || p.title);
+      var su = $('[data-f="signup"]', panel);
+      if (p.signup && /^https:\/\//.test(p.signup)) { su.href = p.signup; su.target = '_blank'; su.rel = 'noopener'; }
+      else { su.href = 'mailto:' + (p.email || 'volunteer@ywamsanfrancisco.org') + '?subject=' + encodeURIComponent(p.subject || p.title); su.removeAttribute('target'); }
       [].forEach.call(dots.children, function (b, j) { b.setAttribute('aria-selected', i === j); });
     }
     var vsec = vstage.closest('.vol-ig');
@@ -455,15 +457,25 @@
       t.addEventListener('click', function () { show(t); });
       t.addEventListener('keydown', function (e) { var k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (k) { e.preventDefault(); var n = tabs[(i + k + tabs.length) % tabs.length]; show(n); n.focus(); } });
     });
+    /* YWAM 7: a link to a panel (#faq, #parents, or the old #life/#real) opens that tab */
+    var ALIAS = { life: 'home', real: 'neighborhood' };
+    function open(id, scroll) {
+      id = ALIAS[id] || id;
+      var t = tabs.filter(function (x) { return x.getAttribute('aria-controls') === id; })[0];
+      if (!t) return false;
+      show(t);
+      if (scroll) box.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      return true;
+    }
+    box._open = open;
+    if (location.hash.length > 1 && open(location.hash.slice(1), false)) addEventListener('load', function () { setTimeout(function () { box.scrollIntoView({ block: 'start' }); }, 650); });
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (a && open(a.getAttribute('href').slice(1), true)) { e.preventDefault(); history.replaceState(null, '', a.getAttribute('href')); }
+    });
   });
 })();
 /* land exactly on a #section once images and reveals have settled */
 (function () { if (!location.hash || location.hash.length < 2) return; function go() { var el; try { el = document.querySelector(location.hash); } catch (e) {} if (el) el.scrollIntoView({ block: 'start' }); } addEventListener('load', function () { setTimeout(go, 60); setTimeout(go, 600); }); 
-  /* contact chat: placeholder until a chat service is chosen */
-  $$('.chat7').forEach(function (c) {
-    var b = $('.chat7-btn', c), p = $('.chat7-p', c);
-    function set(o) { b.setAttribute('aria-expanded', String(o)); p.hidden = !o; c.classList.toggle('open', o); }
-    b.addEventListener('click', function () { set(p.hidden); });
-    addEventListener('keydown', function (e) { if (e.key === 'Escape' && !p.hidden) { set(false); b.focus(); } });
-  });
+  /* the chat assistant lives in chat7.js */
 })();

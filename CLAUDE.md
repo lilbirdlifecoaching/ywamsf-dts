@@ -13,6 +13,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   It has its own generator and assets in `src7/` (`python3 src7/build.py`) and shares `content/` (and so
   the admin page) with 5 and 6. Changes for the simpler direction go in `src7/` only; leave `src/` alone unless
   the user asks for a change on 5/6 too.
+  YWAM 7 extras: the "Ask us anything" chat (`src7/assets/chat7.js`) answers only from a knowledge list built at the
+  end of `src7/build.py` (`KB`, written to `assets/chat-kb.js`; no AI, nothing leaves the browser). Shifts with their
+  own sign-up form are in `SIGNUP_LINKS`. The DTS FAQ adds the team's answers in `FAQ_OVERRIDE`/`FAQ_EXTRA_*`.
 - **YWAM 6 (`ywam6/`) is the current approved-direction site.** YWAM 5 (`ywam5/`) is its twin: every change goes
   to both, *except colours* (YWAM 6 is white/cyan/teal; YWAM 5 keeps the older fog/red look so
   the team can compare). `ywam1/`–`ywam4/` are frozen early explorations: don't touch them.

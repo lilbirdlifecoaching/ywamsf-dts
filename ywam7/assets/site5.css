@@ -1544,3 +1544,57 @@ html.tb .hit-t small{color:#7FD6E0}
 .cnp-frame{background:#fff;border:1px solid rgba(8,64,79,.12);border-radius:12px;overflow:hidden}
 .cnp-iframe{display:block;width:1px;min-width:100%;min-height:900px;border:0}
 @media (max-width:900px){.give-form-grid{grid-template-columns:1fr}.give-side{position:static}}
+
+/* round 7-13: DTS "Everything you're wondering" tabs */
+.know7 .know-head{max-width:720px;margin-bottom:26px}
+.know7 .know-head p{color:var(--muted);margin:8px 0 0}
+.ktab-list{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;margin:0 0 30px;-webkit-overflow-scrolling:touch}
+.ktab-list::-webkit-scrollbar{display:none}
+.ktab-list button{flex:0 0 auto;border:1.5px solid rgba(8,64,79,.18);background:#fff;color:var(--ink);border-radius:999px;padding:11px 20px;font:800 12.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.ktab-list button:hover{border-color:var(--cyan,#24AFBE)}
+.ktab-list button[aria-selected="true"]{background:var(--deep,#08404F);border-color:var(--deep,#08404F);color:#fff}
+.ktab-list button:focus-visible{outline:2px solid var(--cyan,#24AFBE);outline-offset:2px}
+.kpanel>.lede{max-width:760px;margin:0 0 26px}
+.kpanel .rv{opacity:1;transform:none}
+.hood7{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:clamp(24px,4vw,48px);align-items:start}
+.hood7 .real2{grid-template-columns:1fr 1fr}
+.kpanel .rhythm{margin-top:0}
+.faq2{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(28px,5vw,64px)}
+.faq2 .faq5 details:first-child{border-top:1px solid var(--line)}
+.faq-more{margin:24px 0 0;color:var(--muted)}
+.cost7 .price5{margin-top:0}
+@media (max-width:900px){.hood7,.faq2{grid-template-columns:1fr}.faq2 .faq5+.faq5 details:first-child{border-top:0}}
+@media (max-width:640px){.hood7 .real2{grid-template-columns:1fr}.ktab-list{margin-inline:-16px;padding-inline:16px}}
+.kpanel .pcontact a,.parents5 .pcontact a{color:#9FE3EA}
+
+/* round 7-14: "Ask us anything" chat assistant */
+.chat7-p{width:min(380px,calc(100vw - 24px));padding:0;display:flex;flex-direction:column;max-height:min(600px,calc(100vh - 110px));overflow:hidden;border-radius:14px;font-size:14.5px}
+.chat7-p[hidden]{display:none}
+.c7-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:var(--deep,#08404F);color:#fff}
+.c7-head b{display:block;color:#fff;margin:0;font-size:15px}
+.c7-head small{display:block;font-size:12px;color:rgba(255,255,255,.72)}
+.c7-x{border:0;background:rgba(255,255,255,.12);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px}
+.c7-x:hover{background:rgba(255,255,255,.24)}
+.c7-log{flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:10px;background:#F6FAFB;min-height:220px}
+.c7-msg{max-width:88%}
+.c7-msg p{margin:0;padding:10px 13px;border-radius:12px;line-height:1.5}
+.c7-msg.bot p{background:#fff;border:1px solid rgba(8,64,79,.1);color:var(--ink);border-bottom-left-radius:4px}
+.c7-msg.me{align-self:flex-end}
+.c7-msg.me p{background:var(--cyan,#24AFBE);color:#062F3A;font-weight:600;border-bottom-right-radius:4px}
+.c7-links{display:flex;flex-wrap:wrap;gap:6px 14px;margin:7px 2px 0}
+.chat7-p .c7-links a{display:inline;margin:0;font-weight:700;font-size:13.5px;color:var(--red,#0B7E90)}
+.c7-chips{display:flex;flex-wrap:wrap;gap:6px}
+.c7-chips small{flex-basis:100%;font:800 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:2px 0 0}
+.c7-chips button{border:1.5px solid rgba(11,126,144,.35);background:#fff;color:var(--deep,#08404F);border-radius:999px;padding:7px 12px;font:600 13px/1.25 var(--sans);cursor:pointer;text-align:left}
+.c7-chips button:hover{border-color:var(--cyan,#24AFBE);background:#EAF7F8}
+.c7-form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
+.c7-form input{flex:1;min-width:0;border:1px solid rgba(8,64,79,.2);border-radius:999px;padding:10px 14px;font:500 15px var(--sans);color:var(--ink)}
+.c7-form input:focus{outline:none;border-color:var(--cyan,#24AFBE);box-shadow:0 0 0 3px rgba(36,175,190,.2)}
+.c7-form button{flex:0 0 42px;height:42px;border:0;border-radius:50%;background:var(--cyan,#24AFBE);color:#062F3A;cursor:pointer;display:grid;place-items:center}
+.c7-form button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.c7-foot{margin:0;padding:8px 14px 11px;font-size:11.5px;line-height:1.45;color:var(--muted);background:#fff}
+.chat7-p .c7-foot a{display:inline;margin:0;color:var(--red,#0B7E90)}
+/* round 7-15: schedule items with their own sign-up form */
+a.ev.ev-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
+a.ev.ev-link:hover b,a.ev.ev-link:focus-visible b{text-decoration:underline}
+a.ev.ev-link small{font-weight:700}

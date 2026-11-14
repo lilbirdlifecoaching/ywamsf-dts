@@ -26,6 +26,11 @@ TB_SWAP = [('rgba(234,237,240,', 'rgba(255,255,255,'), ('#dfe6ec', '#E3F3F5'), (
            ('rgba(247,248,249,', 'rgba(241,248,249,')]
 if V in (6, 7): _h.update(repr(TB_SWAP).encode())
 VER = _h.hexdigest()[:10]
+_kh = hashlib.sha1((VER + str(TODAY)).encode())
+for f in sorted(os.listdir(CONTENT)):
+    if f.endswith('.json'): _kh.update(open(os.path.join(CONTENT, f), 'rb').read())
+_kh.update(open(os.path.abspath(__file__), 'rb').read())
+KBV = _kh.hexdigest()[:10]
 if V in (6, 7):
     _cp = os.path.join(OUT, 'assets', 'site5.css'); _css = open(_cp).read()
     for a, b in TB_SWAP: _css = _css.replace(a, b)
@@ -111,6 +116,8 @@ DTS_INQUIRY_FORM = lnk(S.get('dts_inquiry_url'), 'https://www.tfaforms.com/48275
 DTS_APPLICATION_FORM = lnk((NX or {}).get('apply_url') or S.get('dts_application_url'), 'https://www.tfaforms.com/4827904')
 NX_APPLY = 'apply/'      # YWAM 7: the application is embedded at /course/apply/, the inquiry at /course/inquire/
 LIVE = 'https://www.ywamsanfrancisco.org'
+# Shifts with their own sign-up form (keyed by shift title, lower case). Used on the Volunteer page, the Ellis Room schedule and in the chat.
+SIGNUP_LINKS = {'tenderloin connect': 'https://tl-connect-volunteer-stewardship.replit.app/'}
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
 
@@ -160,8 +167,8 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 {banner_html()}{header(cur, up)}
 <main id="main">{body}</main>
 {footer(up, root)}
-<div class="chat7"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Chat with us</span></button><div class="chat7-p" id="chat7-p" hidden><b>Live chat is coming soon</b><p>For now, we’d love to hear from you by email or phone.</p><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{TEL}">{PHONE}</a></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script></body></html>''', up)
+<div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up)
 
 def banner_html():
     b = load('banner.json')
@@ -310,7 +317,7 @@ import json
 def rgb(hx):
     m = re.fullmatch(r'#?([0-9a-fA-F]{6})', str(hx or '').strip())
     return ','.join(str(int(m.group(1)[i:i + 2], 16)) for i in (0, 2, 4)) if m else '70,83,97'
-vol_posts = [{'img': img(x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL} for x in SHIFTS]
+vol_posts = [{'img': img(x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': SIGNUP_LINKS.get(str(x['title']).strip().lower(), '')} for x in SHIFTS]
 vol_js = '<script>window.YWAM_VOL_N=%d;window.YWAM_IG_POSTS=' % len(vol_posts) + js(vol_posts * 2) + ';</script>'
 vol = f'''
 <section class="page-hero"><div class="ph-img still"><img src="../assets/img/vol-header.jpg" alt="A smiling neighbor holding a box of groceries at the food pantry" style="object-position:60% 30%"></div><div class="copy"><div class="wrap"><span class="kick">Come volunteer</span><h1>Come for a shift. Stay for the people.</h1><p class="lede">Every day we open our doors to serve our neighbors, our students and our outreach teams. It’s a big job, and we can’t do it alone.</p></div></div></section>
@@ -431,6 +438,8 @@ for e in load('ellis_week.json').get('entries', []):
 for d in WEEK: WEEK[d].sort(key=lambda e: e[3])
 def ev_html(e):
     c, tt, h, st, en = e[:5]; rule = e[5] if len(e) > 5 else ''
+    su = SIGNUP_LINKS.get(tt.strip().lower())
+    if su: return '<a class="ev ev-link" href="%s" target="_blank" rel="noopener" style="--c:%s" data-s="%d" data-e="%d" data-t="%s"%s><b>%s <span aria-hidden="true">↗</span></b><small>%s · Sign up</small></a>' % (su, CAT[c][0], st, en, esc(tt), ' data-rule="%s"' % rule if rule else '', esc(tt), esc(h))
     return '<div class="ev" style="--c:%s" data-s="%d" data-e="%d" data-t="%s"%s><b>%s</b><small>%s</small></div>' % (CAT[c][0], st, en, esc(tt), ' data-rule="%s"' % rule if rule else '', esc(tt), esc(h))
 week = ''.join('<div class="day" data-d="%d"><h4>%s</h4>%s</div>' % (d, DN[d], ''.join(ev_html(e) for e in WEEK[d]) or '<div class="ev" style="--c:var(--line)"><b>Rest &amp; prep</b><small>No public services</small></div>') for d in [1, 2, 3, 4, 5, 6, 0])
 legend = ''.join('<span style="--c:%s">%s</span>' % v for v in CAT.values())
@@ -533,11 +542,11 @@ VOWS = [('god', '01', 'A place to encounter God', 'Prayer, reflection and Jesus,
         ('humility', '03', 'A way of life rooted in Jesus', 'Love God. Love your neighbor.', 'Mercy, humility, forgiveness and friendship. Loving people in the realities of their everyday lives is how Jesus made disciples, and it’s how we learn to follow Him.'),
         ('multiply', '04', 'Formed here, sent out', 'You don’t just learn compassion. You practice it.', 'Neighbors, students, volunteers, churches and staff all share this way of life. What you learn here won’t stay in San Francisco: you’ll carry it wherever God leads you next.')]
 vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed="false" aria-label="{t}: turn the card over"><span class="vin"><span class="vf"><span class="art glass"><img class="lit" src="../assets/img/vow-{k}.jpg" alt="Stained-glass illustration: {t}" loading="lazy" width="900" height="900"></span><small>{n}</small><b>{t}</b><span class="sub">{sub}</span><span class="turn">Turn over</span><span class="fold"></span></span><span class="vb"><img class="vbimg" src="../assets/img/vow-{k}.jpg" alt="" aria-hidden="true" loading="lazy"><small>What it looks like</small><span class="bt">{back}</span><span class="turn back">Turn back</span></span></span></div>''' for k, n, t, sub, back in VOWS)
-HOURS = [("7:00", 420, "Morning prayer", "Before the neighborhood wakes", "Scripture, silence and prayer for each other and for the block. We get rooted before we go out."),
-         ("8:00", 480, "One table", "Breakfast together", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
+HOURS = [("7:00", 420, "Quiet Time", "Before the neighborhood wakes", "Time alone with God: Scripture, silence and prayer. We get rooted before we go out."),
+         ("8:00", 480, "Breakfast", "One table", "Someone burns the toast, someone makes coffee for everyone. Shared meals are where community happens."),
          ("9:00", 540, "Teaching", "Speaker of the week", "Worship, then a new teacher each week on the character of God, identity, hearing His voice, the nations, justice and mercy."),
-         ("12:30", 750, "Pray & work", "Lunch and chores", "Dishes, floors, pantry boxes. Humility learned with a mop in your hand."),
-         ("14:00", 840, "On the street", "Local ministry", "The food pantry, the Ellis Room, hot chocolate on the corner. Mostly you listen, learn names and pray when asked."),
+         ("12:30", 750, "Lunch", "Lunch and chores", "Dishes, floors, pantry boxes. Humility learned with a mop in your hand."),
+         ("13:30", 810, "Ministry", "On the street", "The food pantry, the Ellis Room, hot chocolate on the corner. Mostly you listen, learn names and pray when asked."),
          ("17:30", 1050, "Dinner", "Back at the table", "The funny stories and the heavy ones get told here. Nobody carries the day alone."),
          ("19:00", 1140, "Reflection", "Small groups", "Where did you see God today? Small groups, mentorship and honest prayer close the day."),
          ("21:00", 1260, "Rest", "…or the night shift", "Most nights, rest. Some rain nights the Ellis Room stays lit until morning.")]
@@ -574,10 +583,58 @@ PARENTS_INTRO = t(_FQ.get('parents_intro'))
 _LIFE = load('dts_life.json') if os.path.exists(os.path.join(CONTENT, 'dts_life.json')) else {}
 LIFE = ''.join('<div class="phase rv">%s<h3>%s</h3><p>%s</p></div>' % (('<div class="pimg"><img src="%s" alt="%s" loading="lazy"></div>' % (img(x.get('photo'), '../', 900), t(x.get('title')))) if img(x.get('photo'), '../', 900) else '', t(x.get('title')), t(x.get('text'))) for x in _LIFE.get('places', []) if t(x.get('title')))
 LIFE_INTRO = t(_LIFE.get('intro'))
-FAQ = ''.join('<details%s><summary>%s</summary><p>%s</p></details>' % (' open' if i == 0 else '', t(q.get('question')), t(q.get('answer'))) for i, q in enumerate(x for x in load('faq.json').get('questions', []) if t(x.get('question'))))
+# YWAM 7: the shared questions (content/faq.json) plus answers from the DTS team (Nov 2026). Overrides replace a shared answer.
+FAQ_OVERRIDE = {'Can I work or go to school during DTS?': ('Can I keep working or studying during DTS?', 'No. DTS is a full-time commitment for the whole school, so there isn’t room for a job or classes alongside it. That’s true for people who already live in San Francisco too.')}
+FAQ_EXTRA_TOP = [
+    ('Can I have my own room?', 'No. Community living is part of the package. You’ll share a room with a few other students in an apartment on site.'),
+    ('Does the %s cover my travel to San Francisco?' % money(DTS_COST), 'No. You’re responsible for organizing your own travel to San Francisco, whether you’re coming from across the country or from overseas.'),
+    ('How long is the DTS?', 'About five months: around three months of training here in San Francisco, about two months of outreach in cities around the world, then a few days of debrief.'),
+    ('What does it cost, and do I have to pay it all myself?', 'The school is %s USD. We believe finances shouldn’t stop someone from saying yes: most students raise some or all of it through friends, family and churches, and our team will help you explore fundraising and support options. %s' % (money(DTS_COST), t(_DTS.get('cost_note') or ''))),
+    ('Do I need ministry experience?', 'No. You don’t need years of ministry experience. You do need a heart that’s ready to learn, a faith you’re willing to put into practice and a desire to love people well.')]
+FAQ_EXTRA_END = [
+    ('What happens on outreach?', 'You travel as a team for about two months to put what you’ve learned into practice, serving alongside local churches and ministries in cities around the world.'),
+    ('How do I apply?', 'Apply online. Set aside about 30–40 minutes: there are 7 short sections, and it helps to have your passport details, a pastor’s or church leader’s contact details, an emergency contact and your health insurance information ready. Not ready yet? Send an inquiry first and a DTS staff member will be in touch.')]
+_fq = [(t(x.get('question')), t(x.get('answer'))) for x in load('faq.json').get('questions', []) if t(x.get('question'))]
+_fq = [FAQ_OVERRIDE.get(q, (q, a)) for q, a in _fq]
+_fq = _fq[:1] + [x for x in FAQ_EXTRA_TOP if x[0] not in dict(_fq)] + _fq[1:] + [x for x in FAQ_EXTRA_END if x[0] not in dict(_fq)]
+FAQ_LIST = _fq
+def _faqcol(items): return ''.join('<details><summary>%s</summary><p>%s</p></details>' % (q, a) for q, a in items)
+_half = (len(FAQ_LIST) + 1) // 2
+FAQ = '<div class="faq2"><div class="faq5">%s</div><div class="faq5">%s</div></div>' % (_faqcol(FAQ_LIST[:_half]), _faqcol(FAQ_LIST[_half:]))
 DTS_INFO = {'range': drange(NX['_s'], NX['_e']) if NX else 'over five months', 'cost': money(DTS_COST), 'month': (NX['_s'].strftime('%B ') + str(NX['_s'].year)) if NX else 'the next school', 'start': md(NX['_s']) if NX else 'soon', 'apply': NX_APPLY, 'email': DEMAIL}
 _sp = int(num(NX.get('spots'))) if NX and num(NX.get('spots')) > 0 else 0
 SPOTS = ('%d spots' % _sp) if _sp else ''
+
+# YWAM 7: one tabbed section for home, the neighborhood (and the hard parts), the rhythm, FAQ and parents
+_places = [x for x in _LIFE.get('places', []) if t(x.get('title'))]
+def _place(x):
+    im = img(x.get('photo'), '../', 900)
+    return '<div class="phase rv">%s<h3>%s</h3><p>%s</p></div>' % (('<div class="pimg"><img src="%s" alt="%s" loading="lazy"></div>' % (im, t(x.get('title')))) if im else '', t(x.get('title')), t(x.get('text')))
+_hood_places = [x for x in _places if 'neighbo' in (x.get('title') or '').lower()]
+_home_places = [x for x in _places if x not in _hood_places]
+RHYTHM7 = [('pray', 'Pray', 'Weekly prayer walks around our neighborhood and intercessory prayer throughout the week.', 'Students worshipping with a guitar in a city park', '58% 50%'),
+           ('study', 'Reflect', 'At the end of your day, sit or go on a walk with God as you reflect on your day.', 'Two students talking together at a table', '42% 50%'),
+           ('serve', 'Serve', 'Whether it’s playing a game of pool, handing out a cup of coffee or being a listening ear, your presence is making a difference.', 'A student kneeling to talk with a neighbor wrapped in a blanket', '52% 40%'),
+           ('rest', 'Sabbath &amp; Rest', 'Enjoy your day off by doing what brings you to a place of rest.', 'Students on a coastal trail looking out at the Golden Gate Bridge', '33% 60%')]
+_rhythm = ''.join(f'<figure><div class="rph"><img src="../assets/img/rhythm-{k}.jpg" alt="{alt}" loading="lazy" style="object-position:{pos}"></div><figcaption><b>{n}</b><span>{d}</span></figcaption></figure>' for k, n, d, alt, pos in RHYTHM7)
+_parents_html = PARENTS.replace('See “What it’s like” above', 'See the “Your home” tab above')
+_REAL = ('<div class="real2">'
+    '<div><h3>What you’ll see</h3><ul><li>Neighbors living on the street, in single-room hotels and in crisis.</li><li>Addiction, mental illness and poverty, up close and by name.</li><li>Noise, mess and a city that doesn’t slow down.</li><li>Grief and hard stories, alongside a lot of joy, humor and resilience.</li></ul></div>'
+    '<div><h3>What holds you</h3><ul><li>You never serve alone: always in teams, alongside staff who know these blocks.</li><li>A weekly mentor, a small group and a community that prays together.</li><li>Rhythms of rest: Sabbath, free time and days off to explore the city.</li><li>A purpose: becoming a steady, caring presence in the lives of people others pass by.</li></ul></div>'
+    '</div>')
+KTABS = [('home', 'Your home', '<p class="lede">' + (LIFE_INTRO or 'Five months is a long time to be somewhere new. Here’s the place you’ll call home.') + '</p><div class="phases life6">' + ''.join(_place(x) for x in _home_places) + '</div>'),
+         ('neighborhood', 'The neighborhood', '<p class="lede">San Francisco is a city of breathtaking beauty, rich culture and striking contrasts. In the heart of it lies the Tenderloin: often overlooked, and full of people, stories and opportunities for connection. We’re honest about the hard parts.</p><div class="hood7">' + ''.join(_place(x) for x in _hood_places) + _REAL + '</div>'),
+         ('rhythm', 'The rhythm', '<p class="lede">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p><div class="rhythm" aria-label="The rhythm of a DTS week">' + _rhythm + '</div>'),
+         ('faq', 'Common questions', FAQ + '<p class="faq-more">Still wondering about something? Ask in the chat, or email <a href="mailto:' + DEMAIL + '">' + DEMAIL + '</a>.</p>'),
+         ('parents', 'For parents', '<div class="numbers5"><div>' + ('<p class="lede">' + PARENTS_INTRO + '</p>' if PARENTS_INTRO else '') + '<div class="price5 pcontact"><p><b>Talk with our DTS team</b></p><p><a href="mailto:' + DEMAIL + '">' + DEMAIL + '</a><br><a href="' + TEL + '">' + PHONE + '</a></p></div></div><div class="faq5">' + _parents_html + '</div></div>')]
+KTABS = [k for k in KTABS if not (k[0] == 'parents' and not PARENTS)]
+KNOW = ('<section class="pad know7" id="know" style="background:var(--mist)"><div class="wrap">'
+        '<div class="rv know-head"><span class="kick">Before you come</span><h2>Everything you’re wondering.</h2><p>Your home, the neighborhood, the rhythm of the week, and the questions people ask most.</p></div>'
+        '<div class="ktabs rv" data-tabs><div class="ktab-list" role="tablist" aria-label="Life on the DTS">'
+        + ''.join('<button type="button" role="tab" id="kt-%s" aria-controls="%s" aria-selected="%s">%s</button>' % (k, k, 'true' if i == 0 else 'false', n) for i, (k, n, _) in enumerate(KTABS))
+        + '</div>' + ''.join('<div class="kpanel" role="tabpanel" id="%s" aria-labelledby="kt-%s"%s>%s</div>' % (k, k, '' if i == 0 else ' hidden', body) for i, (k, n, body) in enumerate(KTABS))
+        + '</div></div></section>')
+
 dts = f'''
 <section class="dts-top" aria-label="Next DTS departures">
   <div class="wrap dts-board-wrap">
@@ -626,13 +683,7 @@ dts = f'''
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Three parts, one journey</span><h2>From the neighborhood to the nations.</h2></div>
   <div class="phases">{phases}</div></div></section>
 
-{('<section class="pad life5" id="life" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">What it’s like</span><h2>Your home for five months.</h2>' + ('<p class="lede">' + LIFE_INTRO + '</p>' if LIFE_INTRO else '') + '</div><div class="phases life6">' + LIFE + '</div></div></section>') if LIFE else ''}
-
-<section class="pad real5" id="real"><div class="wrap"><div class="rv" style="max-width:760px;margin-bottom:30px"><span class="kick">The real San Francisco</span><h2>Honest about the hard parts.</h2><p class="lede">San Francisco is a city of breathtaking beauty, rich culture and striking contrasts. In the heart of it lies the Tenderloin: often overlooked, and full of people, stories and opportunities for connection.</p></div>
-  <div class="real2">
-    <div class="rv"><h3>What you’ll see</h3><ul><li>Neighbors living on the street, in single-room hotels and in crisis.</li><li>Addiction, mental illness and poverty, up close and by name.</li><li>Noise, mess and a city that doesn’t slow down.</li><li>Grief and hard stories, alongside a lot of joy, humor and resilience.</li></ul></div>
-    <div class="rv"><h3>What holds you</h3><ul><li>You never serve alone: always in teams, alongside staff who know these blocks.</li><li>A weekly mentor, a small group and a community that prays together.</li><li>Rhythms of rest: Sabbath, free time and days off to explore the city.</li><li>A purpose: becoming a steady, caring presence in the lives of people others pass by.</li></ul></div>
-  </div></div></section>
+{KNOW}
 
 <section class="pad fit5" style="background:var(--mist)"><div class="wrap fit-grid"><div class="rv"><span class="kick">Is this for you?</span><h2>You don’t need years of ministry experience.</h2></div>
   <div class="rv"><p class="lede">You do need a heart that’s ready to learn, a faith you’re willing to put into practice, and a desire to love people well.</p>
@@ -642,27 +693,10 @@ dts = f'''
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">In their words</span><h2>Stories from past students.</h2></div>
   <div class="testis">{testi}</div></div></section>
 
-<section class="pad" id="cost"><div class="wrap numbers5">
-  <div class="rv"><span class="kick">Cost</span><h2>Clear numbers. No surprises.</h2>
-    <div class="price5"><div class="amt">{money(DTS_COST)} <small>USD*</small></div><p>We believe finances shouldn’t stop someone from saying yes. Our team will help you explore fundraising and support options.</p><p class="fine">*{t(_DTS.get('cost_note') or 'Cost may vary for international applicants; please ask about alternative pricing.')}</p></div></div>
-  <div class="faq5 rv"><span class="kick">FAQ</span>
-    {FAQ}
-  </div>
+<section class="pad cost7" id="cost"><div class="wrap numbers5">
+  <div class="rv"><span class="kick">Cost</span><h2>Clear numbers. No surprises.</h2><p class="lede">One price for the school, and a team to help you get there.</p><p>Questions about cost? See the <a href="#faq">common questions</a>, or email <a href="mailto:{DEMAIL}">{DEMAIL}</a>.</p></div>
+  <div class="price5 rv"><div class="amt">{money(DTS_COST)} <small>USD*</small></div><p>We believe finances shouldn’t stop someone from saying yes. Our team will help you explore fundraising and support options.</p><p class="fine">*{t(_DTS.get('cost_note') or 'Cost may vary for international applicants; please ask about alternative pricing.')} Travel to San Francisco isn’t included.</p></div>
 </div></section>
-
-<section class="pad monastery rhythm5"><div class="wrap">
-  <div class="rv mon-copy mon-one"><span class="kick">The rhythm</span>
-  <p class="lede">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Morning prayer before the street wakes. One shared table. Scripture, reflection and work done with our hands. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p></div>
-  <div class="rhythm" aria-label="The rhythm of a DTS week">
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-pray.jpg" alt="Students worshipping with a guitar in a city park" loading="lazy" style="object-position:58% 50%"></div><figcaption><b>Pray</b><span>Worship in the open air, in the middle of the city.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-study.jpg" alt="Two students studying together at a table" loading="lazy" style="object-position:42% 50%"></div><figcaption><b>Study</b><span>Scripture, journals and long conversations.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-serve.jpg" alt="A student kneeling to talk with a neighbor wrapped in a blanket" loading="lazy" style="object-position:52% 40%"></div><figcaption><b>Serve</b><span>Presence first. Names remembered.</span></figcaption></figure>
-    <figure class="rv"><div class="rph"><img src="../assets/img/rhythm-rest.jpg" alt="Students on a coastal trail looking out at the Golden Gate Bridge" loading="lazy" style="object-position:33% 60%"></div><figcaption><b>Rest &amp; play</b><span>Sabbath, days off and the city from a distance.</span></figcaption></figure>
-  </div>
-
-</div></section>
-
-{('<section class="pad parents5" id="parents" style="background:var(--mist)"><div class="wrap numbers5"><div class="rv"><span class="kick">For parents</span><h2>Questions from families.</h2>' + ('<p class="lede">' + PARENTS_INTRO + '</p>' if PARENTS_INTRO else '') + '<div class="price5 pcontact"><p><b>Talk with our DTS team</b></p><p><a href="mailto:dts@ywamsanfrancisco.org">dts@ywamsanfrancisco.org</a><br><a href="' + TEL + '">' + PHONE + '</a></p></div></div><div class="faq5 rv">' + PARENTS + '</div></div></section>') if PARENTS else ''}
 
 <section class="ready pad"><div class="wrap">
   <div class="rv ready-head"><span class="kick">The door is open</span><h2>How do I know I’m ready for a DTS?</h2><p>You don’t have to figure it out alone. Start wherever feels right.</p></div>
@@ -889,4 +923,90 @@ contact = f'''
 contact_js = '''<script>(function(){var f=document.getElementById('msg');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var t=f.topic.value.split('|'),to=t[0],lab=f.topic.options[f.topic.selectedIndex].text;var sub='Website message: '+lab+' ('+f.name.value+')';var body=f.message.value+'\\n\\n'+f.name.value+'\\n'+f.email.value;location.href='mailto:'+to+'?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body);});})();</script>'''
 os.makedirs(os.path.join(OUT, 'contact'), exist_ok=True)
 open(os.path.join(OUT, 'contact/index.html'), 'w').write(page('Contact Us — YWAM San Francisco', 'contact', '../', '../../', contact, scripts=contact_js))
-print('built', V, VER)
+
+# ---------------------------------------------------------------- CHAT ASSISTANT KNOWLEDGE (YWAM 7)
+# The "Ask us" chat answers from this list only: no AI, nothing sent anywhere. Everything here comes from the
+# site's own copy and content/*.json, so admin edits (FAQ, shifts, dates, hours) flow into the chat on the next build.
+# Each entry: topic, question shown to people, extra keywords, answer text (plain text), links [(label, href)].
+# hrefs are site paths (relative to the site root) or https/mailto/tel.
+def U(v): return html.unescape(re.sub(r'<[^>]+>', '', str(v or ''))).strip()
+_hours = {U(h.get('label')): U(h.get('text')) for h in S.get('hours', []) if U(h.get('label'))}
+_shifts = [x for x in load('shifts.json').get('shifts', []) if U(x.get('title'))]
+_mins = [x for x in load('ministries.json').get('ministries', []) if U(x.get('title'))]
+_events = [x for x in load('events.json').get('events', []) if U(x.get('title'))]
+_ew = {}
+for e in load('ellis_week.json').get('entries', []):
+    if U(e.get('title')): _ew.setdefault(U(e.get('title')), []).append(U(e.get('day')) + ' ' + U(e.get('label')))
+_dates = ('The next school runs %s.' % U(drange(NX['_s'], NX['_e']))) if NX else 'New school dates are coming soon.'
+_spots = (' There are %d spots for this school.' % _sp) if _sp else ''
+_up = [U(drange(x['_s'], x['_e'])) for x in UPCOMING]
+E, DE, VE, OE, PH = U(EMAIL), U(DEMAIL), U(VEMAIL), U(OEMAIL), U(PHONE)
+L_APPLY, L_INQ, L_DTS = ('Apply for the DTS', 'course/apply/'), ('Send an inquiry', 'course/inquire/'), ('The DTS page', 'course/')
+L_DMAIL, L_MAIL, L_CALL = ('Email ' + DE, 'mailto:' + DE), ('Email ' + E, 'mailto:' + E), ('Call ' + PH, TEL)
+KB = []
+def kb(topic, q, keys, a, links=(), phrases=()): KB.append({'t': topic, 'q': q, 'k': keys, 'a': a, 'l': [list(x) for x in links], 'p': list(phrases)})
+
+# DTS: the page's own FAQ (shared content + the DTS team's answers) and parents' questions
+FAQ_KEYS = {'Can I have my own room?': ('room own private bedroom share roommate single', ['own room', 'my own room', 'private room']),
+            'What does it cost, and do I have to pay it all myself?': ('cost price much expensive afford fundraising fundraise support', ['how much', 'cost']),
+            'Can I keep working or studying during DTS?': ('work job studying class keep', ['my job', 'keep working', 'part time', 'part-time'])}
+for q, a in FAQ_LIST:
+    k, ph = FAQ_KEYS.get(U(q), ('', []))
+    kb('dts', U(q), k, U(a), [L_DTS], ph)
+for q in _FQ.get('parents', []):
+    if U(q.get('question')): kb('parents', U(q.get('question')), 'parent mom dad son daughter child kid family', U(q.get('answer')).replace('See “What it’s like” above', 'The “Your home” tab on the DTS page shows it'), [('For parents', 'course/#parents'), L_DMAIL])
+kb('dts', 'What is a DTS?', 'dts discipleship training school what is about course program', 'A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: about three months of training here in the Tenderloin, about two months of outreach in cities around the world, then a debrief to send you into whatever comes next. ' + _dates, [L_DTS, L_APPLY])
+kb('dts', 'When is the next DTS?', 'date dates when start begin next school january session calendar deadline', _dates + _spots + ((' Upcoming schools: ' + '; '.join(_up) + '.') if len(_up) > 1 else ''), [L_APPLY, L_DTS])
+kb('dts', 'What does a day look like?', 'day schedule daily routine timetable typical morning evening', 'A sample day: ' + '; '.join('%s %s' % (h[0], U(h[2])) for h in HOURS) + '. Rhythms shift week to week, and every week has free time and a Sabbath.', [('A day in the life', 'course/#day')])
+kb('dts', 'What is the weekly rhythm?', 'rhythm week pray reflect serve sabbath rest weekly prayer walk', ' '.join('%s: %s' % (U(n), U(d)) for k, n, d, alt, pos in RHYTHM7), [('The rhythm', 'course/#rhythm')])
+kb('dts', 'What do you learn in the teaching?', 'teach teaching learn lecture speaker class topics curriculum', 'Worship, then a new teacher each week on topics like the character of God, identity, hearing His voice, the nations, justice and mercy. Then you work it out on the street, in small groups and with a weekly mentor.', [L_DTS])
+kb('dts', 'Where will I live and eat?', 'live housing accommodation apartment eat food meals kitchen stay', 'You’ll live on site at ' + U(ADDR) + ' with the rest of your school, sharing a room with a few other students. Meals are planned and shared at the base around one table with YWAM staff, and everyone takes a turn in the kitchen.', [('Your home', 'course/#home')])
+kb('dts', 'What is the Monastery?', 'monastery without walls peace vision', 'The Monastery is how we describe the DTS: a place of peace in the middle of the Tenderloin, not an escape from it. A place to encounter God, a place of peace in the neighborhood, a way of life rooted in Jesus, and being formed here and sent out.', [('The Monastery', 'course/#monastery')])
+kb('dts', 'Am I ready for a DTS?', 'ready readiness sure unsure quiz check-in right for me should i', 'Take the 3-minute check-in on the DTS page: seven honest questions with a gentle, personal read on where you are. Or talk to someone from our DTS staff, with no pressure.', [L_DTS, ('Email a DTS coach', 'mailto:' + DE)])
+kb('dts', 'Can international students come?', 'international overseas visa foreign country abroad passport', 'We welcome students from overseas. You’re responsible for organizing your own travel to San Francisco. For visas and anything specific to your country, please email our DTS team. ' + U(_DTS.get('cost_note') or ''), [L_DMAIL])
+kb('dts', 'How do I pay my DTS fees?', 'pay fees payment deposit invoice', 'Use the Pay Fees page: choose what the payment is for and who it’s for, and our finance team makes sure it reaches the right account.', [('Pay fees', 'pay/')])
+kb('dts', 'Who are the DTS staff?', 'staff leaders directors who runs team', 'Our staff teach, eat and serve alongside students every day, and several have lived and served on Ellis Street for years. You can meet the directors and board on the Staff & Board page.', [('Staff & Board', 'about/people/')])
+
+# Volunteers
+for x in _shifts:
+    _su = SIGNUP_LINKS.get(U(x.get('title')).lower())
+    kb('volunteer', 'What is the %s shift?' % U(x.get('title')), U(x.get('title')) + ' shift volunteer ' + U(x.get('when')), '%s, %s. %s' % (U(x.get('when')), U(x.get('time')), U(x.get('description'))), ([('Sign up for ' + U(x.get('title')), _su)] if _su else []) + [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)], [U(x.get('title')).lower()])
+kb('volunteer', 'How do I volunteer?', 'volunteer serve help sign up shift join bay area local', 'Pick a shift on the Volunteer page and sign up, or email our volunteer team. Weekly shifts: ' + '; '.join('%s (%s, %s)' % (U(x.get('title')), U(x.get('when')), U(x.get('time'))) for x in _shifts) + '.', [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)])
+kb('volunteer', 'I don’t live in the Bay Area. Can I still serve?', 'summer season long term outside bay area mission builders skills maintenance cooking room board', 'Yes. Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.', [('Summer of Service', 'https://www.ywamsanfrancisco.org/summerservice'), ('Mission Builders', 'https://www.missionbuilders.org/location/?LID=149')])
+kb('volunteer', 'Can I volunteer with my group or church?', 'group church friends youth together volunteer team', 'Teams are welcome at the Thursday food pantry. For a weekend, a week or longer with your church or youth group, look at Mission Adventures on the Bring a Team page.', [('Bring a team', 'teams/'), ('Email ' + VE, 'mailto:' + VE)])
+
+# Churches & teams
+kb('teams', 'What is a Mission Adventure?', 'mission adventure trip church youth group school short term outreach team', 'A weekend, a week or longer serving in the Tenderloin with your church, youth or school group. We plan the orientation, ministry, meals and housing at our base so your team can focus on loving God and loving people.', [('Bring a team', 'teams/'), ('Book a Mission Adventure', U(TEAM_FORM))])
+kb('teams', 'How much does a Mission Adventure cost?', 'cost price per day per person team trip fee budget', '$%d per participant per day, including food, accommodation and ministry supplies. The Bring a Team page has a calculator to estimate your trip.' % MA_RATE, [('Estimate your trip', 'teams/'), ('Book today', U(TEAM_FORM))])
+kb('teams', 'Can our YWAM school or team visit?', 'ywam school team visit lecture week outreach launch base', 'Yes. We host schools and outreach teams from other YWAM locations: a final lecture week in the Tenderloin, a local city outreach, or a launch point on your way overseas.', [('Bring a team', 'teams/'), ('Email ' + OE, 'mailto:' + OE + '?subject=YWAM%20team%20visit')])
+kb('teams', 'How can our church partner with you?', 'church partner partnership pastor congregation leader together', 'We love working with churches: part of our mission is to prepare and empower the Church for compassionate ministry in the Tenderloin. Bring your church or youth group on a Mission Adventure, serve a volunteer shift together, or get in touch to talk about partnering.', [('Bring a team', 'teams/'), L_MAIL], ['partner', 'pastor', 'our church'])
+kb('teams', 'Where does our team stay?', 'stay housing sleep accommodation team base', 'Your team stays at the YWAM San Francisco base at ' + U(ADDR) + ', shares meals and space with YWAM staff, and gathers for devotion and worship each day.', [('Bring a team', 'teams/')])
+
+# Giving
+kb('give', 'How can I give?', 'give donate donation support money gift online card monthly', 'Give once or monthly by credit card on our Give page (through Click & Pledge). You can also give by check, recurring bank transfer, wire, stock or in-kind gifts.', [('Give', 'give/')])
+kb('give', 'Is my gift tax-deductible?', 'tax deductible receipt 501c3 ein tax id irs', 'YWAM San Francisco is a 501(c)(3) non-profit, Tax ID #94-3218675. Tax receipts are issued to U.S. residents only, and contributions are deductible as allowed by IRS guidelines. Student donations and school fees are not tax-deductible.', [('Give', 'give/')])
+kb('give', 'Can I give by check or bank transfer?', 'check cheque mail bank transfer ach wire stock securities employer matching', 'Checks: payable to YWAM San Francisco, mailed to ' + U(ADDR) + ', ' + U(CITY) + '. For a recurring bank transfer (ACH) or wire, email us and we’ll send the form or instructions. For stocks, call our finance office on ' + PH + '.', [('Other ways to give', 'give/'), L_MAIL])
+kb('give', 'Can I give to a staff member or a student?', 'support staff member missionary student sponsor someone', 'Gifts toward a staff member’s ministry can be given through our Give page. Gifts for students can’t be sent to YWAM SF as donations; to pay a student’s fees, use the Pay Fees page.', [('Give', 'give/'), ('Pay fees', 'pay/')])
+kb('give', 'What items can I donate?', 'in-kind donate items socks toiletries clothes supplies', 'In-kind gifts like new socks and toiletries help neighbors who visit the Ellis Room. The Give page links to our current list of needs.', [('Give', 'give/')])
+
+# Ellis Room, neighbors, staff, about, visiting
+kb('ellis', 'When is the Ellis Room open?', 'ellis room open hours times when drop in', 'Ellis Room: ' + _hours.get('Ellis Room', 'Mon, Tue, Wed and Fri, 10:30 am–4:30 pm') + '. Coffee, pool, conversation and a welcome for anyone who walks in.', [('The Ellis Room', 'ellis-room/')])
+kb('ellis', 'When is the food pantry?', 'food pantry groceries food bank thursday hungry', 'Food pantry: ' + _hours.get('Food pantry', 'Thursdays, 1–4 pm') + '.', [('The Ellis Room', 'ellis-room/')])
+for x in _mins:
+    if x.get('title') in ('Food Pantry', 'The Ellis Room'): continue
+    kb('ellis', 'What is %s?' % U(x.get('title')), U(x.get('title')), '%s (%s)' % (U(x.get('description')), U(x.get('when'))), [('The Ellis Room', 'ellis-room/')])
+if _ew.get('Showers & hygiene') or _ew.get('Free haircuts'):
+    kb('ellis', 'Can I get a shower or a haircut?', 'shower showers hygiene haircut haircuts barber', 'Showers & hygiene: ' + ', '.join(_ew.get('Showers & hygiene', [])) + '. Free haircuts: ' + (', '.join(_ew.get('Free haircuts', [])) or 'ask at the Ellis Room') + '.', [('The Ellis Room', 'ellis-room/')])
+if _hours.get('Pop-Up Church'): kb('ellis', 'When is Pop-Up Church?', 'church sunday worship service pop-up', 'Pop-Up Church: ' + _hours['Pop-Up Church'] + '. Worship, a simple message and prayer, right on the sidewalk.', [('The Ellis Room', 'ellis-room/')])
+for x in _events: kb('about', 'What is %s?' % U(x.get('title')), U(x.get('title')) + ' event', '%s (%s %s)' % (U(x.get('description')), U(x.get('when')), U(x.get('when_detail'))), [('News & Events', 'about/news/')])
+kb('staff', 'How do I join staff?', 'join staff long term career work for ywam serve full time missionary', 'Three steps: complete a DTS (here or at any YWAM location), start a conversation with us about roles, timing and fit, then come and spend time on Ellis Street before you commit. Like all YWAM staff, our team raises personal support, and we’ll help you build yours.', [('Join staff', 'join-staff/'), L_MAIL])
+kb('about', 'Who is YWAM San Francisco?', 'about who ywam youth with a mission history since mission vision values', 'We’ve been in San Francisco since 1987, with our first DTS in 1991 and our home on Ellis Street since the mid-1990s. Our mission: rooted in the way of Jesus, we seek to restore lives, form whole persons, and equip believers to be a compassionate and courageous presence in the world. We’re part of Youth With A Mission, a global, interdenominational Christian movement.', [('About us', 'about/')])
+kb('about', 'Where are you located?', 'where address location find directions map parking visit', 'We’re at ' + U(ADDR) + ', ' + U(CITY) + ', in the Tenderloin, a few blocks from Union Square.', [('Contact & map', 'contact/')], ['where are you', 'where is', 'address', 'located', 'location', 'directions'])
+kb('about', 'How do I contact you?', 'contact email phone call talk human person reach', 'Email ' + E + ' or call ' + PH + '. DTS questions: ' + DE + '. Volunteering: ' + VE + '. Teams: ' + OE + '.', [L_MAIL, L_CALL, ('Contact page', 'contact/')])
+kb('about', 'Can I visit before I commit?', 'visit come see tour stop by before', 'Yes. The easiest way to see the place is to serve a volunteer shift on Ellis Street or come with a team. Email us to plan a visit.', [('Volunteer shifts', 'volunteer/'), L_MAIL])
+
+KB_TOPICS = [('dts', 'Thinking about a DTS'), ('parents', 'I’m a parent'), ('volunteer', 'I want to volunteer'), ('teams', 'Churches & teams'), ('give', 'Giving'), ('ellis', 'The Ellis Room'), ('about', 'About & contact'), ('staff', 'Joining staff')]
+_kb = {'topics': KB_TOPICS, 'items': KB, 'contact': {'email': E, 'phone': PH, 'tel': TEL}}
+open(os.path.join(OUT, 'assets', 'chat-kb.js'), 'w').write('window.YWAM_KB=' + js(_kb) + ';')
+
+print('built', V, VER, len(KB), 'chat answers')
