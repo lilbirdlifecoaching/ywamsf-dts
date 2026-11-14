@@ -141,7 +141,8 @@ def footer(up, root):
     wave = '<svg viewBox="0 0 1600 90" preserveAspectRatio="none"><path d="M0,40 C100,10 200,10 300,40 C400,70 500,70 600,40 C700,10 800,10 900,40 C1000,70 1100,70 1200,40 C1300,10 1400,10 1500,40 C1550,55 1580,62 1600,62 L1600,90 L0,90Z" fill="#5aa8cf"/></svg>'
     wave2 = wave.replace('#5aa8cf', '#8cc6e2')
     sw = '<nav class="switcher" aria-label="Design concepts"><span>Concepts</span>' + ''.join('<a href="%sywam%d/"><i>YWAM </i>%d</a>' % (root, i, i) for i in range(1, 5)) + ''.join('<a%s href="%sywam%d/"><i>YWAM </i>%d</a>' % (' class="on"' if i == V else '', root, i, i) for i in (5, 6, 7)) + '</nav>'
-    return f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
+    band = f'<section class="news7" aria-label="Newsletter"><div class="wrap news7-row"><div><span class="kick">Stay close to Ellis Street</span><h2>Stories, event invites and ministry updates.</h2><p>Hear what God is doing in the Tenderloin, straight to your inbox.</p></div><a class="btn" href="{up}newsletter/">Get the newsletter</a></div></section>'
+    return band + f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
 <div class="links"><a href="{LIVE}/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
 <div class="tag">Presence that restores.</div>
 <div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div>
@@ -201,6 +202,7 @@ META = {
  'Staff & Board — YWAM San Francisco': ('Staff & Board | YWAM San Francisco', "Meet the directors, staff and board who lead YWAM San Francisco's ministry in the Tenderloin, from neighborhood engagement to training and outreach.", 'about/people/', 'assets/img/team-overlook.jpg'),
  'News & Events — YWAM San Francisco': ('News & Events | YWAM San Francisco', 'Updates from YWAM San Francisco, stories from the Tenderloin, and community gatherings everyone is welcome to join at 357 Ellis Street.', 'about/news/', 'assets/img/er-room.jpg'),
  'Resources — YWAM San Francisco': ('Urban Mission Resources & Videos | YWAM San Francisco', "Articles, video teaching and guides on urban mission and San Francisco, including Tim Svoboda's series on the strategic nature of cities and our YouTube channel.", 'about/resources/', 'assets/img/hero-ellis.jpg'),
+ 'Newsletter — YWAM San Francisco': ('Newsletter | YWAM San Francisco', 'Sign up for YWAM San Francisco newsletters, event invites and ministry updates from the Tenderloin.', 'newsletter/', 'assets/img/er-room.jpg'),
  'Give — YWAM San Francisco': ('Give to YWAM San Francisco | Support the Tenderloin', "Support food, showers and outreach in San Francisco's Tenderloin. Give online, by check, bank transfer, stock or in-kind gifts. Tax-deductible for U.S. donors.", 'give/', 'assets/img/er-room.jpg'),
  'Pay — YWAM San Francisco': ('Pay DTS & Mission Adventures Fees | YWAM San Francisco', 'Pay school or team trip fees for a DTS student or Mission Adventures participant. For general donations to YWAM San Francisco, please use our Give page.', 'pay/', 'assets/img/phase-training.jpg'),
  'Apply for the DTS — YWAM San Francisco': ('Apply for the DTS | YWAM San Francisco', 'Apply for the YWAM San Francisco Discipleship Training School: five months of faith lived out in the Tenderloin and the nations.', 'course/apply/', ''),
@@ -498,13 +500,14 @@ DTS_RES = f'''<section class="pad deeper" id="go-deeper"><div class="wrap">
   <p class="deeper-foot rv"><a href="../about/resources/">See the full resource library →</a></p>
 </div></section>'''
 # ---------------------------------------------------------------- DTS APPLY + INQUIRE (FormAssembly forms, embedded)
-def form_page(kick, h1, lede, prep, form_url, title, alt_link, h):
+def form_page(kick, h1, lede, prep, form_url, title, alt_link, h, help_email=None):
+    help_email = help_email or DEMAIL
     return f'''
 <section class="pad formpage"><div class="wrap form-grid">
   <aside class="form-side rv">
     <span class="kick">{kick}</span><h1>{h1}</h1><p class="lede">{lede}</p>
     {prep}
-    <p class="form-help">Questions? Email <a href="mailto:{DEMAIL}">{DEMAIL}</a> or call <a href="{TEL}">{PHONE}</a>.</p>
+    <p class="form-help">Questions? Email <a href="mailto:{help_email}">{help_email}</a> or call <a href="{TEL}">{PHONE}</a>.</p>
     <p class="form-alt">{alt_link}</p>
   </aside>
   <div class="form-frame">
@@ -526,6 +529,13 @@ inquirep = form_page('DTS · Inquiry', 'Curious about the <em>DTS?</em>',
     'Tell us a little about you and a DTS staff member will be in touch to answer your questions. This isn’t the application.',
     '<div class="prep"><b>Takes about a minute</b><ul><li>Name, email, phone and where you are in the world.</li><li>Which school you’re interested in.</li></ul></div>',
     DTS_INQUIRY_FORM, 'YWAM San Francisco DTS inquiry', 'Ready to apply? <a href="../apply/">Start your application</a>.', 1150)
+NEWSLETTER_FORM = 'https://www.tfaforms.com/4947313'
+newsp = form_page('Newsletter', 'Stay close to <em>Ellis Street.</em>',
+    'Sign up for our newsletters, event invites and ministry updates: stories from the Tenderloin and ways to pray, serve and give.',
+    '<div class="prep"><b>What to expect</b><ul><li>Choose how you’d like to hear from us and what you’re interested in.</li><li>We never sell your data, and you can unsubscribe at any time.</li></ul></div>',
+    NEWSLETTER_FORM, 'YWAM San Francisco newsletter sign-up', 'Want to get involved now? <a href="../volunteer/">Volunteer</a>, <a href="../course/">join a DTS</a> or <a href="../give/">give</a>.', 2100, EMAIL)
+os.makedirs(os.path.join(OUT, 'newsletter'), exist_ok=True)
+open(os.path.join(OUT, 'newsletter', 'index.html'), 'w').write(re.sub(r'<section class="news7".*?</section>', '', page('Newsletter — YWAM San Francisco', '', '../', '../../', newsp), count=1, flags=re.S))   # no 'get the newsletter' band on the newsletter page itself
 for _d, _body, _t in (('course/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('course/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
     os.makedirs(os.path.join(OUT, _d), exist_ok=True)
     open(os.path.join(OUT, _d, 'index.html'), 'w').write(page(_t, 'course', '../../', '../../../', _body))
@@ -1015,6 +1025,7 @@ kb('staff', 'How do I join staff?', 'join staff long term career work for ywam s
 kb('about', 'Who is YWAM San Francisco?', 'about who ywam youth with a mission history since mission vision values', 'We’ve been in San Francisco since 1987, with our first DTS in 1991 and our home on Ellis Street since the mid-1990s. Our mission: rooted in the way of Jesus, we seek to restore lives, form whole persons, and equip believers to be a compassionate and courageous presence in the world. We’re part of Youth With A Mission, a global, interdenominational Christian movement.', [('About us', 'about/')])
 kb('about', 'Where are you located?', 'where address location find directions map parking visit', 'We’re at ' + U(ADDR) + ', ' + U(CITY) + ', in the Tenderloin, a few blocks from Union Square.', [('Contact & map', 'contact/')], ['where are you', 'where is', 'address', 'located', 'location', 'directions'])
 kb('about', 'How do I contact you?', 'contact email phone call talk human person reach', 'Email ' + E + ' or call ' + PH + '. DTS questions: ' + DE + '. Volunteering: ' + VE + '. Teams: ' + OE + '.', [L_MAIL, L_CALL, ('Contact page', 'contact/')])
+kb('about', 'How do I get your newsletter?', 'newsletter updates email news subscribe mailing list stay in touch hear', 'Sign up on our newsletter page for stories, event invites and ministry updates. You can unsubscribe at any time.', [('Get the newsletter', 'newsletter/')], ['newsletter', 'mailing list', 'subscribe'])
 kb('about', 'Can I visit before I commit?', 'visit come see tour stop by before', 'Yes. The easiest way to see the place is to serve a volunteer shift on Ellis Street or come with a team. Email us to plan a visit.', [('Volunteer shifts', 'volunteer/'), L_MAIL])
 
 KB_TOPICS = [('dts', 'Thinking about a DTS'), ('parents', 'I’m a parent'), ('volunteer', 'I want to volunteer'), ('teams', 'Churches & teams'), ('give', 'Giving'), ('ellis', 'The Ellis Room'), ('about', 'About & contact'), ('staff', 'Joining staff')]

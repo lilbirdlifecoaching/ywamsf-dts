@@ -1697,3 +1697,13 @@ a.ev.ev-link small{font-weight:700}
 .page-hero .ph-img.dts7:after{background:linear-gradient(0deg,var(--fog) 0%,rgba(255,255,255,.85) 12%,rgba(255,255,255,.5) 26%,rgba(255,255,255,.15) 40%,rgba(255,255,255,0) 54%)}
 .heart .more7{margin-top:0}
 .heart .more7 + .dts-board7{margin-top:clamp(22px,2.6vw,34px)}
+
+/* round 7-21: newsletter band at the top of the footer; Tim & Karol photo keeps its portrait shape */
+.news7{background:var(--mist);border-top:1px solid var(--line);padding:clamp(30px,4vw,48px) 0}
+.news7-row{display:flex;align-items:center;justify-content:space-between;gap:20px 40px;flex-wrap:wrap}
+.news7 h2{font-size:clamp(26px,3vw,36px);margin:6px 0 6px;max-width:24ch}
+.news7 p{margin:0;color:var(--muted)}
+.news7 .btn{flex:0 0 auto}
+.news7 + .y5-foot{background:var(--mist)}
+.update img{aspect-ratio:4/5;height:auto;object-position:50% 25%;max-width:440px;justify-self:center}
+@media (max-width:860px){.update img{height:auto;max-width:360px}}
