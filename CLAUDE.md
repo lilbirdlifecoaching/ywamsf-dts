@@ -25,7 +25,7 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 
 ## Never do
 
-- Never ask for, paste, print or store the GitHub token. Editors enter it only in the admin page.
+- Never ask for, paste, print or store the GitHub token or any Cloudflare/Resend key. Editors enter them only in the admin page or the Cloudflare dashboard.
 - Never overwrite `admin/keys.json` with test data (it holds the editors' encrypted keys). If a
   local test changes it, restore it with `git checkout admin/keys.json` before committing.
 - Never edit `ywam5/` or `ywam6/` by hand: they are generated. Edit `src/` or `content/`.
@@ -47,7 +47,8 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 | `src/assets/img/`, `src/assets/cablecar/` | Site images |
 | `content/*.json` | Everything editable in the admin page (DTS schools, FAQ, parents FAQ, staff, board, shifts, ministries, Ellis Room week, events, Instagram, resources, banner, settings, "What it's like") |
 | `content/uploads/` | Photos uploaded in the admin page (and some added by Claude) |
-| `admin/` | The admin page (pure JS; commits to this repo through the GitHub API) |
+| `admin/` | The admin page (pure JS). Two modes, set by `<meta name="admin-service">` in `admin/index.html`: empty = key mode (each editor unlocks the GitHub key in `admin/keys.json` with their password); set = service mode (signs in to `service/`). Has the guided tour, How-this-works panels (`HOWTO`), practice mode, help guide and history/undo |
+| `service/` | The admin sign-in & approval service (Cloudflare Worker + D1): accounts, invites, password reset by email, levels (admin/editor/contributor), approvals, comment moderation, Resend emails. Setup guide: `service/README.md`. Tests: `cd service && npm install && node test/run.mjs` |
 | `.github/workflows/build.yml` | Rebuilds `ywam5/` and `ywam6/` on every push to `src/` or `content/`, and nightly (~1 am SF) |
 | `design-src/` | Source artwork and the scripts that produced generated images (see below) |
 | `tools/` | Screenshot helpers for checking pages |
