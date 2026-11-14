@@ -212,7 +212,7 @@ def banner_html():
     until = str(b.get('hide_after') or '').strip()
     if until and _d(until) and _d(until) < TODAY: return ''
     u = lnk(b.get('link_url'))
-    a = ' <a href="%s"%s>%s</a>' % (u, ' target="_blank" rel="noopener"' if u.startswith('http') else '', t(b.get('link_text') or 'Learn more')) if u else ''
+    a = ' <a href="%s"%s>%s</a>' % (u, ' target="_blank" rel="noopener"' if u.startswith('http') and not re.match(r'https://(www\.)?(ywamembers|ywamsanfrancisco)\.org(/|$)', u) else '', t(b.get('link_text') or 'Learn more')) if u else ''
     return '<div class="ann" role="note"%s><div class="wrap">%s%s</div></div>' % (' data-until="%s"' % until if _d(until) else '', t(b['text']), a)
 
 WIRE = [('/about"', 'about/'), ('/give"', 'give/'), ('/contact"', 'contact/'), ('/volunteer"', 'volunteer/'), ('/mission-adventure"', 'teams/')]
@@ -589,9 +589,9 @@ newsp = form_page('Newsletter', 'Stay close to <em>Ellis Street.</em>',
     NEWSLETTER_FORM, 'YWAM San Francisco newsletter sign-up', 'Want to get involved now? <a href="../volunteer/">Volunteer</a>, <a href="../course/">join a DTS</a> or <a href="../give/">give</a>.', 2100, EMAIL)
 os.makedirs(os.path.join(OUT, 'newsletter'), exist_ok=True)
 open(os.path.join(OUT, 'newsletter', 'index.html'), 'w').write(page('Newsletter — YWAM San Francisco', '', '../', '../../', newsp))   # no 'get the newsletter' band on the newsletter page itself
-for _d, _body, _t in (('course/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('course/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
-    os.makedirs(os.path.join(OUT, _d), exist_ok=True)
-    open(os.path.join(OUT, _d, 'index.html'), 'w').write(page(_t, 'course', '../../', '../../../', _body))
+for _dir, _body, _t in (('course/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('course/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
+    os.makedirs(os.path.join(OUT, _dir), exist_ok=True)
+    open(os.path.join(OUT, _dir, 'index.html'), 'w').write(page(_t, 'course', '../../', '../../../', _body))
 
 # ---------------------------------------------------------------- DTS (5 MONTH COURSE) — native page
 YT = 'lH3BLHA6dhI'
