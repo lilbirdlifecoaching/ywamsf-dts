@@ -19,7 +19,7 @@
 
   var REPO = 'lilbirdlifecoaching/ywamsf-dts', BRANCH = 'main', API = 'https://api.github.com';
   var KEYS_PATH = 'admin/keys.json', ITER = 600000, IDLE_MS = 30 * 60 * 1000, MIN_PW = 14;
-  var SITE = 'https://ywamembers.org/ywam7/';
+  var SITE = 'https://ywamembers.org/';
   var SERVICE = ((document.querySelector('meta[name="admin-service"]') || {}).content || '').replace(/\/+$/, '');
   var LS = { get: function (k) { try { return localStorage.getItem('ywamadmin.' + k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem('ywamadmin.' + k, v); } catch (e) {} } };
   var SS = { get: function (k) { try { return sessionStorage.getItem('ywamadmin.' + k); } catch (e) { return null; } }, set: function (k, v) { try { if (v == null) sessionStorage.removeItem('ywamadmin.' + k); else sessionStorage.setItem('ywamadmin.' + k, v); } catch (e) {} } };
@@ -331,7 +331,7 @@
   };
   var SECTIONS = [
     { id: 'overview', grp: '', title: 'Overview' },
-    { id: 'dts', grp: 'DTS', file: 'dts.json', title: 'DTS schools', page: 'course/',
+    { id: 'dts', grp: 'DTS', file: 'dts.json', title: 'DTS schools', page: 'dts/',
       intro: 'Add each school once. The site always features the next school to start, everywhere it mentions DTS dates or cost: the cable car on the home page, the DTS page, the departures board and countdown, the check-in quiz and the Pay page. When a school starts, the next one takes over automatically overnight.',
       fields: [
         { k: 'schools', l: 'Schools', t: 'list', add: 'Add a school', title: function (x) { return x.start ? fmtRange(x.start, x.end) : 'New school'; }, sub: function (x) { return (x.name || 'Discipleship Training School') + (x.status ? ' · ' + x.status : ''); },
@@ -342,14 +342,14 @@
             { k: 'status', l: 'Status on the board', t: 'select', opts: ['Applications open', 'Now boarding', 'Almost full', 'Full', 'Waitlist'] },
             { k: 'apply_url', l: 'Application link (optional)', t: 'url', hint: 'Leave blank to use the main DTS application link from Settings.', full: true }] },
         F.area('cost_note', 'Small print under the cost')] },
-    { id: 'testimonials', grp: 'DTS', file: 'testimonials.json', title: 'Testimonials', page: 'course/',
+    { id: 'testimonials', grp: 'DTS', file: 'testimonials.json', title: 'Testimonials', page: 'dts/',
       intro: 'Student stories on the DTS page. Until you add some, three marked placeholders are shown.',
       fields: [{ k: 'testimonials', l: 'Testimonials', t: 'list', add: 'Add a testimonial', title: function (x) { return x.name || 'New testimonial'; }, sub: function (x) { return x.detail || ''; }, blank: { quote: '', name: '', detail: '' }, fields: [F.area('quote', 'Quote', { req: true }), F.text('name', 'Name'), F.text('detail', 'Detail', { hint: 'e.g. DTS 2024' })] }] },
-    { id: 'faq', grp: 'DTS', file: 'faq.json', title: 'DTS FAQ', page: 'course/#cost',
+    { id: 'faq', grp: 'DTS', file: 'faq.json', title: 'DTS FAQ', page: 'dts/#cost',
       fields: [{ k: 'questions', l: 'Questions', t: 'list', add: 'Add a question', title: function (x) { return x.question || 'New question'; }, blank: { question: '', answer: '' }, fields: [F.text('question', 'Question', { req: true, full: true }), F.area('answer', 'Answer')] },
         F.area('parents_intro', 'For parents: intro'),
         { k: 'parents', l: 'For parents: questions', t: 'list', add: 'Add a question', title: function (x) { return x.question || 'New question'; }, blank: { question: '', answer: '' }, fields: [F.text('question', 'Question', { req: true, full: true }), F.area('answer', 'Answer')] }] },
-    { id: 'dts_life', grp: 'DTS', file: 'dts_life.json', title: 'What it’s like', page: 'course/#life',
+    { id: 'dts_life', grp: 'DTS', file: 'dts_life.json', title: 'What it’s like', page: 'dts/#life',
       intro: 'The “What it’s like” cards on the DTS page: the city, the building, where students live, eat and learn.',
       fields: [F.area('intro', 'Intro'), { k: 'places', l: 'Cards', t: 'list', add: 'Add a card', title: function (x) { return x.title || 'New card'; }, blank: { title: '', text: '', photo: '' }, fields: [F.text('title', 'Title', { req: true }), F.area('text', 'Text'), F.photo('photo', 'Photo', { hint: 'Landscape works best. It’s cropped to 4:3.' })] }] },
     { id: 'staff', grp: 'People', file: 'staff.json', title: 'Staff', page: 'about/people/',

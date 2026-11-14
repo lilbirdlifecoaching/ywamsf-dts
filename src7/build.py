@@ -139,14 +139,14 @@ SIGNUP = DTS_APPLY   # Sign Me Up buttons go straight to the DTS application
 TEAM_FORM = lnk(S.get('team_booking_url'), 'https://www.tfaforms.com/4652564')
 DTS_INQUIRY_FORM = lnk(S.get('dts_inquiry_url'), 'https://www.tfaforms.com/4827504')
 DTS_APPLICATION_FORM = lnk((NX or {}).get('apply_url') or S.get('dts_application_url'), 'https://www.tfaforms.com/4827904')
-NX_APPLY = 'apply/'      # YWAM 7: the application is embedded at /course/apply/, the inquiry at /course/inquire/
+NX_APPLY = 'apply/'      # YWAM 7: the application is embedded at /dts/apply/, the inquiry at /dts/inquire/
 LIVE = 'https://www.ywamsanfrancisco.org'
 # Shifts with their own sign-up form (keyed by shift title, lower case). Used on the Volunteer page, the Ellis Room schedule and in the chat.
 VOLUNTEER_FORM = 'https://tl-connect-volunteer-stewardship.replit.app/'   # Tenderloin Connect's sign-up form (Nov 2026: only TL Connect uses it; other shifts sign up by email)
 # Ellis Room schedule items that link straight to the form (the rest of that schedule is for neighbors, so it stays plain)
 SIGNUP_LINKS = {'tenderloin connect': VOLUNTEER_FORM}
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
-NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('course/', 'DTS (5 Month Course)', 'course'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
+NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('dts/', 'DTS (5 Month Course)', 'dts'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('contact/', 'Connect with us', 'contact')]
 ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('join-staff/', 'Join Staff'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
@@ -170,10 +170,12 @@ def footer(up, root):
 <div class="links"><a href="{up}privacy/">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/" target="_blank" rel="noopener">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/" target="_blank" rel="noopener">YWAM International</a></div>
 <div class="tag">Presence that restores.</div>
 <div class="foot-contact"><div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div><a class="foot-news" href="{up}newsletter/">Get updates</a></div>
-<div class="concept">{CONCEPT}</div></div></div></div>
-{sw}'''
+{'' if ROOT_SITE else '<div class="concept">' + CONCEPT + '</div>'}</div></div></div>
+{'' if ROOT_SITE else sw}'''
 
-BASE = os.environ.get('SITE_BASE') or 'https://ywamembers.org/ywam%d/' % V
+# ROOT_SITE=1 builds YWAM 7 as the main site (https://ywamembers.org/): no concept switcher, favicon at the site root
+ROOT_SITE = os.environ.get('ROOT_SITE') == '1'
+BASE = os.environ.get('SITE_BASE') or ('https://ywamembers.org/' if ROOT_SITE else 'https://ywamembers.org/ywam%d/' % V)
 def meta_for(title):
     m = META.get(title)
     if not m: return title, '', '', 'assets/img/hero-ellis.jpg'
@@ -191,7 +193,7 @@ def localize(html_text, up):
 # from its page and its small heading (kick) or title; ids listed in settings.json "hidden_sections" are left
 # out of the page. The list of sections is written to sections.json for the admin page.
 SECTION_INDEX = []
-PAGE_NAMES = {'': 'Home', 'volunteer/': 'Come Volunteer', 'teams/': 'Bring a Team', 'course/': 'DTS', 'course/apply/': 'DTS application', 'course/inquire/': 'DTS inquiry', 'ellis-room/': 'The Ellis Room', 'join-staff/': 'Join Staff', 'about/': 'About: Who we are', 'about/people/': 'About: Staff & Board', 'about/news/': 'About: News & Events', 'about/resources/': 'About: Resources', 'give/': 'Give', 'pay/': 'Pay fees', 'contact/': 'Contact', 'newsletter/': 'Newsletter'}
+PAGE_NAMES = {'': 'Home', 'volunteer/': 'Come Volunteer', 'teams/': 'Bring a Team', 'dts/': 'DTS', 'dts/apply/': 'DTS application', 'dts/inquire/': 'DTS inquiry', 'ellis-room/': 'The Ellis Room', 'join-staff/': 'Join Staff', 'about/': 'About: Who we are', 'about/people/': 'About: Staff & Board', 'about/news/': 'About: News & Events', 'about/resources/': 'About: Resources', 'give/': 'Give', 'pay/': 'Pay fees', 'contact/': 'Contact', 'newsletter/': 'Newsletter'}
 _HIDDEN = set(str(x) for x in (S.get('hidden_sections') or []) if isinstance(x, str))
 def _plain(x): return html.unescape(re.sub(r'<[^>]+>', ' ', x)).replace('\u00a0', ' ').strip()
 def _sections(body):
@@ -214,6 +216,8 @@ def section_switches(page_title, path, body):
         kick = re.search(r'class="kick[^"]*"[^>]*>(.*?)</span>', chunk, re.S)
         head = re.search(r'<h[12][^>]*>(.*?)</h[12]>', chunk, re.S)
         k, hd = (_plain(kick.group(1)) if kick else ''), (_plain(head.group(1)) if head else '')
+        named = re.search(r'data-sec-name="([^"]+)"', opening)
+        if named: k, hd = named.group(1), ''
         name = k or hd
         if not name:                                   # no heading: name it by its first words
             words = re.sub(r'\s+', ' ', _plain(re.sub(r'<(script|style)\b.*?</\1>', '', chunk, flags=re.S)))
@@ -230,6 +234,7 @@ def section_switches(page_title, path, body):
     for a, b in reversed(cut): body = body[:a] + body[b:]
     return body
 def page(title, cur, up, root, body, extra_head='', scripts=''):
+    if ROOT_SITE: root = up
     _short = title
     title, desc, path, shot = meta_for(title)
     body = section_switches(_short, path, body)
@@ -238,7 +243,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
            '<meta property="og:type" content="website"><meta property="og:site_name" content="YWAM San Francisco"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta name="twitter:card" content="summary_large_image">') % (t(desc), url, t(title), t(desc), url, BASE + shot) if desc else ''
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
-    return localize(wire(f'''<!doctype html>
+    return phone_sizes(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org; frame-src https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
@@ -248,7 +253,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 <main id="main">{body}</main>
 {footer(up, root)}
 <div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up)
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up))
 
 def banner_html():
     b = load('banner.json')
@@ -261,6 +266,57 @@ def banner_html():
     return '<div class="ann" role="note"%s><div class="ann-track"><span class="ann-item">%s%s</span></div></div>' % (' data-until="%s"' % until if _d(until) else '', t(b['text']), a)
 
 WIRE = [('/about"', 'about/'), ('/give"', 'give/'), ('/contact"', 'contact/'), ('/volunteer"', 'volunteer/'), ('/mission-adventure"', 'teams/')]
+# Phone-sized photos (Nov 2026): iPhones close pages that decode too many large photos, so every large local
+# photo gets 600px and 960px copies, and its <img> gets a srcset that phones use. <img data-sz="N"> marks a
+# photo shown about N px wide (staff faces), so phones take the 600px copy.
+_VARIANTS = {}
+_IMG_RE = re.compile(r'<img\b[^>]*>')
+def _variant(rel, w):
+    """assets/<rel> → assets/<dir>/w<w>/<name>, made once per build; '' if the photo is already small."""
+    key = (rel, w)
+    if key in _VARIANTS: return _VARIANTS[key]
+    out = ''
+    try:
+        from PIL import Image as _I
+        src = os.path.join(OUT, 'assets', rel)
+        im = _I.open(src)
+        if im.width > w * 1.15:
+            d, name = os.path.split(rel)
+            dst_rel = d + '/w%d/' % w + name
+            dst = os.path.join(OUT, 'assets', dst_rel)
+            if not os.path.exists(dst):
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                if name.lower().endswith(('.jpg', '.jpeg')): im = im.convert('RGB')
+                im.resize((w, round(im.height * w / im.width)), _I.LANCZOS).save(dst, quality=80, optimize=True)
+            out = dst_rel
+    except Exception:
+        out = ''
+    _VARIANTS[key] = out
+    return out
+def phone_img(u, up=''):
+    """For photos shown by scripts (carousels): use the local, 960px copy when there is one."""
+    if u and u.startswith('https://'): u = localize(u, up)
+    m = re.match(r'^((?:\.\./)*)assets/((?:img|sq|uploads)/[^"?]+\.(?:jpe?g|png|webp))$', u or '')
+    if not m: return u
+    v = _variant(m.group(2), 960)
+    return m.group(1) + 'assets/' + v if v else u
+def phone_sizes(h):
+    def one(m):
+        tag = m.group(0)
+        if 'srcset=' in tag: return tag
+        sm = re.search(r'\ssrc="((?:\.\./)*)assets/((?:img|sq|uploads)/[^"?]+\.(?:jpe?g|png|webp))"', tag)
+        if not sm: return tag
+        up, rel = sm.group(1), sm.group(2)
+        small = re.search(r'data-sz="(\d+)"', tag)
+        v6, v9 = _variant(rel, 600), _variant(rel, 960)
+        if not v9 and not v6: return tag
+        try:
+            from PIL import Image as _I; W = _I.open(os.path.join(OUT, 'assets', rel)).width
+        except Exception: return tag
+        parts = ([up + 'assets/' + v6 + ' 600w'] if v6 else []) + ([up + 'assets/' + v9 + ' 960w'] if v9 else []) + [up + 'assets/' + rel + ' %dw' % W]
+        sizes = '%spx' % small.group(1) if small else '(max-width: 700px) 320px, 100vw'
+        return tag[:-1].rstrip('/').rstrip() + ' srcset="%s" sizes="%s">' % (', '.join(parts), sizes)
+    return _IMG_RE.sub(one, h)
 def wire(h, up):
     for a, b in WIRE: h = h.replace('href="' + LIVE + a, 'href="' + up + b + '"')
     return h
@@ -274,7 +330,7 @@ META = {
  'HOME': ('YWAM San Francisco | Christian Nonprofit in the Tenderloin', 'Youth With A Mission San Francisco is a Christian nonprofit serving the Tenderloin: food pantry, the Ellis Room, outreach, volunteering and discipleship training.', '', 'assets/img/hero-ellis.jpg'),
  'Come Volunteer — YWAM San Francisco': ('Volunteer in San Francisco | Food Pantry & Outreach | YWAM SF', 'Serve with YWAM San Francisco in the Tenderloin: the Thursday food pantry, the Ellis Room, hot chocolate outreach, Pop-Up Church and more. Pick a shift and sign up.', 'volunteer/', 'assets/img/vol-header.jpg'),
  'Bring a Team — YWAM San Francisco': ('San Francisco Mission Trips for Church & Youth Teams | YWAM SF', "Bring your church, youth group or school to serve in San Francisco's Tenderloin. Housing, meals, orientation and ministry included, from %s per person per day." % money(MA_RATE), 'teams/', 'assets/img/teams-header-7.jpg'),
- 'DTS (5 Month Course) — YWAM San Francisco': ('Discipleship Training School (DTS) in San Francisco | YWAM SF', "A 5-month Discipleship Training School in San Francisco's Tenderloin: 3 months of training, then 2 months of outreach. " + ('Next school starts %s.' % _nx_date if NX else 'New school dates coming soon.'), 'course/', 'assets/img/phase-training.jpg'),
+ 'DTS (5 Month Course) — YWAM San Francisco': ('Discipleship Training School (DTS) in San Francisco | YWAM SF', "A 5-month Discipleship Training School in San Francisco's Tenderloin: 3 months of training, then 2 months of outreach. " + ('Next school starts %s.' % _nx_date if NX else 'New school dates coming soon.'), 'dts/', 'assets/img/phase-training.jpg'),
  'The Ellis Room — YWAM San Francisco': ('The Ellis Room: Community Space in the Tenderloin | YWAM SF', 'A safe place in the Tenderloin for coffee, showers, haircuts, Bible study and friendship, plus a free food pantry every Thursday at 357 Ellis Street.', 'ellis-room/', 'assets/img/er-header-7.jpg'),
  'Who We Are — YWAM San Francisco': ('About YWAM San Francisco | Youth With A Mission Since 1987', 'Rooted in the way of Jesus, YWAM San Francisco restores lives, forms whole persons and equips believers in the Tenderloin. Our mission, values and history.', 'about/', 'assets/img/hero-ellis.jpg'),
  'Staff & Board — YWAM San Francisco': ('Staff & Board | YWAM San Francisco', "Meet the directors, staff and board who lead YWAM San Francisco's ministry in the Tenderloin, from neighborhood engagement to training and outreach.", 'about/people/', 'assets/img/team-overlook.jpg'),
@@ -283,15 +339,15 @@ META = {
  'Newsletter — YWAM San Francisco': ('Newsletter | YWAM San Francisco', 'Sign up for YWAM San Francisco newsletters, event invites and ministry updates from the Tenderloin.', 'newsletter/', 'assets/img/er-room.jpg'),
  'Give — YWAM San Francisco': ('Give to YWAM San Francisco | Support the Tenderloin', "Support food, showers and outreach in San Francisco's Tenderloin. Give online, by check, bank transfer, stock or in-kind gifts. Tax-deductible for U.S. donors.", 'give/', 'assets/img/er-room.jpg'),
  'Pay — YWAM San Francisco': ('Pay DTS & Mission Adventures Fees | YWAM San Francisco', 'Pay school or team trip fees for a DTS student or Mission Adventures participant. For general donations to YWAM San Francisco, please use our Give page.', 'pay/', 'assets/img/phase-training.jpg'),
- 'Apply for the DTS — YWAM San Francisco': ('Apply for the DTS | YWAM San Francisco', 'Apply for the YWAM San Francisco Discipleship Training School: five months of faith lived out in the Tenderloin and the nations.', 'course/apply/', ''),
- 'DTS Inquiry — YWAM San Francisco': ('DTS Inquiry | YWAM San Francisco', 'Curious about a Discipleship Training School in San Francisco? Send a quick inquiry and our DTS team will be in touch.', 'course/inquire/', ''),
+ 'Apply for the DTS — YWAM San Francisco': ('Apply for the DTS | YWAM San Francisco', 'Apply for the YWAM San Francisco Discipleship Training School: five months of faith lived out in the Tenderloin and the nations.', 'dts/apply/', ''),
+ 'DTS Inquiry — YWAM San Francisco': ('DTS Inquiry | YWAM San Francisco', 'Curious about a Discipleship Training School in San Francisco? Send a quick inquiry and our DTS team will be in touch.', 'dts/inquire/', ''),
  'Join Staff — YWAM San Francisco': ('Join Staff | Serve Long-Term in San Francisco | YWAM SF', 'Join the YWAM San Francisco staff: make the Tenderloin your home, love your neighbors and help train disciples at 357 Ellis Street.', 'join-staff/', ''),
  'Contact Us — YWAM San Francisco': ('Contact YWAM San Francisco | 357 Ellis St, Tenderloin', 'Visit, call or email YWAM San Francisco at 357 Ellis Street in the Tenderloin. Reach the right team for volunteering, mission trips, DTS or giving.', 'contact/', 'assets/img/er-door.jpg'),
 }
 
 # ---------------------------------------------------------------- HOME
 IG = load('instagram.json').get('posts', [])
-ig_js = 'window.YWAM_IG_POSTS=' + js([{'img': img(small(x.get('photo')) or x.get('photo'), '', 750), 'caption': str(x.get('caption') or ''), 'href': lnk(x.get('url'), 'https://www.instagram.com/ywamsf/', raw=True)} for x in IG if img(x.get('photo'), '', 750)]) + ';'
+ig_js = 'window.YWAM_IG_POSTS=' + js([{'img': phone_img(img(x.get('photo'), '', 750)), 'caption': str(x.get('caption') or ''), 'href': lnk(x.get('url'), 'https://www.instagram.com/ywamsf/', raw=True)} for x in IG if img(x.get('photo'), '', 750)]) + ';'
 
 SIGN = ('''<div class="spill" style="left:60px;top:150px;width:900px;height:640px"></div>
     <img class="tube wave" src="assets/img/neon-wave.png" alt="" aria-hidden="true" style="left:185px;top:305px">
@@ -300,9 +356,9 @@ SIGN = ('''<div class="spill" style="left:60px;top:150px;width:900px;height:640p
     <img class="lit" src="assets/img/sign-lit.png" alt="" aria-hidden="true" style="left:177px;top:285px;width:661px;height:367px">''')
 if NX:
     _f = NX['_s'].strftime('%B ') + ordn(NX['_s'].day)
-    CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="%s|%s" data-band="Next DTS · %s" data-flag="Our next 5-month adventure begins %s!" data-flag-cta="Check it out →" data-href="course/" aria-label="Our next 5-month adventure begins %s. Check out the DTS, our 5 Month Course."></div>' % (md(NX['_s']).upper(), md(NX['_e']).upper(), drange(NX['_s'], NX['_e']), _f, _f)
+    CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="%s|%s" data-band="Next DTS · %s" data-flag="Our next 5-month adventure begins %s!" data-flag-cta="Check it out →" data-href="dts/" aria-label="Our next 5-month adventure begins %s. Check out the DTS, our 5 Month Course."></div>' % (md(NX['_s']).upper(), md(NX['_e']).upper(), drange(NX['_s'], NX['_e']), _f, _f)
 else:
-    CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="NEXT DTS|SOON" data-band="Next DTS · dates coming soon" data-flag="New DTS dates are coming soon!" data-flag-cta="Find out more →" data-href="course/" aria-label="New DTS dates are coming soon. Find out more about the DTS, our 5 Month Course."></div>'
+    CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="NEXT DTS|SOON" data-band="Next DTS · dates coming soon" data-flag="New DTS dates are coming soon!" data-flag-cta="Find out more →" data-href="dts/" aria-label="New DTS dates are coming soon. Find out more about the DTS, our 5 Month Course."></div>'
 MIN = load('ministries.json').get('ministries', [])
 REEL = ''.join('<a class="hit" href="ellis-room/"><img src="%s"%s sizes="(max-width:700px) 78vw, 460px" alt="%s" loading="lazy" decoding="async"><span class="hit-t"><small>%s</small><b>%s</b><span>%s</span></span></a>' % (img(m.get('photo'), '', 1500), srcset(m.get('photo'), ''), t(m.get('title')), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')))
 SPOTS_TXT = ('%d spots' % int(num(NX.get('spots')))) if NX and num(NX.get('spots')) > 0 else ''
@@ -359,7 +415,7 @@ home = f'''
   <h1 class="believe7"><span>People can change.</span> <span>Neighborhoods can heal.</span> <span>Love can make a difference.</span></h1>
   <p>The love of Jesus is meant to be lived. In the Tenderloin, we learn His way by living it: loving our neighbors, meeting practical needs, and building relationships that bring lasting change.</p>
   <div class="cta7">
-    <a class="btn" href="course/">Join our DTS</a>
+    <a class="btn" href="dts/">Join our DTS</a>
     <a class="btn ghost" href="give/">Give</a>
     <a class="btn ghost" href="volunteer/">Volunteer</a>
   </div>
@@ -403,7 +459,7 @@ import json
 def rgb(hx):
     m = re.fullmatch(r'#?([0-9a-fA-F]{6})', str(hx or '').strip())
     return ','.join(str(int(m.group(1)[i:i + 2], 16)) for i in (0, 2, 4)) if m else '70,83,97'
-vol_posts = [{'img': img(small(x.get('photo')) or x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': SIGNUP_LINKS.get(str(x['title']).strip().lower(), '')} for x in SHIFTS]
+vol_posts = [{'img': phone_img(img(x.get('photo'), '../', 750), '../'), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': SIGNUP_LINKS.get(str(x['title']).strip().lower(), '')} for x in SHIFTS]
 vol_js = '<script>window.YWAM_VOL_N=%d;window.YWAM_IG_POSTS=' % len(vol_posts) + js(vol_posts * 2) + ';</script>'
 vol = f'''
 <section class="page-hero"><div class="ph-img still"><img src="../assets/img/vol-header.jpg" alt="A smiling neighbor holding a box of groceries at the food pantry" style="object-position:60% 30%"></div><div class="copy"><div class="wrap"><span class="kick">Come volunteer</span><h1>Come for a shift. Stay for the people.</h1><p class="lede">Every day we open our doors to serve our neighbors, our students and our outreach teams. It’s a big job, and we can’t do it alone.</p></div></div></section>
@@ -505,7 +561,7 @@ staffp = subnav('joinstaff', '../about/') + f'''
   </div></div>
 <div class="sblock"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">How to start</span><h2>Three steps.</h2></div>
   <div class="ready3 steps3">
-    <div class="rcard rv"><small>01</small><b>Complete a DTS</b><span>Like all YWAM staff, you’ll start with a Discipleship Training School, here or at any YWAM location.</span><em><a href="../course/">Our DTS →</a></em></div>
+    <div class="rcard rv"><small>01</small><b>Complete a DTS</b><span>Like all YWAM staff, you’ll start with a Discipleship Training School, here or at any YWAM location.</span><em><a href="../dts/">Our DTS →</a></em></div>
     <div class="rcard rv"><small>02</small><b>Start a conversation</b><span>Tell us about yourself and what’s drawing you to San Francisco. We’ll talk through roles, timing and fit.</span><em><a href="mailto:{EMAIL}?subject=Joining%20staff">Email us →</a></em></div>
     <div class="rcard rv"><small>03</small><b>Come and see</b><span>Spend time on Ellis Street before you commit. Like all YWAM staff, our team raises personal support, and we’ll help you build yours.</span><em><a href="../contact/">Plan a visit →</a></em></div>
   </div></div>
@@ -631,12 +687,12 @@ NEWSLETTER_FORM = 'https://www.tfaforms.com/4947313'
 newsp = form_page('Newsletter', 'Stay close to <em>Ellis Street.</em>',
     'Sign up for our newsletters, event invites and ministry updates: stories from the Tenderloin and ways to pray, serve and give.',
     '<div class="prep"><b>What to expect</b><ul><li>Choose how you’d like to hear from us and what you’re interested in.</li><li>We never sell your data, and you can unsubscribe at any time.</li></ul></div>',
-    NEWSLETTER_FORM, 'YWAM San Francisco newsletter sign-up', 'Want to get involved now? <a href="../volunteer/">Volunteer</a>, <a href="../course/">join a DTS</a> or <a href="../give/">give</a>.', 2100, EMAIL)
+    NEWSLETTER_FORM, 'YWAM San Francisco newsletter sign-up', 'Want to get involved now? <a href="../volunteer/">Volunteer</a>, <a href="../dts/">join a DTS</a> or <a href="../give/">give</a>.', 2100, EMAIL)
 os.makedirs(os.path.join(OUT, 'newsletter'), exist_ok=True)
 open(os.path.join(OUT, 'newsletter', 'index.html'), 'w').write(page('Newsletter — YWAM San Francisco', '', '../', '../../', newsp))   # no 'get the newsletter' band on the newsletter page itself
-for _dir, _body, _t in (('course/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('course/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
+for _dir, _body, _t in (('dts/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('dts/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
     os.makedirs(os.path.join(OUT, _dir), exist_ok=True)
-    open(os.path.join(OUT, _dir, 'index.html'), 'w').write(page(_t, 'course', '../../', '../../../', _body))
+    open(os.path.join(OUT, _dir, 'index.html'), 'w').write(page(_t, 'dts', '../../', '../../../', _body))
 
 # ---------------------------------------------------------------- DTS (5 MONTH COURSE) — native page
 YT = 'lH3BLHA6dhI'
@@ -770,7 +826,7 @@ KNOW = ('<section class="pad know7" id="know" style="background:var(--mist)"><di
 dts = f'''
 <section class="page-hero dts-ph"><div class="ph-img still dts7"><img src="../assets/img/dts-header-7.jpg" alt="DTS students sitting in a row on a hilltop at sunrise, looking out over the San Francisco skyline" style="object-position:50% 62%"></div><div class="copy"><div class="wrap"><span class="kick">DTS · The 5 Month Course{(' · ' + drange(NX['_s'], NX['_e'])) if NX else ''}</span><h1>What if your faith was meant to be <em>lived?</em></h1><p class="lede">You love Jesus. You want your life to count for something. And you want more than knowing what you believe. You want to live it.</p></div></div></section>
 
-<section class="pad heart"><div class="wrap heart-grid">
+<section class="pad heart" data-sec-name="Intro and next DTS board"><div class="wrap heart-grid">
   <div class="rv">
     <p class="more more7"><span>Next DTS</span></p>
     <div class="dts-board7"><div class="board"><div class="board-head"><span>DTS departures · 357 Ellis St</span><span class="clock"></span></div>
@@ -827,8 +883,8 @@ dts = f'''
 '''
 dts_scripts = f'<script>window.YWAM_DAY={day_data};window.YWAM_DTS={js(DTS_INFO)};</script><script src="../assets/survey.js?v={VER}"></script>'
 dts_head = f'<link rel="stylesheet" href="../assets/survey.css?v={VER}">'
-os.makedirs(os.path.join(OUT, 'course'), exist_ok=True)
-open(os.path.join(OUT, 'course/index.html'), 'w').write(page('DTS (5 Month Course) — YWAM San Francisco', 'course', '../', '../../', dts, extra_head=dts_head, scripts=dts_scripts))
+os.makedirs(os.path.join(OUT, 'dts'), exist_ok=True)
+open(os.path.join(OUT, 'dts/index.html'), 'w').write(page('DTS (5 Month Course) — YWAM San Francisco', 'dts', '../', '../../', dts, extra_head=dts_head, scripts=dts_scripts))
 
 # ---------------------------------------------------------------- ABOUT SECTION (Who We Are + History · Staff & Board · News & Events)
 CDN = C
@@ -860,7 +916,7 @@ PILLARS = ''.join(f'<div><small>{a}</small><h3>{b}</h3><p>{c}</p></div>' for a, 
 EXPR = ''.join(f'<a class="card5 rv" href="{h}"><h3>{a}</h3><p>{b}</p><span class="go">{g} →</span></a>' for a, b, h, g in [
     ('Neighborhood engagement', 'The relational heart of the mission: presence, outreach, spaces and connections.', '../ellis-room/', 'The Ellis Room'),
     ('Hosting &amp; hospitality', 'We welcome and equip teams, volunteers and guests as partners in ministry.', '../teams/', 'Bring a team'),
-    ('Training programs', 'We form disciples who live, serve and grow in the Tenderloin.', '../course/', 'The DTS')])
+    ('Training programs', 'We form disciples who live, serve and grow in the Tenderloin.', '../dts/', 'The DTS')])
 tl = ''.join(f'<li class="rv"><span class="yr">{y}</span><div><h3>{t}</h3><p>{d}</p></div></li>' for y, t, d in TIMELINE)
 who = subnav('who', '') + f'''
 <section class="pad" id="mission"><div class="wrap"><span class="kick" style="text-align:center">Our mission</span><p class="lit" data-lit>Rooted in the way of Jesus, we seek to restore lives, form whole persons, and equip believers to be a compassionate and courageous presence in the world.</p>
@@ -871,7 +927,7 @@ who = subnav('who', '') + f'''
 <div class="pillars3 rv">{PILLARS}</div>
 <div class="rv" style="margin:clamp(48px,6vw,72px) 0 22px"><span class="kick">Where it happens</span><h3>Three ways to be part of it.</h3></div>
 <div class="phases expr3">{EXPR}</div></div></section>
-<section class="pad heart" style="background:var(--mist)"><div class="wrap"><span class="kick" style="text-align:center">Our heart</span><p class="lit" data-lit>We believe Jesus is renewing the Tenderloin: one person, one relationship, one act of love at a time.</p></div></section>
+<section class="pad heart" data-sec-name="Intro and next DTS board" style="background:var(--mist)"><div class="wrap"><span class="kick" style="text-align:center">Our heart</span><p class="lit" data-lit>We believe Jesus is renewing the Tenderloin: one person, one relationship, one act of love at a time.</p></div></section>
 <section class="pad" id="history"><div class="wrap hist"><div class="hist-head rv"><span class="kick">Our history</span><h2>Since 1987.</h2><blockquote>“The city of San Francisco is only 47 square miles in size, but its potential to reach the nations is endless.”</blockquote></div>
 <ol class="timeline">{tl}</ol></div></section>
 <section class="pad" id="family" style="background:var(--mist)"><div class="wrap family"><div class="rv"><span class="kick">Our family</span><h2>Part of something bigger.</h2><p class="lede">YWAM San Francisco is a non-profit and part of the YWAM San Francisco Bay Area family of ministries, which belongs to Youth With A Mission, a global, interdenominational movement of Christians from many cultures and churches.</p><div class="links-row"><a class="btn" href="https://ywamsfbayarea.org/" target="_blank" rel="noopener">YWAM SF Bay Area</a><a class="btn ghost" href="https://ywam.org/" target="_blank" rel="noopener">YWAM International</a></div></div>
@@ -885,7 +941,7 @@ open(os.path.join(OUT, 'about/index.html'), 'w').write(page('Who We Are — YWAM
 STAFF = load('staff.json')
 def face(p, w, cls='av'):
     u = img(p.get('photo'), '../../', w)
-    if u: return '<img class="%s ph" src="%s" alt="%s" loading="lazy">' % (cls, u, t(p.get('name')))
+    if u: return '<img class="%s ph" src="%s" alt="%s" loading="lazy" data-sz="220">' % (cls, u, t(p.get('name')))
     return '<span class="%s">%s</span>' % (cls, t(initials(p.get('name') or '?')))
 # YWAM 7 staff layout (Nov 2026): leadership on top (directors whose role names no team: Steve, Tim & Karol),
 # then each team with its director first. Every photo is the same size.
@@ -960,7 +1016,7 @@ resources = subnav('resources', '../') + f'''
 </div>
 <nav class="res-jump rv" aria-label="Resource sections">{"".join('<a href="#%s">%s</a>' % (gid(g), t(g['title'])) for g in RES_GROUPS)}</nav></div></section>
 {res_sections}
-<section class="cta-band pad"><div class="wrap rv"><h2>Learn it on the streets, too.</h2><p>The best way to understand the city is to serve in it.</p><div class="row"><a class="btn light" href="../../course/">DTS (5 Month Course)</a><a class="btn ghost-light" href="../../volunteer/">Come volunteer</a></div></div></section>
+<section class="cta-band pad"><div class="wrap rv"><h2>Learn it on the streets, too.</h2><p>The best way to understand the city is to serve in it.</p><div class="row"><a class="btn light" href="../../dts/">DTS (5 Month Course)</a><a class="btn ghost-light" href="../../volunteer/">Come volunteer</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'about/resources'), exist_ok=True)
 open(os.path.join(OUT, 'about/resources/index.html'), 'w').write(page('Resources — YWAM San Francisco', 'about', '../../', '../../../', resources))
@@ -1023,7 +1079,7 @@ give = f'''
 </div></section>
 <script src="https://resources.connect.clickandpledge.com/Library/iframeResizer.min.js"></script>
 <script>(function(){{var f=document.getElementById('CnP_inlineiframe');if(!f)return;function go(){{if(window.iFrameResize)iFrameResize({{log:false,checkOrigin:['https://connect.clickandpledge.com']}},f);}}if(f.contentWindow&&document.readyState!=='loading')go();f.addEventListener('load',go);}})();</script>
-<section class="pay-strip7"><div class="wrap"><div class="ps7 rv"><p><b>Looking to pay for your school?</b> DTS and Mission Adventures fees go through our Pay page, not the giving form.</p><a class="btn" href="../pay/">Pay school fees →</a></div></div></section>
+<section class="pay-strip7" data-sec-name="Looking to pay for your school?"><div class="wrap"><div class="ps7 rv"><p><b>Looking to pay for your school?</b> DTS and Mission Adventures fees go through our Pay page, not the giving form.</p><a class="btn" href="../pay/">Pay school fees →</a></div></div></section>
 <section class="pad give-ways" style="padding-top:0"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:26px"><span class="kick">Other ways to give</span><h2>However you’d like to help.</h2></div>
 <div class="gw-grid"><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg></span><h3>By check</h3><p>Payable to YWAM San Francisco, mailed to {ADDR}, {CITY}.</p><a class="go" href="mailto:{FEMAIL}?subject=Giving%20by%20check">Ask a question →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg></span><h3>Recurring bank transfer</h3><p>Give monthly straight from your bank account (ACH). We’ll send you a short form.</p><a class="go" href="mailto:{FEMAIL}?subject=Recurring%20bank%20transfer%20(ACH)%20giving%20form">Request the form →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg></span><h3>In-kind gifts</h3><p>New socks, toiletries and more for neighbors who visit the Ellis Room.</p><a class="go" href="#in-kind">See what we need →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg></span><h3>Employer matching</h3><p>Many employers match gifts, so yours could go twice as far.</p><a class="go" href="mailto:{FEMAIL}?subject=Setting%20up%20an%20employer%20matching%20gift">Set up a matching gift →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg></span><h3>Wire transfer</h3><p>Domestic or international. Ask us for the instructions.</p><a class="go" href="mailto:{FEMAIL}?subject=Wire%20transfer%20instructions">Ask for instructions →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg></span><h3>Stocks & securities</h3><p>Contact our finance office to give appreciated stock, or call <a class="tel" href="{TEL}">{PHONE}</a>.</p><a class="go" href="mailto:{FEMAIL}?subject=Giving%20stocks%20or%20securities">Email our finance office →</a></div></div>
 <p class="taxnote">YWAM San Francisco is a 501(c)(3) non-profit (Tax ID #94-3218675). Tax receipts are issued to U.S. residents only. Contributions are tax-deductible as allowed by IRS guidelines; the IRS decides what is deductible. Student donations and school fees are not tax-deductible; to pay fees, use the <a href="../pay/">Pay page</a>.</p></div></section>
@@ -1057,7 +1113,7 @@ contact = f'''
 <label>Message<textarea name="message" required></textarea></label>
 <div><button class="btn" type="submit">Send message</button></div><p class="note">This opens your email app with your message filled in, addressed to the right person on our team.</p></form>
 </div></section>
-<section class="cta-band pad"><div class="wrap rv"><h2>Ready to <em>jump in?</em></h2><p>Pick a volunteer shift, plan a team trip, or apply for our next DTS.</p><div class="row"><a class="btn light" href="../volunteer/">Volunteer</a><a class="btn ghost-light" href="../teams/">Bring a team</a><a class="btn ghost-light" href="../course/">DTS (5 Month Course)</a></div></div></section>
+<section class="cta-band pad"><div class="wrap rv"><h2>Ready to <em>jump in?</em></h2><p>Pick a volunteer shift, plan a team trip, or apply for our next DTS.</p><div class="row"><a class="btn light" href="../volunteer/">Volunteer</a><a class="btn ghost-light" href="../teams/">Bring a team</a><a class="btn ghost-light" href="../dts/">DTS (5 Month Course)</a></div></div></section>
 '''
 contact_js = '''<script>(function(){var f=document.getElementById('msg');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var t=f.topic.value.split('|'),to=t[0],lab=f.topic.options[f.topic.selectedIndex].text;var sub='Website message: '+lab+' ('+f.name.value+')';var body=f.message.value+'\\n\\n'+f.name.value+'\\n'+f.email.value;location.href='mailto:'+to+'?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body);});})();</script>'''
 os.makedirs(os.path.join(OUT, 'contact'), exist_ok=True)
@@ -1147,7 +1203,7 @@ _dates = ('The next school runs %s.' % U(drange(NX['_s'], NX['_e']))) if NX else
 _spots = (' There are %d spots for this school.' % _sp) if _sp else ''
 _up = [U(drange(x['_s'], x['_e'])) for x in UPCOMING]
 E, DE, VE, OE, PH = U(EMAIL), U(DEMAIL), U(VEMAIL), U(OEMAIL), U(PHONE)
-L_APPLY, L_INQ, L_DTS = ('Apply for the DTS', 'course/apply/'), ('Send an inquiry', 'course/inquire/'), ('The DTS page', 'course/')
+L_APPLY, L_INQ, L_DTS = ('Apply for the DTS', 'dts/apply/'), ('Send an inquiry', 'dts/inquire/'), ('The DTS page', 'dts/')
 L_DMAIL, L_MAIL, L_CALL = ('Email ' + DE, 'mailto:' + DE), ('Email ' + E, 'mailto:' + E), ('Call ' + PH, TEL)
 KB = []
 def kb(topic, q, keys, a, links=(), phrases=()): KB.append({'t': topic, 'q': q, 'k': keys, 'a': a, 'l': [list(x) for x in links], 'p': list(phrases)})
@@ -1160,13 +1216,13 @@ for q, a in FAQ_LIST:
     k, ph = FAQ_KEYS.get(U(q), ('', []))
     kb('dts', U(q), k, U(a), [L_DTS], ph)
 for q in _FQ.get('parents', []):
-    if U(q.get('question')): kb('parents', U(q.get('question')), 'parent mom dad son daughter child kid family', U(q.get('answer')).replace('See “What it’s like” above', 'The “Your home” tab on the DTS page shows it'), [('For parents', 'course/#parents'), L_DMAIL])
+    if U(q.get('question')): kb('parents', U(q.get('question')), 'parent mom dad son daughter child kid family', U(q.get('answer')).replace('See “What it’s like” above', 'The “Your home” tab on the DTS page shows it'), [('For parents', 'dts/#parents'), L_DMAIL])
 kb('dts', 'What is a DTS?', 'dts discipleship training school what is about course program', 'A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: about three months of training here in the Tenderloin, about two months of outreach in cities around the world, then a debrief to send you into whatever comes next. ' + _dates, [L_DTS, L_APPLY])
 kb('dts', 'When is the next DTS?', 'date dates when start begin next school january session calendar deadline', _dates + _spots + ((' Upcoming schools: ' + '; '.join(_up) + '.') if len(_up) > 1 else ''), [L_APPLY, L_DTS])
-kb('dts', 'What does a day look like?', 'day schedule daily routine timetable typical morning evening', 'A sample day: ' + '; '.join('%s %s' % (h[0], U(h[2])) for h in HOURS) + '. Rhythms shift week to week, and every week has free time and a Sabbath.', [('A day in the life', 'course/#day')])
-kb('dts', 'What is the weekly rhythm?', 'rhythm week pray reflect serve sabbath rest weekly prayer walk', ' '.join('%s: %s' % (U(n), U(d)) for k, n, d, alt, pos in RHYTHM7), [('The rhythm', 'course/#rhythm')])
+kb('dts', 'What does a day look like?', 'day schedule daily routine timetable typical morning evening', 'A sample day: ' + '; '.join('%s %s' % (h[0], U(h[2])) for h in HOURS) + '. Rhythms shift week to week, and every week has free time and a Sabbath.', [('A day in the life', 'dts/#day')])
+kb('dts', 'What is the weekly rhythm?', 'rhythm week pray reflect serve sabbath rest weekly prayer walk', ' '.join('%s: %s' % (U(n), U(d)) for k, n, d, alt, pos in RHYTHM7), [('The rhythm', 'dts/#rhythm')])
 kb('dts', 'What do you learn in the teaching?', 'teach teaching learn lecture speaker class topics curriculum', 'Worship, then a new teacher each week on topics like the character of God, identity, hearing His voice, the nations, justice and mercy. Then you work it out on the street, in small groups and with a weekly mentor.', [L_DTS])
-kb('dts', 'Where will I live and eat?', 'live housing accommodation apartment eat food meals kitchen stay', 'You’ll live on site at ' + U(ADDR) + ' with the rest of your school, sharing a room with a few other students. Meals are planned and shared at the base around one table with YWAM staff, and everyone takes a turn in the kitchen.', [('Your home', 'course/#home')])
+kb('dts', 'Where will I live and eat?', 'live housing accommodation apartment eat food meals kitchen stay', 'You’ll live on site at ' + U(ADDR) + ' with the rest of your school, sharing a room with a few other students. Meals are planned and shared at the base around one table with YWAM staff, and everyone takes a turn in the kitchen.', [('Your home', 'dts/#home')])
 kb('dts', 'Am I ready for a DTS?', 'ready readiness sure unsure quiz check-in right for me should i', 'Take the 3-minute check-in on the DTS page: seven honest questions with a gentle, personal read on where you are. Or talk to someone from our DTS staff, with no pressure.', [L_DTS, ('Email a DTS coach', 'mailto:' + DE)])
 kb('dts', 'Can international students come?', 'international overseas visa foreign country abroad passport', 'We welcome students from overseas. You’re responsible for organizing your own travel to San Francisco. For visas and anything specific to your country, please email our DTS team. ' + U(_DTS.get('cost_note') or ''), [L_DMAIL])
 kb('dts', 'How do I pay my DTS fees?', 'pay fees payment deposit invoice', 'Use the Pay Fees page: choose what the payment is for and who it’s for, and our finance team makes sure it reaches the right account.', [('Pay fees', 'pay/')])

@@ -1,0 +1,348 @@
+{
+ "pages": [
+  {
+   "path": "",
+   "page": "Home",
+   "sections": [
+    {
+     "id": "home:neighborhood-engagement",
+     "label": "Neighborhood engagement: A place of peace, right in the middle of it."
+    },
+    {
+     "id": "home:ywamsf-on-instagram",
+     "label": "@ywamsf on Instagram: Life on Ellis Street, this week."
+    },
+    {
+     "id": "home:follow-god-s-example-therefore-as-dearly-loved-c",
+     "label": "Follow God’s example, therefore, as dearly loved children…"
+    }
+   ]
+  },
+  {
+   "path": "volunteer/",
+   "page": "Come Volunteer",
+   "sections": [
+    {
+     "id": "volunteer:friends-you-make-on-ellis-street-thursday-food-p",
+     "label": "Friends you make on Ellis Street Thursday food pantry In…"
+    },
+    {
+     "id": "volunteer:ways-to-serve-for-bay-area-volunteers",
+     "label": "Ways to serve · for Bay Area volunteers: Pick a shift. We’ll save you a seat."
+    },
+    {
+     "id": "volunteer:live-outside-the-bay-area",
+     "label": "Live outside the Bay Area?: Serve for a summer, or a season."
+    }
+   ]
+  },
+  {
+   "path": "teams/",
+   "page": "Bring a Team",
+   "sections": [
+    {
+     "id": "teams:two-ways-to-come",
+     "label": "Two ways to come: Who’s coming?"
+    },
+    {
+     "id": "teams:mission-adventures-we-take-care-of-the-details",
+     "label": "Mission Adventures · We take care of the details: Your team focuses on loving God and loving people."
+    },
+    {
+     "id": "teams:outreach",
+     "label": "Outreach: Serve in the Tenderloin."
+    },
+    {
+     "id": "teams:plan-your-trip",
+     "label": "Plan your trip: A weekend, a week, or longer."
+    },
+    {
+     "id": "teams:for-ywam-schools-teams",
+     "label": "For YWAM schools & teams: Finish strong in the city, or launch from it."
+    },
+    {
+     "id": "teams:why-mission-adventures",
+     "label": "Why Mission Adventures?: More than a trip."
+    },
+    {
+     "id": "teams:stories-from-the-street",
+     "label": "Stories from the street: What your team will step into."
+    },
+    {
+     "id": "teams:gather-your-team-pray-say-yes",
+     "label": "Gather your team. Pray. Say yes."
+    }
+   ]
+  },
+  {
+   "path": "join-staff/",
+   "page": "Join Staff",
+   "sections": [
+    {
+     "id": "join-staff:why-staff-here",
+     "label": "Why staff here: Come and build this with us."
+    },
+    {
+     "id": "join-staff:sensing-a-call-to-the-city",
+     "label": "Sensing a call to the city?"
+    }
+   ]
+  },
+  {
+   "path": "ellis-room/",
+   "page": "The Ellis Room",
+   "sections": [
+    {
+     "id": "ellis-room:everyone-has-value-everyone-has-a-place-everyone",
+     "label": "Everyone has value. Everyone has a place. Everyone has…"
+    },
+    {
+     "id": "ellis-room:tap-a-card",
+     "label": "Tap a card: Relationship. Dignity. Respect."
+    },
+    {
+     "id": "ellis-room:the-week-at-357-ellis",
+     "label": "The week at 357 Ellis: Come by. The door is open."
+    },
+    {
+     "id": "ellis-room:a-gospel-that-does-not-deal-with-the-issues-of-t",
+     "label": "“A gospel that does not deal with the issues of the day is…"
+    },
+    {
+     "id": "ellis-room:need-food",
+     "label": "Need food?: The food pantry, every Thursday."
+    },
+    {
+     "id": "ellis-room:join-what-god-is-already-doing-here",
+     "label": "Join what God is already doing here."
+    },
+    {
+     "id": "ellis-room:love-your-neighbor-hood",
+     "label": "Love your neighbor(hood): Lessons learned on these streets."
+    }
+   ]
+  },
+  {
+   "path": "newsletter/",
+   "page": "Newsletter",
+   "sections": [
+    {
+     "id": "newsletter:newsletter",
+     "label": "Newsletter: Stay close to Ellis Street."
+    }
+   ]
+  },
+  {
+   "path": "dts/apply/",
+   "page": "DTS application",
+   "sections": [
+    {
+     "id": "dts/apply:dts-application",
+     "label": "DTS · Application: Apply for the DTS"
+    }
+   ]
+  },
+  {
+   "path": "dts/inquire/",
+   "page": "DTS inquiry",
+   "sections": [
+    {
+     "id": "dts/inquire:dts-inquiry",
+     "label": "DTS · Inquiry: Curious about the DTS?"
+    }
+   ]
+  },
+  {
+   "path": "dts/",
+   "page": "DTS",
+   "sections": [
+    {
+     "id": "dts:intro-and-next-dts-board",
+     "label": "Intro and next DTS board"
+    },
+    {
+     "id": "dts:three-parts-one-journey",
+     "label": "Three parts, one journey: From the neighborhood to the nations."
+    },
+    {
+     "id": "dts:before-you-come",
+     "label": "Before you come: Everything you’re wondering."
+    },
+    {
+     "id": "dts:is-this-for-you",
+     "label": "Is this for you?: You don’t need years of ministry experience."
+    },
+    {
+     "id": "dts:cost",
+     "label": "Cost: Clear numbers. No surprises."
+    },
+    {
+     "id": "dts:the-door-is-open",
+     "label": "The door is open: How do I know I’m ready for a DTS?"
+    },
+    {
+     "id": "dts:go-deeper-before-you-come",
+     "label": "Go deeper before you come: Read, watch and get to know the city."
+    }
+   ]
+  },
+  {
+   "path": "about/",
+   "page": "About: Who we are",
+   "sections": [
+    {
+     "id": "about:our-mission",
+     "label": "Our mission"
+    },
+    {
+     "id": "about:our-values",
+     "label": "Our values: Four movements that shape us."
+    },
+    {
+     "id": "about:how-we-live-the-mission",
+     "label": "How we live the mission: Three pillars."
+    },
+    {
+     "id": "about:intro-and-next-dts-board",
+     "label": "Intro and next DTS board"
+    },
+    {
+     "id": "about:our-history",
+     "label": "Our history: Since 1987."
+    },
+    {
+     "id": "about:our-family",
+     "label": "Our family: Part of something bigger."
+    },
+    {
+     "id": "about:meet-the-people-behind-the-work",
+     "label": "Meet the people behind the work."
+    }
+   ]
+  },
+  {
+   "path": "about/people/",
+   "page": "About: Staff & Board",
+   "sections": [
+    {
+     "id": "about/people:leadership",
+     "label": "Leadership: Our leadership."
+    },
+    {
+     "id": "about/people:board-of-directors",
+     "label": "Board of directors: Guiding and stewarding the ministry."
+    },
+    {
+     "id": "about/people:join-the-staff",
+     "label": "Join the staff."
+    }
+   ]
+  },
+  {
+   "path": "about/news/",
+   "page": "About: News & Events",
+   "sections": [
+    {
+     "id": "about/news:leadership-update",
+     "label": "Leadership update: Thank you, Tim and Karol."
+    },
+    {
+     "id": "about/news:gatherings",
+     "label": "Gatherings: Come and join us."
+    },
+    {
+     "id": "about/news:from-the-blog",
+     "label": "From the blog: Stories from the street."
+    },
+    {
+     "id": "about/news:be-part-of-the-next-story",
+     "label": "Be part of the next story."
+    }
+   ]
+  },
+  {
+   "path": "about/resources/",
+   "page": "About: Resources",
+   "sections": [
+    {
+     "id": "about/resources:watch",
+     "label": "Watch: YWAM San Francisco on YouTube."
+    },
+    {
+     "id": "about/resources:01",
+     "label": "01: The strategic nature of cities"
+    },
+    {
+     "id": "about/resources:02",
+     "label": "02: Articles"
+    },
+    {
+     "id": "about/resources:03",
+     "label": "03: Video teaching"
+    },
+    {
+     "id": "about/resources:04",
+     "label": "04: Info about San Francisco"
+    },
+    {
+     "id": "about/resources:learn-it-on-the-streets-too",
+     "label": "Learn it on the streets, too."
+    }
+   ]
+  },
+  {
+   "path": "pay/",
+   "page": "Pay fees",
+   "sections": [
+    {
+     "id": "pay:pay-fees-students-teams",
+     "label": "Pay fees · students & teams: Make a payment."
+    }
+   ]
+  },
+  {
+   "path": "give/",
+   "page": "Give",
+   "sections": [
+    {
+     "id": "give:give-online",
+     "label": "Give online: Give once or monthly."
+    },
+    {
+     "id": "give:looking-to-pay-for-your-school",
+     "label": "Looking to pay for your school?"
+    },
+    {
+     "id": "give:other-ways-to-give",
+     "label": "Other ways to give: However you’d like to help."
+    },
+    {
+     "id": "give:in-kind-gifts",
+     "label": "In-kind gifts: What we need right now."
+    },
+    {
+     "id": "give:give-your-time-too",
+     "label": "Give your time, too."
+    }
+   ]
+  },
+  {
+   "path": "contact/",
+   "page": "Contact",
+   "sections": [
+    {
+     "id": "contact:find-us",
+     "label": "Find us: In the heart of the Tenderloin."
+    },
+    {
+     "id": "contact:send-a-message",
+     "label": "Send a message: How can we help?"
+    },
+    {
+     "id": "contact:ready-to-jump-in",
+     "label": "Ready to jump in?"
+    }
+   ]
+  }
+ ]
+}

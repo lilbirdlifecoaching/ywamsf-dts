@@ -9,7 +9,15 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 
 - Owners: Luke Haythorpe and Angela (Ange) Haythorpe. Ange presents the site to YWAM SF
   (director: Steve). A creative director gives design feedback.
-- **YWAM 7 (`ywam7/`, Nov 2026) is a copy of YWAM 6 for the big simplification after the org's feedback.**
+- **The main site is YWAM 7, published at the top of https://ywamembers.org/ (since Nov 14 2026).** Build it with
+  `ROOT_SITE=1 OUT=.site7 python3 src7/build.py && python3 tools/publish_root.py`: the site is built into `.site7/` (not
+  committed) and copied to the repo root; `site-files.txt` lists the published files so stale ones are removed and nothing
+  else at the root is touched. `ywam7/` and `course/` now only hold redirect pages (old addresses → new). The DTS page
+  is at **/dts/** (was /course/). Large photos get 600/960px copies and a srcset automatically (`phone_sizes()` in
+  `src7/build.py`) so phones don't run out of memory; the home hero has a light phone version (`.lite`, dayhero.js).
+  Archive: `ywam0/` (the original first page, formerly at the root), `ywam1/`–`ywam6/`; `legacy/` holds the assets
+  `ywam1`–`ywam4` and `am-i-ready/` share (formerly `/assets/`).
+- **YWAM 7 (built from `src7/`, Nov 2026) is a copy of YWAM 6 for the big simplification after the org's feedback.**
   It has its own generator and assets in `src7/` (`python3 src7/build.py`) and shares `content/` (and so
   the admin page) with 5 and 6. Changes for the simpler direction go in `src7/` only; leave `src/` alone unless
   the user asks for a change on 5/6 too.
@@ -49,7 +57,8 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 | `content/uploads/` | Photos uploaded in the admin page (and some added by Claude) |
 | `admin/` | The admin page (pure JS). Two modes, set by `<meta name="admin-service">` in `admin/index.html`: empty = key mode (each editor unlocks the GitHub key in `admin/keys.json` with their password); set = service mode (signs in to `service/`). Has the guided tour, How-this-works panels (`HOWTO`), practice mode, help guide and history/undo |
 | `service/` | The admin sign-in & approval service (Cloudflare Worker + D1): accounts, invites, password reset by email, levels (admin/editor/contributor), approvals, comment moderation, Resend emails. Setup guide: `service/README.md`. Tests: `cd service && npm install && node test/run.mjs` |
-| `.github/workflows/build.yml` | Rebuilds `ywam5/` and `ywam6/` on every push to `src/` or `content/`, and nightly (~1 am SF) |
+| `.github/workflows/build.yml` | Rebuilds `ywam5/`, `ywam6/` and the main site (root, from `src7/`) on every push to `src/`, `src7/` or `content/`, and nightly (~1 am SF) |
+| `tools/publish_root.py` | Copies the built main site (`.site7/`) to the repo root and writes the redirect pages |
 | `design-src/` | Source artwork and the scripts that produced generated images (see below) |
 | `tools/` | Screenshot helpers for checking pages |
 

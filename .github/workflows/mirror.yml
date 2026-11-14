@@ -24,12 +24,12 @@ jobs:
       - name: Download files
         run: python3 tools/mirror_squarespace.py
       - name: Rebuild YWAM 7 with the local copies
-        run: python3 src7/build.py
+        run: ROOT_SITE=1 OUT=.site7 python3 src7/build.py && python3 tools/publish_root.py
       - name: Commit
         run: |
           git config user.name "YWAM SF site builder"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A src7/assets ywam7
+          git add -A .
           if git diff --cached --quiet; then echo "No changes."; exit 0; fi
           git commit -m "Mirror Squarespace images and PDFs into the site"
           for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done

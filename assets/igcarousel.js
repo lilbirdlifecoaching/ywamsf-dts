@@ -78,10 +78,10 @@
     plate.style.backgroundImage = 'url("' + BASE + 'bridge.webp")';
     var cards = posts.map(function (p) {
       var a = document.createElement('a');
-      a.className = 'ig-card'; a.href = p.href || PROFILE; a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('role', 'listitem');
+      a.className = 'ig-card' + (p.title ? ' has-lab' : ''); a.href = p.href || PROFILE; if (!/^(#|mailto:|tel:)/.test(a.getAttribute('href')) && p.newtab !== false) { a.target = '_blank'; a.rel = 'noopener'; } a.setAttribute('role', 'listitem');
       a.style.width = BW + 'px'; a.style.height = BH + 'px';
       a.innerHTML = '<img src="' + esc(p.img) + '" alt="' + esc(p.caption || 'Photo from YWAM San Francisco') + '" draggable="false" decoding="async">' +
-        (p.caption ? '<span class="ig-cap"><b>@ywamsf</b>' + esc(p.caption) + '</span>' : '');
+        (p.title ? '<span class="ig-lab"><small>' + esc(p.when || '') + '</small><b>' + esc(p.title) + '</b>' + (p.time ? '<i>' + esc(p.time) + '</i>' : '') + '</span>' : p.caption ? '<span class="ig-cap"><b>@ywamsf</b>' + esc(p.caption) + '</span>' : '');
       track.appendChild(a); return a;
     });
     var N = cards.length;
@@ -92,7 +92,9 @@
       if (W >= 760) {            // desktop: the artwork edge to edge, trimming empty paper above and below
         s = W / IW; H = (IH - 215) * s; ox = 0; oy = -70 * s;
       } else {                   // phones: zoom toward the centre cards
-        H = Math.max(W * 0.78, 300); s = H / (IH * 0.56); ox = (W - IW * s) / 2; oy = (H - IH * s) / 2 - 12 * s;
+        // data-compact (home page): about 25% shorter
+        H = stage.hasAttribute('data-compact') ? Math.max(W * 0.6, 230) : Math.max(W * 0.78, 300);
+        s = H / (IH * 0.56); ox = (W - IW * s) / 2; oy = (H - IH * s) / 2 - 12 * s;
       }
       stage.style.height = H + 'px';
       plate.style.cssText += ';left:' + ox + 'px;top:' + oy + 'px;width:' + IW * s + 'px;height:' + IH * s + 'px';
@@ -108,6 +110,7 @@
         c.style.opacity = e < 0 ? Math.max(0, 1 + e) : e > NS - 1 ? Math.max(0, NS - e) : 1;
         c.style.zIndex = 100 - Math.round(Math.abs(e - CENTER) * 10);
         var isC = Math.abs(e - CENTER) < 0.5; c.classList.toggle('is-center', isC); c.tabIndex = isC ? 0 : -1;
+        if (isC && stage._center !== i) { stage._center = i; stage.dispatchEvent(new CustomEvent('igcenter', { detail: { index: i } })); }
       }
     }
     function frame(t) {
@@ -146,6 +149,8 @@
     stage.querySelector('.ig-next').addEventListener('click', function () { go(1); });
     stage.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') go(-1); if (e.key === 'ArrowRight') go(1); });
 
+    stage._go = function (i) { var d = ((i - target - CENTER) % N + N) % N; if (d > N / 2) d -= N; target += d; timer = 0; };
+    stage._pause = function (v) { hover = v; };
     layout();
     if (window.ResizeObserver) new ResizeObserver(layout).observe(stage); else addEventListener('resize', layout);
     if (window.IntersectionObserver) new IntersectionObserver(function (es) { es.forEach(function (en) { visible = en.isIntersecting; if (visible) start(); else running = false; }); }, { rootMargin: '100px' }).observe(stage);
@@ -160,6 +165,12 @@
     '.ig-cap{position:absolute;left:0;right:0;bottom:0;padding:70px 26px 22px;background:linear-gradient(transparent,rgba(0,0,0,.72));font:500 20px/1.4 var(--label,system-ui);opacity:0;transition:opacity .35s}' +
     '.ig-cap b{display:block;font-size:15px;letter-spacing:.06em;opacity:.85;margin-bottom:6px}' +
     '.ig-card.is-center:hover .ig-cap,.ig-card.is-center:focus-visible .ig-cap{opacity:1}' +
+    '.ig-lab{position:absolute;left:0;right:0;bottom:0;padding:90px 30px 28px;background:linear-gradient(transparent,rgba(12,16,20,.82));color:#fff;display:block}' +
+    '.ig-lab b{display:block;font:500 46px/1.02 var(--display,Georgia)}' +
+    '.ig-lab small{display:block;font:800 17px/1.3 var(--sans,system-ui);letter-spacing:.16em;text-transform:uppercase;opacity:0;max-height:0;transition:opacity .35s,max-height .35s;color:#fff}' +
+    '.ig-lab i{display:block;font:600 21px/1.3 var(--sans,system-ui);font-style:normal;margin-top:8px;opacity:0;max-height:0;transition:opacity .35s,max-height .35s}' +
+    '.ig-card.is-center .ig-lab small,.ig-card:hover .ig-lab small,.ig-card:focus-visible .ig-lab small{opacity:.9;max-height:60px;margin-bottom:8px}' +
+    '.ig-card.is-center .ig-lab i,.ig-card:hover .ig-lab i,.ig-card:focus-visible .ig-lab i{opacity:1;max-height:60px}' +
     '.ig-nav{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:5;display:flex;gap:10px}' +
     '.ig-nav button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(30,42,75,.18);background:rgba(255,255,255,.9);color:#1E2A4B;font:500 18px/1 var(--label,system-ui);cursor:pointer;transition:border-color .15s,color .15s}' +
     '.ig-nav button:hover{border-color:#D9413A;color:#D9413A}';
