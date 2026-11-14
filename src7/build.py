@@ -297,7 +297,7 @@ home = f'''
 </div></section>
 
 <section class="ig5"><div class="wrap head rv"><span class="kick">@ywamsf on Instagram</span><h2>Life on Ellis Street, <em>this week.</em></h2><a class="handle" href="https://www.instagram.com/ywamsf/" target="_blank" rel="noopener">Follow @ywamsf →</a></div>
-  <div class="ig-stage" data-ig tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
+  <div class="ig-stage" data-ig data-compact tabindex="0" aria-label="Recent posts from YWAM San Francisco. Use the left and right arrow keys to browse."></div>
 </section>
 
 <section class="verse pad"><div class="fogs" aria-hidden="true"><i></i><i></i><i></i></div><div class="wrap">

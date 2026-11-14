@@ -1785,6 +1785,7 @@ a.ev.ev-link small{font-weight:700}
 .voices5.voices-end,.pad + .pad.voices5.voices-end{background:#E6F4F6;padding-top:clamp(56px,7vw,96px);padding-bottom:clamp(56px,7vw,96px)}
 .voices-end .voice5{background:#fff}
 
-/* round 7-31: home Instagram bridge carousel about 25% smaller on wider screens */
-@media (min-width:760px){.ig5 > .ig-stage{width:75%;margin-left:auto;margin-right:auto}}
-@media (min-width:760px){.ig5 > .ig-stage{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}}
+/* round 7-31: home Instagram section about 25% shorter - less space above, heading tucked into the open sky of the bridge */
+.ig5{padding-top:clamp(36px,4vw,56px)}
+.ig5 .head{position:relative;z-index:2;margin-bottom:0}
+@media (min-width:760px){.ig5 > .ig-stage{margin-top:clamp(-120px,-8.4vw,-60px)}}
