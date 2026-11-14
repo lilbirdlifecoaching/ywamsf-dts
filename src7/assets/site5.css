@@ -1789,3 +1789,8 @@ a.ev.ev-link small{font-weight:700}
 .ig5{padding-top:clamp(36px,4vw,56px)}
 .ig5 .head{position:relative;z-index:2;margin-bottom:0}
 @media (min-width:760px){.ig5 > .ig-stage{margin-top:clamp(-120px,-8.4vw,-60px)}}
+
+/* round 7-32: overlapping photo pairs (Bring a Team, Ellis Room) overlap less */
+.photo-stack{aspect-ratio:1/1.08}
+.photo-stack img:first-child{width:72%;height:68%}
+.photo-stack img:last-child{left:34%;top:42%;width:66%;height:58%}
