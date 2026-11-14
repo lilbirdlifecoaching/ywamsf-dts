@@ -834,12 +834,13 @@ dts = f'''
 {DTS_ROWS}
   </tbody></table>
   {COUNTDOWN_OPEN}<span class="cd-lab">Departs in</span><div class="cd-units"><div><b data-u="d">--</b><small>Days</small></div><div><b data-u="h">--</b><small>Hours</small></div><div><b data-u="m">--</b><small>Minutes</small></div><div><b data-u="s">--</b><small>Seconds</small></div></div><a class="cd-cta" href="{NX_APPLY}">Apply now →</a></div>{COUNTDOWN_CLOSE}</div>
-  <p class="board-note">{BOARD_NOTE}</p></div></div>
+  <p class="board-note">{BOARD_NOTE}</p></div>
+    <dl class="facts">{('<div><dt>Spots</dt><dd>' + str(_sp) + ' available</dd></div>') if _sp else ''}<div><dt>Dates</dt><dd>{drange(NX['_s'], NX['_e']) if NX else 'Coming soon'}</dd></div><div><dt>Length</dt><dd>About 5 months</dd></div><div><dt>Cost</dt><dd>{money(DTS_COST)} USD</dd></div><div><dt>Where</dt><dd>{ADDR}</dd></div></dl>
+  </div>
   <div class="rv heart-copy">
     <p>A Discipleship Training School (DTS) is five months to grow in your relationship with God by putting your faith into practice: three months of training here in the Tenderloin, two months of outreach in the cities of the world, then a debrief to send you into whatever comes next.</p>
     <p>This is discipleship with your feet on the ground. You’ll learn alongside people who have spent years serving this neighborhood, and discover what it means to live the way of Jesus in the everyday moments of life.</p>
     <div class="links-row"><a class="btn" href="{NX_APPLY}">Apply for DTS</a><a class="btn ghost" href="inquire/">Inquire</a><button class="btn ghost" type="button" data-survey>Am I ready?</button><button class="btn ghost" type="button" data-film="lH3BLHA6dhI">▶ Watch the DTS film</button></div>
-    <dl class="facts">{('<div><dt>Spots</dt><dd>' + str(_sp) + ' available</dd></div>') if _sp else ''}<div><dt>Dates</dt><dd>{drange(NX['_s'], NX['_e']) if NX else 'Coming soon'}</dd></div><div><dt>Length</dt><dd>About 5 months</dd></div><div><dt>Cost</dt><dd>{money(DTS_COST)} USD</dd></div><div><dt>Where</dt><dd>{ADDR}</dd></div></dl>
   </div>
 </div></section>
 

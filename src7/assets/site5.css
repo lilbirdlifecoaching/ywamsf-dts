@@ -1922,3 +1922,10 @@ a.ev.ev-link small{font-weight:700}
   .pillar .f .plab h3{font-size:24px}
   .pillar .f .plab em{font-size:9px}
 }
+
+/* round 7-44: DTS intro: the facts row sits under the departures board, so both columns come out even */
+.heart .dts-board7 + .facts{margin-top:clamp(26px,3vw,38px)}
+.heart-copy .links-row{margin-bottom:0}
+.heart-copy{padding-top:0}
+.heart-copy>p:first-child{margin-top:2px}
+@media (min-width:901px){.dts-ph + .pad.heart{padding-top:clamp(20px,2.4vw,32px)}}
