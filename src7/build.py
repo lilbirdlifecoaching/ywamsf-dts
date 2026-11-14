@@ -142,7 +142,7 @@ def footer(up, root):
     wave2 = wave.replace('#5aa8cf', '#8cc6e2')
     sw = '<nav class="switcher" aria-label="Design concepts"><span>Concepts</span>' + ''.join('<a href="%sywam%d/"><i>YWAM </i>%d</a>' % (root, i, i) for i in range(1, 5)) + ''.join('<a%s href="%sywam%d/"><i>YWAM </i>%d</a>' % (' class="on"' if i == V else '', root, i, i) for i in (5, 6, 7)) + '</nav>'
     return f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
-<div class="links"><a href="{LIVE}/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
+<div class="links"><a href="{up}privacy/">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/" target="_blank" rel="noopener">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/" target="_blank" rel="noopener">YWAM International</a></div>
 <div class="tag">Presence that restores.</div>
 <div class="foot-contact"><div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div><a class="foot-news" href="{up}newsletter/">Get updates</a></div>
 <div class="concept">{CONCEPT}</div></div></div></div>
@@ -153,6 +153,15 @@ def meta_for(title):
     m = META.get(title)
     if not m: return title, '', '', 'assets/img/hero-ellis.jpg'
     return m
+# Files mirrored from Squarespace (tools/mirror_squarespace.py) replace the Squarespace addresses wherever a copy exists
+import importlib.util as _ilu
+_ms = _ilu.spec_from_file_location('mirror_sq', os.path.join(ROOT, 'tools', 'mirror_squarespace.py')); _mirror = _ilu.module_from_spec(_ms); _ms.loader.exec_module(_mirror)
+_SQ_RE = re.compile(r'https://(?:images\.squarespace-cdn\.com/content/v1/[^"\'\s<>)\\?]+|www\.ywamsanfrancisco\.org/s/[^"\'\s<>)\\?]+\.pdf)(?:\?format=\d+w)?')
+def localize(html_text, up):
+    def sub(m):
+        u = m.group(0).split('?')[0]; name = _mirror.local_name(u)
+        return up + 'assets/' + name if os.path.exists(os.path.join(ROOT, 'src7', 'assets', name)) else m.group(0)
+    return _SQ_RE.sub(sub, html_text)
 def page(title, cur, up, root, body, extra_head='', scripts=''):
     title, desc, path, shot = meta_for(title)
     url = BASE + path
@@ -160,7 +169,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
            '<meta property="og:type" content="website"><meta property="og:site_name" content="YWAM San Francisco"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta name="twitter:card" content="summary_large_image">') % (t(desc), url, t(title), t(desc), url, BASE + shot) if desc else ''
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
-    return wire(f'''<!doctype html>
+    return localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org; frame-src https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
@@ -170,7 +179,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 <main id="main">{body}</main>
 {footer(up, root)}
 <div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up)
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up)
 
 def banner_html():
     b = load('banner.json')
@@ -349,7 +358,7 @@ vol = f'''
     <p class="board-note">Tap a shift to see it above, or sign up straight from the list.</p>
   </div></div>
 </section>
-<section class="cta-band pad"><div class="wrap rv"><span class="kick" style="color:rgba(255,255,255,.7)">Live outside the Bay Area?</span><h2>Serve for a summer, or a season.</h2><p>Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.</p><div class="row"><a class="btn light" href="{LIVE}/summerservice" target="_blank" rel="noopener">Summer of Service</a><a class="btn ghost-light" href="https://www.missionbuilders.org/location/?LID=149" target="_blank" rel="noopener">Mission Builders</a></div></div></section>
+<section class="cta-band pad"><div class="wrap rv"><span class="kick" style="color:rgba(255,255,255,.7)">Live outside the Bay Area?</span><h2>Serve for a summer, or a season.</h2><p>Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.</p><div class="row"><a class="btn light" href="mailto:{VEMAIL}?subject=Summer%20of%20Service">Ask about Summer of Service</a><a class="btn ghost-light" href="https://www.missionbuilders.org/location/?LID=149" target="_blank" rel="noopener">Mission Builders</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'volunteer'), exist_ok=True)
 open(os.path.join(OUT, 'volunteer/index.html'), 'w').write(page('Come Volunteer — YWAM San Francisco', 'volunteer', '../', '../../', vol, scripts=vol_js + f'<script src="../assets/igcarousel.js?v={VER}"></script>'))
@@ -496,13 +505,23 @@ def rkind(u):
     if u.split('?')[0].endswith('.pdf'): return 'PDF'
     if 'map' in u: return 'Map'
     return 'Read'
-def res_items(g):
-    return ''.join('<li><a class="rlink" href="%s" target="_blank" rel="noopener"><small>%s</small><b>%s</b>%s<i aria-hidden="true">↗</i></a></li>' % (lnk(x.get('url')), rkind(x.get('url')), t(x.get('title')), ('<span>' + t(x.get('by')) + '</span>') if t(x.get('by')) else '') for x in g.get('items', []) if t(x.get('title')) and lnk(x.get('url')))
+# Articles that used to live on the Squarespace site are now pages here (src7/data/articles.json)
+ARTICLES = json.load(open(os.path.join(ROOT, 'src7', 'data', 'articles.json'))).get('articles', [])
+ART_LOCAL = {LIVE + a['old']: 'about/resources/' + a['slug'] + '/' for a in ARTICLES}
+def res_items(g, up='../../'):
+    out = ''
+    for x in g.get('items', []):
+        u = lnk(x.get('url'))
+        if not (t(x.get('title')) and u): continue
+        loc = ART_LOCAL.get(re.sub(r'^https?://(www\.)?ywamsanfrancisco\.org', LIVE, str(x.get('url') or '').strip().rstrip('/')))
+        href, tgt, arrow, kind = (up + loc, '', '→', 'Read') if loc else (u, ' target="_blank" rel="noopener"', '↗', rkind(x.get('url')))
+        out += '<li><a class="rlink" href="%s"%s><small>%s</small><b>%s</b>%s<i aria-hidden="true">%s</i></a></li>' % (href, tgt, kind, t(x.get('title')), ('<span>' + t(x.get('by')) + '</span>') if t(x.get('by')) else '', arrow)
+    return out
 RES_GROUPS = [g for g in RES.get('groups', []) if t(g.get('title')) and g.get('items')]
 def gid(g): return re.sub(r'[^a-z0-9]+', '-', str(g.get('title')).lower()).strip('-')
 YT_SVG = '<svg viewBox="0 0 28 20" aria-hidden="true"><rect x="1" y="1" width="26" height="18" rx="5"/><path d="M11.5 6.2v7.6L18 10z"/></svg>'
 res_tabs = ''.join('<button type="button" role="tab" aria-selected="%s" aria-controls="rt-%s" id="rtb-%s">%s</button>' % ('true' if i == 0 else 'false', gid(g), gid(g), t(g['title'])) for i, g in enumerate(RES_GROUPS))
-res_panels = ''.join('<div class="rpanel" role="tabpanel" id="rt-%s" aria-labelledby="rtb-%s"%s><p>%s</p><ul class="rlist">%s</ul></div>' % (gid(g), gid(g), '' if i == 0 else ' hidden', t(g.get('intro')), res_items(g)) for i, g in enumerate(RES_GROUPS))
+res_panels = ''.join('<div class="rpanel" role="tabpanel" id="rt-%s" aria-labelledby="rtb-%s"%s><p>%s</p><ul class="rlist">%s</ul></div>' % (gid(g), gid(g), '' if i == 0 else ' hidden', t(g.get('intro')), res_items(g, '../')) for i, g in enumerate(RES_GROUPS))
 DTS_RES = f'''<section class="pad deeper" id="go-deeper"><div class="wrap">
   <div class="rv deeper-head"><div><span class="kick">Go deeper before you come</span><h2>Read, watch and get to know the city.</h2><p class="lede">Teaching and articles on urban mission, and a feel for San Francisco, from our resource library.</p></div><a class="yt-btn" href="{YT_CHANNEL}" target="_blank" rel="noopener">{YT_SVG}<span>Our YouTube channel</span></a></div>
   <div class="rtabs rv" data-tabs><div class="rtab-list" role="tablist" aria-label="Resources">{res_tabs}</div>{res_panels}</div>
@@ -851,7 +870,7 @@ news = subnav('news', '../') + f'''
 <section class="pad" id="events" style="background:var(--mist)"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Gatherings</span><h2>Come and join us.</h2><p class="lede">Everyone is welcome at 357 Ellis Street.</p></div>
 <div class="events">
 {EVENTS}
-</div><div class="links-row"><a class="btn" href="{LIVE}/events" target="_blank" rel="noopener">See the events calendar</a></div></div></section>
+</div><div class="links-row"><a class="btn" href="../../newsletter/">Get event invites by email</a></div></div></section>
 <section class="pad" id="blog"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">From the blog</span><h2>Stories from the street.</h2></div>
 <div class="stories news-grid">{posts}</div>
 <div class="links-row"><a class="btn" href="{LIVE}/blog" target="_blank" rel="noopener">Read the blog</a><a class="btn ghost" href="../resources/">Resources</a></div></div></section>
@@ -935,8 +954,16 @@ give = f'''
 <script src="https://resources.connect.clickandpledge.com/Library/iframeResizer.min.js"></script>
 <script>(function(){{var f=document.getElementById('CnP_inlineiframe');function go(){{if(window.iFrameResize)iFrameResize({{log:false,checkOrigin:['https://connect.clickandpledge.com']}},f);}}if(f.contentWindow&&document.readyState!=='loading')go();f.addEventListener('load',go);}})();</script>
 <section class="pad give-ways" style="padding-top:0"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:26px"><span class="kick">Other ways to give</span><h2>However you’d like to help.</h2></div>
-<div class="gw-grid"><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg></span><h3>By check</h3><p>Payable to YWAM San Francisco, mailed to {ADDR}, {CITY}.</p></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg></span><h3>Recurring bank transfer</h3><p>Give monthly straight from your bank account (ACH). We’ll send you a short form.</p><a class="go" href="mailto:{EMAIL}?subject=ACH%20giving%20form">Request the form →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg></span><h3>In-kind gifts</h3><p>New socks, toiletries and more for neighbors who visit the Ellis Room.</p><a class="go" href="{LIVE}/give" target="_blank" rel="noopener">See what we need →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg></span><h3>Employer matching</h3><p>Many employers match gifts, so yours could go twice as far.</p></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg></span><h3>Wire transfer</h3><p>Domestic or international. Ask us for the instructions.</p><a class="go" href="mailto:{EMAIL}?subject=Wire%20transfer%20instructions">Ask for instructions →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg></span><h3>Stocks & securities</h3><p>Contact our finance office to give appreciated stock.</p><a class="go" href="{TEL}">{PHONE} →</a></div></div>
+<div class="gw-grid"><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M10 22h60v34H10z"/><path pathLength="1" d="M10 22l30 20 30-20"/><path pathLength="1" class="r" d="M54 14h12v12"/><path pathLength="1" class="r" d="M48 32l18-18"/></svg></span><h3>By check</h3><p>Payable to YWAM San Francisco, mailed to {ADDR}, {CITY}.</p></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 30L40 14l28 16"/><path pathLength="1" d="M12 60h56M16 56h48"/><path pathLength="1" d="M22 34v20M34 34v20M46 34v20M58 34v20"/><path pathLength="1" class="r" d="M30 24h20"/></svg></span><h3>Recurring bank transfer</h3><p>Give monthly straight from your bank account (ACH). We’ll send you a short form.</p><a class="go" href="mailto:{EMAIL}?subject=ACH%20giving%20form">Request the form →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M14 32h52v28H14z"/><path pathLength="1" d="M10 24h60v8H10z"/><path pathLength="1" d="M40 24v36"/><path pathLength="1" class="r" d="M40 24c-6-10-18-10-16-2 2 5 16 2 16 2zM40 24c6-10 18-10 16-2-2 5-16 2-16 2z"/></svg></span><h3>In-kind gifts</h3><p>New socks, toiletries and more for neighbors who visit the Ellis Room.</p><a class="go" href="#in-kind">See what we need →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M8 42l10-10c3-3 7-3 10 0l6 6"/><path pathLength="1" d="M72 42L62 32c-3-3-7-3-10 0L38 46c-3 3 1 7 4 4l6-6"/><path pathLength="1" d="M18 50l10 10M26 46l10 10"/><path pathLength="1" class="r" d="M40 8v12M34 14h12"/></svg></span><h3>Employer matching</h3><p>Many employers match gifts, so yours could go twice as far.</p></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M40 62a26 26 0 1 0 0-52 26 26 0 0 0 0 52z"/><path pathLength="1" d="M14 36h52M40 10c-10 12-10 40 0 52M40 10c10 12 10 40 0 52"/><path pathLength="1" class="r" d="M58 14l10-4-4 10M68 10L52 26"/></svg></span><h3>Wire transfer</h3><p>Domestic or international. Ask us for the instructions.</p><a class="go" href="mailto:{EMAIL}?subject=Wire%20transfer%20instructions">Ask for instructions →</a></div><div class="card5 draw gw rv"><span class="drw"><svg class="dr ghost" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg><svg class="dr" viewBox="0 0 80 72" aria-hidden="true"><path pathLength="1" d="M12 12v48h56"/><path pathLength="1" d="M22 50V40M34 50V32M46 50V36M58 50V24"/><path pathLength="1" class="r" d="M20 36l12-10 12 6 18-16"/><path pathLength="1" class="r" d="M54 16h8v8"/></svg></span><h3>Stocks & securities</h3><p>Contact our finance office to give appreciated stock.</p><a class="go" href="{TEL}">{PHONE} →</a></div></div>
 <p class="taxnote">YWAM San Francisco is a 501(c)(3) non-profit (Tax ID #94-3218675). Tax receipts are issued to U.S. residents only. Contributions are tax-deductible as allowed by IRS guidelines; the IRS decides what is deductible. Student donations and school fees are not tax-deductible; to pay fees, use the <a href="../pay/">Pay page</a>.</p></div></section>
+<section class="pad inkind7" id="in-kind" style="background:var(--mist)"><div class="wrap">
+  <div class="rv" style="max-width:720px;margin-bottom:26px"><span class="kick">In-kind gifts</span><h2>What we need right now.</h2><p class="lede">To give any of these, call <a href="{TEL}">{PHONE}</a> or email <a href="mailto:office@ywamsanfrancisco.org">office@ywamsanfrancisco.org</a> first, so we can plan where it goes.</p></div>
+  <div class="ik-grid">
+    <div class="ik rv"><h3>For the Ellis Room</h3><ul><li>Disposable razors and shaving cream</li><li>Travel-sized toiletries (toothbrushes, toothpaste, floss, shampoo, conditioner, lotion, sunscreen, deodorant, moisturizer)</li><li>Combs and brushes</li><li>Casual shoes (sneakers, boots)</li><li>New or like-new clothing (please, no used socks or undergarments)</li><li>Accessories (hats, beanies, belts, backpacks, tote bags)</li><li>Blankets</li><li>Billiard equipment (cues, green chalk)</li><li>Board games, chess or checker sets</li><li>Coffee percolators (100-cup capacity)</li></ul></div>
+    <div class="ik rv"><h3>Practical needs</h3><ul><li>An industrial set of knives</li><li>Office chairs (sets of 3 or more)</li><li>Laptop computers</li><li>Piano tuning</li></ul></div>
+    <div class="ik rv"><h3>Housing needs</h3><ul><li>Silverware and cooking utensils</li><li>Dishware (mugs, glasses, plates, bowls)</li><li>Cookware (pots, pans)</li><li>New bedding sets (twin or full)</li><li>New pillows</li><li>Cutting boards</li><li>Microwaves</li><li>Toasters</li></ul></div>
+  </div>
+</div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Give your time, too.</h2><p>Some of the best gifts are an afternoon at the pantry or an evening with hot chocolate on the corner.</p><div class="row"><a class="btn light" href="../volunteer/">Come volunteer</a><a class="btn ghost-light" href="../teams/">Bring a team</a></div></div></section>
 '''
 os.makedirs(os.path.join(OUT, 'give'), exist_ok=True)
@@ -964,6 +991,73 @@ contact = f'''
 contact_js = '''<script>(function(){var f=document.getElementById('msg');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var t=f.topic.value.split('|'),to=t[0],lab=f.topic.options[f.topic.selectedIndex].text;var sub='Website message: '+lab+' ('+f.name.value+')';var body=f.message.value+'\\n\\n'+f.name.value+'\\n'+f.email.value;location.href='mailto:'+to+'?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body);});})();</script>'''
 os.makedirs(os.path.join(OUT, 'contact'), exist_ok=True)
 open(os.path.join(OUT, 'contact/index.html'), 'w').write(page('Contact Us — YWAM San Francisco', 'contact', '../', '../../', contact, scripts=contact_js))
+
+
+# ---------------------------------------------------------------- RESOURCE ARTICLES (moved from the Squarespace site)
+def art_html(a):
+    out = ''
+    for b in a['blocks']:
+        k = b[0]
+        if k == 'p': out += '<p>%s</p>' % html.escape(b[1])
+        elif k == 'h2': out += '<h2>%s</h2>' % html.escape(b[1])
+        elif k == 'quote': out += '<blockquote>%s</blockquote>' % html.escape(b[1])
+        elif k == 'sign': out += '<p class="art-sign">%s</p>' % html.escape(b[1])
+        elif k == 'note': out += '<p class="art-note">%s</p>' % html.escape(b[1])
+        elif k == 'ol': out += '<ol>%s</ol>' % ''.join('<li>%s</li>' % html.escape(x) for x in b[1])
+        elif k == 'img':
+            u = img(b[1], '../../../', 1200)
+            if u: out += '<figure><img src="%s" alt="%s" loading="lazy"><figcaption>%s</figcaption></figure>' % (u, html.escape(b[2]), html.escape(b[2]))
+        elif k == 'links': out += '<ul class="art-links">%s</ul>' % ''.join('<li><a href="%s" target="_blank" rel="noopener">%s ↗</a></li>' % (lnk(u), html.escape(n)) for n, u in b[1] if lnk(u))
+    return out
+for a in ARTICLES:
+    body = subnav('resources', '../../') + f'''
+<article class="pad art7"><div class="wrap art-wrap">
+  <a class="art-back" href="../">← All resources</a>
+  <span class="kick">{html.escape(a.get('series') or 'Resources')}</span><h1>{html.escape(a['title'])}</h1><p class="art-by">By {html.escape(a.get('by') or 'YWAM San Francisco')}</p>
+  <div class="art-body">{art_html(a)}</div>
+  <p class="art-foot"><a href="../">← Back to all resources</a></p>
+</div></article>'''
+    d = os.path.join(OUT, 'about', 'resources', a['slug']); os.makedirs(d, exist_ok=True)
+    META[a['title'] + ' — YWAM San Francisco'] = (a['title'] + ' | YWAM San Francisco', (a['blocks'][0][1] if a['blocks'] and a['blocks'][0][0] == 'p' else a['title'])[:155], 'about/resources/' + a['slug'] + '/', 'assets/img/hero-ellis.jpg')
+    open(os.path.join(d, 'index.html'), 'w').write(page(a['title'] + ' — YWAM San Francisco', 'about', '../../../', '../../../../', body))
+
+# ---------------------------------------------------------------- PRIVACY (updated from the 2018 policy on the Squarespace site)
+privacy = f'''
+<article class="pad art7 privacy7"><div class="wrap art-wrap">
+  <span class="kick">Privacy policy</span><h1>Your privacy</h1><p class="art-by">Last updated November 2026</p>
+  <div class="art-body">
+  <p>This policy explains how YWAM San Francisco collects, uses, keeps and shares information from people who use ywamsanfrancisco.org and the programs and services offered on it.</p>
+  <h2>The short version</h2>
+  <ul><li>We collect information only when you give it to us: a form, an application, a gift or an email.</li><li>We never sell, trade or rent your information.</li><li>This website sets no tracking or advertising cookies of its own.</li><li>You can ask to see, correct or remove your information at any time.</li></ul>
+  <h2>Information you give us</h2>
+  <p>When you fill in a form on this site we collect what you enter. That can include your name, email address, phone number, postal address and, for program applications, passport details, background, health and emergency contact information. Our forms:</p>
+  <ul><li><b>DTS inquiry and application, team booking and newsletter sign-up</b> run on FormAssembly and are stored in our Salesforce database.</li><li><b>Tenderloin Connect volunteer sign-up</b> runs on its own sign-up form.</li><li><b>Volunteering and general questions</b> are sent by email from your own email app.</li><li><b>Fee payments</b> requested through the Pay page are sent to our finance team by email.</li></ul>
+  <p>If you fill in a reference for someone applying to one of our programs, we keep your details and your answers with their application.</p>
+  <h2>Gifts and payments</h2>
+  <p>Online gifts are processed by Click &amp; Pledge on a secure form embedded on our Give page. Your card details go straight to Click &amp; Pledge and are never seen or stored by this website. We receive a record of your gift for our accounts and to send your tax receipt.</p>
+  <h2>Applications</h2>
+  <p>Information that you or your referees give us when applying for one of our programs may be entered into the University of the Nations (UofN) database. YWAM San Francisco operates under and is certified by the UofN, and your information may be recorded there to register you as a UofN student.</p>
+  <h2>Things this website loads from other services</h2>
+  <ul><li><b>Weather:</b> the home page asks Open-Meteo for San Francisco's current weather. Like any website request, this shares your device's IP address with Open-Meteo, but nothing about you.</li><li><b>Videos:</b> films play from YouTube's privacy-enhanced mode, which doesn't set cookies until you press play.</li><li><b>Map:</b> the Contact page shows a Google map.</li><li><b>Accreditation badges:</b> the ECFA and GuideStar (Candid) badges load from those organizations.</li></ul>
+  <p>The "Ask us anything" chat runs entirely in your browser: what you type is not sent anywhere or stored.</p>
+  <h2>How we use information</h2>
+  <ul><li>To answer your questions and requests.</li><li>To process applications to our programs.</li><li>To process gifts and payments, send receipts and keep accounting records.</li><li>To send newsletters and event invites, if you've signed up. Every email has an unsubscribe link.</li></ul>
+  <h2>Who we share it with</h2>
+  <p>We don't share your information except as described here, or when we tell you first and give you a chance to opt out. We use the services named above to run our forms, giving and email. If the law requires it, we will disclose information to government or law enforcement authorities, and we may share information to investigate or prevent fraud or illegal activity.</p>
+  <h2>Other websites</h2>
+  <p>Links to other websites, such as YouTube, Instagram or other YWAM locations, lead to sites with their own privacy policies, which this policy doesn't cover.</p>
+  <h2>Keeping it safe</h2>
+  <p>We protect the information we receive with physical, electronic and procedural safeguards, and this website is served only over a secure connection. No transmission over the internet is completely without risk.</p>
+  <h2>Seeing, changing or removing your information</h2>
+  <p>To see the information we hold about you, correct it, opt out of any use, or make a complaint, contact us. We aim to resolve complaints quickly.</p>
+  <p>YWAM San Francisco<br>{ADDR}, {CITY}<br><a href="mailto:{EMAIL}">{EMAIL}</a><br><a href="{TEL}">{PHONE}</a></p>
+  <h2>Changes</h2>
+  <p>If we change this policy, we will update the date at the top of this page.</p>
+  </div>
+</div></article>'''
+os.makedirs(os.path.join(OUT, 'privacy'), exist_ok=True)
+META['Privacy — YWAM San Francisco'] = ('Privacy Policy | YWAM San Francisco', 'How YWAM San Francisco collects, uses and protects information from people who use this website, give, volunteer or apply.', 'privacy/', 'assets/img/hero-ellis.jpg')
+open(os.path.join(OUT, 'privacy', 'index.html'), 'w').write(page('Privacy — YWAM San Francisco', '', '../', '../../', privacy))
 
 # ---------------------------------------------------------------- CHAT ASSISTANT KNOWLEDGE (YWAM 7)
 # The "Ask us" chat answers from this list only: no AI, nothing sent anywhere. Everything here comes from the
@@ -1012,7 +1106,7 @@ for x in _shifts:
     _su = SIGNUP_LINKS.get(U(x.get('title')).lower())
     kb('volunteer', 'What is the %s shift?' % U(x.get('title')), U(x.get('title')) + ' shift volunteer ' + U(x.get('when')), '%s, %s. %s' % (U(x.get('when')), U(x.get('time')), U(x.get('description'))), ([('Sign up for ' + U(x.get('title')), _su)] if _su else []) + [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)], [U(x.get('title')).lower()])
 kb('volunteer', 'How do I volunteer?', 'volunteer serve help sign up shift join bay area local', 'Pick a shift on the Volunteer page and email our volunteer team to sign up. Weekly shifts: ' + '; '.join('%s (%s, %s)' % (U(x.get('title')), U(x.get('when')), U(x.get('time'))) for x in _shifts) + '.', [('Volunteer shifts', 'volunteer/'), ('Email ' + VE, 'mailto:' + VE)])
-kb('volunteer', 'I don’t live in the Bay Area. Can I still serve?', 'summer season long term outside bay area mission builders skills maintenance cooking room board', 'Yes. Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.', [('Summer of Service', 'https://www.ywamsanfrancisco.org/summerservice'), ('Mission Builders', 'https://www.missionbuilders.org/location/?LID=149')])
+kb('volunteer', 'I don’t live in the Bay Area. Can I still serve?', 'summer season long term outside bay area mission builders skills maintenance cooking room board', 'Yes. Join our Summer of Service, or come as a Mission Builder: use your skills in maintenance, cooking, administration or photo and video, in exchange for free or subsidized room and board.', [('Ask about Summer of Service', 'mailto:' + VE + '?subject=Summer%20of%20Service'), ('Mission Builders', 'https://www.missionbuilders.org/location/?LID=149')])
 kb('volunteer', 'Can I volunteer with my group or church?', 'group church friends youth together volunteer team', 'Teams are welcome at the Thursday food pantry. For a weekend, a week or longer with your church or youth group, look at Mission Adventures on the Bring a Team page.', [('Bring a team', 'teams/'), ('Email ' + VE, 'mailto:' + VE)])
 
 # Churches & teams
@@ -1027,7 +1121,7 @@ kb('give', 'How can I give?', 'give donate donation support money gift online ca
 kb('give', 'Is my gift tax-deductible?', 'tax deductible receipt 501c3 ein tax id irs', 'YWAM San Francisco is a 501(c)(3) non-profit, Tax ID #94-3218675. Tax receipts are issued to U.S. residents only, and contributions are deductible as allowed by IRS guidelines. Student donations and school fees are not tax-deductible.', [('Give', 'give/')])
 kb('give', 'Can I give by check or bank transfer?', 'check cheque mail bank transfer ach wire stock securities employer matching', 'Checks: payable to YWAM San Francisco, mailed to ' + U(ADDR) + ', ' + U(CITY) + '. For a recurring bank transfer (ACH) or wire, email us and we’ll send the form or instructions. For stocks, call our finance office on ' + PH + '.', [('Other ways to give', 'give/'), L_MAIL])
 kb('give', 'Can I give to a staff member or a student?', 'support staff member missionary student sponsor someone', 'Gifts toward a staff member’s ministry can be given through our Give page. Gifts for students can’t be sent to YWAM SF as donations; to pay a student’s fees, use the Pay Fees page.', [('Give', 'give/'), ('Pay fees', 'pay/')])
-kb('give', 'What items can I donate?', 'in-kind donate items socks toiletries clothes supplies', 'In-kind gifts like new socks and toiletries help neighbors who visit the Ellis Room. The Give page links to our current list of needs.', [('Give', 'give/')])
+kb('give', 'What items can I donate?', 'in-kind donate items socks toiletries clothes supplies', 'Our Give page lists what we need right now: toiletries, shoes, clothing and blankets for the Ellis Room, plus practical and housing needs. Call or email the office first so we can plan where it goes.', [('What we need', 'give/#in-kind'), ('Email the office', 'mailto:office@ywamsanfrancisco.org')])
 
 # Ellis Room, neighbors, staff, about, visiting
 kb('ellis', 'When is the Ellis Room open?', 'ellis room open hours times when drop in', 'Ellis Room: ' + _hours.get('Ellis Room', 'Mon, Tue, Wed and Fri, 10:30 am–4:30 pm') + '. Coffee, pool, conversation and a welcome for anyone who walks in.', [('The Ellis Room', 'ellis-room/')])

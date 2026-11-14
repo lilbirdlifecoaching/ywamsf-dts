@@ -1833,3 +1833,26 @@ a.ev.ev-link small{font-weight:700}
 .vb7 .row-su:focus-visible{outline:2px solid #fff;outline-offset:2px}
 @media (max-width:640px){.vb7 .row-su{padding:6px 8px}.vb7 .row-su .su-t{display:none}.vb7 .board td.su{padding-left:4px}}
 @media (max-width:640px){.vb7 .board td{padding:9px 4px}.vb7 .board td:first-child{font-size:9px}.vb7 .row-su{padding:5px 6px}.vb7 .board{padding:12px 8px}}
+
+/* round 7-36: article pages (resources, privacy) and the in-kind list on Give */
+.art-wrap{max-width:760px}
+.art7 h1{font-size:clamp(36px,4.6vw,56px);line-height:1.08;margin:8px 0 10px}
+.art-by{color:var(--muted);font-size:15px;margin:0 0 30px}
+.art-back{display:inline-block;margin-bottom:22px;font:800 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--red,#0B7E90);text-decoration:none}
+.art-body{font-size:17.5px;line-height:1.7;color:var(--body)}
+.art-body p{margin:0 0 1.1em}
+.art-body h2{font-size:clamp(24px,2.6vw,30px);margin:1.6em 0 .6em}
+.art-body ul,.art-body ol{margin:0 0 1.2em;padding-left:1.2em}.art-body li{margin:0 0 .5em}
+.art-body blockquote{margin:1.6em 0;padding:4px 0 4px 22px;border-left:3px solid var(--cyan,#24AFBE);font:500 24px/1.35 var(--display);color:var(--ink)}
+.art-body figure{margin:1.6em 0}.art-body figure img{width:100%;height:auto;border-radius:8px;background:var(--mist)}
+.art-body figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+.art-sign{font:500 22px var(--display);color:var(--ink)}
+.art-note{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.art-links{list-style:none;padding:0!important}.art-links a{font-weight:700;color:var(--red,#0B7E90)}
+.art-foot{margin-top:36px;padding-top:18px;border-top:1px solid var(--line)}.art-foot a{font-weight:700;color:var(--red,#0B7E90)}
+.privacy7 .art-body h2{font-size:24px}
+.ik-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ik{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 24px}
+.ik h3{font-size:22px;margin:0 0 12px}
+.ik ul{margin:0;padding-left:1.1em;font-size:15.5px;line-height:1.5}.ik li{margin:0 0 7px}
+@media (max-width:900px){.ik-grid{grid-template-columns:1fr}}

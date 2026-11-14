@@ -92,7 +92,9 @@
       if (W >= 760) {            // desktop: the artwork edge to edge, trimming empty paper above and below
         s = W / IW; H = (IH - 215) * s; ox = 0; oy = -70 * s;
       } else {                   // phones: zoom toward the centre cards
-        H = stage.hasAttribute('data-compact') ? Math.max(W * 0.6, 230) : Math.max(W * 0.78, 300);   // data-compact: home page, ~25% shorter s = H / (IH * 0.56); ox = (W - IW * s) / 2; oy = (H - IH * s) / 2 - 12 * s;
+        // data-compact (home page): about 25% shorter
+        H = stage.hasAttribute('data-compact') ? Math.max(W * 0.6, 230) : Math.max(W * 0.78, 300);
+        s = H / (IH * 0.56); ox = (W - IW * s) / 2; oy = (H - IH * s) / 2 - 12 * s;
       }
       stage.style.height = H + 'px';
       plate.style.cssText += ';left:' + ox + 'px;top:' + oy + 'px;width:' + IW * s + 'px;height:' + IH * s + 'px';

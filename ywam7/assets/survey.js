@@ -4,9 +4,9 @@ var LINKS={
   apply:DTSI.apply||"https://www.tfaforms.com/4827504",
   email:DTSI.email||"dts@ywamsanfrancisco.org",
   phone:"tel:4158856543",
-  volunteer:"https://www.ywamsanfrancisco.org/volunteer",
-  ma:"https://www.ywamsanfrancisco.org/mission-adventure",
-  pantry:"https://www.ywamsanfrancisco.org/foodpantry",
+  volunteer:"../volunteer/",
+  ma:"../teams/",
+  pantry:"../ellis-room/",
   blog:"https://www.ywamsanfrancisco.org/blog?category=DTS"
 };
 

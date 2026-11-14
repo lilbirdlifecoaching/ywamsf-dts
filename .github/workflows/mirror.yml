@@ -1,0 +1,36 @@
+# Downloads the images and PDFs the site still loads from Squarespace into src7/assets/ (see tools/mirror.txt),
+# then rebuilds YWAM 7 so it uses the local copies. Runs when the list changes, or by hand.
+name: Mirror Squarespace files
+
+on:
+  push:
+    branches: [main]
+    paths: ['tools/mirror.txt', 'tools/mirror_squarespace.py', '.github/workflows/mirror.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download files
+        run: python3 tools/mirror_squarespace.py
+      - name: Rebuild YWAM 7 with the local copies
+        run: python3 src7/build.py
+      - name: Commit
+        run: |
+          git config user.name "YWAM SF site builder"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A src7/assets ywam7
+          if git diff --cached --quiet; then echo "No changes."; exit 0; fi
+          git commit -m "Mirror Squarespace images and PDFs into the site"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1
