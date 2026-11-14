@@ -493,3 +493,25 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
 (function () { if (!location.hash || location.hash.length < 2) return; function go() { var el; try { el = document.querySelector(location.hash); } catch (e) {} if (el) el.scrollIntoView({ block: 'start' }); } addEventListener('load', function () { setTimeout(go, 60); setTimeout(go, 600); }); 
   /* the chat assistant lives in chat7.js */
 })();
+
+/* YWAM 7: the announcement bar scrolls like a ticker. The message is copied until it fills the row twice over,
+   then the row slides left by exactly half and repeats, so there is no jump. Hover or focus pauses it. */
+(function () {
+  var bar = document.querySelector('.ann'), track = bar && bar.querySelector('.ann-track');
+  if (!track || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  var item = track.querySelector('.ann-item');
+  function build() {
+    [].slice.call(track.querySelectorAll('.ann-item.copy')).forEach(function (c) { c.remove(); });
+    bar.classList.remove('run');
+    var need = bar.clientWidth, w = item.offsetWidth || 1, n = Math.max(1, Math.ceil(need / w)) * 2 - 1;
+    for (var i = 0; i < n; i++) {
+      var c = item.cloneNode(true); c.classList.add('copy'); c.setAttribute('aria-hidden', 'true');
+      [].forEach.call(c.querySelectorAll('a'), function (a) { a.tabIndex = -1; });
+      track.appendChild(c);
+    }
+    bar.classList.add('run');
+    track.style.setProperty('--ann-dur', Math.max(12, (track.scrollWidth / 2) / 55) + 's');   // about 55px a second
+  }
+  build();
+  var t; addEventListener('resize', function () { clearTimeout(t); t = setTimeout(build, 250); });
+})();

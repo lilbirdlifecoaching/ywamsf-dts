@@ -213,7 +213,8 @@ def banner_html():
     if until and _d(until) and _d(until) < TODAY: return ''
     u = lnk(b.get('link_url'))
     a = ' <a href="%s"%s>%s</a>' % (u, ' target="_blank" rel="noopener"' if u.startswith('http') and not re.match(r'https://(www\.)?(ywamembers|ywamsanfrancisco)\.org(/|$)', u) else '', t(b.get('link_text') or 'Learn more')) if u else ''
-    return '<div class="ann" role="note"%s><div class="wrap">%s%s</div></div>' % (' data-until="%s"' % until if _d(until) else '', t(b['text']), a)
+    # scrolls like a ticker (site5.js copies the message to fill the row); stays still for reduced-motion visitors
+    return '<div class="ann" role="note"%s><div class="ann-track"><span class="ann-item">%s%s</span></div></div>' % (' data-until="%s"' % until if _d(until) else '', t(b['text']), a)
 
 WIRE = [('/about"', 'about/'), ('/give"', 'give/'), ('/contact"', 'contact/'), ('/volunteer"', 'volunteer/'), ('/mission-adventure"', 'teams/')]
 def wire(h, up):

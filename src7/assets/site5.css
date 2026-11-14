@@ -1878,3 +1878,13 @@ a.ev.ev-link small{font-weight:700}
 .ps7 p{margin:0;max-width:640px;font-size:16px}
 .ps7 .btn{white-space:nowrap}
 .price5 .pay7{margin-top:14px}
+
+/* round 7-39: scrolling announcement bar (ticker). Without JS or with reduced motion it stays still and centered. */
+.ann{overflow:hidden;padding:9px 0}
+.ann-track{display:flex;justify-content:center;flex-wrap:wrap;padding:0 16px}
+.ann-item{padding:0 28px;white-space:normal}
+.ann.run .ann-track{justify-content:flex-start;flex-wrap:nowrap;width:max-content;padding:0;animation:annScroll var(--ann-dur,25s) linear infinite}
+.ann.run .ann-item{white-space:nowrap;position:relative;padding:0 36px}
+.ann.run .ann-item::after{content:'';position:absolute;right:-3px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(255,255,255,.55)}
+.ann.run:hover .ann-track,.ann.run:focus-within .ann-track{animation-play-state:paused}
+@keyframes annScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
