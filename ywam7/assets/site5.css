@@ -1707,3 +1707,18 @@ a.ev.ev-link small{font-weight:700}
 .news7 + .y5-foot{background:var(--mist)}
 .update img{aspect-ratio:4/5;height:auto;object-position:50% 25%;max-width:440px;justify-self:center}
 @media (max-width:860px){.update img{height:auto;max-width:360px}}
+
+/* round 7-22: staff page - leadership on top, then each team with its director; every photo the same size */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.pcard .pc-img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 22%;background:var(--mist)}
+.pcard span.pc-img{display:flex;align-items:center;justify-content:center;background:#E3F3F5;color:var(--deep,#08404F);font:500 46px var(--display)}
+.pc-t{padding:14px 16px 16px}
+.pc-t b{display:block;font:500 21px/1.2 var(--display);color:var(--ink)}
+.pc-t small{display:block;margin-top:4px;font-size:13.5px;line-height:1.4;color:var(--muted)}
+.pcard.dir7{border-color:rgba(36,175,190,.55);box-shadow:inset 0 3px 0 var(--cyan,#24AFBE)}
+.pcard.dir7 .pc-t small{color:var(--red,#0B7E90);font-weight:700}
+.teams7-head{max-width:720px;margin:clamp(48px,6vw,80px) 0 6px}
+.team7{margin-top:clamp(26px,3vw,40px)}
+.team7 h3{font:800 12px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+@media (max-width:560px){.pgrid{grid-template-columns:1fr 1fr;gap:12px}.pc-t{padding:10px 12px 12px}.pc-t b{font-size:17px}.pc-t small{font-size:12px}.pcard span.pc-img{font-size:34px}}

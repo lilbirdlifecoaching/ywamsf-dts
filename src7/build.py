@@ -801,13 +801,33 @@ def face(p, w, cls='av'):
     u = img(p.get('photo'), '../../', w)
     if u: return '<img class="%s ph" src="%s" alt="%s" loading="lazy">' % (cls, u, t(p.get('name')))
     return '<span class="%s">%s</span>' % (cls, t(initials(p.get('name') or '?')))
-lead = ''.join('<div class="person lead rv">' + face(p, 750, 'pp') + '<div class="pt"><h3>' + t(p.get('name')) + '</h3><p>' + t(p.get('role')) + '</p></div></div>' for p in STAFF.get('directors', []) if t(p.get('name')))
-teams_html = ''.join('<div class="crew rv"><h4>' + t(tm.get('name')) + '</h4><ul>' + ''.join('<li>' + face(p, 300) + t(p.get('name')) + '</li>' for p in tm.get('members', []) if t(p.get('name'))) + '</ul></div>' for tm in STAFF.get('teams', []) if tm.get('members'))
+# YWAM 7 staff layout (Nov 2026): leadership on top (directors whose role names no team: Steve, Tim & Karol),
+# then each team with its director first. Every photo is the same size.
+def _norm(x): return re.sub(r'[^a-z ]', '', str(x or '').lower().replace('&', 'and')).strip()
+def pcard(p, role='', cls=''):
+    return '<div class="pcard%s rv">%s<div class="pc-t"><b>%s</b>%s</div></div>' % (cls, face(p, 600, 'pc-img'), t(p.get('name')), ('<small>' + role + '</small>') if role else '')
+_dirs = [p for p in STAFF.get('directors', []) if t(p.get('name'))]
+_teams = [tm for tm in STAFF.get('teams', []) if t(tm.get('name'))]
+def _team_of(p):
+    r = _norm(p.get('role'))
+    return next((tm for tm in _teams if _norm(tm.get('name')) and _norm(tm.get('name')) in r), None)
+_leaders = [p for p in _dirs if not _team_of(p)]
+lead = ''.join(pcard(p, t(p.get('role')), ' lead7') for p in _leaders)
+_order = [tm for p in _dirs for tm in [_team_of(p)] if tm] + [tm for tm in _teams if tm not in [_team_of(p) for p in _dirs]]
+_seen = []
+teams_html = ''
+for tm in _order:
+    if tm in _seen: continue
+    _seen.append(tm)
+    head = [p for p in _dirs if _team_of(p) is tm]
+    cards = ''.join(pcard(p, t(p.get('role')), ' dir7') for p in head) + ''.join(pcard(p) for p in tm.get('members', []) if t(p.get('name')))
+    if cards: teams_html += '<div class="team7"><h3 class="rv">%s</h3><div class="pgrid">%s</div></div>' % (t(tm.get('name')), cards)
 board = ''.join('<article class="bm rv">%s<div><h3>%s</h3><small>%s</small><p>%s</p></div></article>' % (('<img src="%s" alt="%s" loading="lazy">' % (img(b.get('photo'), '../../', 500), t(b.get('name')))) if img(b.get('photo'), '../../', 500) else '<span class="bm-av">%s</span>' % t(initials(b.get('name'))), t(b.get('name')), t(b.get('role')), t(b.get('bio'))) for b in load('board.json').get('members', []) if t(b.get('name')))
 people = subnav('people', '../') + f'''
-<section class="pad" id="staff"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Leadership</span><h2>Our directors.</h2></div>
-<div class="people4">{lead}</div>
-<div class="crews">{teams_html}</div></div></section>
+<section class="pad" id="staff"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:26px"><span class="kick">Leadership</span><h2>Our leadership.</h2></div>
+<div class="pgrid">{lead}</div>
+<div class="rv teams7-head"><span class="kick">Our teams</span><h2>The people on Ellis Street.</h2></div>
+{teams_html}</div></section>
 <section class="pad" style="background:var(--mist)" id="board"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Board of directors</span><h2>Guiding and stewarding the ministry.</h2><p class="lede">Our board brings decades of experience in missions, leadership and finance.</p></div>
 <div class="board-grid">{board}</div></div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Join the staff.</h2><p>Most of our staff first came for a DTS. If you’re sensing a call to serve in the city, start a conversation with us.</p><div class="row"><a class="btn light" href="../../join-staff/">Join staff</a><a class="btn ghost-light" href="../../contact/">Get in touch</a></div></div></section>

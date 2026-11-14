@@ -2,8 +2,13 @@
   "directors": [
     {
       "name": "Steve Binnquist",
-      "role": "YWAM San Francisco Director",
+      "role": "Executive Director",
       "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/79fc220c-550f-4db4-b4c4-ee1e8b5058c1/steve.jpg"
+    },
+    {
+      "name": "Tim & Karol Svoboda",
+      "role": "YWAM San Francisco Bay Area Coordinators",
+      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1770318794175-4VCIPMH2PCKUT82R229Z/image-asset.jpeg"
     },
     {
       "name": "Kent McCormick",
