@@ -1759,3 +1759,5 @@ a.ev.ev-link small{font-weight:700}
 .vows-col .vf b{font-size:25px}
 .vows-col .vf .sub{font-size:14.5px}
 @media (max-width:980px){.vows-col .vow5{height:auto}}
+.glass-cards .kick{display:block;margin:0 0 12px}.glass-cards .gc-hint{margin:12px 0 0;text-align:center}
+.glass-cards .kick{margin-bottom:14px}

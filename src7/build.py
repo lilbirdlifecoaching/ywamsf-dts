@@ -430,7 +430,7 @@ staffp = subnav('joinstaff', '../about/') + f'''
     <div class="rcard rv"><small>03</small><b>Come and see</b><span>Spend time on Ellis Street before you commit. Like all YWAM staff, our team raises personal support, and we’ll help you build yours.</span><em><a href="../contact/">Plan a visit →</a></em></div>
   </div></div>
 </div>
-<aside class="glass-col" aria-label="Our way of life"><div class="glass-cards"><span class="kick">Our way of life</span><p class="gc-hint">Tap a card to turn it over.</p><div class="vows5 vows-col">{vows}</div></div></aside>
+<aside class="glass-col" aria-label="Our way of life"><div class="glass-cards"><span class="kick">Our way of life</span><div class="vows5 vows-col">{vows}</div><p class="gc-hint">Tap a card to turn it over.</p></div></aside>
 </div></section>
 <section class="cta-band pad"><div class="wrap rv"><h2>Sensing a call to the city?</h2><p>We’d love to hear your story. Email <a style="color:#fff" href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</p><div class="row"><a class="btn light" href="mailto:{EMAIL}?subject=Joining%20staff">Talk with us about staff</a><a class="btn ghost-light" href="../about/people/">Meet the staff</a></div></div></section>
 '''
