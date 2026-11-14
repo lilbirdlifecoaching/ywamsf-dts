@@ -134,7 +134,7 @@ def header(cur, up):
         return '<span class="tdd"><a href="%sabout/" class="tdd-btn" aria-haspopup="true" aria-expanded="false"%s>About<i aria-hidden="true"></i></a><span class="tdd-menu" role="menu" aria-label="About">%s</span></span>' % (up, ' aria-current="page"' if k == cur else '', menu)
     top = ''.join(tl(h, t, k) for h, t, k in TOP)
     return f'''<header class="y5-head"><div class="y5-top"><div class="wrap"><a class="tlogo" href="{up or './'}" aria-label="YWAM San Francisco home"></a><span class="tlinks">{top}</span></div></div>
-<nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links">{links}<a class="sign" href="{up}course/inquire/">Sign Me Up!</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>'''
+<nav class="y5-nav" aria-label="Main"><div class="wrap"><span class="links">{links}<a class="sign" href="{up}newsletter/">Get updates</a></span><button class="y5-burger" aria-expanded="false" aria-label="Open menu">Menu</button></div></nav></header>'''
 
 CONCEPT = 'Design concept YWAM 7 (a simpler YWAM 6) for the YWAM San Francisco refresh — not the live site' if V == 7 else 'Design concept YWAM 5 for the YWAM San Francisco refresh — not the live site' if V == 5 else 'Design concept YWAM 6 (YWAM 5 with a backlit sign) for the YWAM San Francisco refresh — not the live site'
 def footer(up, root):
@@ -812,7 +812,7 @@ _teams = [tm for tm in STAFF.get('teams', []) if t(tm.get('name'))]
 def _team_of(p):
     r = _norm(p.get('role'))
     return next((tm for tm in _teams if _norm(tm.get('name')) and _norm(tm.get('name')) in r), None)
-_leaders = [p for p in _dirs if not _team_of(p)]
+_leaders = _dirs   # Nov 2026: all directors sit in leadership; teams below list their staff
 lead = ''.join(pcard(p, t(p.get('role')), ' lead7') for p in _leaders)
 _order = [tm for p in _dirs for tm in [_team_of(p)] if tm] + [tm for tm in _teams if tm not in [_team_of(p) for p in _dirs]]
 _seen = []
@@ -820,7 +820,7 @@ teams_html = ''
 for tm in _order:
     if tm in _seen: continue
     _seen.append(tm)
-    head = [p for p in _dirs if _team_of(p) is tm]
+    head = []
     cards = ''.join(pcard(p, t(p.get('role')), ' dir7') for p in head) + ''.join(pcard(p) for p in tm.get('members', []) if t(p.get('name')))
     if cards: teams_html += '<div class="team7"><h3 class="rv">%s</h3><div class="pgrid">%s</div></div>' % (t(tm.get('name')), cards)
 board = ''.join('<article class="bm rv">%s<div><h3>%s</h3><small>%s</small><p>%s</p></div></article>' % (('<img src="%s" alt="%s" loading="lazy">' % (img(b.get('photo'), '../../', 500), t(b.get('name')))) if img(b.get('photo'), '../../', 500) else '<span class="bm-av">%s</span>' % t(initials(b.get('name'))), t(b.get('name')), t(b.get('role')), t(b.get('bio'))) for b in load('board.json').get('members', []) if t(b.get('name')))
