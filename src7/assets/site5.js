@@ -458,7 +458,7 @@
       t.addEventListener('keydown', function (e) { var k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (k) { e.preventDefault(); var n = tabs[(i + k + tabs.length) % tabs.length]; show(n); n.focus(); } });
     });
     /* YWAM 7: a link to a panel (#faq, #parents, or the old #life/#real) opens that tab */
-    var ALIAS = { life: 'home', real: 'neighborhood' };
+    var ALIAS = { life: 'home', real: 'neighborhood', day: 'rhythm' };
     function open(id, scroll) {
       id = ALIAS[id] || id;
       var t = tabs.filter(function (x) { return x.getAttribute('aria-controls') === id; })[0];

@@ -1599,3 +1599,4 @@ a.ev.ev-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
 a.ev.ev-link:hover b,a.ev.ev-link:focus-visible b{text-decoration:underline}
 a.ev.ev-link small{font-weight:700}
 .week-serve{margin:14px 0 0;font-size:15px;color:var(--muted)}.week-serve a{font-weight:700;color:var(--red)}
+.kpanel .daybar{margin-top:clamp(36px,5vw,56px)}

@@ -619,19 +619,23 @@ RHYTHM7 = [('pray', 'Pray', 'Weekly prayer walks around our neighborhood and int
            ('serve', 'Serve', 'Whether it’s playing a game of pool, handing out a cup of coffee or being a listening ear, your presence is making a difference.', 'A student kneeling to talk with a neighbor wrapped in a blanket', '52% 40%'),
            ('rest', 'Sabbath &amp; Rest', 'Enjoy your day off by doing what brings you to a place of rest.', 'Students on a coastal trail looking out at the Golden Gate Bridge', '33% 60%')]
 _rhythm = ''.join(f'<figure><div class="rph"><img src="../assets/img/rhythm-{k}.jpg" alt="{alt}" loading="lazy" style="object-position:{pos}"></div><figcaption><b>{n}</b><span>{d}</span></figcaption></figure>' for k, n, d, alt, pos in RHYTHM7)
+DAYBAR = f'''  <div class="daybar" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
+    <div class="sky"><div class="sun"></div>{day}</div>
+    <div class="hour5" aria-live="polite"><small data-h="t"></small><h3 data-h="n"></h3><p data-h="d"></p></div>
+    <p class="note-small">A sample day. Rhythms shift week to week, and every week has free time and a Sabbath.</p></div>'''
 _parents_html = PARENTS.replace('See “What it’s like” above', 'See the “Your home” tab above')
 _REAL = ('<div class="real2">'
     '<div><h3>What you’ll see</h3><ul><li>Neighbors living on the street, in single-room hotels and in crisis.</li><li>Addiction, mental illness and poverty, up close and by name.</li><li>Noise, mess and a city that doesn’t slow down.</li><li>Grief and hard stories, alongside a lot of joy, humor and resilience.</li></ul></div>'
     '<div><h3>What holds you</h3><ul><li>You never serve alone: always in teams, alongside staff who know these blocks.</li><li>A weekly mentor, a small group and a community that prays together.</li><li>Rhythms of rest: Sabbath, free time and days off to explore the city.</li><li>A purpose: becoming a steady, caring presence in the lives of people others pass by.</li></ul></div>'
     '</div>')
-KTABS = [('home', 'Your home', '<p class="lede">' + (LIFE_INTRO or 'Five months is a long time to be somewhere new. Here’s the place you’ll call home.') + '</p><div class="phases life6">' + ''.join(_place(x) for x in _home_places) + '</div>'),
+KTABS = [('rhythm', 'The rhythm', '<p class="lede">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p><div class="rhythm" aria-label="The rhythm of a DTS week">' + _rhythm + '</div>' + DAYBAR),
+         ('home', 'Your home', '<p class="lede">' + (LIFE_INTRO or 'Five months is a long time to be somewhere new. Here’s the place you’ll call home.') + '</p><div class="phases life6">' + ''.join(_place(x) for x in _home_places) + '</div>'),
          ('neighborhood', 'The neighborhood', '<p class="lede">San Francisco is a city of breathtaking beauty, rich culture and striking contrasts. In the heart of it lies the Tenderloin: often overlooked, and full of people, stories and opportunities for connection. We’re honest about the hard parts.</p><div class="hood7">' + ''.join(_place(x) for x in _hood_places) + _REAL + '</div>'),
-         ('rhythm', 'The rhythm', '<p class="lede">We’re becoming a community shaped by the way of Jesus, whose presence brings peace to the people and the place around it. Over five months you learn that stillness isn’t somewhere you go. It’s Someone you stay close to, and carry with you wherever you are.</p><div class="rhythm" aria-label="The rhythm of a DTS week">' + _rhythm + '</div>'),
          ('faq', 'Common questions', FAQ + '<p class="faq-more">Still wondering about something? Ask in the chat, or email <a href="mailto:' + DEMAIL + '">' + DEMAIL + '</a>.</p>'),
          ('parents', 'For parents', '<div class="numbers5"><div>' + ('<p class="lede">' + PARENTS_INTRO + '</p>' if PARENTS_INTRO else '') + '<div class="price5 pcontact"><p><b>Talk with our DTS team</b></p><p><a href="mailto:' + DEMAIL + '">' + DEMAIL + '</a><br><a href="' + TEL + '">' + PHONE + '</a></p></div></div><div class="faq5">' + _parents_html + '</div></div>')]
 KTABS = [k for k in KTABS if not (k[0] == 'parents' and not PARENTS)]
 KNOW = ('<section class="pad know7" id="know" style="background:var(--mist)"><div class="wrap">'
-        '<div class="rv know-head"><span class="kick">Before you come</span><h2>Everything you’re wondering.</h2><p>Your home, the neighborhood, the rhythm of the week, and the questions people ask most.</p></div>'
+        '<div class="rv know-head"><span class="kick">Before you come</span><h2>Everything you’re wondering.</h2><p>The rhythm of a day and a week, your home, the neighborhood, and the questions people ask most.</p></div>'
         '<div class="ktabs rv" data-tabs><div class="ktab-list" role="tablist" aria-label="Life on the DTS">'
         + ''.join('<button type="button" role="tab" id="kt-%s" aria-controls="%s" aria-selected="%s">%s</button>' % (k, k, 'true' if i == 0 else 'false', n) for i, (k, n, _) in enumerate(KTABS))
         + '</div>' + ''.join('<div class="kpanel" role="tabpanel" id="%s" aria-labelledby="kt-%s"%s>%s</div>' % (k, k, '' if i == 0 else ' hidden', body) for i, (k, n, body) in enumerate(KTABS))
@@ -672,13 +676,6 @@ dts = f'''
   <div class="vows5">{vows}</div>
 </div></section>
 
-<section class="pad rule5" style="background:var(--mist)"><div class="wrap">
-  <div class="daybar rv" id="day"><div class="daybar-head"><span class="kick">A day in the life</span><span class="hint">Tap an hour</span></div>
-    <div class="sky"><div class="sun"></div>{day}</div>
-    <div class="hour5" aria-live="polite"><small data-h="t"></small><h3 data-h="n"></h3><p data-h="d"></p></div>
-    <p class="note-small">A sample day. Rhythms shift week to week, and every week has free time and a Sabbath.</p></div>
-
-</div></section>
 
 
 <section class="pad"><div class="wrap"><div class="rv" style="max-width:720px;margin-bottom:30px"><span class="kick">Three parts, one journey</span><h2>From the neighborhood to the nations.</h2></div>
