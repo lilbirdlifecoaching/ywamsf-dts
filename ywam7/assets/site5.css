@@ -1799,3 +1799,4 @@ a.ev.ev-link small{font-weight:700}
    (keeps the waiting line on the Ellis Room photo and the group on the Bring a Team photo uncovered) */
 .photo-stack:not(.single) img:first-child{left:0;top:auto;bottom:0;width:78%;height:68%}
 .photo-stack:not(.single) img:last-child{left:auto;right:0;top:0;width:50%;height:42%}
+.photo-stack:not(.single) img:last-child{width:58%;height:48%}
