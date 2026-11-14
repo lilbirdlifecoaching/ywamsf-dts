@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Start from the latest main (another build may have just published)
+        run: git pull -q origin main
       - name: Download files
         run: python3 tools/mirror_squarespace.py
       - name: Rebuild YWAM 7 with the local copies
