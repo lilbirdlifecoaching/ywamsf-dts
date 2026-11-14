@@ -444,7 +444,7 @@ vows = ''.join(f'''<div class="vow5 rv" role="button" tabindex="0" aria-pressed=
 
 # ---------------------------------------------------------------- JOIN STAFF
 staffp = subnav('joinstaff', '../about/') + f'''
-<section class="page-hero"><div class="ph-img"><img src="../assets/img/vol-crew.jpg" alt="YWAM San Francisco staff and volunteers together at 357 Ellis Street" style="object-position:50% 40%"></div><div class="copy"><div class="wrap"><span class="kick">Join staff · 357 Ellis Street</span><h1>Make the Tenderloin <em>your home.</em></h1><p class="lede">Love God, love your neighbors and help form disciples, for the long haul. If you sense a call to the city, we’d love to talk.</p></div></div></section>
+<section class="page-hero"><div class="ph-img still"><img src="../assets/img/join-header-7.jpg" alt="YWAM San Francisco staff, families and friends together among the redwoods" style="object-position:50% 38%"></div><div class="copy"><div class="wrap"><span class="kick">Join staff · 357 Ellis Street</span><h1>Make the Tenderloin <em>your home.</em></h1><p class="lede">Love God, love your neighbors and help form disciples, for the long haul. If you sense a call to the city, we’d love to talk.</p></div></div></section>
 <section class="pad staff-wrap"><div class="wrap staff-layout">
 <div class="staff-main">
 <div class="sblock"><div class="rv"><span class="kick">Why staff here</span><h2>Come and build <em>this with us.</em></h2>
