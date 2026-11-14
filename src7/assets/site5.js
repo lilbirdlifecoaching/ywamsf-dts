@@ -1,3 +1,5 @@
+/* safety net: if anything stops the scroll-reveal from starting, show every section after 3 s instead of leaving them hidden */
+setTimeout(function () { if (document.querySelector('.rv') && !document.querySelector('.rv.in')) [].forEach.call(document.querySelectorAll('.rv'), function (el) { el.classList.add('in'); }); }, 3000);
 /* YWAM 5 — shared interactions */
 (function () {
   document.documentElement.classList.add('js');

@@ -1856,3 +1856,10 @@ a.ev.ev-link small{font-weight:700}
 .ik h3{font-size:22px;margin:0 0 12px}
 .ik ul{margin:0;padding-left:1.1em;font-size:15.5px;line-height:1.5}.ik li{margin:0 0 7px}
 @media (max-width:900px){.ik-grid{grid-template-columns:1fr}}
+
+/* round 7-37: iPhone memory. A blurred-glass button over the animated hero makes iOS Safari repaint the
+   whole hero every frame; on phones use a plain white button instead. */
+@media (max-width:820px),(hover:none){
+  .film7,.dts-hero7 .board{-webkit-backdrop-filter:none;backdrop-filter:none}
+  .film7{background:#fff}
+}

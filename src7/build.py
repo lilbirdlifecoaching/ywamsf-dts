@@ -11,10 +11,34 @@ SF = ZoneInfo('America/Los_Angeles')
 TODAY = datetime.date.fromisoformat(os.environ['TODAY']) if os.environ.get('TODAY') else datetime.datetime.now(SF).date()
 if os.path.isdir(OUT): shutil.rmtree(OUT)
 shutil.copytree(os.path.join(ROOT, 'src7', 'assets'), os.path.join(OUT, 'assets'))
-UPRE = re.compile(r'uploads/[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.(?:jpe?g|png|webp)$')
+UPRE = re.compile(r'uploads/(?:w960/)?[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.(?:jpe?g|png|webp)$')
 os.makedirs(os.path.join(OUT, 'assets', 'uploads'), exist_ok=True)
 for f in sorted(os.listdir(os.path.join(CONTENT, 'uploads'))):
     if UPRE.match('uploads/' + f): shutil.copy2(os.path.join(CONTENT, 'uploads', f), os.path.join(OUT, 'assets', 'uploads', f))
+
+# Phone-sized copies (960px wide) of uploaded photos, so iPhones don't have to decode many 1800px images
+# (iOS Safari closes a page that uses too much memory: it "appears then disappears").
+try:
+    from PIL import Image as _PIL
+except ImportError:
+    _PIL = None
+def small(v, w=960):
+    v = str(v or '').strip()
+    if not (_PIL and UPRE.match(v)): return ''
+    name = v.split('/', 1)[1]; dst_dir = os.path.join(OUT, 'assets', 'uploads', 'w%d' % w); dst = os.path.join(dst_dir, name)
+    if not os.path.exists(dst):
+        try:
+            im = _PIL.open(os.path.join(CONTENT, v))
+            if im.width <= w: return ''
+            os.makedirs(dst_dir, exist_ok=True)
+            if not name.lower().endswith('.png'): im = im.convert('RGB')
+            im.resize((w, round(im.height * w / im.width)), _PIL.LANCZOS).save(dst, quality=82, optimize=True)
+        except Exception:
+            return ''
+    return 'uploads/w%d/%s' % (w, name)
+def srcset(v, up, w=960):
+    sm = small(v, w)
+    return ' srcset="%sassets/%s %dw, %sassets/%s 1800w"' % (up, sm, w, up, str(v).strip()) if sm else ''
 _h = hashlib.sha1()
 for d, _, fs in sorted(os.walk(os.path.join(ROOT, 'src7', 'assets'))):
     for f in sorted(fs):
@@ -221,7 +245,7 @@ META = {
 
 # ---------------------------------------------------------------- HOME
 IG = load('instagram.json').get('posts', [])
-ig_js = 'window.YWAM_IG_POSTS=' + js([{'img': img(x.get('photo'), '', 750), 'caption': str(x.get('caption') or ''), 'href': lnk(x.get('url'), 'https://www.instagram.com/ywamsf/', raw=True)} for x in IG if img(x.get('photo'), '', 750)]) + ';'
+ig_js = 'window.YWAM_IG_POSTS=' + js([{'img': img(small(x.get('photo')) or x.get('photo'), '', 750), 'caption': str(x.get('caption') or ''), 'href': lnk(x.get('url'), 'https://www.instagram.com/ywamsf/', raw=True)} for x in IG if img(x.get('photo'), '', 750)]) + ';'
 
 SIGN = ('''<div class="spill" style="left:60px;top:150px;width:900px;height:640px"></div>
     <img class="tube wave" src="assets/img/neon-wave.png" alt="" aria-hidden="true" style="left:185px;top:305px">
@@ -234,7 +258,7 @@ if NX:
 else:
     CABLECAR = '<div data-cablecar data-board="YWAM San Francisco" data-plates="NEXT DTS|SOON" data-band="Next DTS · dates coming soon" data-flag="New DTS dates are coming soon!" data-flag-cta="Find out more →" data-href="course/" aria-label="New DTS dates are coming soon. Find out more about the DTS, our 5 Month Course."></div>'
 MIN = load('ministries.json').get('ministries', [])
-REEL = ''.join('<a class="hit" href="ellis-room/"><img src="%s" alt="%s" loading="lazy"><span class="hit-t"><small>%s</small><b>%s</b><span>%s</span></span></a>' % (img(m.get('photo'), '', 1500), t(m.get('title')), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')))
+REEL = ''.join('<a class="hit" href="ellis-room/"><img src="%s"%s sizes="(max-width:700px) 78vw, 460px" alt="%s" loading="lazy" decoding="async"><span class="hit-t"><small>%s</small><b>%s</b><span>%s</span></span></a>' % (img(m.get('photo'), '', 1500), srcset(m.get('photo'), ''), t(m.get('title')), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')))
 SPOTS_TXT = ('%d spots' % int(num(NX.get('spots')))) if NX and num(NX.get('spots')) > 0 else ''
 NEXT7 = ('<p class="next7">Next DTS begins ' + mdy(NX['_s']) + ('. ' + SPOTS_TXT + '.' if SPOTS_TXT else '.') + '</p>') if NX else '<p class="next7">New DTS dates are coming soon.</p>'
 home = f'''
@@ -333,7 +357,7 @@ import json
 def rgb(hx):
     m = re.fullmatch(r'#?([0-9a-fA-F]{6})', str(hx or '').strip())
     return ','.join(str(int(m.group(1)[i:i + 2], 16)) for i in (0, 2, 4)) if m else '70,83,97'
-vol_posts = [{'img': img(x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': SIGNUP_LINKS.get(str(x['title']).strip().lower(), '')} for x in SHIFTS]
+vol_posts = [{'img': img(small(x.get('photo')) or x.get('photo'), '../', 750), 'title': str(x['title']).strip(), 'when': str(x.get('when') or ''), 'time': str(x.get('time') or ''), 'href': '#shift', 'desc': str(x.get('description') or ''), 'meta': [str(m) for m in x.get('tags') or [] if str(m).strip()], 'subject': str(x['title']).strip() + ' volunteer', 'days': sdays(x), 'rule': 'nth24' if x.get('every') == '2nd & 4th' else '', 'tint': rgb(x.get('colour')), 'email': VEMAIL, 'signup': SIGNUP_LINKS.get(str(x['title']).strip().lower(), '')} for x in SHIFTS]
 vol_js = '<script>window.YWAM_VOL_N=%d;window.YWAM_IG_POSTS=' % len(vol_posts) + js(vol_posts * 2) + ';</script>'
 vol = f'''
 <section class="page-hero"><div class="ph-img still"><img src="../assets/img/vol-header.jpg" alt="A smiling neighbor holding a box of groceries at the food pantry" style="object-position:60% 30%"></div><div class="copy"><div class="wrap"><span class="kick">Come volunteer</span><h1>Come for a shift. Stay for the people.</h1><p class="lede">Every day we open our doors to serve our neighbors, our students and our outreach teams. It’s a big job, and we can’t do it alone.</p></div></div></section>
