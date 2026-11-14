@@ -1863,3 +1863,18 @@ a.ev.ev-link small{font-weight:700}
   .film7,.dts-hero7 .board{-webkit-backdrop-filter:none;backdrop-filter:none}
   .film7{background:#fff}
 }
+
+/* round 7-38: Give page — each "other way to give" card (icon included) opens an email to finance;
+   "Looking to pay for your school?" strip; Pay DTS fees button on the DTS cost section */
+.card5.gw{position:relative}
+.card5.gw .go::after{content:'';position:absolute;inset:0;border-radius:inherit}
+.card5.gw .go:focus-visible{outline:none}
+.card5.gw:has(.go:focus-visible){outline:2px solid var(--cyan);outline-offset:3px}
+.card5.gw:has(.go){cursor:pointer}
+.card5.gw:has(.go):hover{box-shadow:0 18px 36px -22px rgba(8,64,79,.45)}
+.card5.gw .tel{position:relative;z-index:1}
+.pay-strip7{padding:0 0 clamp(36px,5vw,56px)}
+.ps7{display:flex;align-items:center;justify-content:space-between;gap:16px 28px;flex-wrap:wrap;padding:18px 24px;border-radius:12px;background:var(--mist,#F1F8F9);box-shadow:inset 0 0 0 1px rgba(36,175,190,.35)}
+.ps7 p{margin:0;max-width:640px;font-size:16px}
+.ps7 .btn{white-space:nowrap}
+.price5 .pay7{margin-top:14px}

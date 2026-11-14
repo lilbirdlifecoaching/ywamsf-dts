@@ -284,7 +284,7 @@
       fields: [{ k: 'show', l: 'Show the announcement bar', t: 'bool' }, F.text('text', 'Message', { full: true }), F.text('link_text', 'Link text (optional)'), { k: 'link_url', l: 'Link (optional)', t: 'url' }, { k: 'hide_after', l: 'Hide automatically after', t: 'date', hint: 'Optional. The bar disappears the day after this date.' }] },
     { id: 'settings', grp: 'Site', file: 'settings.json', title: 'Settings', page: 'contact/',
       intro: 'Contact details, key links and prices used across the site.',
-      fields: [F.text('phone', 'Phone'), { k: 'email', l: 'Main email', t: 'email' }, { k: 'volunteer_email', l: 'Volunteering email', t: 'email' }, { k: 'outreach_email', l: 'Teams & outreach email', t: 'email' }, { k: 'dts_email', l: 'DTS email', t: 'email' },
+      fields: [F.text('phone', 'Phone'), { k: 'email', l: 'Main email', t: 'email' }, { k: 'volunteer_email', l: 'Volunteering email', t: 'email' }, { k: 'outreach_email', l: 'Teams & outreach email', t: 'email' }, { k: 'dts_email', l: 'DTS email', t: 'email' }, { k: 'finance_email', l: 'Finance email (Give page: check, ACH, matching, wire, stock)', t: 'email' },
         F.text('address', 'Street address'), F.text('city', 'City, state & ZIP'),
         { k: 'dts_apply_url', l: 'DTS application link', t: 'url', full: true }, { k: 'team_booking_url', l: 'Mission Adventures booking link', t: 'url', full: true }, { k: 'give_online_url', l: 'Online giving link (Click & Pledge)', t: 'url', full: true },
         { k: 'ma_price_per_day', l: 'Mission Adventures price per person per day (USD)', t: 'number' },
