@@ -141,10 +141,10 @@ def footer(up, root):
     wave = '<svg viewBox="0 0 1600 90" preserveAspectRatio="none"><path d="M0,40 C100,10 200,10 300,40 C400,70 500,70 600,40 C700,10 800,10 900,40 C1000,70 1100,70 1200,40 C1300,10 1400,10 1500,40 C1550,55 1580,62 1600,62 L1600,90 L0,90Z" fill="#5aa8cf"/></svg>'
     wave2 = wave.replace('#5aa8cf', '#8cc6e2')
     sw = '<nav class="switcher" aria-label="Design concepts"><span>Concepts</span>' + ''.join('<a href="%sywam%d/"><i>YWAM </i>%d</a>' % (root, i, i) for i in range(1, 5)) + ''.join('<a%s href="%sywam%d/"><i>YWAM </i>%d</a>' % (' class="on"' if i == V else '', root, i, i) for i in (5, 6, 7)) + '</nav>'
-    band = f'<section class="news7" aria-label="Newsletter"><div class="wrap news7-row"><div><span class="kick">Stay close to Ellis Street</span><h2>Stories, event invites and ministry updates.</h2><p>Hear what God is doing in the Tenderloin, straight to your inbox.</p></div><a class="btn" href="{up}newsletter/">Get the newsletter</a></div></section>'
-    return band + f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
+    return f'''<div class="y5-foot"><div class="inner"><div class="wrap row">
 <div class="links"><a href="{LIVE}/policy-page">Privacy Policy</a><span>|</span><a href="https://ywamsfbayarea.org/">YWAM San Francisco Bay Area</a><span>|</span><a href="https://ywam.org/">YWAM International</a></div>
 <div class="tag">Presence that restores.</div>
+<a class="foot-news" href="{up}newsletter/">Get updates</a>
 <div class="addr">{ADDR}, {CITY}<br><a href="{TEL}">{PHONE}</a> · <a class="em" href="mailto:{EMAIL}">{EMAIL}</a></div>
 <div class="concept">{CONCEPT}</div></div></div></div>
 {sw}'''
@@ -311,7 +311,7 @@ home = f'''
 '''
 home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
 os.makedirs(OUT, exist_ok=True)
-open(os.path.join(OUT, 'index.html'), 'w').write(re.sub(r'<section class="news7".*?</section>', '', page('HOME', 'home', '', '../', home, scripts=home_scripts), count=1, flags=re.S))   # home has its own simpler newsletter line above Instagram
+open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../', home, scripts=home_scripts))   # home has its own simpler newsletter line above Instagram
 
 # ---------------------------------------------------------------- VOLUNTEER
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]
@@ -541,7 +541,7 @@ newsp = form_page('Newsletter', 'Stay close to <em>Ellis Street.</em>',
     '<div class="prep"><b>What to expect</b><ul><li>Choose how you’d like to hear from us and what you’re interested in.</li><li>We never sell your data, and you can unsubscribe at any time.</li></ul></div>',
     NEWSLETTER_FORM, 'YWAM San Francisco newsletter sign-up', 'Want to get involved now? <a href="../volunteer/">Volunteer</a>, <a href="../course/">join a DTS</a> or <a href="../give/">give</a>.', 2100, EMAIL)
 os.makedirs(os.path.join(OUT, 'newsletter'), exist_ok=True)
-open(os.path.join(OUT, 'newsletter', 'index.html'), 'w').write(re.sub(r'<section class="news7".*?</section>', '', page('Newsletter — YWAM San Francisco', '', '../', '../../', newsp), count=1, flags=re.S))   # no 'get the newsletter' band on the newsletter page itself
+open(os.path.join(OUT, 'newsletter', 'index.html'), 'w').write(page('Newsletter — YWAM San Francisco', '', '../', '../../', newsp))   # no 'get the newsletter' band on the newsletter page itself
 for _d, _body, _t in (('course/apply', applyp, 'Apply for the DTS — YWAM San Francisco'), ('course/inquire', inquirep, 'DTS Inquiry — YWAM San Francisco')):
     os.makedirs(os.path.join(OUT, _d), exist_ok=True)
     open(os.path.join(OUT, _d, 'index.html'), 'w').write(page(_t, 'course', '../../', '../../../', _body))
