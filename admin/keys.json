@@ -9,6 +9,14 @@
       "iv": "pjq9jgUrT9p+ftwo",
       "ct": "YnHrg1TwOhu3pE3TX2LFmYF9U0xzsXDwwfMhAVc0pXGIBo58nvrkscKY3NlteYMFoyHYE9R3SoDXDSZOnaPP0GB4/lmVLmBRrGDjmLvrfP+W2nzcleOYB8+yz4FsLLrC+RXITFbTAZVyA3rydQ==",
       "added": "2026-11-14"
+    },
+    {
+      "name": "Angela Haythorpe",
+      "iter": 600000,
+      "salt": "Jgz74cLCCUspkA6X/OJX1g==",
+      "iv": "/mTbxJd9JhW20gs5",
+      "ct": "MeBUJVop3XgKb+wmXnxuToVCncKrHVWz7RJF0+3OzfgTWDVgYAM24UOWytKC6nicMmShxEnc0wBX62tyVQzpsxqU6RTnGS/qBMcg9MWXZBWcK4AfBa9evf0KDUBJ+CKDdcBsnxhllnyWtlBMaQ==",
+      "added": "2026-11-14"
     }
   ]
 }
