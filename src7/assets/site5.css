@@ -1794,3 +1794,8 @@ a.ev.ev-link small{font-weight:700}
 .photo-stack{aspect-ratio:1/1.08}
 .photo-stack img:first-child{width:72%;height:68%}
 .photo-stack img:last-child{left:34%;top:42%;width:66%;height:58%}
+
+/* round 7-33: overlapping photo pairs - main photo bottom-left, small photo top-right over the empty corner
+   (keeps the waiting line on the Ellis Room photo and the group on the Bring a Team photo uncovered) */
+.photo-stack:not(.single) img:first-child{left:0;top:auto;bottom:0;width:78%;height:68%}
+.photo-stack:not(.single) img:last-child{left:auto;right:0;top:0;width:50%;height:42%}
