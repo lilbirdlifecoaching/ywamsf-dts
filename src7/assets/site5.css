@@ -1750,3 +1750,12 @@ a.ev.ev-link small{font-weight:700}
 @media (max-width:980px){.vows-col .vow5{height:430px}}
 @media (max-width:520px){.vows-col .vow5{height:auto}.vows-col .vf .art{height:auto}}
 .vows-col .vow5{height:380px}@media (max-width:980px){.vows-col .vow5{height:420px}}@media (max-width:520px){.vows-col .vow5{height:auto}}
+
+/* round 7-26: Join Staff flip cards keep the square stained-glass picture; card height follows its content */
+.vows-col .vow5,.vows-col .vow5{height:auto}
+.vows-col .vin{display:grid}
+.vows-col .vf,.vows-col .vb{position:relative;inset:auto;grid-area:1/1}
+.vows-col .vf .art{height:auto;aspect-ratio:1/1;margin:0 -22px 16px}
+.vows-col .vf b{font-size:25px}
+.vows-col .vf .sub{font-size:14.5px}
+@media (max-width:980px){.vows-col .vow5{height:auto}}
