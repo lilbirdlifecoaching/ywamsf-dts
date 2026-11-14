@@ -1765,3 +1765,11 @@ a.ev.ev-link small{font-weight:700}
 /* round 7-27: "Get updates" button inside the footer (replaces the newsletter band) */
 .y5-foot .foot-news{display:inline-flex;align-items:center;justify-content:center;padding:12px 22px;border-radius:4px;background:var(--cyan,#24AFBE);color:#062F3A;font:800 12.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none}
 .y5-foot .foot-news:hover{background:#fff;color:var(--deep,#08404F)}
+
+/* round 7-28: accreditation badges on the Give page */
+.accred{margin:24px 0 18px;padding:16px 0 0;border-top:1px solid var(--line)}
+.accred p{margin:0 0 12px;font-size:14px;line-height:1.5;color:var(--muted)}
+.accred-row{display:flex;align-items:center;gap:20px}
+.accred-row a{display:block;line-height:0}
+.accred-row img{display:block;height:auto}
+.accred-row a:hover img{opacity:.85}
