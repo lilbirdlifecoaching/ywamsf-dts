@@ -1784,3 +1784,7 @@ a.ev.ev-link small{font-weight:700}
 /* round 7-30: Ellis Room blog quotes sit last, just above the footer, on their own light tint */
 .voices5.voices-end,.pad + .pad.voices5.voices-end{background:#E6F4F6;padding-top:clamp(56px,7vw,96px);padding-bottom:clamp(56px,7vw,96px)}
 .voices-end .voice5{background:#fff}
+
+/* round 7-31: home Instagram bridge carousel about 25% smaller on wider screens */
+@media (min-width:760px){.ig5 > .ig-stage{width:75%;margin-left:auto;margin-right:auto}}
+@media (min-width:760px){.ig5 > .ig-stage{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}}
