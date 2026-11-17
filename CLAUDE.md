@@ -89,6 +89,13 @@ page's own files use `?v=N` in `admin/index.html`: bump it when you change `admi
 
 ## Conventions
 
+- **Brand (YWAM SF Branding & Style Guide, applied Nov 16 2026; main site + admin):** Primary Blue `#01BCDE` (Pantone 311)
+  for buttons/accents, Accent Navy `#24373D` for dark bands, headings and the footer, Accent Gray `#E2DFDE` (bands use
+  the lighter `#F4F2F1`), black. `#00738B` (a deeper shade of the primary blue) only where text must be readable on white.
+  Fonts: Gotham (primary: menus, buttons, body) and Adobe Caslon Pro (secondary: headings). Both need paid web licences, so
+  the CSS asks for them first and falls back to Montserrat and Libre Caslon Text from Google Fonts (`FONTS` in
+  `src7/build.py`, round 7-46 in `src7/assets/site5.css`). The look: "clean, bright and natural"; "our blue is a happy blue".
+
 - **Colours (YWAM 6):** `html.tb` class. Variables in the `round 48` block of `site5.css`:
   page white, `--cyan #00BDDE` (the exact blue of the YWAM SF logo) (buttons, hairlines; dark teal text on cyan buttons),
   `--red` is remapped to teal `#0B7E90` for links/accent words, `--slate/--deep #08404F`

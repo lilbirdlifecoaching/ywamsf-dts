@@ -144,11 +144,11 @@ table.users th{font:800 11px var(--sans);letter-spacing:.14em;text-transform:upp
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 /* ===== 2026-11 refresh: the website's look (white, cyan, teal), tour, approvals, help ===== */
-:root{--fog:#F1F8F9;--mist:#F7FBFC;--slate:#0B7E90;--ink:#08404F;--red:#00BDDE;--danger:#B3261E;--line:#D3E4E8;--muted:#4F6B73;--ok:#1E7B5E;--warn:#B7791F}
+:root{--fog:#F4F2F1;--mist:#F7FBFC;--slate:#00738B;--ink:#24373D;--red:#01BCDE;--danger:#B3261E;--line:#D3E4E8;--muted:#4F6B73;--ok:#1E7B5E;--warn:#B7791F}
 body{background:var(--fog)}
 .btn{background:var(--red);color:var(--ink)}
 .btn:hover{background:var(--ink);color:#fff}
-.btn.slate{background:var(--ink);color:#fff}.btn.slate:hover{background:#0B5566}
+.btn.slate{background:var(--ink);color:#fff}.btn.slate:hover{background:#34494F}
 .btn.ghost{color:var(--ink)}
 .err{color:var(--danger)}
 .link.danger{color:var(--danger)}
@@ -172,7 +172,7 @@ body{background:var(--fog)}
 .toggle .sw::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
 .toggle input:checked+.sw{background:var(--slate)}
 .toggle input:checked+.sw::after{transform:translateX(18px)}
-.toggle input:focus-visible+.sw{box-shadow:0 0 0 3px rgba(0,189,222,.45)}
+.toggle input:focus-visible+.sw{box-shadow:0 0 0 3px rgba(1,188,222,.45)}
 .howto{background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:12px 16px;margin-bottom:18px}
 .howto summary{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);cursor:pointer;list-style:none}
 .howto summary::-webkit-details-marker{display:none}
@@ -220,9 +220,9 @@ ol.basics li{margin-bottom:8px}
 .practicing .practice-bar .link{color:#4A3500;margin-left:6px}
 .practicing .side{top:38px;height:calc(100vh - 38px)}
 /* guided tour */
-.tour-shade{position:fixed;inset:0;background:rgba(8,64,79,.55);z-index:90}
+.tour-shade{position:fixed;inset:0;background:rgba(36,55,61,.55);z-index:90}
 .tour-shade.ringed{background:transparent}
-.tour-ring{display:none;position:fixed;z-index:91;border-radius:10px;box-shadow:0 0 0 4px var(--red),0 0 0 100vmax rgba(8,64,79,.55);pointer-events:none;transition:all .25s ease}
+.tour-ring{display:none;position:fixed;z-index:91;border-radius:10px;box-shadow:0 0 0 4px var(--red),0 0 0 100vmax rgba(36,55,61,.55);pointer-events:none;transition:all .25s ease}
 .tour-card{position:fixed;z-index:92;background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
 .tour-card h2{font-size:28px;margin:4px 0 8px}
 .tour-card p{margin:0 0 16px;color:var(--ink)}
@@ -244,3 +244,6 @@ ol.basics li{margin-bottom:8px}
 .swrow.off .swl small{color:var(--danger)}
 .swhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
 .swhead h2{font-size:26px}
+/* style guide fonts (Gotham → Montserrat, Adobe Caslon Pro → Libre Caslon until licensed) */
+:root{--display:"Adobe Caslon Pro","Libre Caslon Text",Georgia,serif;--sans:"Gotham","Montserrat",system-ui,sans-serif}
+h1,h2,h3{font-weight:400}

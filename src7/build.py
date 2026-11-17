@@ -46,7 +46,7 @@ for d, _, fs in sorted(os.walk(os.path.join(ROOT, 'src7', 'assets'))):
 # YWAM 6 brand palette (Oct 2026): white page, logo cyan as the anchor, deep teal for weight, red only for tiny "today" marks.
 # The shared stylesheet is written for YWAM 5's fog palette; YWAM 6 gets the same file with these colour literals swapped.
 TB_SWAP = [('rgba(234,237,240,', 'rgba(255,255,255,'), ('#dfe6ec', '#E3F3F5'), ('rgba(154,30,20,', 'rgba(11,126,144,'),
-           ('#ff3a30', '#C81D1B'), ('rgba(255,58,48,', 'rgba(200,29,27,'), ('rgba(70,83,97,', 'rgba(8,64,79,'),
+           ('#ff3a30', '#C81D1B'), ('rgba(255,58,48,', 'rgba(200,29,27,'), ('rgba(70,83,97,', 'rgba(36,55,61,'),
            ('rgba(247,248,249,', 'rgba(241,248,249,')]
 if V in (6, 7): _h.update(repr(TB_SWAP).encode())
 VER = _h.hexdigest()[:10]
@@ -145,7 +145,7 @@ LIVE = 'https://www.ywamsanfrancisco.org'
 VOLUNTEER_FORM = 'https://tl-connect-volunteer-stewardship.replit.app/'   # Tenderloin Connect's sign-up form (Nov 2026: only TL Connect uses it; other shifts sign up by email)
 # Ellis Room schedule items that link straight to the form (the rest of that schedule is for neighbors, so it stays plain)
 SIGNUP_LINKS = {'tenderloin connect': VOLUNTEER_FORM}
-FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap'
+FONTS = 'https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap'   # style guide: Gotham → Montserrat, Adobe Caslon Pro → Libre Caslon (until web licences are bought)
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('dts/', 'DTS (5 Month Course)', 'dts'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('contact/', 'Connect with us', 'contact')]
@@ -575,7 +575,7 @@ open(os.path.join(OUT, 'join-staff/index.html'), 'w').write(page('Join Staff —
 
 # ---------------------------------------------------------------- SERVING OUR NEIGHBORS
 CAT = {'room': ('#465361', 'Ellis Room'), 'word': ('#9A1E14', 'Church & Bible study'), 'care': ('#6E9CBF', 'Showers, haircuts & care'), 'food': ('#C99634', 'Food'), 'out': ('#2E7D6B', 'Street & SRO outreach')}
-if V in (6, 7): CAT = {'room': ('#08404F', CAT['room'][1]), 'word': ('#0B7E90', CAT['word'][1]), 'care': ('#00BDDE', CAT['care'][1]), 'food': ('#C99634', CAT['food'][1]), 'out': ('#86B6BE', CAT['out'][1])}
+if V in (6, 7): CAT = {'room': ('#24373D', CAT['room'][1]), 'word': ('#00738B', CAT['word'][1]), 'care': ('#01BCDE', CAT['care'][1]), 'food': ('#C99634', CAT['food'][1]), 'out': ('#9AA6A9', CAT['out'][1])}
 DN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 WEEK = {d: [] for d in range(7)}
 for e in load('ellis_week.json').get('entries', []):
