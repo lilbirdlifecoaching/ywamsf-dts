@@ -727,7 +727,7 @@ RHYTHM_TXT = {'pray': ('Pray', 'Weekly prayer walks around our neighborhood and 
               'rest': ('Sabbath & Rest', 'Enjoy your day off by doing what brings you to a place of rest.')}
 def _hd(t_, m, n, s2, d):
     im, alt, rk = HOUR_PIC.get(t_, ('', '', ''))
-    o = {'t': t_, 'n': n, 's': s2, 'd': d, 'img': im, 'alt': alt}
+    o = {'t': t_, 'n': n, 's': s2, 'd': d, 'img': phone_img(im, '../') if im else im, 'alt': alt}
     if rk: o['rn'], o['rd'] = RHYTHM_TXT[rk]
     return o
 day_data = js([_hd(*h) for h in HOURS])

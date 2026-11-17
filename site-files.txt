@@ -121,7 +121,9 @@ assets/img/w600/vow-god.jpg
 assets/img/w600/vow-humility.jpg
 assets/img/w600/vow-multiply.jpg
 assets/img/w600/vow-neighbor.jpg
+assets/img/w960/dts-dinner-7.jpg
 assets/img/w960/dts-header-7.jpg
+assets/img/w960/dts-lunch-7.jpg
 assets/img/w960/dts-quiet-7.jpg
 assets/img/w960/er-door.jpg
 assets/img/w960/er-header-7.jpg
@@ -130,6 +132,9 @@ assets/img/w960/er-room.jpg
 assets/img/w960/join-header-7.jpg
 assets/img/w960/phase-debrief.jpg
 assets/img/w960/phase-training.jpg
+assets/img/w960/rhythm-rest.jpg
+assets/img/w960/rhythm-serve.jpg
+assets/img/w960/rhythm-study.jpg
 assets/img/w960/team-cross.jpg
 assets/img/w960/team-juggle.jpg
 assets/img/w960/team-serve-7.jpg
@@ -280,6 +285,7 @@ assets/uploads/w960/life-city-2.jpg
 assets/uploads/w960/life-home.jpg
 assets/uploads/w960/life-kitchen-7.jpg
 assets/uploads/w960/life-neighborhood-2.jpg
+assets/uploads/w960/life-table.jpg
 contact/index.html
 course/apply/index.html
 course/index.html
