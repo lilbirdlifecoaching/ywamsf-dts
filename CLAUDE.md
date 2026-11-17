@@ -90,7 +90,7 @@ page's own files use `?v=N` in `admin/index.html`: bump it when you change `admi
 ## Conventions
 
 - **Colours (YWAM 6):** `html.tb` class. Variables in the `round 48` block of `site5.css`:
-  page white, `--cyan #24AFBE` (buttons, hairlines; dark teal text on cyan buttons),
+  page white, `--cyan #00BDDE` (the exact blue of the YWAM SF logo) (buttons, hairlines; dark teal text on cyan buttons),
   `--red` is remapped to teal `#0B7E90` for links/accent words, `--slate/--deep #08404F`
   for dark bands. Brand red `#C81D1B` only for tiny "Today" tags. `TB_SWAP` in `build.py`
   swaps a few hard-coded colour literals in YWAM 6's copy of the CSS.

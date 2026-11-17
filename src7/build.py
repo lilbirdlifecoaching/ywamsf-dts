@@ -575,7 +575,7 @@ open(os.path.join(OUT, 'join-staff/index.html'), 'w').write(page('Join Staff —
 
 # ---------------------------------------------------------------- SERVING OUR NEIGHBORS
 CAT = {'room': ('#465361', 'Ellis Room'), 'word': ('#9A1E14', 'Church & Bible study'), 'care': ('#6E9CBF', 'Showers, haircuts & care'), 'food': ('#C99634', 'Food'), 'out': ('#2E7D6B', 'Street & SRO outreach')}
-if V in (6, 7): CAT = {'room': ('#08404F', CAT['room'][1]), 'word': ('#0B7E90', CAT['word'][1]), 'care': ('#24AFBE', CAT['care'][1]), 'food': ('#C99634', CAT['food'][1]), 'out': ('#86B6BE', CAT['out'][1])}
+if V in (6, 7): CAT = {'room': ('#08404F', CAT['room'][1]), 'word': ('#0B7E90', CAT['word'][1]), 'care': ('#00BDDE', CAT['care'][1]), 'food': ('#C99634', CAT['food'][1]), 'out': ('#86B6BE', CAT['out'][1])}
 DN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 WEEK = {d: [] for d in range(7)}
 for e in load('ellis_week.json').get('entries', []):

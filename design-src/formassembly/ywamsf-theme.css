@@ -11,8 +11,8 @@
 #tfaContent .wfTabNav .wfTabNavLabel { font: 800 11px "Manrope", Arial, sans-serif !important; letter-spacing: .16em !important; text-transform: uppercase !important; color: #5D7178 !important; margin-right: 6px !important; }
 #tfaContent .wfTabNav .wfTabSep { display: none !important; }
 #tfaContent .wfTabNav .wfTab { display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 34px !important; height: 34px !important; padding: 0 !important; border-radius: 50% !important; border: 1.5px solid rgba(8,64,79,.18) !important; background: #fff !important; color: #0B7E90 !important; font: 700 14px "Manrope", Arial, sans-serif !important; text-decoration: none !important; box-shadow: none !important; }
-#tfaContent .wfTabNav .wfTab:hover { border-color: #24AFBE !important; }
-#tfaContent .wfTabNav .wfTab.wfTabCurrentPage { background: #24AFBE !important; border-color: #24AFBE !important; color: #062F3A !important; }
+#tfaContent .wfTabNav .wfTab:hover { border-color: #00BDDE !important; }
+#tfaContent .wfTabNav .wfTab.wfTabCurrentPage { background: #00BDDE !important; border-color: #00BDDE !important; color: #062F3A !important; }
 
 /* the "Page 1" heading duplicates the steps above */
 #tfaContent .wfCurrentPage > .pageSection > h4, #tfaContent .pageSection > h4 { display: none !important; }
@@ -41,7 +41,7 @@
   transition: border-color .2s, box-shadow .2s !important; }
 #tfaContent .wForm textarea, #tfaContent .wForm textarea.required { min-height: 120px !important; }
 #tfaContent .wForm select, #tfaContent .wForm select.required { padding-right: 34px !important; }
-#tfaContent .wForm input:focus, #tfaContent .wForm select:focus, #tfaContent .wForm textarea:focus { outline: none !important; border-color: #24AFBE !important; box-shadow: 0 0 0 3px rgba(36,175,190,.22) !important; }
+#tfaContent .wForm input:focus, #tfaContent .wForm select:focus, #tfaContent .wForm textarea:focus { outline: none !important; border-color: #00BDDE !important; box-shadow: 0 0 0 3px rgba(0,189,222,.22) !important; }
 #tfaContent .wForm input[type="checkbox"], #tfaContent .wForm input[type="radio"] { accent-color: #0B7E90; }
 
 /* buttons */
@@ -52,7 +52,7 @@
 #tfaContent .wForm .wfPageNextButton, #tfaContent .wForm .wfPagePreviousButton, #tfaContent .wForm .primaryAction, #tfaContent .wForm input[type="submit"] {
   font: 800 12.5px "Manrope", Arial, sans-serif !important; letter-spacing: .14em !important; text-transform: uppercase !important;
   border-radius: 6px !important; padding: 15px 28px !important; height: auto !important; min-height: 0 !important; cursor: pointer !important; border: 0 !important; box-shadow: none !important; text-shadow: none !important; background-image: none !important; }
-#tfaContent .wForm .wfPageNextButton, #tfaContent .wForm .primaryAction, #tfaContent .wForm input[type="submit"] { background: #24AFBE !important; color: #062F3A !important; }
+#tfaContent .wForm .wfPageNextButton, #tfaContent .wForm .primaryAction, #tfaContent .wForm input[type="submit"] { background: #00BDDE !important; color: #062F3A !important; }
 #tfaContent .wForm .wfPageNextButton:hover, #tfaContent .wForm .primaryAction:hover, #tfaContent .wForm input[type="submit"]:hover { background: #08404F !important; color: #fff !important; }
 #tfaContent .wForm .wfPagePreviousButton { background: #fff !important; color: #0B7E90 !important; box-shadow: inset 0 0 0 1.5px #0B7E90 !important; }
 #tfaContent .wForm .primaryAction:disabled, #tfaContent .wForm input[type="submit"]:disabled { opacity: .5 !important; }
