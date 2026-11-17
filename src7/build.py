@@ -1059,7 +1059,7 @@ open(os.path.join(OUT, 'pay/index.html'), 'w').write(page('Pay — YWAM San Fran
 
 # ---------------------------------------------------------------- GIVE
 give = f'''
-<section class="page-hero"><div class="ph-img"><img src="{ph('xmas',2000)}" alt="Neighbors at one long table for Christmas lunch"></div><div class="copy"><div class="wrap"><span class="kick">Give</span><h1>Keep the doors open on Ellis Street.</h1><p class="lede">Your generosity puts groceries on the pantry tables, hot water in the showers and keeps the lights on in the Ellis Room.</p></div></div></section>
+<section class="page-hero"><div class="ph-img"><img src="{ph('xmas',2000)}" alt="Neighbors at one long table for Christmas lunch"></div><div class="copy"><div class="wrap"><span class="kick">Give</span><h1>You make this possible.</h1><p class="lede">Your gift does so many things, from keeping the lights on to providing necessary resources and community to neighbors.</p></div></div></section>
 <section class="pad give-top" id="give-online"><div class="wrap give-form-grid">
   <aside class="give-side rv">
     <span class="kick">Give online</span><h2>Give once or monthly.</h2>
