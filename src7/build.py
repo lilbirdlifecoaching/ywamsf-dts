@@ -448,11 +448,15 @@ open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../',
 
 # ---------------------------------------------------------------- VOLUNTEER
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]
+# Each shift's own sign-up link (admin page → Volunteer shifts → "Sign-up link"); shifts without one use email.
+for _x in SHIFTS:
+    _u = lnk(_x.get('signup_url'), raw=True)
+    if _u: SIGNUP_LINKS[str(_x.get('title')).strip().lower()] = _u
 DAYS = ('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT')
 def sdays(x): return ' '.join(d for d in (str(v).upper()[:3] for v in x.get('days') or []) if d in DAYS)
 def _row_su(x):
     ti = t(x.get('title')); su = SIGNUP_LINKS.get(str(x.get('title') or '').strip().lower())
-    if su: return '<a class="row-su" href="%s" target="_blank" rel="noopener" aria-label="Sign up for %s (opens the sign-up form)"><span class="su-t">Sign up</span> ↗</a>' % (su, ti)
+    if su: return '<a class="row-su" href="%s" target="_blank" rel="noopener" aria-label="Sign up for %s (opens the sign-up form)"><span class="su-t">Sign up</span> ↗</a>' % (html.escape(su, quote=True), ti)
     return '<a class="row-su" href="mailto:%s?subject=%s" aria-label="Email to sign up for %s"><span class="su-t">Sign up</span> ✉</a>' % (VEMAIL, urllib.parse.quote(str(x.get('title') or '').strip() + ' volunteer'), ti)
 board_rows = ''.join(f'''<tr data-days="{sdays(x)}" data-shift="{i}" tabindex="0" role="button" aria-label="Show {t(x.get('title'))} above"><td><span class="flap">{t(str(x.get('when') or '').upper()[:22])}</span></td><td><span class="flap">{t(str(x.get('title')).upper())}</span></td><td>{t(x.get('time'))}</td><td><span class="status">{'Weekly' if sdays(x) else 'Ongoing'}</span></td><td class="su">{_row_su(x)}</td></tr>''' for i, x in enumerate(SHIFTS))
 import json
@@ -584,7 +588,7 @@ for e in load('ellis_week.json').get('entries', []):
 for d in WEEK: WEEK[d].sort(key=lambda e: e[3])
 def ev_html(e):
     c, tt, h, st, en = e[:5]; rule = e[5] if len(e) > 5 else ''
-    su = SIGNUP_LINKS.get(tt.strip().lower())
+    su = SIGNUP_LINKS.get(tt.strip().lower()); su = html.escape(su, quote=True) if su else su
     if su: return '<a class="ev ev-link" href="%s" target="_blank" rel="noopener" style="--c:%s" data-s="%d" data-e="%d" data-t="%s"%s><b>%s <span aria-hidden="true">↗</span></b><small>%s · Sign up</small></a>' % (su, CAT[c][0], st, en, esc(tt), ' data-rule="%s"' % rule if rule else '', esc(tt), esc(h))
     return '<div class="ev" style="--c:%s" data-s="%d" data-e="%d" data-t="%s"%s><b>%s</b><small>%s</small></div>' % (CAT[c][0], st, en, esc(tt), ' data-rule="%s"' % rule if rule else '', esc(tt), esc(h))
 week = ''.join('<div class="day" data-d="%d"><h4>%s</h4>%s</div>' % (d, DN[d], ''.join(ev_html(e) for e in WEEK[d]) or '<div class="ev" style="--c:var(--line)"><b>Rest &amp; prep</b><small>No public services</small></div>') for d in [1, 2, 3, 4, 5, 6, 0])

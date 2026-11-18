@@ -367,6 +367,7 @@
         fields: [F.text('title', 'Shift name', { req: true }), F.text('when', 'When (shown on the board)', { hint: 'e.g. Thursdays, or Mon, Tue, Wed & Fri' }), F.text('time', 'Time', { hint: 'e.g. 1–4 pm' }),
           { k: 'every', l: 'How often', t: 'select', opts: [['every', 'Every week'], ['2nd & 4th', '2nd & 4th week of the month']] },
           { k: 'days', l: 'Days it runs', t: 'days', full: true }, F.area('description', 'What volunteers do'), { k: 'tags', l: 'Details shown as tags', t: 'tags', full: true, hint: 'Press Enter after each one, e.g. 18+ or Teams welcome.' },
+          { k: 'signup_url', l: 'Sign-up link', t: 'url', full: true, hint: 'The Calendly (or other) page where people sign up. Leave empty and the Sign up button emails volunteer@ instead.' },
           { k: 'colour', l: 'Card colour', t: 'colour', full: true }, F.photo('photo')] }] },
     { id: 'ministries', grp: 'Serve', file: 'ministries.json', title: 'Ministries', page: '#',
       intro: 'The “Neighborhood engagement” reel on the home page.',
