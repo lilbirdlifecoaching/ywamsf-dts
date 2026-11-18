@@ -145,7 +145,7 @@ LIVE = 'https://www.ywamsanfrancisco.org'
 VOLUNTEER_FORM = 'https://tl-connect-volunteer-stewardship.replit.app/'   # Tenderloin Connect's sign-up form (Nov 2026: only TL Connect uses it; other shifts sign up by email)
 # Ellis Room schedule items that link straight to the form (the rest of that schedule is for neighbors, so it stays plain)
 SIGNUP_LINKS = {'tenderloin connect': VOLUNTEER_FORM}
-FONTS = 'https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap'   # style guide: Gotham → Montserrat, Adobe Caslon Pro → Libre Caslon (until web licences are bought)
+FONTS = 'https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap'   # style guide: Gotham → Montserrat, Adobe Caslon Pro → Libre Caslon (until web licences are bought)
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('dts/', 'DTS (5 Month Course)', 'dts'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('contact/', 'Connect with us', 'contact')]
