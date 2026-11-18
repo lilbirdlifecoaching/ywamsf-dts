@@ -1954,3 +1954,6 @@ h1,h2,h3{font-weight:400;letter-spacing:-.015em}
 :root,html.tb{--display-xl:"Adobe Caslon Pro","adobe-caslon-pro","Libre Caslon Display","Libre Caslon Text",Georgia,serif}
 h1,h2,.page-hero h1,.hero7 h1,.big-q,.verse blockquote{font-family:var(--display-xl);font-weight:400}
 h1 em,h2 em{font-family:inherit;font-weight:400}
+/* round 7-48: menus in Medium, not Bold (Bold capitals read heavy in real Gotham) */
+.y5-top a,.y5-nav a,.y5-nav .links a:not(.sign){font-weight:500}
+.y5-nav .sign{font-weight:600}
