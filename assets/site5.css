@@ -1959,3 +1959,20 @@ h1 em,h2 em{font-family:inherit;font-weight:400}
 .y5-nav .sign{font-weight:500}
 /* round 7-49: no Bold anywhere in Gotham/Montserrat text: labels, buttons, footer, chat and emphasis use Medium */
 b,strong{font-weight:500}
+/* round 7-50: Calendly sign-up pop-up */
+.su-pop{position:fixed;inset:0;z-index:9999;background:rgba(27,42,47,.62);display:flex;align-items:center;justify-content:center;padding:24px}
+.su-pop[hidden]{display:none}
+.su-pop-card{background:#fff;width:min(1000px,100%);height:min(760px,100%);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.su-pop-bar{display:flex;align-items:center;gap:16px;padding:10px 12px 10px 20px;border-bottom:1px solid var(--gray,#E2DFDE);font:500 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--navy,#24373D)}
+.su-pop-bar span{flex:1}
+.su-pop-new{color:#00738B;text-decoration:none;letter-spacing:.06em;text-transform:none;font-size:13.5px}
+.su-pop-new:hover{text-decoration:underline}
+.su-pop-x{width:40px;height:40px;border:0;border-radius:50%;background:#F4F2F1;color:var(--navy,#24373D);font-size:26px;line-height:1;cursor:pointer}
+.su-pop-x:hover{background:var(--gray,#E2DFDE)}
+.su-pop-body{position:relative;flex:1}
+.su-pop-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .3s}
+.su-pop.ready iframe{opacity:1}
+.su-pop-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;margin:0;color:#5b6b70}
+html.su-pop-on,html.su-pop-on body{overflow:hidden}
+@media (max-width:640px){.su-pop{padding:0}.su-pop-card{border-radius:0;height:100%}.su-pop-new{font-size:12.5px}}
+.su-pop.ready .su-pop-load{display:none}

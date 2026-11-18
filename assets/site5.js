@@ -515,3 +515,42 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
   build();
   var t; addEventListener('resize', function () { clearTimeout(t); t = setTimeout(build, 250); });
 })();
+
+/* Calendly sign-up forms open in a pop-up on the page instead of a new tab.
+   Works for every Calendly link, including ones added later by scripts (shift panel, chat, carousels).
+   Cmd/Ctrl/middle-click still opens a new tab; "Open in a new tab" is offered inside the pop-up too. */
+(function () {
+  var CAL = /^https:\/\/calendly\.com\/[^\s]+$/;
+  var box, frame, newtab, lastFocus;
+  function build() {
+    box = document.createElement('div');
+    box.className = 'su-pop'; box.hidden = true;
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Sign-up form');
+    box.innerHTML = '<div class="su-pop-card"><div class="su-pop-bar"><span>Sign up</span><a class="su-pop-new" target="_blank" rel="noopener">Open in a new tab ↗</a><button type="button" class="su-pop-x" aria-label="Close the sign-up form">×</button></div><div class="su-pop-body"><p class="su-pop-load">Loading the sign-up form…</p><iframe title="Sign-up form" allow="payment"></iframe></div></div>';
+    document.body.appendChild(box);
+    frame = box.querySelector('iframe'); newtab = box.querySelector('.su-pop-new');
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('.su-pop-x')) close(); });
+    newtab.addEventListener('click', function () { close(); });
+    frame.addEventListener('load', function () { box.classList.add('ready'); });
+  }
+  function open(url) {
+    if (!box) build();
+    var u = url + (url.indexOf('?') < 0 ? '?' : '&') + 'embed_type=Inline&hide_gdpr_banner=1&embed_domain=' + encodeURIComponent(location.hostname || 'ywamembers.org');
+    lastFocus = document.activeElement;
+    box.classList.remove('ready'); newtab.href = url; frame.src = u;
+    box.hidden = false; document.documentElement.classList.add('su-pop-on');
+    box.querySelector('.su-pop-x').focus();
+  }
+  function close() {
+    if (!box || box.hidden) return;
+    box.hidden = true; frame.src = 'about:blank'; document.documentElement.classList.remove('su-pop-on');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || a.classList.contains('su-pop-new') || !CAL.test(a.href)) return;
+    e.preventDefault(); e.stopPropagation(); open(a.href);
+  }, true);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
