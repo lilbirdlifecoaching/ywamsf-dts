@@ -19,7 +19,7 @@
 
   var REPO = 'lilbirdlifecoaching/ywamsf-dts', BRANCH = 'main', API = 'https://api.github.com';
   var KEYS_PATH = 'admin/keys.json', ITER = 600000, IDLE_MS = 30 * 60 * 1000, MIN_PW = 14;
-  var SITE = (location.origin   var SITE = 'https://ywamembers.org/';  var SITE = 'https://ywamembers.org/'; /^https:/.test(location.origin) ? location.origin : 'https://ywamembers.org') + '/';   // works on the test domain and the real one
+  var SITE = (location.origin && /^https:/.test(location.origin) ? location.origin : 'https://ywamembers.org') + '/';   // works on the test domain and the real one
   var SERVICE = ((document.querySelector('meta[name="admin-service"]') || {}).content || '').replace(/\/+$/, '');
   var LS = { get: function (k) { try { return localStorage.getItem('ywamadmin.' + k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem('ywamadmin.' + k, v); } catch (e) {} } };
   var SS = { get: function (k) { try { return sessionStorage.getItem('ywamadmin.' + k); } catch (e) { return null; } }, set: function (k, v) { try { if (v == null) sessionStorage.removeItem('ywamadmin.' + k); else sessionStorage.setItem('ywamadmin.' + k, v); } catch (e) {} } };
