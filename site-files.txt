@@ -198,7 +198,6 @@ assets/sq/w600/5af0354ecf44c3a8.png
 assets/sq/w600/5f6f0232170e02be.jpeg
 assets/sq/w600/60f509b10e2804ae.jpg
 assets/sq/w600/79f21a814e1132c0.jpg
-assets/sq/w600/7b2ce1441e2213b1.jpg
 assets/sq/w600/92f063c04fd3829c.jpg
 assets/sq/w600/9b5cff39b4be1c62.jpg
 assets/sq/w600/a01f7cb9668af637.jpg
@@ -207,14 +206,9 @@ assets/sq/w600/a7b440a640bc6b7b.jpg
 assets/sq/w600/a8ed26b0513d733a.jpg
 assets/sq/w600/aaa4d63311e8a90e.jpg
 assets/sq/w600/b9c60277793b6652.jpeg
-assets/sq/w600/ba431ccd59e20d89.jpg
-assets/sq/w600/c2ca76c85fdb9b45.jpg
 assets/sq/w600/cf1257c88cc08cb7.jpeg
 assets/sq/w600/d1d447d5b853726c.png
-assets/sq/w600/d51a53b792ec2744.jpg
-assets/sq/w600/de1488859d97165c.jpg
 assets/sq/w600/e7a6bd1d443a27ef.jpg
-assets/sq/w600/ec55acd50865c91e.jpg
 assets/sq/w960/064798e2ec2bf348.jpg
 assets/sq/w960/0cb52cc238b67fc4.jpg
 assets/sq/w960/1752f89d1abab0f1.jpg
@@ -227,7 +221,6 @@ assets/sq/w960/5f6f0232170e02be.jpeg
 assets/sq/w960/60f509b10e2804ae.jpg
 assets/sq/w960/6606f9850465f4ec.jpg
 assets/sq/w960/79f21a814e1132c0.jpg
-assets/sq/w960/7b2ce1441e2213b1.jpg
 assets/sq/w960/92f063c04fd3829c.jpg
 assets/sq/w960/9b5cff39b4be1c62.jpg
 assets/sq/w960/a01f7cb9668af637.jpg
@@ -235,12 +228,9 @@ assets/sq/w960/a1e72c79caf8d489.jpeg
 assets/sq/w960/a7b440a640bc6b7b.jpg
 assets/sq/w960/a8ed26b0513d733a.jpg
 assets/sq/w960/aaa4d63311e8a90e.jpg
-assets/sq/w960/ba431ccd59e20d89.jpg
-assets/sq/w960/c2ca76c85fdb9b45.jpg
 assets/sq/w960/cf1257c88cc08cb7.jpeg
 assets/sq/w960/d1d447d5b853726c.png
 assets/sq/w960/e7a6bd1d443a27ef.jpg
-assets/sq/w960/ec55acd50865c91e.jpg
 assets/survey.css
 assets/survey.js
 assets/uploads/blog-12803126_10209049837342784_6257219505116739578_n-1b661a.jpg
