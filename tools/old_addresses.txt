@@ -34,4 +34,5 @@ news                                 newsletter/
 dts-inquiry-thank-you                dts/
 mission-adventure                    teams/#ma
 sotb                                 blog/category/SOTB/
+blog/9v6lgcs3hz1gio5mperw5q03h04jem  blog/
 # The 70 old event pages (tools/old_events.txt) all go to about/news/#events.

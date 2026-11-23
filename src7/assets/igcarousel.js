@@ -72,13 +72,13 @@
 
   function mount(stage) {
     var posts = window.YWAM_IG_POSTS || (window.YWAM_IG_SOURCE === 'instagram' ? instagramPosts() : artworkPosts());
-    stage.innerHTML = '<div class="ig-plate" aria-hidden="true"></div><div class="ig-track" role="list"></div>' +
+    stage.innerHTML = '<div class="ig-plate" aria-hidden="true"></div><div class="ig-track"></div>' +
       '<div class="ig-nav"><button type="button" class="ig-prev" aria-label="Previous">←</button><button type="button" class="ig-next" aria-label="Next">→</button></div>';
     var plate = stage.querySelector('.ig-plate'), track = stage.querySelector('.ig-track');
     plate.style.backgroundImage = 'url("' + BASE + 'bridge.webp")';
     var cards = posts.map(function (p) {
       var a = document.createElement('a');
-      a.className = 'ig-card' + (p.title ? ' has-lab' : ''); a.href = p.href || PROFILE; if (!/^(#|mailto:|tel:)/.test(a.getAttribute('href')) && p.newtab !== false) { a.target = '_blank'; a.rel = 'noopener'; } a.setAttribute('role', 'listitem');
+      a.className = 'ig-card' + (p.title ? ' has-lab' : ''); a.href = p.href || PROFILE; if (!/^(#|mailto:|tel:)/.test(a.getAttribute('href')) && p.newtab !== false) { a.target = '_blank'; a.rel = 'noopener'; } 
       a.style.width = BW + 'px'; a.style.height = BH + 'px';
       a.innerHTML = '<img src="' + esc(p.img) + '" alt="' + esc(p.caption || 'Photo from YWAM San Francisco') + '" draggable="false" decoding="async">' +
         (p.title ? '<span class="ig-lab"><small>' + esc(p.when || '') + '</small><b>' + esc(p.title) + '</b>' + (p.time ? '<i>' + esc(p.time) + '</i>' : '') + '</span>' : p.caption ? '<span class="ig-cap"><b>@ywamsf</b>' + esc(p.caption) + '</span>' : '');

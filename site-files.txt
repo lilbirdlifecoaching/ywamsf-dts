@@ -573,6 +573,7 @@ blog/2026/2/17/keeping-the-lights-on-after-hours-in-the-ellis-room/index.html
 blog/2026/5/4/church-of-the-street/index.html
 blog/2026/5/5/step-into-your-calling/index.html
 blog/2026/7/15/why-a-discipleship-training-school-can-change-your-life/index.html
+blog/9v6lgcs3hz1gio5mperw5q03h04jem/index.html
 blog/becausejusticematters/index.html
 blog/category/DTS/index.html
 blog/category/MA/index.html
