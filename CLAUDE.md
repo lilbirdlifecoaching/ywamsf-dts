@@ -42,6 +42,20 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   News & Events) get instant redirect pages from `tools/publish_root.py` (no noindex, canonical = new page). At the domain
   move set `SITE_BASE=https://ywamsanfrancisco.org/` for both the build and publish_root (build.yml), remove `noindex`, add `CNAME`.
 
+- **Visual editor (Nov 23 2026):** admin → Visual editor shows the real page in a frame. `edit_hooks()` in `src7/build.py`
+  marks text/photos that come from `content/*.json` (`data-edit="file|path"`, `data-edit-img`; only values unique to one
+  field and shown whole in one element). Edits autosave as a per-browser draft (localStorage) and publish through the
+  normal `store.save` path (history, undo, approvals, practice mode, conflict check). Search titles/descriptions per page:
+  `content/seo.json` (admin → Search & sharing), applied in `meta_for()`. Analytics/verification IDs: settings.json
+  (`analytics_ga4_id`, `analytics_cloudflare_token`, `google_site_verification`, `bing_site_verification`), off when empty.
+- **Launch switch:** branch `launch-switch` = CNAME `ywamsanfrancisco.org` + build.yml `MAIN_SITE`/`MAIN_INDEXING`. Merge it
+  only when the domain's DNS points at GitHub Pages (rebase on main first). Until then every page is `noindex`.
+- **Admin access recovery (key mode):** forgotten password → another editor removes and re-adds you (Editors & security).
+  Everyone locked out or the GitHub key expired → the repo owner makes a new fine-grained token (this repo only, Contents
+  read/write, Actions read, 1-year expiry), empties `users` in `admin/keys.json` on github.com, opens /admin/ (setup screen)
+  and re-adds the editors. Always run `node -e "new Function(require('fs').readFileSync('admin/admin.js','utf8'))"`
+  before pushing admin changes (a syntax error locks everyone out of the admin).
+
 ## Never do
 
 - Never ask for, paste, print or store the GitHub token or any Cloudflare/Resend key. Editors enter them only in the admin page or the Cloudflare dashboard.
