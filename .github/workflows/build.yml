@@ -6,7 +6,7 @@ name: Build site
 on:
   push:
     branches: [main]
-    paths: ['content/**', 'src/**', 'src7/**', 'tools/publish_root.py', '.github/workflows/build.yml']
+    paths: ['content/**', 'src/**', 'src7/**', 'tools/publish_root.py', 'tools/old_addresses.txt', 'tools/old_events.txt', '.github/workflows/build.yml']
   schedule:
     - cron: '17 8 * * *'   # about 1 am in San Francisco
   workflow_dispatch:
