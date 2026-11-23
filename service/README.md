@@ -6,51 +6,41 @@ levels (administrator, editor, contributor), keeps blog comments until they're a
 notification emails. It runs free on Cloudflare Workers; emails go through Resend (free tier).
 
 Everything below is done in the Cloudflare, Resend, GitHub and GoDaddy websites. No programs to install.
-Allow about 45 minutes. **Never paste any key into a chat or an email**: each key goes only into the box
+Allow about 30 minutes, plus up to an hour for the email check. **Never paste any key into a chat or an email**: each key goes only into the box
 named here.
 
-## 1. Accounts
+## 1. Cloudflare account
 
-1. **Cloudflare:** sign up at https://dash.cloudflare.com/sign-up, ideally with a shared YWAM SF email
-   (for example web@ywamsanfrancisco.org) so the account never depends on one person. Turn on two-factor
-   sign-in (Profile → Authentication).
-2. **Resend:** sign up at https://resend.com with the same shared email.
+1. Sign up at https://dash.cloudflare.com/sign-up (a shared YWAM SF email is best long-term; a personal one is fine to
+   start, and more members can be added later under Manage account → Members). Turn on two-factor sign-in
+   (My Profile → Authentication).
+2. Open **Workers & Pages** once. If it asks you to choose a `workers.dev` subdomain, pick one (for example `ywamsf`).
+3. Copy your **Account ID** (Workers & Pages overview, right-hand side, or the ⋯ menu next to the account name).
 
-## 2. The database
+## 2. Let GitHub deploy the service
 
-1. Cloudflare dashboard → **Storage & Databases → D1 SQL Database → Create**. Name it `ywamsf-admin`.
-2. Open it → **Console**. Open `service/schema.sql` from this repository on GitHub, copy all of it,
-   paste it into the console and press **Execute**. You should see the tables created.
+1. Cloudflare → My Profile → **API Tokens → Create Token** → template **Edit Cloudflare Workers** → Use template.
+   Under Permissions press **+ Add more** and add **Account · D1 · Edit**. Account Resources: your account.
+   Zone Resources: All zones (the template needs it; the site doesn't use any zone). Continue → Create Token → copy it.
+2. GitHub → the `ywamsf-dts` repository → **Settings → Secrets and variables → Actions → New repository secret**:
+   - `CLOUDFLARE_API_TOKEN`: the token from step 1.
+   - `CLOUDFLARE_ACCOUNT_ID`: the Account ID.
+3. GitHub → **Actions → Deploy admin service → Run workflow**. It creates the database and the tables, deploys the
+   service and shows its address (like `https://ywamsf-admin.ywamsf.workers.dev`). Later changes to `service/` deploy
+   themselves.
 
-## 3. The service (Worker)
+## 3. The service's secrets (Cloudflare dashboard)
 
-1. Cloudflare dashboard → **Compute (Workers) → Workers & Pages → Create → Create Worker**.
-   Name it `ywamsf-admin` and press **Deploy** (it deploys a "Hello World" first; that's fine).
-2. Press **Edit code**. Delete everything in the editor, then open `service/src/index.js` from this
-   repository on GitHub, copy all of it and paste it in. Press **Deploy**.
-3. Go to the Worker's **Settings → Bindings → Add → D1 database**. Variable name: `DB`. Database:
-   `ywamsf-admin`. Save.
-4. **Settings → Variables and Secrets → Add**, as **Text**:
+Workers & Pages → **ywamsf-admin → Settings → Variables and Secrets → Add**, type **Secret**:
 
-   | Name | Value |
-   |---|---|
-   | `REPO` | `lilbirdlifecoaching/ywamsf-dts` |
-   | `BRANCH` | `main` |
-   | `ALLOWED_ORIGINS` | `https://ywamembers.org,https://www.ywamembers.org,https://ywamsanfrancisco.org,https://www.ywamsanfrancisco.org` |
-   | `ADMIN_URL` | `https://ywamembers.org/admin/` |
-   | `MAIL_FROM` | `YWAM SF website <website@ywamsanfrancisco.org>` |
+- `SETUP_KEY`: make up a long phrase (five or more random words). You'll type it once, at first sign-in.
+- `GITHUB_TOKEN`: on github.com, signed in as the account that owns the site: Settings → Developer settings → Personal
+  access tokens → **Fine-grained tokens → Generate new token**. Name "YWAM SF admin service", expiry 1 year, Repository
+  access **Only select repositories → ywamsf-dts**, Permissions **Contents: Read and write** and **Actions: Read-only**.
+  Generate, copy, paste it straight into this box. Put a reminder in your calendar 11 months from now to replace it.
+- `RESEND_KEY`: from step 4 below (add it when email is ready; until then the admin shows invitation links to copy).
 
-5. Still in **Variables and Secrets**, add these as **Secret** (type: Secret):
-   - `SETUP_KEY`: make up a long phrase (five or more random words). You'll type it once, in step 6.
-   - `GITHUB_TOKEN`: on github.com, signed in as the account that owns the site: Settings → Developer
-     settings → Personal access tokens → **Fine-grained tokens → Generate new token**. Name "YWAM SF admin
-     service", expiry 1 year, Repository access **Only select repositories → ywamsf-dts**, Permissions
-     **Contents: Read and write** and **Actions: Read-only**. Generate, copy, paste it straight into this
-     Cloudflare box. Put a reminder in your calendar 11 months from now to replace it.
-   - `RESEND_KEY`: from step 4 below (come back and add it).
-6. Note the Worker's address, shown at the top of its page, like
-   `https://ywamsf-admin.<your-name>.workers.dev`. Opening `…workers.dev/health` in a browser should show
-   `{"ok":true,"setup":true}`.
+Deploying again never removes these secrets.
 
 ## 4. Email (Resend)
 
@@ -64,7 +54,7 @@ named here.
 
 ## 5. Switch the admin page over
 
-Tell Claude (or whoever looks after the site) the Worker's address from step 3.6. It isn't secret. They'll
+Tell Claude (or whoever looks after the site) the service's address from step 2.3. It isn't secret. They'll
 set it in `admin/index.html` (the `admin-service` meta tag and the `connect-src` line) and publish.
 
 ## 6. First sign-in
@@ -81,8 +71,7 @@ set it in `admin/index.html` (the `admin-service` meta tag and the `connect-src`
 - **Someone leaves:** People → Turn off.
 - **The GitHub key expires** (yearly): make a new one as in 3.5 and replace the `GITHUB_TOKEN` secret.
   Nobody needs to be re-added.
-- **Updating the service code:** paste the new `service/src/index.js` into the Worker editor and Deploy.
-  If `schema.sql` changed, run the new lines in the D1 console.
+- **Updating the service code:** push to `service/`; the Deploy admin service Action deploys it and updates the tables.
 
 ## For developers
 

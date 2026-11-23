@@ -1,0 +1,63 @@
+# Deploys the admin sign-in service (service/) to Cloudflare Workers, with its D1 database.
+# Needs two repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   a Cloudflare API token ("Edit Cloudflare Workers" template + D1 Edit)
+#   CLOUDFLARE_ACCOUNT_ID  the Cloudflare account ID
+# The service's own secrets (GITHUB_TOKEN, SETUP_KEY, RESEND_KEY) are entered in the Cloudflare dashboard, never here.
+# Runs when service/ changes, or from the Actions tab ("Run workflow").
+name: Deploy admin service
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['service/src/**', 'service/schema.sql', 'service/wrangler.toml', '.github/workflows/deploy-service.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-service
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    defaults:
+      run:
+        working-directory: service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check the Cloudflare secrets are set
+        id: check
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::warning::Not deployed: add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in Settings → Secrets and variables → Actions, then run this again."
+            echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.check.outputs.ok == 'true'
+        run: npm ci --no-audit --no-fund
+      - name: Find or create the database
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          id=$(npx wrangler d1 list --json | jq -r '.[] | select(.name=="ywamsf-admin") | .uuid')
+          if [ -z "$id" ]; then npx wrangler d1 create ywamsf-admin >/dev/null; id=$(npx wrangler d1 list --json | jq -r '.[] | select(.name=="ywamsf-admin") | .uuid'); fi
+          [ -n "$id" ] || { echo "::error::Could not find or create the D1 database."; exit 1; }
+          sed -i "s/^database_id = .*/database_id = \"$id\"/" wrangler.toml
+          echo "Database: ywamsf-admin ($id)"
+      - name: Create or update the tables
+        if: steps.check.outputs.ok == 'true'
+        run: npx wrangler d1 execute ywamsf-admin --remote --file=schema.sql --yes
+      - name: Deploy the service
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          set -o pipefail
+          npx wrangler deploy 2>&1 | tee deploy.log
+          url=$(grep -o 'https://[A-Za-z0-9.-]*workers\.dev' deploy.log | head -1)
+          echo "::notice title=Service address::$url"
+          [ -n "$url" ] && curl -s --max-time 20 "$url/health" || true

@@ -1008,6 +1008,13 @@
     });
   }
 
+  // Before email is set up, the service returns the invitation link for the administrator to pass on.
+  function showInviteLink(name, link) {
+    var box = h('input', { readonly: true, value: link, style: 'width:100%;font-size:13px', onfocus: function () { this.select(); } });
+    var copy = h('button', { class: 'btn small', type: 'button', text: 'Copy link', onclick: function () { box.select(); try { navigator.clipboard.writeText(link).then(function () { copy.textContent = 'Copied'; }); } catch (e) { document.execCommand('copy'); copy.textContent = 'Copied'; } } });
+    var panel = h('div', { class: 'notice warn', role: 'alert' }, h('b', { text: 'Email isn’t set up yet. ' }), 'Send this link to ' + name + ' yourself (by text or email). It works for 7 days and only once:', h('div', { style: 'display:flex;gap:8px;margin-top:8px' }, box, copy));
+    var main = shellEls.main; main.insertBefore(panel, main.children[1] || null); panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
   /* ------------------------------------------------------------------ history and undo */
   function flatten(o, pre, out) {
     out = out || {};
@@ -1159,7 +1166,7 @@
           LEVELS.forEach(function (l) { sel.appendChild(h('option', { value: l[0], text: l[1] })); }); sel.value = u.role;
           sel.addEventListener('change', function () { api('PATCH', '/users/' + u.id, { role: sel.value }).then(function () { toast(u.name + ' is now ' + sel.options[sel.selectedIndex].text + '.'); }).catch(function (e) { sel.value = u.role; toast(e.message, true); }); });
           var acts = h('td', { class: 'acts' });
-          if (!u.active && !u.disabled) acts.appendChild(h('button', { class: 'link', type: 'button', text: 'Resend invite', onclick: function () { api('PATCH', '/users/' + u.id, { resend_invite: true }).then(function () { toast('Invitation sent again to ' + u.email + '.'); }).catch(function (e) { toast(e.message, true); }); } }));
+          if (!u.active && !u.disabled) acts.appendChild(h('button', { class: 'link', type: 'button', text: 'Resend invite', onclick: function () { api('PATCH', '/users/' + u.id, { resend_invite: true }).then(function (r) { if (r && r.invite_link) showInviteLink(u.name, r.invite_link); else toast('Invitation sent again to ' + u.email + '.'); }).catch(function (e) { toast(e.message, true); }); } }));
           if (!me) acts.appendChild(h('button', { class: 'link', type: 'button', text: u.disabled ? 'Turn on' : 'Turn off', onclick: function () { api('PATCH', '/users/' + u.id, { disabled: !u.disabled }).then(function () { toast(u.name + (u.disabled ? ' can sign in again.' : ' can no longer sign in.')); draw(); }).catch(function (e) { toast(e.message, true); }); } }));
           if (!me) acts.appendChild(h('button', { class: 'link danger', type: 'button', text: 'Remove', onclick: function () { if (!confirm('Remove ' + u.name + ' completely? (To keep their history but stop them signing in, use Turn off.)')) return; api('DELETE', '/users/' + u.id).then(function () { toast(u.name + ' was removed.'); draw(); }).catch(function (e) { toast(e.message, true); }); } }));
           tb.appendChild(h('tr', null, h('td', null, h('b', { text: u.name }), me ? h('small', { text: ' (you)' }) : null, h('br'), h('small', { class: 'muted', text: u.email })), h('td', null, sel), h('td', null, h('span', { class: 'chip ' + (u.disabled ? 'rejected' : u.active ? 'approved' : 'pending'), text: u.disabled ? 'Off' : u.active ? 'Active' : 'Invited' })), acts));
@@ -1173,7 +1180,7 @@
     main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Invite someone' }), h('p', { class: 'hint', text: 'They’ll get an email with a link to choose their own password. The link works for 7 days.' }),
       h('form', { onsubmit: function (e) {
         e.preventDefault(); err.textContent = ''; busy(btn, true, 'Sending…');
-        api('POST', '/users', { name: nn.value, email: ne.value, role: nr.value }).then(function () { toast('Invitation sent to ' + ne.value + '.'); nn.value = ne.value = ''; busy(btn, false, 'Send invitation'); draw(); })
+        api('POST', '/users', { name: nn.value, email: ne.value, role: nr.value }).then(function (r) { if (r && r.invite_link) showInviteLink(nn.value, r.invite_link); else toast('Invitation sent to ' + ne.value + '.'); nn.value = ne.value = ''; busy(btn, false, 'Send invitation'); draw(); })
           .catch(function (e2) { busy(btn, false, 'Send invitation'); err.textContent = e2.message; });
       } }, h('div', { class: 'grid' }, field('Name', nn), field('Email', ne), field('Level', nr)), err, btn),
       h('details', { class: 'levels' }, h('summary', { text: 'What can each level do?' }),

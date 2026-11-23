@@ -348,7 +348,10 @@ route('POST', '/users', async (req, env, body) => {
     'Choose your password here (the link works for 7 days):', (env.ADMIN_URL || '') + '#invite=' + token, '',
     'A short guided tour starts the first time you sign in.']);
   await audit(env, u.id, 'invited', `${name} as ${ROLE_NAME[role]}`);
-  return { user: publicUser(await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).first()) };
+  // Until email is set up (no RESEND_KEY), the administrator gets the link to pass on themselves.
+  const out = { user: publicUser(await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).first()) };
+  if (!env.RESEND_KEY) out.invite_link = (env.ADMIN_URL || '') + '#invite=' + token;
+  return out;
 });
 route('PATCH', '/users/:id', async (req, env, body, p) => {
   const u = await currentUser(env, req); need(u, 'admin');
@@ -362,12 +365,16 @@ route('PATCH', '/users/:id', async (req, env, body, p) => {
     await env.DB.prepare('UPDATE users SET disabled = ? WHERE id = ?').bind(body.disabled ? 1 : 0, t.id).run();
     if (body.disabled) await env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(t.id).run();
   }
+  let inviteLink = null;
   if (body.resend_invite && !t.pw_hash) {
     const token = await newLink(env, t.id, 'invite');
+    if (!env.RESEND_KEY) inviteLink = (env.ADMIN_URL || '') + '#invite=' + token;
     await sendMail(env, t.email, 'Your YWAM SF admin invitation', [`Hi ${t.name},`, '', 'Here’s a new link to set up your account for the YWAM San Francisco website admin (it works for 7 days):', (env.ADMIN_URL || '') + '#invite=' + token]);
   }
   await audit(env, u.id, 'person-updated', `${t.name}: ${JSON.stringify({ role: body.role, disabled: body.disabled, resend: !!body.resend_invite })}`);
-  return { user: publicUser(await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(t.id).first()) };
+  const res = { user: publicUser(await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(t.id).first()) };
+  if (inviteLink) res.invite_link = inviteLink;
+  return res;
 });
 route('DELETE', '/users/:id', async (req, env, body, p) => {
   const u = await currentUser(env, req); need(u, 'admin');
