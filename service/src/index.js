@@ -116,12 +116,13 @@ function gh(env) {
       const list = await call('GET', `/repos/${repo}/commits?path=${encodeURIComponent(path)}&sha=${encodeURIComponent(branch)}&per_page=30`);
       return (list || []).map((c) => ({ sha: c.sha, message: (c.commit.message || '').split('\n')[0], who: (c.commit.author && c.commit.author.name) || '', date: c.commit.author && c.commit.author.date }));
     },
-    async build() {                                          // most recent site build, for "is it live yet?"
+    async build(since) {                                     // the "Build site" run started after a change, for "is it live yet?"
       try {
-        const d = await call('GET', `/repos/${repo}/actions/runs?per_page=5`);
-        const run = (d.workflow_runs || [])[0];
-        return run ? { name: run.name, status: run.status, conclusion: run.conclusion, at: run.updated_at } : null;
-      } catch (e) { return null; }
+        const d = await call('GET', `/repos/${repo}/actions/runs?per_page=15`);
+        const runs = (d.workflow_runs || []).filter((r) => r.name === 'Build site' && (!since || new Date(r.created_at || r.updated_at).getTime() >= since));
+        const run = runs[runs.length - 1];                     // the first build after the change
+        return run ? { name: run.name, status: run.status, conclusion: run.conclusion, at: run.updated_at } : { status: 'queued', at: new Date().toISOString() };
+      } catch (e) { return { unavailable: true }; }      // the GitHub key can't read Actions: the admin just waits a little
     }
   };
 }
@@ -520,7 +521,7 @@ route('POST', '/history/restore', async (req, env, body) => {
   await audit(env, u.id, 'restored', `${path} to ${sha.slice(0, 7)}`);
   return { ok: true };
 });
-route('GET', '/build', async (req, env) => { await currentUser(env, req); return { build: await gh(env).build() }; });
+route('GET', '/build', async (req, env, body, p, url) => { await currentUser(env, req); const since = Date.parse(url.searchParams.get('since') || '') || 0; return { build: await gh(env).build(since) }; });
 
 /* comments: anyone can post one; it waits until an administrator or editor approves it */
 route('POST', '/public/comments', async (req, env, body) => {

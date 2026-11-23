@@ -797,7 +797,7 @@
     var tries = 0, t0 = Date.now();
     function done(ok, msg) { st.className = 'status ' + (ok ? 'done' : 'fail'); st.lastChild.textContent = msg; }
     function poll() {
-      var req = SERVICE ? api('GET', '/build').then(function (r) { var b = r.build; return b && new Date(b.at).getTime() > t0 - 5000 ? b : null; })
+      var req = SERVICE ? api('GET', '/build?since=' + encodeURIComponent(new Date(t0 - 15000).toISOString())).then(function (r) { var b = r.build; return b && b.unavailable ? 'skip' : (b || null); })
         : (!CAN_ACTIONS ? Promise.resolve('skip') : gh('GET', '/repos/' + REPO + '/actions/runs?head_sha=' + sha + '&per_page=1').then(function (r) { var run = r.workflow_runs && r.workflow_runs[0]; return run ? { status: run.status, conclusion: run.conclusion } : null; }));
       req.then(function (run) {
         if (run === 'skip') { setTimeout(function () { done(true, 'Saved. Your change should be live now (refresh the site to see it).'); }, 75000); return; }
