@@ -32,8 +32,13 @@ jobs:
         run: |
           V=5 python3 src/build.py
           V=6 python3 src/build.py
-          ROOT_SITE=1 OUT=.site7 python3 src7/build.py
-          python3 tools/publish_root.py
+          SITE_BASE="$MAIN_SITE" INDEXING="$MAIN_INDEXING" ROOT_SITE=1 OUT=.site7 python3 src7/build.py
+          SITE_BASE="$MAIN_SITE" python3 tools/publish_root.py
+        env:
+          # The main site's real address and whether search engines may list it. Test domain: ywamembers.org, hidden.
+          # At launch (domain moved to GitHub Pages): MAIN_SITE https://ywamsanfrancisco.org/ and MAIN_INDEXING '1'.
+          MAIN_SITE: https://ywamembers.org/
+          MAIN_INDEXING: '0'
       - name: Publish if anything changed
         run: |
           git config user.name "YWAM SF site builder"

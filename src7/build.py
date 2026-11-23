@@ -306,6 +306,40 @@ def section_switches(page_title, path, body):
         SECTION_INDEX.append({'path': path, 'page': PAGE_NAMES.get(path) or re.sub(r'\s+—\s+YWAM San Francisco$', '', page_title), 'sections': items})
     for a, b in reversed(cut): body = body[:a] + body[b:]
     return body
+
+# Search engines: pages stay hidden ("noindex") on the test domain. At launch the build runs with INDEXING=1 and
+# SITE_BASE=https://ywamsanfrancisco.org/ (set in .github/workflows/build.yml).
+INDEXING = os.environ.get('INDEXING') == '1'
+ROBOTS = '<meta name="robots" content="max-image-preview:large">' if INDEXING else '<meta name="robots" content="noindex">'
+H1_FALLBACK = {'about/': 'About YWAM San Francisco', 'about/news/': 'News & Events', 'about/resources/': 'Resources', 'about/people/': 'Staff & Board'}
+CRUMB_NAME = {}                                  # path → short name for breadcrumbs (blog posts set their title here)
+def _crumb_name(path):
+    if path in CRUMB_NAME: return CRUMB_NAME[path]
+    n = PAGE_NAMES.get(path)
+    if n: return re.sub(r'^About:\s*', '', n)
+    m = next((v for v in META.values() if isinstance(v, tuple) and len(v) > 2 and v[2] == path), None)
+    return re.sub(r'\s*\|.*$', '', m[0]) if m else path.strip('/').rsplit('/', 1)[-1].replace('-', ' ').capitalize()
+def structured_data(path, title):
+    """JSON-LD for search engines: the organization on the home page, breadcrumbs everywhere else."""
+    out = []
+    if path == '':
+        org = {'@context': 'https://schema.org', '@type': 'NGO', '@id': BASE + '#org', 'name': 'YWAM San Francisco',
+               'alternateName': 'Youth With A Mission San Francisco', 'url': BASE, 'logo': BASE + 'assets/img/ywamsf-logo.png',
+               'email': EMAIL, 'telephone': html.unescape(PHONE),
+               'address': {'@type': 'PostalAddress', 'streetAddress': html.unescape(ADDR), 'addressLocality': 'San Francisco', 'addressRegion': 'CA', 'postalCode': '94102', 'addressCountry': 'US'},
+               'sameAs': ['https://www.instagram.com/ywamsf/', html.unescape(globals().get('YT_CHANNEL') or 'https://www.youtube.com/user/YWAMsanfrancisco')]}
+        out.append(org)
+        out.append({'@context': 'https://schema.org', '@type': 'WebSite', 'name': 'YWAM San Francisco', 'url': BASE, 'publisher': {'@id': BASE + '#org'}})
+    else:
+        parts = path.strip('/').split('/'); items = [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': BASE}]
+        acc = ''
+        for i, seg in enumerate(parts):
+            acc += seg + '/'
+            if not any(v[2] == acc for v in META.values() if isinstance(v, tuple) and len(v) > 2) and acc != path and acc not in PAGE_NAMES: continue
+            if re.fullmatch(r'blog/(\d{4}/(\d+/){0,2}|category/|tag/|page/(\d+/)?)', acc): continue
+            items.append({'@type': 'ListItem', 'position': len(items) + 1, 'name': _crumb_name(acc), 'item': BASE + acc})
+        if len(items) > 1: out.append({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': items})
+    return ''.join('<script type="application/ld+json">%s</script>' % js(o) for o in out)
 def page(title, cur, up, root, body, extra_head='', scripts=''):
     if ROOT_SITE: root = up
     _short = title
@@ -314,10 +348,13 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     url = BASE + path
     seo = ('<meta name="description" content="%s"><link rel="canonical" href="%s">'
            '<meta property="og:type" content="website"><meta property="og:site_name" content="YWAM San Francisco"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta name="twitter:card" content="summary_large_image">') % (t(desc), url, t(title), t(desc), url, BASE + shot) if desc else ''
+    if '<h1' not in body:                         # every page gets one main heading (some About pages start with h2s)
+        body = '<h1 class="sr-only">%s</h1>' % t(H1_FALLBACK.get(path) or re.sub(r'\s*\|.*$', '', title)) + body
+    extra_head = structured_data(path, title) + extra_head
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
     return phone_sizes(localize(wire(f'''<!doctype html>
-<html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
@@ -1230,7 +1267,7 @@ for a in ARTICLES:
   <p class="art-foot"><a href="../">← Back to all resources</a></p>
 </div></article>'''
     d = os.path.join(OUT, 'about', 'resources', a['slug']); os.makedirs(d, exist_ok=True)
-    META[a['title'] + ' — YWAM San Francisco'] = (a['title'] + ' | YWAM San Francisco', (a['blocks'][0][1] if a['blocks'] and a['blocks'][0][0] == 'p' else a['title'])[:155], 'about/resources/' + a['slug'] + '/', 'assets/img/hero-ellis.jpg')
+    META[a['title'] + ' — YWAM San Francisco'] = (a['title'] + ' | YWAM San Francisco', (next((b[1] for b in a['blocks'] if b[0] == 'p' and isinstance(b[1], str) and len(b[1]) > 80), a['title']))[:155].rsplit(' ', 1)[0], 'about/resources/' + a['slug'] + '/', 'assets/img/hero-ellis.jpg')
     open(os.path.join(d, 'index.html'), 'w').write(page(a['title'] + ' — YWAM San Francisco', 'about', '../../../', '../../../../', body))
 
 # ---------------------------------------------------------------- PRIVACY (updated from the 2018 policy on the Squarespace site)
@@ -1298,12 +1335,14 @@ def blog_list_page(rel, title, kick, heading, lede, items, up, chips_cur=None, p
     body = ('<section class="page-hero blog-hero"><div class="wrap"><span class="kick">%s</span><h1>%s</h1><p class="lede">%s</p>%s</div></section>'
             '<section class="pad blog-list"><div class="wrap"><div class="stories news-grid">%s</div>%s</div></section>') % (kick, heading, lede, chips, cards, pager)
     os.makedirs(os.path.join(OUT, rel), exist_ok=True)
+    CRUMB_NAME.setdefault(rel, 'Blog' if rel == 'blog/' else html.unescape(re.sub(r'<[^>]+>', '', heading)))
     open(os.path.join(OUT, rel, 'index.html'), 'w').write(page(title, 'about', up, up, body, extra_head=BLOG_FEED_LINK % up))
 
 def blog_post_page(i, r):
     up = '../' * r['path'].count('/')
     desc = re.sub(r'\s+', ' ', str(r.get('seo_description') or r.get('excerpt') or '')).strip()[:300]
     key = 'Post: ' + r['path']
+    CRUMB_NAME[r['path']] = str(r['title']).strip()
     shot = _bimg(r, '') or 'assets/img/hero-ellis.jpg'
     META[key] = (str(r.get('seo_title') or '').strip() or (str(r['title']).strip() + ' | YWAM San Francisco'), desc, r['path'], shot)
     cats = [c for c in r.get('categories') or [] if blog_cat_slug(c)]
@@ -1331,7 +1370,7 @@ def blog_post_page(i, r):
         '<section class="pad blog-more"><div class="wrap"><div class="rv" style="margin-bottom:24px"><span class="kick">Keep reading</span><h2>More stories</h2></div>'
         '<div class="stories news-grid">%s</div><div class="links-row"><a class="btn ghost" href="%sblog/">All stories</a><a class="btn" href="%svolunteer/">Come volunteer</a></div></div></section>'
     ) % (up, kick, t(r['title']), meta,
-         ('<figure class="post-hero"><img src="%s" alt=""></figure>' % im) if im else '',
+         ('<figure class="post-hero"><img src="%s" alt="%s"></figure>' % (im, t(r['title']))) if im else '',
          blog_body(r.get('body'), up),
          ('<p class="post-tags">%s</p>' % tags) if tags else '', nav,
          ''.join(blog_card(x, up) for x in same[:3]), up, up)
@@ -1351,7 +1390,7 @@ if BLOG:
             _pg = '<nav class="bpager" aria-label="More stories">' + ''.join('<a href="%s%s"%s>%d</a>' % (_up, 'blog/' if k == 0 else 'blog/page/%d/' % (k + 1), ' aria-current="page"' if k == _i else '', k + 1) for k in range(len(_pages))) + '</nav>'
         _tt = 'Blog — YWAM San Francisco' + ('' if _i == 0 else ' (page %d)' % (_i + 1))
         META[_tt] = ('Stories from the Tenderloin | YWAM San Francisco Blog' + ('' if _i == 0 else ' | Page %d' % (_i + 1)),
-                     'Stories from YWAM San Francisco: the food pantry, the Ellis Room, outreach, discipleship training and life on Ellis Street in the Tenderloin.',
+                     'Stories from YWAM San Francisco: the food pantry, the Ellis Room, outreach, discipleship training and life on Ellis Street in the Tenderloin.' + ('' if _i == 0 else ' Page %d.' % (_i + 1)),
                      _rel, _bimg(BLOG[0], '') or 'assets/img/hero-ellis.jpg')
         blog_list_page(_rel, _tt, 'The YWAM SF blog', 'Stories from <em>the street.</em>', 'News, reflections and stories from life on Ellis Street.', _items, _up, None, _pg)
     for _c, _items in BLOG_CATS.items():
