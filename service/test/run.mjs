@@ -150,6 +150,9 @@ for (let i = 0; i < 8; i++) await call('POST', '/auth/login', { email: 'sam@exam
 r = await call('POST', '/auth/login', { email: 'sam@example.org', password: 'sam password 1' }); assert.equal(r.status, 429); ok('8 wrong passwords lock the account for 15 minutes');
 
 // comments
+r = await call('PUT', '/content', { path: 'content/blog/think-small.json', content: '{"title":"Think small","comments":true}', summary: 'Blog: Think small' }, admin); assert.equal(r.published, true);
+r = await call('PUT', '/content', { path: 'content/blog/closed-post.json', content: '{"title":"Closed"}', summary: 'Blog: Closed' }, admin);
+r = await call('POST', '/public/comments', { post: 'closed-post', name: 'Jo', text: 'Hello' }); assert.equal(r.status, 400); ok('posts without comments switched on refuse comments');
 r = await call('POST', '/public/comments', { post: 'think-small', name: 'Jo', email: 'jo@example.org', text: 'Lovely post!' }); assert.equal(r.ok, true); assert.match(mails.at(-1).subject, /comment/i); ok('visitor comment held for approval; team emailed');
 r = await call('POST', '/public/comments', { post: 'think-small', name: 'Bot', text: 'spam', website: 'http://spam' }); r = await call('GET', '/comments', null, admin); assert.equal(r.comments.length, 1); ok('robot comments (hidden field) are dropped');
 r = await call('POST', '/public/comments', { post: '../x', name: 'J', text: 'hi' }); assert.equal(r.status, 400); ok('comment on an unknown post refused');
@@ -160,6 +163,14 @@ const cj = fileJson('content/comments/think-small.json'); assert.equal(cj.commen
 r = await call('POST', `/comments/${com.id}/reject`, {}, admin); assert.equal(fileJson('content/comments/think-small.json').comments.length, 0); ok('an approved comment can be taken down again');
 for (let i = 0; i < 6; i++) r = await call('POST', '/public/comments', { post: 'think-small', name: 'Jo', text: 'again ' + i });
 assert.equal(r.status, 429); ok('a flood of comments from one place is slowed down');
+
+// reactions
+r = await call('POST', '/public/react', { post: 'think-small', emoji: 'heart' }); assert.equal(r.counts.heart, 1);
+r = await call('POST', '/public/react', { post: 'think-small', emoji: 'heart' }); assert.equal(r.counts.heart, 1); ok('one reaction per person per emoji');
+r = await call('POST', '/public/react', { post: 'think-small', emoji: 'pray' }); assert.equal(r.counts.pray, 1);
+r = await call('POST', '/public/react', { post: 'think-small', emoji: 'heart', on: false }); assert.equal(r.counts.heart, 0); ok('a reaction can be taken back');
+r = await call('POST', '/public/react', { post: 'think-small', emoji: 'thumbsdown' }); assert.equal(r.status, 400); ok('only the four emojis are accepted');
+r = await call('GET', '/public/reactions?post=think-small'); assert.equal(r.counts.pray, 1); ok('reaction counts can be read by anyone');
 
 // history
 r = await call('GET', '/history?path=content/faq.json', null, editor2); assert.ok(r.versions.length >= 3); ok('history lists past versions');

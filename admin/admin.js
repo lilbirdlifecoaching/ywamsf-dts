@@ -1064,7 +1064,7 @@
     var ready = p ? store.read('content/blog/' + p.file).then(function (f) {
       var d = JSON.parse((f.pending && f.pending.content) || f.text || '{}');
       BLOG.file = p.file; BLOG.sha = f.sha; BLOG.pending = f.pending || null; return d;
-    }) : Promise.resolve({ title: '', path: '', date: todaySF(), author: ME || '', categories: [], tags: [], excerpt: '', image: '', seo_title: '', seo_description: '', body: '', hidden: true });
+    }) : Promise.resolve({ title: '', path: '', date: todaySF(), author: ME || '', categories: [], tags: [], excerpt: '', image: '', seo_title: '', seo_description: '', body: '', hidden: true, comments: true });
     ready.then(function (d) { BLOG.cur = d; if (!p) { BLOG.file = null; BLOG.sha = null; BLOG.pending = null; } renderPostEditor(); })
       .catch(function (e) { toast('Couldn’t open that post: ' + e.message, true); renderBlog(); });
   }
@@ -1117,6 +1117,7 @@
       h('div', { class: 'fld full' }, h('span', { text: 'Categories' }), cats, h('div', { style: 'display:flex;gap:8px;margin-top:6px' }, newCat, addCat)),
       h('label', { class: 'fld full' }, h('span', { text: 'Tags (optional)' }), tags, h('small', { text: 'Separate with commas.' })),
       cover,
+      h('label', { class: 'blog-cm' }, h('input', { type: 'checkbox', checked: d.comments === true, onchange: function (e) { d.comments = e.target.checked; upd(); } }), ' Allow comments on this post (each one waits for approval under Blog comments)'),
       h('label', { class: 'fld full' }, h('span', { text: 'Summary' }), excerpt, h('small', { text: 'One or two sentences shown on the blog page and in Google. If empty, the start of the post is used.' })));
     main.appendChild(panel);
     // body editor

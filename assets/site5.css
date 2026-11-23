@@ -2032,3 +2032,34 @@ html.su-pop-on,html.su-pop-on body{overflow:hidden}
 .cta-band .row a.btn{color:#0B1417}
 .cta-band .row a.btn.ghost-light:hover{color:#0B1417}
 @media (max-width:640px){.vb7 .row-su{min-width:30px;min-height:30px;display:inline-flex;align-items:center;justify-content:center}}
+/* round 7-53: blog reactions and comments */
+.post-social{padding-bottom:40px}
+.reacts{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 34px}
+.react{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gray,#E2DFDE);background:#fff;border-radius:999px;padding:8px 14px;font:500 15px var(--sans);color:var(--navy,#24373D);cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.react:hover{border-color:#01BCDE}
+.react .em{font-size:20px;line-height:1}
+.react .n{min-width:1ch}
+.react[aria-pressed="true"]{background:#E3F7FB;border-color:#01BCDE}
+.react.pop{animation:reactpop .35s ease}
+@keyframes reactpop{40%{transform:scale(1.15)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.react.pop{animation:none}}
+.comments{border-top:1px solid var(--gray,#E2DFDE);padding-top:28px}
+.comments h2{font-size:30px;margin:0 0 16px}
+.clist{list-style:none;padding:0;margin:0 0 28px}
+.clist li{padding:16px 0;border-bottom:1px solid var(--gray,#E2DFDE)}
+.clist .chead{display:flex;gap:12px;align-items:baseline;margin-bottom:6px}
+.clist time{color:#5b6b70;font-size:13px}
+.clist p{margin:0;font-size:16.5px;line-height:1.7}
+.cnone{color:#5b6b70;margin:0 0 24px}
+.cform{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;background:#F4F2F1;border-radius:12px;padding:22px}
+.cform h3{grid-column:1/-1;margin:0;font-size:22px}
+.cform label{display:flex;flex-direction:column;gap:6px;font:500 13px var(--sans);color:var(--navy,#24373D)}
+.cform label.full,.cform .cnote,.cform .cstatus,.cform button{grid-column:1/-1}
+.cform input,.cform textarea{font:16px var(--sans);padding:11px 12px;border:1px solid var(--gray,#E2DFDE);border-radius:8px;background:#fff;color:inherit}
+.cform input:focus,.cform textarea:focus{outline:2px solid #01BCDE;outline-offset:1px}
+.cform small{font-weight:400;color:#5b6b70}
+.cform button{justify-self:start}
+.cform .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cnote{margin:0;font-size:13px;color:#5b6b70}
+.cstatus{margin:0;font-size:15px}.cstatus.ok{color:#00738B}.cstatus.err{color:#9A1E14}
+@media (max-width:640px){.cform{grid-template-columns:1fr}}

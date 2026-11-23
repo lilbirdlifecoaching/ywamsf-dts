@@ -5,7 +5,7 @@ everyone's sign-in (email + password, invites and "Forgot password?" by email), 
 levels (administrator, editor, contributor), keeps blog comments until they're approved, and sends the
 notification emails. It runs free on Cloudflare Workers; emails go through Resend (free tier).
 
-Everything below is done in the Cloudflare, Resend, GitHub and GoDaddy websites. No programs to install.
+Everything below is done in the Cloudflare, Resend, GitHub and Webstix websites. No programs to install.
 Allow about 30 minutes, plus up to an hour for the email check. **Never paste any key into a chat or an email**: each key goes only into the box
 named here.
 
@@ -47,7 +47,7 @@ Deploying again never removes these secrets.
 1. Resend → **Domains → Add domain** → `ywamsanfrancisco.org`.
 2. Resend shows three or four DNS records (on `send.ywamsanfrancisco.org` and `resend._domainkey`).
    They don't touch the existing email (Google Workspace) records.
-3. In GoDaddy (Wild West Domains) → the domain's **DNS** → **Add record** for each one, copying the type,
+3. In Webstix (where the domain is managed) → the domain’s **DNS** → **Add record** for each one, copying the type,
    name and value exactly. Back in Resend press **Verify** (it can take up to an hour).
 4. Resend → **API Keys → Create API key**, permission "Sending access", domain `ywamsanfrancisco.org`.
    Copy it and paste it into the Worker's `RESEND_KEY` secret (step 3.5).

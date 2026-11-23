@@ -148,6 +148,7 @@ assets/img/window-glass.png
 assets/img/ywamsf-logo.png
 assets/site5.css
 assets/site5.js
+assets/social.js
 assets/sq/064798e2ec2bf348.jpg
 assets/sq/07713aa97dc4ccc5.jpeg
 assets/sq/0a6756155ad57192.png

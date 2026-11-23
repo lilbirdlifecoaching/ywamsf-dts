@@ -103,12 +103,17 @@ def _load_blog():
         try: r['_d'] = datetime.date.fromisoformat(str(r.get('date'))[:10])
         except ValueError: continue
         if r['_d'] > TODAY: continue                       # scheduled posts appear on their date
+        r['_file'] = f[:-5]
         if not str(r.get('excerpt') or '').strip():          # no summary written: use the start of the post
             _tx = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', str(r.get('body') or '')))).strip()
             r['excerpt'] = _tx[:240].rsplit(' ', 1)[0] + ('…' if len(_tx) > 240 else '')
         out.append(r)
     out.sort(key=lambda r: (r['_d'], r.get('title')), reverse=True)
     return out
+# The admin sign-in service (also serves blog reactions and comments). Its address is set once, in admin/index.html.
+try: _m = re.search(r'<meta name="admin-service" content="(https://[A-Za-z0-9.-]+)"', open(os.path.join(ROOT, 'admin', 'index.html')).read())
+except Exception: _m = None
+SERVICE_URL = _m.group(1) if _m else ''
 BLOG = _load_blog()
 BLOG_PATHS = {r['path'] for r in BLOG}
 BLOG_CAT_LABEL = {'MA': 'Mission Adventures', 'RI': 'Restoration Initiatives'}
@@ -446,7 +451,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     css = f'{up}assets/site5.css?v={VER}'
     return phone_sizes(edit_hooks(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}{(' ' + SERVICE_URL) if SERVICE_URL else ''}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="{css}">{extra_head}</head><body>
@@ -1458,17 +1463,39 @@ def blog_post_page(i, r):
         '<div class="wrap narrow post-body">%s</div>'
         '<footer class="wrap narrow post-foot">%s<nav class="post-nav" aria-label="More posts">%s</nav></footer>'
         '</article>'
+        '%s'
         '<section class="pad blog-more"><div class="wrap"><div class="rv" style="margin-bottom:24px"><span class="kick">Keep reading</span><h2>More stories</h2></div>'
         '<div class="stories news-grid">%s</div><div class="links-row"><a class="btn ghost" href="%sblog/">All stories</a><a class="btn" href="%svolunteer/">Come volunteer</a></div></div></section>'
     ) % (up, kick, t(r['title']), meta,
          ('<figure class="post-hero"><img src="%s" alt="%s"></figure>' % (im, t(r['title']))) if im else '',
          blog_body(r.get('body'), up),
-         ('<p class="post-tags">%s</p>' % tags) if tags else '', nav,
+         ('<p class="post-tags">%s</p>' % tags) if tags else '', nav, blog_social(r),
          ''.join(blog_card(x, up) for x in same[:3]), up, up)
     os.makedirs(os.path.join(OUT, r['path']), exist_ok=True)
-    out = page(key, 'about', up, up, body, extra_head='<meta property="article:published_time" content="%s"><script type="application/ld+json">%s</script>' % (r['_d'].isoformat(), js(ld)) + BLOG_FEED_LINK % up)
+    out = page(key, 'about', up, up, body, scripts=('<script src="%sassets/social.js?v=%s" defer></script>' % (up, VER)) if SERVICE_URL else '', extra_head='<meta property="article:published_time" content="%s"><script type="application/ld+json">%s</script>' % (r['_d'].isoformat(), js(ld)) + BLOG_FEED_LINK % up)
     out = out.replace('<meta property="og:type" content="website">', '<meta property="og:type" content="article">', 1)
     open(os.path.join(OUT, r['path'], 'index.html'), 'w').write(out)
+
+REACTIONS = [('heart', '❤️', 'Love this'), ('pray', '🙏', 'Praying'), ('raise', '🙌', 'Praise God'), ('smile', '😊', 'This made me smile')]
+def blog_social(r):
+    """Emoji reactions on every post; comments on posts with "comments": true (new posts written in the admin)."""
+    slug = r.get('_file') or ''
+    if not SERVICE_URL or not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,80}', slug): return ''
+    reacts = ''.join('<button type="button" class="react" data-e="%s" aria-pressed="false" aria-label="%s" title="%s"><span class="em" aria-hidden="true">%s</span><span class="n"></span></button>' % (k, lab, lab, e) for k, e, lab in REACTIONS)
+    out = '<section class="post-social wrap narrow" data-social data-api="%s" data-post="%s"><div class="reacts" role="group" aria-label="React to this post">%s</div>' % (html.escape(SERVICE_URL, quote=True), slug, reacts)
+    if r.get('comments') is True:
+        try: cl = load('comments/%s.json' % slug).get('comments', [])
+        except Exception: cl = []
+        items = ''.join('<li><div class="chead"><b>%s</b><time>%s</time></div><p>%s</p></li>' % (t(c.get('name')), t(c.get('date')), html.escape(str(c.get('text') or '')).replace('\n', '<br>')) for c in cl if isinstance(c, dict) and str(c.get('text') or '').strip())
+        out += ('<div class="comments"><h2>Comments</h2>%s'
+                '<form class="cform" novalidate><h3>Leave a comment</h3>'
+                '<label><span>Name</span><input name="name" required maxlength="80" autocomplete="name"></label>'
+                '<label><span>Email (optional)</span><input name="email" type="email" maxlength="120" autocomplete="email"><small>Never shown. Only used if we\'d like to reply.</small></label>'
+                '<label class="full"><span>Comment</span><textarea name="text" required minlength="2" maxlength="2000" rows="5"></textarea></label>'
+                '<label class="hp" aria-hidden="true">Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label>'
+                '<button type="submit" class="btn">Post comment</button><p class="cnote">Comments appear after our team has read them.</p><p class="cstatus" role="status" aria-live="polite"></p></form></div>') % (
+            ('<ol class="clist">%s</ol>' % items) if items else '<p class="cnone">No comments yet. Be the first to share a thought or a prayer.</p>')
+    return out + '</section>'
 
 BLOG_PER_PAGE = 18
 if BLOG:

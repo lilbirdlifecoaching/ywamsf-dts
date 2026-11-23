@@ -213,6 +213,20 @@ async function notifyPublished(env, actor, path, summary) {
 
 /* ------------------------------------------------------------------ comments */
 const POST_SLUG = /^[a-z0-9][a-z0-9-]{0,80}$/;
+// A post takes comments only when its file says so ("comments": true, set for new posts in the admin page).
+async function commentsOpen(env, post) {
+  const f = await gh(env).get(`content/blog/${post}.json`);
+  if (!f.text) return false;
+  try { const d = JSON.parse(f.text); return d.comments === true && !d.hidden; } catch (e) { return false; }
+}
+/* emoji reactions: a fixed set, counted per post */
+const EMOJIS = ['heart', 'pray', 'raise', 'smile'];
+async function reactionCounts(env, post) {
+  const q = await env.DB.prepare('SELECT emoji, count FROM reactions WHERE post = ?').bind(post).all();
+  const out = {}; EMOJIS.forEach((e) => { out[e] = 0; }); (q.results || []).forEach((r) => { if (EMOJIS.includes(r.emoji)) out[r.emoji] = Math.max(0, r.count); });
+  return out;
+}
+
 async function rewriteComments(env, post, fn, actor, message) {
   const path = `content/comments/${post}.json`, g = gh(env), cur = await g.get(path);
   let data = { post, comments: [] };
@@ -541,11 +555,36 @@ route('POST', '/history/restore', async (req, env, body) => {
 });
 route('GET', '/build', async (req, env, body, p, url) => { await currentUser(env, req); const since = Date.parse(url.searchParams.get('since') || '') || 0; return { build: await gh(env).build(since) }; });
 
+/* emoji reactions on blog posts: anyone can add or take back one of the four */
+route('GET', '/public/reactions', async (req, env, body, p, url) => {
+  const post = String(url.searchParams.get('post') || '');
+  if (!POST_SLUG.test(post)) fail(400, 'Unknown post.');
+  return { counts: await reactionCounts(env, post) };
+});
+route('POST', '/public/react', async (req, env, body) => {
+  const post = String(body.post || ''), emoji = String(body.emoji || ''), on = body.on !== false;
+  if (!POST_SLUG.test(post) || !EMOJIS.includes(emoji)) fail(400, 'Unknown reaction.');
+  const ip = await sha256((req.headers.get('CF-Connecting-IP') || '') + '|' + (env.SETUP_KEY || ''));
+  const recent = (await env.DB.prepare('SELECT COUNT(*) AS n FROM reaction_marks WHERE ip_hash = ? AND created > ?').bind(ip, now() - HOUR).first()).n;
+  if (on && recent >= 60) fail(429, 'Thanks! Please try again later.');
+  const k = await sha256(ip + '|' + post + '|' + emoji);
+  const had = await env.DB.prepare('SELECT 1 FROM reaction_marks WHERE k = ?').bind(k).first();
+  if (on && !had) {
+    await env.DB.prepare('INSERT INTO reaction_marks (k, ip_hash, created) VALUES (?, ?, ?)').bind(k, ip, now()).run();
+    await env.DB.prepare('INSERT INTO reactions (post, emoji, count) VALUES (?, ?, 1) ON CONFLICT (post, emoji) DO UPDATE SET count = count + 1').bind(post, emoji).run();
+  } else if (!on && had) {
+    await env.DB.prepare('DELETE FROM reaction_marks WHERE k = ?').bind(k).run();
+    await env.DB.prepare('UPDATE reactions SET count = MAX(count - 1, 0) WHERE post = ? AND emoji = ?').bind(post, emoji).run();
+  }
+  return { counts: await reactionCounts(env, post), mine: on };
+});
+
 /* comments: anyone can post one; it waits until an administrator or editor approves it */
 route('POST', '/public/comments', async (req, env, body) => {
   if (body.website) return { ok: true };                          // the hidden field only robots fill in
   const post = String(body.post || ''), name = cleanName(body.name), email = normEmail(body.email), text = String(body.text || '').replace(/\r/g, '').trim();
   if (!POST_SLUG.test(post)) fail(400, 'Unknown post.');
+  if (!(await commentsOpen(env, post))) fail(400, 'Comments are closed on this post.');
   if (!name) fail(400, 'Please add your name.');
   if (email && !validEmail(email)) fail(400, 'That email doesn’t look right.');
   if (text.length < 2) fail(400, 'Please write a comment.');

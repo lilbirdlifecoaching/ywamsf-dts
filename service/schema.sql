@@ -70,3 +70,17 @@ CREATE TABLE IF NOT EXISTS audit (
   action TEXT NOT NULL,
   detail TEXT NOT NULL DEFAULT ''
 );
+
+-- Emoji reactions on blog posts (counts only; one per person per emoji, remembered by a hashed key, no personal data)
+CREATE TABLE IF NOT EXISTS reactions (
+  post TEXT NOT NULL,
+  emoji TEXT NOT NULL,
+  count INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (post, emoji)
+);
+CREATE TABLE IF NOT EXISTS reaction_marks (
+  k TEXT PRIMARY KEY,
+  ip_hash TEXT NOT NULL DEFAULT '',
+  created INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS reaction_marks_ip ON reaction_marks (ip_hash, created);
