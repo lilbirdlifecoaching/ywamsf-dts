@@ -52,6 +52,13 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   normal `store.save` path (history, undo, approvals, practice mode, conflict check). Search titles/descriptions per page:
   `content/seo.json` (admin → Search & sharing), applied in `meta_for()`. Analytics/verification IDs: settings.json
   (`analytics_ga4_id`, `analytics_cloudflare_token`, `google_site_verification`, `bing_site_verification`), off when empty.
+- **Editable wording (Nov 23 2026):** `text_layer()` in `src7/build.py` gives every template text block (headings, paragraphs,
+  labels, buttons, menu/footer; inline <em>/<strong>/<br> allowed, no links inside) `data-pt="<scope>|<sha1 of original>"`
+  (scope = page path or `site` for header/footer) and template photos with alt text `data-pt-img="<scope>|img:<file>"`.
+  Overrides live in `content/page_text.json` (`text[id] = {v, o, page, by, at}`, `img[id] = {v: "uploads/…"}`), applied at
+  build (sanitized by `pt_clean`). Admin → Visual editor edits them (B/I toolbar, Reset to original, list of all changes).
+  If you reword template text in code, an existing override for the old wording simply stops applying (its key changes).
+  Don't name other attributes `data-pt*`. Emails/phones/URLs are excluded (they come from Settings).
 - **Launch switch:** branch `launch-switch` = CNAME `ywamsanfrancisco.org` + build.yml `MAIN_SITE`/`MAIN_INDEXING`. Merge it
   only when the domain's DNS points at GitHub Pages (rebase on main first). Until then every page is `noindex`.
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev

@@ -427,7 +427,7 @@
   /* "How this works" panels: the exact steps for each section. */
   var HOWTO = {
     blog: ["Press “Write a new post”, or click a post to edit it.", "New posts start as drafts: only people in the admin can see them. Choose “Published” when it’s ready.", "A future date schedules the post: it appears on the blog that day.", "Add photos and YouTube videos with the buttons above the text. Pasted text keeps its paragraphs but not its formatting.", "Use Preview to see the post in the site’s style before publishing.", "“Allow comments” is on for new posts. Each comment waits under Blog comments until someone approves it. Every post also has emoji reactions (❤️ 🙏 🙌 😊) that visitors can tap.", "To take a post down, set it back to Draft. Administrators can also Delete a post; if it was published, its address forwards to the blog so old links still work."],
-    visual: ['Pick a page at the top. Outlined words and photos come from the admin: click one to change it right there on the page.', 'Press Enter or click elsewhere when you’re done with a piece of text. Esc puts it back.', 'Click an outlined photo to replace it.', 'Use Desktop, Tablet and Phone to check how it looks on each.', 'Your changes are saved as a draft in this browser as you go, so nothing is lost if you close the tab. They only go live when you press Publish, and History can undo them afterwards.'],
+    visual: ["Pick a page at the top. Everything outlined can be changed: click any heading, paragraph, label or button and type.", "While editing text: B and I make words bold or italic, Shift+Enter starts a new line, Enter or Done finishes, Esc undoes. “Reset to original” brings back the first wording.", "Click an outlined photo to replace it. Built-in photos also have “Original photo”.", "The menu and footer are shared by every page, so changes there show everywhere.", "Use Desktop, Tablet and Phone to check how it looks. Your changes are kept as a draft in this browser until you press Publish, and History can undo them afterwards.", "To add or remove items, change links or dates, or hide a whole section, use the sections in the menu."],
     overview: ["Pick what you want to change in the menu on the left. It follows the order of the website.", "For quick word or photo changes, use the Visual editor: click the text right on the page.", "To write or edit a blog post, open Blog posts (under News).", "Make your changes, then press the button at the bottom of the screen. Changes go live about 1–2 minutes after they’re published; refresh the page (Cmd+Shift+R) if you don’t see them."],
     dts: ['To add a school, press “Add a school” and fill in the first and last day. Everything else has a sensible starting value.', 'Update “Spots available” as places fill. Leave it blank to hide the number.', 'The site always features the next school to start. When a school begins, the next one takes over overnight.', 'Remove a school that was cancelled with the ✕ on its row.'],
     testimonials: ['Press “Add a testimonial”, paste the student’s words and add their name and school (for example “DTS 2025”).', 'Ask the student first; their name is shown on the website.', 'Until you add some, this section stays hidden (see Show or hide sections).'],
@@ -834,7 +834,7 @@
      preview. Changes are kept as a draft in this browser (autosave) until you publish; publishing saves them through
      the same route as the forms (history, undo, approvals and practice mode all apply). Layout and navigation can't
      be changed here, only the words and photos. */
-  var VE = null;   // { page, changes: {key: value}, orig: {key: value}, photos: {path: base64}, frame }
+  var VE = null, VE_DRAW_ALL = null;   // { page, changes: {key: value}, orig: {key: value}, photos: {path: base64}, frame }
   var VE_FILES = {};
   SECTIONS.forEach(function (s) { if (s.file && !VE_FILES[s.file]) VE_FILES[s.file] = s.title; });
   function veDraftKey(page) { return 'vdraft.' + norm(ME) + '.' + (page || 'home'); }
@@ -852,6 +852,21 @@
   function veLoadDraft(page) { try { return JSON.parse(localStorage.getItem('ywamadmin.' + veDraftKey(page)) || 'null'); } catch (e) { return null; } }
   function veClean(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
 
+  /* Editable wording: only bold, italic and line breaks are kept (the site build checks again). */
+  function veInline(root) {
+    var out = '';
+    (function walk(n) {
+      [].forEach.call(n.childNodes, function (c) {
+        if (c.nodeType === 3) { out += c.nodeValue.replace(/[&<>]/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]; }); return; }
+        if (c.nodeType !== 1) return;
+        if (c.tagName === 'BR') { out += '<br>'; return; }
+        var w = { B: 'strong', STRONG: 'strong', I: 'em', EM: 'em' }[c.tagName];
+        if (w) { out += '<' + w + '>'; walk(c); out += '</' + w + '>'; } else walk(c);
+      });
+    })(root);
+    return out.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').replace(/<(strong|em)>\s*<\/\1>/g, '').replace(/(\s*<br>\s*)+$/, '').trim();
+  }
+  function veSafe(html) { var d = new DOMParser().parseFromString('<div>' + String(html || '') + '</div>', 'text/html').body.firstChild; return d ? veInline(d) : ''; }
   function renderVisual() {
     var main = shellEls.main; main.textContent = '';
     shellEls.saveBtn.textContent = SERVICE && ROLE() === 'contributor' ? 'Submit for approval' : 'Publish';
@@ -873,11 +888,35 @@
     var file = h('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/heic,image/heif', style: 'display:none' });
     main.appendChild(h('div', { id: 'pubstatus' }));
     main.appendChild(bar); main.appendChild(draftBox); main.appendChild(wrap); main.appendChild(file);
-    main.appendChild(h('p', { class: 'hint', text: 'Only words and photos that come from the admin can be changed here. To add or remove items, or change links and dates, use the sections in the menu.' }));
+    main.appendChild(h('p', { class: 'hint', text: 'Change any wording or photo on the page here. The menu and footer are shared by every page, so a change there shows everywhere. To add or remove items, change links or dates, or hide a section, use the sections in the menu.' }));
+    var allBox = h('details', { class: 'panel ve-all' });
+    main.appendChild(allBox);
+    function drawAll() {
+      allBox.textContent = '';
+      var t = (VE && VE.pt && VE.pt.text) || {}, im = (VE && VE.pt && VE.pt.img) || {}, ids = Object.keys(t), iids = Object.keys(im);
+      allBox.appendChild(h('summary', { text: 'All wording and photo changes across the site (' + (ids.length + iids.length) + ')' }));
+      if (!ids.length && !iids.length) { allBox.appendChild(h('p', { class: 'hint', text: 'Nothing has been changed yet: every page shows its original wording.' })); return; }
+      allBox.appendChild(h('p', { class: 'hint', text: 'Reset puts the original back (it goes live when you publish).' }));
+      var ul = h('ul', { class: 've-all-list' });
+      ids.sort(function (a, b) { return String(t[b].at || '').localeCompare(String(t[a].at || '')); }).forEach(function (id) {
+        var e = t[id], pending = VE.changes['pt|' + id] === '__reset__';
+        ul.appendChild(h('li', null, h('div', null, h('b', { text: (id.split('|')[0] === 'site' ? 'Every page' : (id.split('|')[0] === 'home' ? 'Home' : id.split('|')[0] + '/')) + ': ' }), String(veSafe(e.v)).replace(/<[^>]+>/g, '').slice(0, 120),
+          h('small', { text: ' (was: “' + String(veSafe(e.o)).replace(/<[^>]+>/g, '').slice(0, 80) + '” · ' + (e.by || '') + (e.at ? ', ' + e.at : '') + ')' })),
+          h('button', { class: 'btn ghost small', type: 'button', text: pending ? 'Will reset' : 'Reset', disabled: pending || null, onclick: function () { VE.changes['pt|' + id] = '__reset__'; veSaveDraft(); drawAll(); } })));
+      });
+      iids.forEach(function (id) {
+        var e = im[id], pending = VE.changes['ptimg|' + id] === '__reset__';
+        ul.appendChild(h('li', null, h('div', null, h('b', { text: (id.split('|')[0] === 'home' ? 'Home' : id.split('|')[0] + '/') + ': ' }), 'photo replaced', h('small', { text: ' (' + (e.by || '') + (e.at ? ', ' + e.at : '') + ')' })),
+          h('button', { class: 'btn ghost small', type: 'button', text: pending ? 'Will reset' : 'Original photo', disabled: pending || null, onclick: function () { VE.changes['ptimg|' + id] = '__reset__'; veSaveDraft(); drawAll(); } })));
+      });
+      allBox.appendChild(ul);
+    }
+    VE_DRAW_ALL = drawAll;
 
     fetch(SITE.replace(/^https:\/\/[^/]+/, '..') + 'sections.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return { pages: [] }; }).then(function (d) {
       var list = (d.pages || []).map(function (p) { return [p.path, p.page]; });
       if (!list.some(function (p) { return p[0] === ''; })) list.unshift(['', 'Home']);
+      [['blog/', 'Blog (list page)'], ['privacy/', 'Privacy']].forEach(function (x) { if (!list.some(function (p) { return p[0] === x[0]; })) list.push(x); });
       list.forEach(function (p) { pages.appendChild(h('option', { value: p[0], text: p[1] })); });
       pages.value = (VE && VE.page != null) ? VE.page : '';
       open(pages.value);
@@ -888,7 +927,8 @@
     });
 
     function open(page) {
-      VE = { page: page, changes: {}, orig: {}, photos: {}, frame: frame };
+      VE = { page: page, changes: {}, orig: {}, photos: {}, frame: frame, pt: { text: {}, img: {} } };
+      store.read('content/page_text.json').then(function (f) { try { var d = JSON.parse((f.pending && f.pending.content) || f.text || '{}'); VE.pt = { text: d.text || {}, img: d.img || {} }; } catch (e) {} if (VE_DRAW_ALL) VE_DRAW_ALL(); }).catch(function () { if (VE_DRAW_ALL) VE_DRAW_ALL(); });
       setDirty(false); count.textContent = 'Loading the page…'; draftBox.textContent = '';
       frame.src = SITE.replace(/^https:\/\/[^/]+/, '..') + page + '?edit=' + Date.now();
     }
@@ -900,20 +940,39 @@
         '[data-edit]:hover{outline:2px solid #01BCDE!important}[data-edit]:focus{outline:2px solid #24373D!important;background:rgba(1,188,222,.08)}' +
         '[data-edit].ve-changed,img[data-edit-img].ve-changed{box-shadow:0 0 0 3px #F5B700!important}' +
         'img[data-edit-img]{cursor:pointer!important;outline:2px dashed rgba(1,188,222,.75)!important;outline-offset:-2px}img[data-edit-img]:hover{outline:3px solid #01BCDE!important}' +
+        '[data-pt]{outline:1px dashed rgba(1,188,222,.5)!important;outline-offset:2px;cursor:text!important}[data-pt]:hover{outline:2px solid #01BCDE!important}[data-pt]:focus{outline:2px solid #24373D!important;background:rgba(1,188,222,.08)}' +
+        '[data-pt].ve-changed,img[data-pt-img].ve-changed{box-shadow:0 0 0 3px #F5B700!important}img[data-pt-img]{cursor:pointer!important;outline:2px dashed rgba(1,188,222,.5)!important;outline-offset:-2px}img[data-pt-img]:hover{outline:3px solid #01BCDE!important}' +
+        '.ve-float{position:fixed;z-index:2147483647;display:flex;gap:4px;padding:5px;background:#24373D;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.25);font:500 13px system-ui,sans-serif}' +
+        '.ve-float button{border:0;border-radius:5px;background:transparent;color:#fff;padding:6px 10px;font:inherit;cursor:pointer}.ve-float button:hover{background:rgba(255,255,255,.15)}.ve-float button.on{background:#01BCDE;color:#24373D}' +
         '.rv{opacity:1!important;transform:none!important}.chat7,.su-pop{display:none!important}';
       doc.head.appendChild(st);
       var els = doc.querySelectorAll('[data-edit]'), imgs = doc.querySelectorAll('img[data-edit-img]');
       [].forEach.call(els, function (el) { var k = el.getAttribute('data-edit'); if (!(k in VE.orig)) VE.orig[k] = veClean(el.textContent); });
       [].forEach.call(imgs, function (el) { var k = el.getAttribute('data-edit-img'); if (!(k in VE.orig)) VE.orig[k] = 'uploads/' + (el.getAttribute('src') || '').split('/').pop(); });
-      var n = els.length + imgs.length;
+      var pts = doc.querySelectorAll('[data-pt]'), pimgs = doc.querySelectorAll('img[data-pt-img]');
+      [].forEach.call(pts, function (el) { var k = 'pt|' + el.getAttribute('data-pt'); if (!(k in VE.orig)) VE.orig[k] = veInline(el); });
+      [].forEach.call(pimgs, function (el) { var k = 'ptimg|' + el.getAttribute('data-pt-img'); if (!(k in VE.orig)) VE.orig[k] = 'current'; });
+      var n = els.length + imgs.length + pts.length + pimgs.length;
       count.textContent = n ? n + ' editable items on this page' : 'Nothing on this page comes from the admin yet. Use the sections in the menu.';
       // links and page scripts don't run while editing
       (doc.defaultView || doc).addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.ve-float')) return;
         var ed = e.target.closest && e.target.closest('[data-edit]'), im = e.target.closest && e.target.closest('img[data-edit-img]');
+        var pt = !ed && e.target.closest && e.target.closest('[data-pt]'), pim = !im && e.target.closest && e.target.closest('img[data-pt-img]');
+        if (!ed && !im && !pt && !pim && doc.elementsFromPoint) {      // photos under a shading layer or a link: look beneath the click
+          var under = doc.elementsFromPoint(e.clientX, e.clientY);
+          for (var u = 0; u < under.length; u++) {
+            if (under[u].matches('img[data-edit-img]')) { im = under[u]; break; }
+            if (under[u].matches('img[data-pt-img]')) { pim = under[u]; break; }
+            if (under[u].matches('img')) break;
+          }
+        }
         var a = e.target.closest && e.target.closest('a[href]');   // tabs, accordions and flip cards still work, so hidden text can be reached
-        if (a || ed || im) { e.preventDefault(); e.stopPropagation(); }
+        if (a || ed || im || pt || pim) { e.preventDefault(); e.stopPropagation(); }
         if (im) return pickPhoto(im);
         if (ed) return startEdit(ed);
+        if (pim) return photoMenu(pim);
+        if (pt) return startRich(pt);
       }, true);
       doc.addEventListener('submit', function (e) { e.preventDefault(); }, true);
       // restore an autosaved draft
@@ -949,17 +1008,89 @@
       }
       el.addEventListener('keydown', key); el.addEventListener('input', input); el.addEventListener('blur', done);
     }
+    function floatBar(doc, el, buttons) {
+      [].forEach.call(doc.querySelectorAll('.ve-float'), function (x) { x.remove(); });
+      var bar = doc.createElement('div'); bar.className = 've-float';
+      buttons.filter(Boolean).forEach(function (b) {
+        var btn = doc.createElement('button'); btn.type = 'button'; btn.textContent = b[0]; btn.title = b[1];
+        btn.addEventListener('mousedown', function (e) { e.preventDefault(); });
+        btn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); b[2](btn); });
+        bar.appendChild(btn);
+      });
+      doc.body.appendChild(bar);
+      var r = el.getBoundingClientRect(), vh = doc.defaultView.innerHeight, vw = doc.defaultView.innerWidth;
+      var top = r.top - bar.offsetHeight - 8; if (top < 8) top = Math.min(vh - bar.offsetHeight - 8, r.bottom + 8);
+      bar.style.top = top + 'px'; bar.style.left = Math.max(8, Math.min(r.left, vw - bar.offsetWidth - 8)) + 'px';
+      return bar;
+    }
+    function samePt(doc, id) { return doc.querySelectorAll('[data-pt="' + id.replace(/"/g, '') + '"]'); }
+    function ptOriginal(id) { var e = VE.pt.text[id]; return e && e.o ? veSafe(e.o) : null; }
+    function startRich(el) {
+      if (el.isContentEditable) return;
+      var doc = frame.contentDocument, id = el.getAttribute('data-pt'), k = 'pt|' + id;
+      var before = el.innerHTML, overridden = el.hasAttribute('data-pt-o') || !!VE.pt.text[id];
+      el.contentEditable = 'true'; el.spellcheck = true; el.focus();
+      var r = doc.createRange(); r.selectNodeContents(el); var sel = doc.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      var bar = floatBar(doc, el, [
+        ['B', 'Bold', function () { doc.execCommand('bold'); }],
+        ['I', 'Italic', function () { doc.execCommand('italic'); }],
+        (overridden || VE.changes[k] != null) ? ['Reset to original', 'Put the original wording back', function () { reset(); }] : null,
+        ['Done', 'Finish editing', function () { el.blur(); }]]);
+      function key(e) {
+        if (e.key === 'Enter' && e.shiftKey) { e.preventDefault(); doc.execCommand('insertLineBreak'); return; }
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+        if (e.key === 'Escape') { el.innerHTML = before; el.blur(); }
+      }
+      function input() { var v = el.innerHTML; [].forEach.call(samePt(doc, id), function (x) { if (x !== el) x.innerHTML = v; }); }
+      function cleanup() { el.removeEventListener('keydown', key); el.removeEventListener('input', input); el.removeEventListener('blur', done); el.contentEditable = 'false'; el.removeAttribute('contenteditable'); if (bar.parentNode) bar.remove(); }
+      function done() {
+        cleanup();
+        var v = veInline(el);
+        if (!v.replace(/<[^>]+>/g, '').trim()) { el.innerHTML = before; [].forEach.call(samePt(doc, id), function (x) { x.innerHTML = before; }); toast('That can’t be empty. To hide a whole section, use Show or hide sections.', true); return; }
+        [].forEach.call(samePt(doc, id), function (x) { x.innerHTML = v; x.classList.toggle('ve-changed', v !== VE.orig[k]); });
+        if (v === VE.orig[k]) delete VE.changes[k]; else VE.changes[k] = v;
+        veSaveDraft();
+      }
+      function reset() {
+        cleanup();
+        var o = ptOriginal(id), wasLive = el.hasAttribute('data-pt-o') || !!VE.pt.text[id];
+        if (wasLive) {
+          VE.changes[k] = '__reset__';
+          [].forEach.call(samePt(doc, id), function (x) { if (o != null) x.innerHTML = o; x.classList.add('ve-changed'); });
+          toast(o != null ? 'The original wording is back. Publish to make it live.' : 'The original wording comes back when you publish.');
+        } else {
+          delete VE.changes[k];
+          [].forEach.call(samePt(doc, id), function (x) { x.innerHTML = VE.orig[k]; x.classList.remove('ve-changed'); });
+        }
+        veSaveDraft();
+      }
+      el.addEventListener('keydown', key); el.addEventListener('input', input); el.addEventListener('blur', done);
+    }
+    function photoMenu(im) {
+      var doc = frame.contentDocument, id = im.getAttribute('data-pt-img'), k = 'ptimg|' + id;
+      var changed = !!VE.pt.img[id] || (VE.changes[k] != null && VE.changes[k] !== '__reset__');
+      var bar = floatBar(doc, im, [
+        ['Replace photo', 'Choose a new photo', function () { bar.remove(); pickPhoto(im); }],
+        changed ? ['Original photo', 'Put the original photo back', function () {
+          bar.remove();
+          var name = id.split('|img:')[1] || '', orig = new URL(SITE.replace(/^https:\/\/[^/]+/, '..') + 'assets/img/' + name, location.href).href;
+          [].forEach.call(doc.querySelectorAll('img[data-pt-img="' + id.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.removeAttribute('sizes'); x.src = orig; x.classList.add('ve-changed'); });
+          if (VE.pt.img[id]) VE.changes[k] = '__reset__'; else delete VE.changes[k];
+          veSaveDraft();
+        }] : null,
+        ['Cancel', 'Close', function () { bar.remove(); }]]);
+    }
     var photoTarget = null;
     function pickPhoto(im) { photoTarget = im; file.click(); }
     file.addEventListener('change', function () {
       var fl = file.files && file.files[0]; file.value = ''; if (!fl || !photoTarget) return;
-      var im = photoTarget, k = im.getAttribute('data-edit-img');
+      var im = photoTarget, isPt = !im.hasAttribute('data-edit-img'), id = im.getAttribute(isPt ? 'data-pt-img' : 'data-edit-img'), k = isPt ? 'ptimg|' + id : id, attr = isPt ? 'data-pt-img' : 'data-edit-img';
       toast('Preparing photo…');
       resizeImage(fl, 1600).then(function (r) {
         var path = 'uploads/photo-' + todaySF().replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6) + '.jpg';
         VE.photos[path] = r.base64; PENDING[path] = r.base64; PREVIEW[path] = r.dataUrl;
-        [].forEach.call(frame.contentDocument.querySelectorAll('img[data-edit-img="' + k.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.removeAttribute('sizes'); x.src = r.dataUrl; x.classList.add('ve-changed'); });
-        mark(k, path); toast('New photo in place. It goes live when you publish.');
+        [].forEach.call(frame.contentDocument.querySelectorAll('img[' + attr + '="' + id.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.removeAttribute('sizes'); x.src = r.dataUrl; x.classList.add('ve-changed'); });
+        if (isPt) { VE.changes[k] = path; veSaveDraft(); } else mark(k, path); toast('New photo in place. It goes live when you publish.');
       }).catch(function (e) { toast(e.message, true); });
     });
     function applyDraft(dr) {
@@ -967,6 +1098,16 @@
       Object.keys(dr.photos || {}).forEach(function (p) { VE.photos[p] = dr.photos[p]; PENDING[p] = dr.photos[p]; });
       Object.keys(dr.changes).forEach(function (k) {
         var v = dr.changes[k];
+        if (/^pt\|/.test(k)) {
+          var pid = k.slice(3), html = v === '__reset__' ? ptOriginal(pid) : veSafe(v);
+          if (html != null) [].forEach.call(samePt(doc, pid), function (x) { x.innerHTML = html; x.classList.add('ve-changed'); });
+          VE.changes[k] = v; return;
+        }
+        if (/^ptimg\|/.test(k)) {
+          var iid = k.slice(6);
+          if (v !== '__reset__') { if (!VE.photos[v]) return; [].forEach.call(doc.querySelectorAll('img[data-pt-img="' + iid.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.src = 'data:image/jpeg;base64,' + VE.photos[v]; x.classList.add('ve-changed'); }); }
+          VE.changes[k] = v; return;
+        }
         if (/^uploads\//.test(v) && v !== VE.orig[k]) {
           if (!VE.photos[v]) return;   // photo too big to keep in the draft: pick it again
           [].forEach.call(doc.querySelectorAll('img[data-edit-img="' + k.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.src = 'data:image/jpeg;base64,' + VE.photos[v]; x.classList.add('ve-changed'); });
@@ -989,8 +1130,32 @@
     var keys = Object.keys(VE.changes); if (!keys.length) return;
     var byFile = {};
     keys.forEach(function (k) { var i = k.indexOf('|'), f = k.slice(0, i), p = k.slice(i + 1); if (!/^[a-z_]+\.json$/.test(f)) return; (byFile[f] = byFile[f] || []).push([k, p]); });
+    var ptKeys = keys.filter(function (k) { return /^pt(img)?\|/.test(k); });
     var btn = shellEls.saveBtn, label = btn.textContent; busy(btn, true, PRACTICE ? 'Practising…' : 'Publishing…');
     var chain = Promise.resolve(), lastCommit = null, sent = false, skipped = [];
+    if (ptKeys.length) chain = chain.then(function () {
+      return store.read('content/page_text.json').then(function (r) {
+        var d = {}; try { d = JSON.parse((r.pending && r.pending.content) || r.text || '{}'); } catch (e) {}
+        d.text = d.text || {}; d.img = d.img || {};
+        var photos = {}, stamp = { page: VE.page || 'home', by: ME || '', at: todaySF() };
+        ptKeys.forEach(function (k) {
+          var v = VE.changes[k];
+          if (/^pt\|/.test(k)) {
+            var id = k.slice(3);
+            if (v === '__reset__') delete d.text[id];
+            else d.text[id] = Object.assign({ v: v, o: (d.text[id] && d.text[id].o) || VE.orig[k] }, stamp);
+          } else {
+            var iid = k.slice(6);
+            if (v === '__reset__') delete d.img[iid];
+            else { d.img[iid] = Object.assign({ v: v }, stamp); if (VE.photos[v]) photos[v] = VE.photos[v]; }
+          }
+        });
+        return store.save('content/page_text.json', JSON.stringify(d, null, 2) + '\n', 'Visual editor: page wording', r.sha, photos).then(function (res) {
+          if (res.commit) lastCommit = res.commit; if (!res.published) sent = true;
+          VE.pt = { text: d.text, img: d.img }; if (VE_DRAW_ALL) setTimeout(VE_DRAW_ALL, 0);
+        });
+      });
+    });
     Object.keys(byFile).forEach(function (f) {
       chain = chain.then(function () {
         return store.read('content/' + f).then(function (r) {
@@ -1010,6 +1175,7 @@
     chain.then(function () {
       busy(btn, false, label);
       try { localStorage.removeItem('ywamadmin.' + veDraftKey(VE.page)); } catch (e) {}
+      keys.forEach(function (k) { if (VE.changes[k] !== '__reset__' && !/^ptimg\|/.test(k)) VE.orig[k] = VE.changes[k]; });
       VE.changes = {}; PENDING = {}; setDirty(false); shellEls.saveSt.textContent = '';
       [].forEach.call(VE.frame.contentDocument.querySelectorAll('.ve-changed'), function (x) { x.classList.remove('ve-changed'); });
       if (skipped.length) toast('Some items were changed by someone else while you were editing, so they were left as they are. Reload and check them.', true);

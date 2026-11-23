@@ -436,6 +436,119 @@ def edit_hooks(h, path):
         return '<img%s data-edit-img="%s" src="%sassets/uploads/%s"' % (m.group(1), html.escape(k, quote=True), m.group(2), m.group(3)) if False else m.group(0).replace('<img', '<img data-edit-img="%s"' % html.escape(k, quote=True), 1)
     body = _EDIT_IMG.sub(im, body)
     return head + body
+
+# Editable wording (admin page → Visual editor). Every heading, paragraph, label, button and menu item that is written
+# into the page templates gets data-pt="<scope>|<key>" (scope = the page, or "site" for the header and footer; key = a
+# hash of the original wording). Editors' changes are kept in content/page_text.json ({"text": {id: {"v": html, "o": the
+# original}}, "img": {id: {"v": "uploads/…"}}}) and replace the original here. Only bold, italic and line breaks survive in
+# changed wording, and links, layout and structure can't be changed this way. Photos written into the templates (with
+# alt text) get data-pt-img and can be replaced the same way. Text from content/*.json keeps its own data-edit hooks.
+import hashlib as _hl
+try: _PT = load('page_text.json')
+except Exception: _PT = {}
+PT_TEXT = _PT.get('text') if isinstance(_PT.get('text'), dict) else {}
+PT_IMG = _PT.get('img') if isinstance(_PT.get('img'), dict) else {}
+_T_TOKEN = re.compile(r'<!--.*?-->|<(/?)([a-zA-Z][a-zA-Z0-9-]*)((?:[^>"\']|"[^"]*"|\'[^\']*\')*)>|[^<]+|<', re.S)
+_T_VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse', 'use', 'stop'}
+_T_RAW = {'script', 'style', 'textarea', 'title'}
+_T_TEXT = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'span', 'a', 'b', 'strong', 'small', 'em', 'i', 'figcaption', 'blockquote', 'dt', 'dd', 'td', 'th', 'label', 'button', 'cite', 'summary', 'div', 'q'}
+_T_INLINE = {'em', 'strong', 'b', 'i', 'br'}
+_T_SKIP_TAGS = {'svg', 'select', 'option', 'form', 'noscript', 'template', 'head', 'iframe', 'video', 'audio', 'canvas'}
+_T_SKIP_ATTR = re.compile(r'\b(data-edit|data-edit-img|aria-hidden="true"|contenteditable)|class="[^"]*\b(sr-only|chat7|su-pop|c7-|post-body|post-social|clist|ann-item copy|flap|dc-|clock|cd-)', re.I)
+def pt_clean(v):
+    """Changed wording: plain text with bold, italic and line breaks only."""
+    v = str(v or '')[:3000]
+    keep = []
+    def hold(m):
+        tag = m.group(2).lower(); tag = {'b': 'strong', 'i': 'em'}.get(tag, tag)
+        keep.append('<br>' if tag == 'br' else '<%s%s>' % ('/' if m.group(1) else '', tag)); return '\x00%d\x00' % (len(keep) - 1)
+    v = re.sub(r'<(/?)(em|strong|b|i|br)\s*/?>', hold, v, flags=re.I)
+    v = html.escape(html.unescape(re.sub(r'<[^>]*>', '', v)), quote=False)
+    return re.sub(r'\x00(\d+)\x00', lambda m: keep[int(m.group(1))], v).strip()
+def _t_norm(s): return re.sub(r'\s+', ' ', s).strip()
+def text_layer(h, path, up):
+    if path.startswith('blog/') and path != 'blog/': return h
+    i = h.find('<body');
+    if i < 0: return h
+    body = h[i:]
+    nodes, stack, pos = [], [], 0
+    scope_page = path.strip('/') or 'home'
+    in_main = False
+    pos, L = 0, len(body)
+    while pos < L:
+        m = _T_TOKEN.match(body, pos)
+        if not m: break
+        pos = m.end()
+        tok = m.group(0)
+        if m.group(2) is None:
+            if stack and tok.strip() and not tok.startswith('<!--'): stack[-1]['text'] = True
+            continue
+        tag = m.group(2).lower(); closing = m.group(1) == '/'
+        if not closing:
+            attrs = m.group(3) or ''
+            if tag in _T_RAW:                                   # jump over script/style contents
+                end = body.lower().find('</' + tag, m.end())
+                pos = L if end < 0 else body.find('>', end) + 1
+                continue
+            node = {'tag': tag, 's': m.start(), 'e': m.end(), 'attrs': attrs, 'kids': [], 'text': False, 'parent': stack[-1] if stack else None, 'main': in_main or tag == 'main'}
+            node['skip'] = tag in _T_SKIP_TAGS or bool(_T_SKIP_ATTR.search(attrs)) or bool(node['parent'] and node['parent'].get('skip'))
+            if tag == 'main': in_main = True
+            if stack: stack[-1]['kids'].append(node)
+            nodes.append(node)
+            if tag in _T_VOID or attrs.rstrip().endswith('/'): node['cs'] = node['ce'] = m.end(); continue
+            stack.append(node)
+        else:
+            if tag == 'main': in_main = False
+            for k in range(len(stack) - 1, -1, -1):
+                if stack[k]['tag'] == tag:
+                    stack[k]['cs'], stack[k]['ce'] = m.start(), m.end()
+                    del stack[k:]; break
+    def inline_only(n):
+        for k in n['kids']:
+            if k['tag'] not in _T_INLINE or k['attrs'].strip(' /') or not inline_only(k): return False
+        return True
+    picks, imgs = [], []
+    def walk(n):
+        if n.get('skip'): return
+        if n['tag'] == 'img':
+            src = re.search(r'\ssrc="((?:\.\./)*)assets/(img/[^"?]+\.(?:jpe?g|png|webp))"', n['attrs'])
+            alt = re.search(r'\salt="([^"]+)"', n['attrs'])
+            if src and alt and alt.group(1).strip(): imgs.append(n)
+            return
+        if 'cs' in n and n['tag'] in _T_TEXT and inline_only(n):
+            inner = body[n['e']:n['cs']]
+            txt = _t_norm(html.unescape(re.sub(r'<[^>]+>', '', inner)))
+            contact = re.fullmatch(r'\S+@\S+\.\S+|[+()\d][\d ().+-]{6,}|https?://\S+|www\.\S+', txt)   # emails, phones, web addresses come from Settings
+            if len(txt) >= 2 and re.search(r'[A-Za-z]', txt) and not contact: picks.append(n); return
+        for k in n['kids']: walk(k)
+    for n in nodes:
+        if n['parent'] is None: walk(n)
+    edits = []
+    for n in picks:
+        inner = body[n['e']:n['cs']]
+        scope = scope_page if n.get('main') else 'site'
+        key = scope + '|' + _hl.sha1((scope + '|' + _t_norm(inner)).encode('utf-8')).hexdigest()[:12]
+        o = PT_TEXT.get(key)
+        new_inner = pt_clean(o.get('v')) if isinstance(o, dict) and pt_clean(o.get('v')) else None
+        st = body[n['s']:n['e']]
+        st2 = st[:-1].rstrip('/').rstrip() + ' data-pt="%s"%s>' % (key, ' data-pt-o="1"' if new_inner is not None else '')
+        edits.append((n['s'], n['e'], st2))
+        if new_inner is not None: edits.append((n['e'], n['cs'], new_inner))
+    for n in imgs:
+        scope = scope_page if n.get('main') else 'site'
+        src = re.search(r'\ssrc="((?:\.\./)*)assets/(img/[^"?]+)"', n['attrs'])
+        key = scope + '|img:' + re.sub(r'[^A-Za-z0-9._-]', '', src.group(2).split('/')[-1])
+        st = body[n['s']:n['e']]
+        o = PT_IMG.get(key); v = str(o.get('v') or '') if isinstance(o, dict) else ''
+        if UPRE.match(v):
+            st = re.sub(r'\s(srcset|sizes)="[^"]*"', '', st)
+            st = re.sub(r'\ssrc="[^"]*"', ' src="%sassets/%s"' % (up, v), st, count=1)
+        st = st[:-1].rstrip('/').rstrip() + ' data-pt-img="%s">' % key
+        edits.append((n['s'], n['e'], st))
+    for a, b, rep in sorted(edits, key=lambda x: (x[0], x[1]), reverse=True):
+        body = body[:a] + rep + body[b:]
+    return h[:i] + body
+
 def page(title, cur, up, root, body, extra_head='', scripts=''):
     if ROOT_SITE: root = up
     _short = title
@@ -449,7 +562,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     extra_head = structured_data(path, title) + verification_tags(path) + extra_head + ANALYTICS
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
-    return phone_sizes(edit_hooks(localize(wire(f'''<!doctype html>
+    return phone_sizes(text_layer(edit_hooks(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}{(' ' + SERVICE_URL) if SERVICE_URL else ''}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
@@ -459,7 +572,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 <main id="main">{body}</main>
 {footer(up, root)}
 <div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p" aria-label="Ask us anything"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path))
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path), path, up))
 
 def banner_html():
     b = load('banner.json')
