@@ -406,6 +406,13 @@
         { k: 'google_site_verification', l: 'Google Search Console verification code (optional)', hint: 'Only if you verify with the “HTML tag” method: paste just the content value. Not needed if you verify by DNS.' },
         { k: 'bing_site_verification', l: 'Bing Webmaster verification code (optional)', hint: 'The msvalidate.01 value, if you verify Bing with the HTML tag method.' },
         { k: 'hours', l: 'Opening hours (Contact page)', t: 'list', add: 'Add a line', title: function (x) { return x.label || 'New line'; }, sub: function (x) { return x.text || ''; }, blank: { label: '', text: '' }, fields: [F.text('label', 'Label', { req: true }), F.text('text', 'Hours')] }] },
+    { id: 'seo', grp: 'Site', file: 'seo.json', title: 'Search & sharing', page: '',
+      intro: 'Change the title and description Google shows for a page, and the picture shown when it’s shared. Pages not listed here keep their built-in title and description.',
+      fields: [{ k: 'pages', l: 'Pages', t: 'list', add: 'Add a page', title: function (x) { return x.path ? (x.path === '/' ? 'Home page' : x.path) : 'New page'; }, sub: function (x) { return x.title || ''; }, blank: { path: '', title: '', description: '', image: '' },
+        fields: [F.text('path', 'Page address', { req: true, hint: 'Everything after the domain, for example dts/ or volunteer/ or blog/2026/1/19/church-that-shows-up/. Use / for the home page.' }),
+          F.text('title', 'Search title', { hint: 'About 50–60 characters. Shown as the blue link in Google and as the browser tab name.' }),
+          F.area('description', 'Search description', { hint: 'About 120–155 characters: what someone will find on this page.' }),
+          F.photo('image', 'Sharing picture', { hint: 'Optional. Shown when the page is shared on social media or in messages. Landscape, about 1200×630.' })] }] },
     { id: 'editors', grp: 'Site', title: 'Editors & security' }
   ];
   // Show or hide whole sections of the website (administrators; others' changes wait for approval).

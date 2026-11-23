@@ -249,9 +249,25 @@ def footer(up, root):
 # ROOT_SITE=1 builds YWAM 7 as the main site (https://ywamembers.org/): no concept switcher, favicon at the site root
 ROOT_SITE = os.environ.get('ROOT_SITE') == '1'
 BASE = os.environ.get('SITE_BASE') or ('https://ywamembers.org/' if ROOT_SITE else 'https://ywamembers.org/ywam%d/' % V)
+def _seo_overrides():
+    out = {}
+    try: rows = load('seo.json').get('pages', [])
+    except Exception: rows = []
+    for r in rows if isinstance(rows, list) else []:
+        p = str(r.get('path') or '').strip().lstrip('/')
+        if p and not p.endswith('/'): p += '/'
+        if not re.fullmatch(r'([A-Za-z0-9][A-Za-z0-9/_.+-]*/)?', p): continue
+        out[p] = r
+    return out
+SEO_OVR = _seo_overrides()   # admin page → Search & sharing
 def meta_for(title):
     m = META.get(title)
     if not m: return title, '', '', 'assets/img/hero-ellis.jpg'
+    o = SEO_OVR.get(m[2])
+    if o:
+        tt = re.sub(r'\s+', ' ', str(o.get('title') or '')).strip(); dd = re.sub(r'\s+', ' ', str(o.get('description') or '')).strip()
+        im = str(o.get('image') or '').strip()
+        m = (tt or m[0], dd or m[1], m[2], ('assets/' + im) if UPRE.match(im) else m[3])
     return m
 # Files mirrored from Squarespace (tools/mirror_squarespace.py) replace the Squarespace addresses wherever a copy exists
 import importlib.util as _ilu
