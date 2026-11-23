@@ -418,6 +418,7 @@
 
   /* "How this works" panels: the exact steps for each section. */
   var HOWTO = {
+    visual: ['Pick a page at the top. Outlined words and photos come from the admin: click one to change it right there on the page.', 'Press Enter or click elsewhere when you’re done with a piece of text. Esc puts it back.', 'Click an outlined photo to replace it.', 'Use Desktop, Tablet and Phone to check how it looks on each.', 'Your changes are saved as a draft in this browser as you go, so nothing is lost if you close the tab. They only go live when you press Publish, and History can undo them afterwards.'],
     overview: ['Pick what you want to change in the menu on the left. It follows the order of the website.', 'Make your changes, then press the button at the bottom of the screen.', 'Changes go live on the website about two minutes after they’re published.'],
     dts: ['To add a school, press “Add a school” and fill in the first and last day. Everything else has a sensible starting value.', 'Update “Spots available” as places fill. Leave it blank to hide the number.', 'The site always features the next school to start. When a school begins, the next one takes over overnight.', 'Remove a school that was cancelled with the ✕ on its row.'],
     testimonials: ['Press “Add a testimonial”, paste the student’s words and add their name and school (for example “DTS 2025”).', 'Ask the student first; their name is shown on the website.', 'Until you add some, this section stays hidden (see Show or hide sections).'],
@@ -476,6 +477,7 @@
   function showApp(id) {
     var nav = h('nav', { 'aria-label': 'Sections', 'data-tour': 'nav' }), lastGrp = null;
     nav.appendChild(h('button', { class: 'nav', type: 'button', 'data-id': 'overview', onclick: function () { go('overview'); } }, 'Home'));
+    nav.appendChild(h('button', { class: 'nav', type: 'button', 'data-id': 'visual', onclick: function () { go('visual'); } }, 'Visual editor'));
     if (SERVICE) {
       var tasks = extraNav().filter(function (i) { return ['approvals', 'mine', 'comments'].indexOf(i.id) >= 0; });
       if (tasks.length) { nav.appendChild(h('div', { class: 'grp', text: 'To do' })); tasks.forEach(navBtn); }
@@ -492,7 +494,7 @@
     var side = h('aside', { class: 'side' }, h('div', { class: 'brand' }, 'YWAM SAN FRANCISCO', h('small', { text: 'Site admin' })), nav, helpBtn,
       h('div', { class: 'who' }, 'Signed in as', h('b', { text: ME }), h('small', { class: 'lvl', text: ROLE_LABEL() }), h('button', { class: 'link', type: 'button', text: 'Sign out', onclick: function () { if (!DIRTY || PRACTICE || confirm('You have unsaved changes. Sign out anyway?')) logout('You’ve been signed out.'); } })));
     var main = h('main', { class: 'main', id: 'main' });
-    var saveSt = h('span', { class: 'st' }), saveBtn = h('button', { class: 'btn', type: 'button', 'data-tour': 'save', text: 'Publish', onclick: save }), undoBtn = h('button', { class: 'btn ghost', type: 'button', text: 'Discard changes', onclick: function () { if (confirm('Discard your unsaved changes?')) go(CUR, true); } });
+    var saveSt = h('span', { class: 'st' }), saveBtn = h('button', { class: 'btn', type: 'button', 'data-tour': 'save', text: 'Publish', onclick: save }), undoBtn = h('button', { class: 'btn ghost', type: 'button', text: 'Discard changes', onclick: function () { if (confirm('Discard your unsaved changes?')) { if (CUR === 'visual' && VE) { try { localStorage.removeItem('ywamadmin.' + veDraftKey(VE.page)); } catch (e) {} } go(CUR, true); } } });
     var bar = h('div', { class: 'savebar', role: 'region', 'aria-label': 'Unsaved changes' }, saveSt, h('div', { class: 'acts' }, undoBtn, saveBtn));
     var practiceBar = h('div', { class: 'practice-bar', role: 'status' }, h('b', { text: 'Practice mode' }), ' Nothing you do here changes the website. ', h('button', { class: 'link', type: 'button', text: 'Leave practice mode', onclick: function () { setPractice(false); } }));
     shellEls = { side: side, nav: nav, main: main, bar: bar, saveSt: saveSt, saveBtn: saveBtn, practiceBar: practiceBar };
@@ -520,7 +522,7 @@
     shellEls.main.textContent = '';
     shellEls.main.appendChild(h('p', { class: 'loading', text: 'Loading…' }));
     window.scrollTo(0, 0);
-    var screens = { overview: renderOverview, editors: renderEditors, approvals: renderApprovals, mine: renderMine, comments: renderComments, people: renderPeople, account: renderAccount, guide: renderGuide };
+    var screens = { visual: renderVisual, overview: renderOverview, editors: renderEditors, approvals: renderApprovals, mine: renderMine, comments: renderComments, people: renderPeople, account: renderAccount, guide: renderGuide };
     if (screens[id]) return screens[id]();
     shellEls.saveBtn.textContent = saveLabel(s);
     store.read('content/' + s.file).then(function (f) {
@@ -762,6 +764,7 @@
   }
   function usedPhotos(o, out) { if (Array.isArray(o)) o.forEach(function (x) { usedPhotos(x, out); }); else if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { var v = o[k]; if (typeof v === 'string' && PENDING[v]) out[v] = 1; else usedPhotos(v, out); }); return out; }
   function save() {
+    if (CUR === 'visual') return visualPublish();
     var s = SECTIONS.filter(function (x) { return x.id === CUR; })[0]; if (!s || !s.file) return;
     var errs = validate(s.fields, DATA, s.title, []);
     if (errs.length) { toast(errs[0], true); return; }
@@ -800,6 +803,202 @@
       }).catch(function (e) { if (!SERVICE && (e.status === 403 || e.status === 404)) { CAN_ACTIONS = false; poll(); } else if (++tries < 40) setTimeout(poll, 8000); });
     }
     setTimeout(poll, 8000);
+  }
+
+
+  /* ------------------------------------------------------------------ visual editor
+     The real page opens in a frame. Text and photos that come from the admin content are marked by the site build
+     (data-edit="file|path", data-edit-img="file|path"). Click one to change it right on the page: the frame is the
+     preview. Changes are kept as a draft in this browser (autosave) until you publish; publishing saves them through
+     the same route as the forms (history, undo, approvals and practice mode all apply). Layout and navigation can't
+     be changed here, only the words and photos. */
+  var VE = null;   // { page, changes: {key: value}, orig: {key: value}, photos: {path: base64}, frame }
+  var VE_FILES = {};
+  SECTIONS.forEach(function (s) { if (s.file && !VE_FILES[s.file]) VE_FILES[s.file] = s.title; });
+  function veDraftKey(page) { return 'vdraft.' + norm(ME) + '.' + (page || 'home'); }
+  function veSaveDraft() {
+    if (!VE) return;
+    var n = Object.keys(VE.changes).length;
+    setDirty(n > 0);
+    shellEls.saveSt.textContent = n ? (PRACTICE ? 'Practice: ' : '') + n + (n === 1 ? ' change' : ' changes') + ' on this page, saved as a draft in this browser. Not live until you publish.' : '';
+    if (!n) { try { localStorage.removeItem('ywamadmin.' + veDraftKey(VE.page)); } catch (e) {} return; }
+    var photos = {}; Object.keys(VE.changes).forEach(function (k) { var v = VE.changes[k]; if (VE.photos[v]) photos[v] = VE.photos[v]; });
+    var draft = JSON.stringify({ at: Date.now(), changes: VE.changes, orig: VE.orig, photos: photos });
+    try { localStorage.setItem('ywamadmin.' + veDraftKey(VE.page), draft); }
+    catch (e) { try { localStorage.setItem('ywamadmin.' + veDraftKey(VE.page), JSON.stringify({ at: Date.now(), changes: VE.changes, orig: VE.orig, photos: {} })); } catch (e2) {} }
+  }
+  function veLoadDraft(page) { try { return JSON.parse(localStorage.getItem('ywamadmin.' + veDraftKey(page)) || 'null'); } catch (e) { return null; } }
+  function veClean(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
+
+  function renderVisual() {
+    var main = shellEls.main; main.textContent = '';
+    shellEls.saveBtn.textContent = SERVICE && ROLE() === 'contributor' ? 'Submit for approval' : 'Publish';
+    main.appendChild(top('Visual editor', 'Click any outlined text or photo on the page to change it. What you see in the frame is the preview. Nothing goes live until you press Publish.', []));
+    main.appendChild(howto('visual'));
+    var pages = h('select', { 'aria-label': 'Page' });
+    var devs = h('div', { class: 've-devs', role: 'group', 'aria-label': 'Preview size' });
+    [['desktop', 'Desktop'], ['tablet', 'Tablet'], ['phone', 'Phone']].forEach(function (d, i) {
+      devs.appendChild(h('button', { type: 'button', class: 've-dev', 'aria-pressed': i === 0 ? 'true' : 'false', 'data-dev': d[0], text: d[1], onclick: function (e) {
+        [].forEach.call(devs.children, function (b) { b.setAttribute('aria-pressed', b === e.currentTarget ? 'true' : 'false'); });
+        wrap.setAttribute('data-dev', d[0]);
+      } }));
+    });
+    var count = h('span', { class: 've-count', role: 'status' });
+    var bar = h('div', { class: 've-bar' }, h('label', { class: 've-page' }, h('span', { text: 'Page' }), pages), devs, count);
+    var draftBox = h('div', { id: 've-draft' });
+    var frame = h('iframe', { class: 've-frame', title: 'Page preview: click outlined text or photos to edit' });
+    var wrap = h('div', { class: 've-wrap', 'data-dev': 'desktop' }, frame);
+    var file = h('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/heic,image/heif', style: 'display:none' });
+    main.appendChild(h('div', { id: 'pubstatus' }));
+    main.appendChild(bar); main.appendChild(draftBox); main.appendChild(wrap); main.appendChild(file);
+    main.appendChild(h('p', { class: 'hint', text: 'Only words and photos that come from the admin can be changed here. To add or remove items, or change links and dates, use the sections in the menu.' }));
+
+    fetch(SITE.replace(/^https:\/\/[^/]+/, '..') + 'sections.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return { pages: [] }; }).then(function (d) {
+      var list = (d.pages || []).map(function (p) { return [p.path, p.page]; });
+      if (!list.some(function (p) { return p[0] === ''; })) list.unshift(['', 'Home']);
+      list.forEach(function (p) { pages.appendChild(h('option', { value: p[0], text: p[1] })); });
+      pages.value = (VE && VE.page != null) ? VE.page : '';
+      open(pages.value);
+    });
+    pages.addEventListener('change', function () {
+      if (VE && Object.keys(VE.changes).length && !PRACTICE && !confirm('Your changes on this page are kept as a draft. Switch page? (Come back to this page to publish them.)')) { pages.value = VE.page; return; }
+      open(pages.value);
+    });
+
+    function open(page) {
+      VE = { page: page, changes: {}, orig: {}, photos: {}, frame: frame };
+      setDirty(false); count.textContent = 'Loading the page…'; draftBox.textContent = '';
+      frame.src = SITE.replace(/^https:\/\/[^/]+/, '..') + page + '?edit=' + Date.now();
+    }
+    frame.addEventListener('load', function () {
+      var doc; try { doc = frame.contentDocument; } catch (e) { doc = null; }
+      if (!doc || !doc.body) { count.textContent = 'This page can’t be edited here.'; return; }
+      var st = doc.createElement('style');
+      st.textContent = '[data-edit]{outline:1px dashed rgba(1,188,222,.75)!important;outline-offset:2px;cursor:text!important}' +
+        '[data-edit]:hover{outline:2px solid #01BCDE!important}[data-edit]:focus{outline:2px solid #24373D!important;background:rgba(1,188,222,.08)}' +
+        '[data-edit].ve-changed,img[data-edit-img].ve-changed{box-shadow:0 0 0 3px #F5B700!important}' +
+        'img[data-edit-img]{cursor:pointer!important;outline:2px dashed rgba(1,188,222,.75)!important;outline-offset:-2px}img[data-edit-img]:hover{outline:3px solid #01BCDE!important}' +
+        '.rv{opacity:1!important;transform:none!important}.chat7,.su-pop{display:none!important}';
+      doc.head.appendChild(st);
+      var els = doc.querySelectorAll('[data-edit]'), imgs = doc.querySelectorAll('img[data-edit-img]');
+      [].forEach.call(els, function (el) { var k = el.getAttribute('data-edit'); if (!(k in VE.orig)) VE.orig[k] = veClean(el.textContent); });
+      [].forEach.call(imgs, function (el) { var k = el.getAttribute('data-edit-img'); if (!(k in VE.orig)) VE.orig[k] = 'uploads/' + (el.getAttribute('src') || '').split('/').pop(); });
+      var n = els.length + imgs.length;
+      count.textContent = n ? n + ' editable items on this page' : 'Nothing on this page comes from the admin yet. Use the sections in the menu.';
+      // links and page scripts don't run while editing
+      (doc.defaultView || doc).addEventListener('click', function (e) {
+        var ed = e.target.closest && e.target.closest('[data-edit]'), im = e.target.closest && e.target.closest('img[data-edit-img]');
+        var a = e.target.closest && e.target.closest('a[href]');   // tabs, accordions and flip cards still work, so hidden text can be reached
+        if (a || ed || im) { e.preventDefault(); e.stopPropagation(); }
+        if (im) return pickPhoto(im);
+        if (ed) return startEdit(ed);
+      }, true);
+      doc.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+      // restore an autosaved draft
+      var dr = veLoadDraft(VE.page);
+      if (dr && dr.changes && Object.keys(dr.changes).length) {
+        draftBox.textContent = '';
+        draftBox.appendChild(h('div', { class: 'notice warn' }, h('b', { text: 'Unsaved draft. ' }), 'You have ' + Object.keys(dr.changes).length + ' change(s) on this page from ' + ago(dr.at) + ' that were never published. ',
+          h('button', { class: 'btn small', type: 'button', text: 'Restore them', onclick: function () { applyDraft(dr); draftBox.textContent = ''; } }), ' ',
+          h('button', { class: 'btn ghost small', type: 'button', text: 'Throw them away', onclick: function () { try { localStorage.removeItem('ywamadmin.' + veDraftKey(VE.page)); } catch (e) {} draftBox.textContent = ''; } })));
+      }
+    });
+    function sameKey(doc, k) { return doc.querySelectorAll('[data-edit="' + k.replace(/"/g, '') + '"]'); }
+    function mark(k, v) {
+      if (veClean(v) === VE.orig[k]) delete VE.changes[k]; else VE.changes[k] = v;
+      veSaveDraft();
+    }
+    function startEdit(el) {
+      if (el.isContentEditable) return;
+      var doc = frame.contentDocument, k = el.getAttribute('data-edit');
+      try { el.contentEditable = 'plaintext-only'; } catch (e) { el.contentEditable = 'true'; }
+      if (el.contentEditable !== 'plaintext-only') el.contentEditable = 'true';
+      el.spellcheck = true; el.focus();
+      var r = doc.createRange(); r.selectNodeContents(el); var sel = doc.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      function key(e) { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } if (e.key === 'Escape') { el.textContent = VE.changes[k] != null ? VE.changes[k] : VE.orig[k]; el.blur(); } }
+      function input() { var v = veClean(el.textContent); [].forEach.call(sameKey(doc, k), function (x) { if (x !== el) x.textContent = v; }); }
+      function done() {
+        el.removeEventListener('keydown', key); el.removeEventListener('input', input); el.removeEventListener('blur', done);
+        el.contentEditable = 'false'; el.removeAttribute('contenteditable');
+        var v = veClean(el.textContent);
+        if (!v) { v = VE.changes[k] != null ? VE.changes[k] : VE.orig[k]; toast('That can’t be empty. To remove an item, use its section in the menu.', true); }
+        [].forEach.call(sameKey(doc, k), function (x) { x.textContent = v; x.classList.toggle('ve-changed', v !== VE.orig[k]); });
+        mark(k, v);
+      }
+      el.addEventListener('keydown', key); el.addEventListener('input', input); el.addEventListener('blur', done);
+    }
+    var photoTarget = null;
+    function pickPhoto(im) { photoTarget = im; file.click(); }
+    file.addEventListener('change', function () {
+      var fl = file.files && file.files[0]; file.value = ''; if (!fl || !photoTarget) return;
+      var im = photoTarget, k = im.getAttribute('data-edit-img');
+      toast('Preparing photo…');
+      resizeImage(fl, 1600).then(function (r) {
+        var path = 'uploads/photo-' + todaySF().replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6) + '.jpg';
+        VE.photos[path] = r.base64; PENDING[path] = r.base64; PREVIEW[path] = r.dataUrl;
+        [].forEach.call(frame.contentDocument.querySelectorAll('img[data-edit-img="' + k.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.removeAttribute('sizes'); x.src = r.dataUrl; x.classList.add('ve-changed'); });
+        mark(k, path); toast('New photo in place. It goes live when you publish.');
+      }).catch(function (e) { toast(e.message, true); });
+    });
+    function applyDraft(dr) {
+      var doc = frame.contentDocument;
+      Object.keys(dr.photos || {}).forEach(function (p) { VE.photos[p] = dr.photos[p]; PENDING[p] = dr.photos[p]; });
+      Object.keys(dr.changes).forEach(function (k) {
+        var v = dr.changes[k];
+        if (/^uploads\//.test(v) && v !== VE.orig[k]) {
+          if (!VE.photos[v]) return;   // photo too big to keep in the draft: pick it again
+          [].forEach.call(doc.querySelectorAll('img[data-edit-img="' + k.replace(/"/g, '') + '"]'), function (x) { x.removeAttribute('srcset'); x.src = 'data:image/jpeg;base64,' + VE.photos[v]; x.classList.add('ve-changed'); });
+        } else [].forEach.call(sameKey(doc, k), function (x) { x.textContent = v; x.classList.add('ve-changed'); });
+        VE.changes[k] = v;
+      });
+      veSaveDraft();
+    }
+  }
+  function setPath(obj, path, value) {
+    var parts = path.split('.'), o = obj;
+    for (var i = 0; i < parts.length - 1; i++) { if (o == null) return false; o = o[parts[i]]; }
+    var last = parts[parts.length - 1];
+    if (o == null || typeof o[last] !== 'string') return false;
+    o[last] = value; return true;
+  }
+  function getPath(obj, path) { return path.split('.').reduce(function (o, p) { return o == null ? o : o[p]; }, obj); }
+  function visualPublish() {
+    if (!VE) return;
+    var keys = Object.keys(VE.changes); if (!keys.length) return;
+    var byFile = {};
+    keys.forEach(function (k) { var i = k.indexOf('|'), f = k.slice(0, i), p = k.slice(i + 1); if (!/^[a-z_]+\.json$/.test(f)) return; (byFile[f] = byFile[f] || []).push([k, p]); });
+    var btn = shellEls.saveBtn, label = btn.textContent; busy(btn, true, PRACTICE ? 'Practising…' : 'Publishing…');
+    var chain = Promise.resolve(), lastCommit = null, sent = false, skipped = [];
+    Object.keys(byFile).forEach(function (f) {
+      chain = chain.then(function () {
+        return store.read('content/' + f).then(function (r) {
+          var obj = JSON.parse((r.pending && r.pending.content) || r.text || '{}'), photos = {};
+          byFile[f].forEach(function (kp) {
+            var cur = getPath(obj, kp[1]), was = VE.orig[kp[0]];
+            var curT = /^uploads\//.test(String(cur)) ? String(cur) : veClean(cur);
+            if (was != null && curT !== was && !/^uploads\//.test(was)) { skipped.push(kp[1]); return; }   // changed by someone else meanwhile
+            if (setPath(obj, kp[1], VE.changes[kp[0]]) && VE.photos[VE.changes[kp[0]]]) photos[VE.changes[kp[0]]] = VE.photos[VE.changes[kp[0]]];
+          });
+          return store.save('content/' + f, JSON.stringify(obj, null, 2) + '\n', 'Visual editor: ' + (VE_FILES[f] || f), r.sha, photos).then(function (res) {
+            if (res.commit) lastCommit = res.commit; if (!res.published) sent = true;
+          });
+        });
+      });
+    });
+    chain.then(function () {
+      busy(btn, false, label);
+      try { localStorage.removeItem('ywamadmin.' + veDraftKey(VE.page)); } catch (e) {}
+      VE.changes = {}; PENDING = {}; setDirty(false); shellEls.saveSt.textContent = '';
+      [].forEach.call(VE.frame.contentDocument.querySelectorAll('.ve-changed'), function (x) { x.classList.remove('ve-changed'); });
+      if (skipped.length) toast('Some items were changed by someone else while you were editing, so they were left as they are. Reload and check them.', true);
+      else if (PRACTICE) toast('Practice: these changes would now be ' + (sent ? 'sent for approval.' : 'published.'));
+      else toast(sent ? 'Sent for approval.' : 'Published. It’ll be live in about two minutes.');
+      if (lastCommit && !PRACTICE) watchBuild(lastCommit);
+    }).catch(function (e) {
+      busy(btn, false, label);
+      if (!SERVICE && e.status === 401) { logout('The GitHub key was rejected. It may have expired. Log in again, or ask the admin owner to replace the key.'); return; }
+      toast(e.conflict || e.status === 409 ? e.message : 'Couldn’t publish: ' + e.message + ' Your changes are still saved as a draft.', true);
+    });
   }
 
   /* ------------------------------------------------------------------ history and undo */

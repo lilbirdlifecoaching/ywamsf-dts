@@ -360,6 +360,58 @@ if CF_BEACON:
 def verification_tags(path):
     if path != '': return ''
     return (('<meta name="google-site-verification" content="%s">' % GSV) if GSV else '') + (('<meta name="msvalidate.01" content="%s">' % BSV) if BSV else '')
+
+# Visual editor hooks (admin page → Visual editor). Text that comes straight from content/*.json is marked with
+# data-edit="file|path" (photos with data-edit-img), so editors can click it on the page and change it. Only plain
+# text that appears whole in one element is marked; everything else stays editable in the admin forms.
+EDIT_FILES = ['banner.json', 'board.json', 'dts.json', 'dts_life.json', 'events.json', 'faq.json', 'ministries.json', 'shifts.json', 'staff.json', 'testimonials.json', 'resources.json', 'settings.json', 'ellis_week.json']
+EDIT_SKIP_KEYS = re.compile(r'(url|email|photo|date|start|end|days|every|colour|tags|hidden_sections|show_|analytics|verification|^k$|_id$|price|spots|cost$|apply)', re.I)
+def _edit_map():
+    seen = {}
+    def walk(o, f, path):
+        if isinstance(o, dict):
+            for k, v in o.items(): walk(v, f, path + [str(k)])
+        elif isinstance(o, list):
+            for i, v in enumerate(o): walk(v, f, path + [str(i)])
+        elif isinstance(o, str) and path and not EDIT_SKIP_KEYS.search(path[-1]):
+            key = t(o)
+            if len(key) >= 3 and not re.match(r'^(https?:|mailto:|tel:|uploads/)', o.strip()):
+                seen.setdefault(key, set()).add(f + '|' + '.'.join(path))
+    for f in EDIT_FILES:
+        try: walk(load(f), f, [])
+        except Exception: pass
+    return {k: next(iter(v)) for k, v in seen.items() if len(v) == 1}
+def _img_map():
+    seen = {}
+    def walk(o, f, path):
+        if isinstance(o, dict):
+            for k, v in o.items(): walk(v, f, path + [str(k)])
+        elif isinstance(o, list):
+            for i, v in enumerate(o): walk(v, f, path + [str(i)])
+        elif isinstance(o, str) and UPRE.match(o.strip()):
+            seen.setdefault(o.strip().split('/', 1)[1], set()).add(f + '|' + '.'.join(path))
+    for f in EDIT_FILES:
+        try: walk(load(f), f, [])
+        except Exception: pass
+    return {k: next(iter(v)) for k, v in seen.items() if len(v) == 1}
+EDIT_MAP, EDIT_IMG = _edit_map(), _img_map()
+_EDIT_TAG = re.compile(r'<(h[1-6]|p|b|strong|small|span|li|a|div|dt|dd|em|i|blockquote|figcaption|cite|label|td|th|time)\b([^>]*)>([^<]{3,})</\1>')
+_EDIT_IMG = re.compile(r'<img\b([^>]*?)\ssrc="((?:\.\./)*)assets/uploads/(?:w\d+/)?([A-Za-z0-9][A-Za-z0-9._-]*)"')
+def edit_hooks(h, path):
+    if path.startswith('blog/'): return h
+    i = h.find('<body'); head, body = (h[:i], h[i:]) if i > 0 else ('', h)
+    def one(m):
+        if 'data-edit' in m.group(2): return m.group(0)
+        k = EDIT_MAP.get(m.group(3).strip())
+        if not k: return m.group(0)
+        return '<%s%s data-edit="%s">%s</%s>' % (m.group(1), m.group(2), html.escape(k, quote=True), m.group(3), m.group(1))
+    body = _EDIT_TAG.sub(one, body)
+    def im(m):
+        k = EDIT_IMG.get(m.group(3))
+        if not k or 'data-edit-img' in m.group(1): return m.group(0)
+        return '<img%s data-edit-img="%s" src="%sassets/uploads/%s"' % (m.group(1), html.escape(k, quote=True), m.group(2), m.group(3)) if False else m.group(0).replace('<img', '<img data-edit-img="%s"' % html.escape(k, quote=True), 1)
+    body = _EDIT_IMG.sub(im, body)
+    return head + body
 def page(title, cur, up, root, body, extra_head='', scripts=''):
     if ROOT_SITE: root = up
     _short = title
@@ -373,7 +425,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     extra_head = structured_data(path, title) + verification_tags(path) + extra_head + ANALYTICS
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
-    return phone_sizes(localize(wire(f'''<!doctype html>
+    return phone_sizes(edit_hooks(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
@@ -383,7 +435,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 <main id="main">{body}</main>
 {footer(up, root)}
 <div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up))
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path))
 
 def banner_html():
     b = load('banner.json')
