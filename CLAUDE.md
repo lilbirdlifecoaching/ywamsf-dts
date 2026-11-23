@@ -38,6 +38,10 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   `blog/feed.xml`, BlogPosting data), which also writes `sitemap.xml` and `robots.txt`. Links anywhere on the site to
   `ywamsanfrancisco.org/blog/...` are rewritten to the local copy (`wire()`). Raw import: `design-src/squarespace-blog/`;
   re-import with the "Import blog from Squarespace" Action, then `python3 tools/convert_blog.py` (overwrites content/blog/).
+  Admin → Blog posts (Nov 23 2026) writes and edits these files: list from `blog-index.json` (written by the build, drafts
+  included), editor output serialized to the same allow-listed HTML (`blogSerialize` in admin.js; the build re-checks it in
+  `blog_body`), `hidden: true` = draft, future `date` = scheduled, `path` fixed at first save. File names must match
+  `[a-z0-9][a-z0-9-]{0,80}.json` (service `BLOG_PATH`).
 - **Old Squarespace addresses (Nov 23 2026):** `tools/old_addresses.txt` (pages) and `tools/old_events.txt` (70 past events →
   News & Events) get instant redirect pages from `tools/publish_root.py` (no noindex, canonical = new page). At the domain
   move set `SITE_BASE=https://ywamsanfrancisco.org/` for both the build and publish_root (build.yml), remove `noindex`, add `CNAME`.
