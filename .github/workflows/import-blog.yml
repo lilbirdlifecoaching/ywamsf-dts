@@ -1,0 +1,32 @@
+# One-off: copies the blog posts and their photos from the Squarespace site into the repository.
+# Run it from the Actions tab (or `gh workflow run import-blog.yml`). Safe to run again: it refreshes the copy.
+name: Import blog from Squarespace
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: git pull -q origin main
+      - name: Fetch posts and photos
+        run: python3 tools/fetch_squarespace_blog.py
+      - name: Commit
+        run: |
+          git config user.name "YWAM SF site builder"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add design-src/squarespace-blog content/uploads/blog
+          if git diff --cached --quiet; then echo "No changes."; exit 0; fi
+          git commit -m "Import blog posts and photos from Squarespace"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1
