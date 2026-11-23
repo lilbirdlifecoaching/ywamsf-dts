@@ -5,6 +5,7 @@ const REPO = '..';  // run from service/: node test/dev.mjs
 const files = new Map(), commits = [], mails = [];
 const sha = () => crypto.randomBytes(20).toString('hex');
 for (const f of fs.readdirSync(REPO + '/content')) if (f.endsWith('.json')) { const b = fs.readFileSync(REPO + '/content/' + f).toString('base64'), s = sha(); files.set('content/' + f, { sha: s, b64: b }); commits.push({ sha: s, path: 'content/' + f, message: 'Earlier version', author: 'Luke', b64: b }); }
+for (const f of (fs.existsSync(REPO + '/content/blog') ? fs.readdirSync(REPO + '/content/blog') : [])) if (f.endsWith('.json')) { const b = fs.readFileSync(REPO + '/content/blog/' + f).toString('base64'), s = sha(); files.set('content/blog/' + f, { sha: s, b64: b }); commits.push({ sha: s, path: 'content/blog/' + f, message: 'Earlier version', author: 'Luke', b64: b }); }
 const server = http.createServer(async (req, res) => {
   let body = ''; for await (const c of req) body += c;
   const send = (st, o) => { res.writeHead(st, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o)); };

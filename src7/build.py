@@ -103,6 +103,9 @@ def _load_blog():
         try: r['_d'] = datetime.date.fromisoformat(str(r.get('date'))[:10])
         except ValueError: continue
         if r['_d'] > TODAY: continue                       # scheduled posts appear on their date
+        if not str(r.get('excerpt') or '').strip():          # no summary written: use the start of the post
+            _tx = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', str(r.get('body') or '')))).strip()
+            r['excerpt'] = _tx[:240].rsplit(' ', 1)[0] + ('…' if len(_tx) > 240 else '')
         out.append(r)
     out.sort(key=lambda r: (r['_d'], r.get('title')), reverse=True)
     return out
@@ -1499,6 +1502,19 @@ if BLOG:
     _items = ''.join('<item><title>%s</title><link>%s</link><guid>%s</guid><pubDate>%s</pubDate><description>%s</description></item>' % (
         _x(r['title']), BASE + r['path'], BASE + r['path'], r['_d'].strftime('%a, %d %b %Y 12:00:00 -0800'), _x(r.get('excerpt'))) for r in BLOG[:25])
     open(os.path.join(OUT, 'blog', 'feed.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>YWAM San Francisco blog</title><link>%sblog/</link><description>Stories from life on Ellis Street in the Tenderloin.</description><language>en-us</language>%s</channel></rss>\n' % (BASE, _items))
+
+# Every post, drafts and scheduled ones included, for the admin page's list (title, date and address only)
+def _blog_index():
+    d = os.path.join(CONTENT, 'blog'); rows = []; cats = set()
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,80}\.json', f): continue
+        try: r = json.load(open(os.path.join(d, f), encoding='utf-8'))
+        except Exception: continue
+        rows.append({'file': f, 'title': str(r.get('title') or '')[:200], 'date': str(r.get('date') or '')[:10], 'path': str(r.get('path') or ''), 'hidden': bool(r.get('hidden'))})
+        for c in r.get('categories') or []:
+            if blog_cat_slug(c): cats.add(str(c))
+    return {'posts': rows, 'categories': sorted(cats)}
+open(os.path.join(OUT, 'blog-index.json'), 'w').write(json.dumps(_blog_index(), ensure_ascii=False))
 
 # ---------------------------------------------------------------- SITEMAP + ROBOTS (every public page and post, for Google)
 _POST_DATES = {r['path']: r['_d'].isoformat() for r in BLOG}

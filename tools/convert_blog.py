@@ -157,7 +157,7 @@ def main():
             'seo_title': (seo.get('seoTitle') or '').strip(), 'seo_description': (seo.get('seoDescription') or '').strip(),
             'body': body, 'source': 'https://www.ywamsanfrancisco.org' + p['fullUrl'],
         }
-        name = re.sub(r'[^a-z0-9]+', '-', path.lower()).strip('-')[:120] + '.json'
+        name = re.sub(r'[^a-z0-9]+', '-', path.lower()).strip('-')[:76].rstrip('-') + '.json'
         json.dump(rec, open(os.path.join(OUT, name), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
         n += 1
     print('wrote %d posts to content/blog/' % n)
