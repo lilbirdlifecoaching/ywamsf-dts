@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /ywam0/
+Disallow: /ywam1/
+Disallow: /ywam2/
+Disallow: /ywam3/
+Disallow: /ywam4/
+Disallow: /ywam5/
+Disallow: /ywam6/
+Disallow: /ywam7/
+
+Sitemap: https://ywamembers.org/sitemap.xml

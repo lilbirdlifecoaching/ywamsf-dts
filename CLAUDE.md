@@ -31,6 +31,14 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   Tenderloin, not an escape from it. **Don't use "Monastery" language in YWAM 7** (Nov 2026: the org isn't ready
   to introduce it; it was removed from the DTS page, Join Staff, the chat and the readiness quiz).
 
+- **Blog (Nov 23 2026):** the 78 Squarespace posts live in `content/blog/*.json` (one file per post, plain safe HTML in
+  `body`), photos in `content/uploads/blog-*`. Every post keeps its **old Squarespace address** (`path`, e.g.
+  `blog/2026/1/19/church-that-shows-up/`), as do `blog/category/<name>/` and `blog/tag/<name>/`, so Google results carry
+  over at the domain move. Built by the BLOG section of `src7/build.py` (post pages, list pages 18 per page, RSS
+  `blog/feed.xml`, BlogPosting data), which also writes `sitemap.xml` and `robots.txt`. Links anywhere on the site to
+  `ywamsanfrancisco.org/blog/...` are rewritten to the local copy (`wire()`). Raw import: `design-src/squarespace-blog/`;
+  re-import with the "Import blog from Squarespace" Action, then `python3 tools/convert_blog.py` (overwrites content/blog/).
+
 ## Never do
 
 - Never ask for, paste, print or store the GitHub token or any Cloudflare/Resend key. Editors enter them only in the admin page or the Cloudflare dashboard.

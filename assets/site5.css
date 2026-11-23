@@ -1976,3 +1976,53 @@ b,strong{font-weight:500}
 html.su-pop-on,html.su-pop-on body{overflow:hidden}
 @media (max-width:640px){.su-pop{padding:0}.su-pop-card{border-radius:0;height:100%}.su-pop-new{font-size:12.5px}}
 .su-pop.ready .su-pop-load{display:none}
+/* round 7-51: blog (posts moved from Squarespace) */
+.blog-hero .lede{max-width:620px}
+.bchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.bchips a{font:500 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--navy,#24373D);border:1px solid var(--gray,#E2DFDE);background:#fff;border-radius:999px;padding:8px 14px}
+.bchips a:hover{border-color:#01BCDE}
+.bchips a[aria-current]{background:var(--navy,#24373D);border-color:var(--navy,#24373D);color:#fff}
+.blog-list{padding-top:30px}
+.bpager{display:flex;justify-content:center;gap:8px;margin-top:40px}
+.bpager a{min-width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--gray,#E2DFDE);text-decoration:none;color:var(--navy,#24373D);font:500 14px var(--sans)}
+.bpager a[aria-current]{background:#01BCDE;border-color:#01BCDE;color:#1B2A2F}
+.bcard .ph{aspect-ratio:3/2;overflow:hidden}
+.bcard .ph img{width:100%;height:100%;object-fit:cover}
+.wrap.narrow{max-width:760px}
+.post-head{padding:56px 0 26px}
+.post-back{display:inline-block;margin-bottom:22px;font:500 13px var(--sans);color:#00738B;text-decoration:none}
+.post-back:hover{text-decoration:underline}
+.post-head .kick a{color:inherit;text-decoration:none}
+.post-head .kick a:hover{text-decoration:underline}
+.post-head h1{font-size:clamp(34px,5vw,56px);line-height:1.08;margin:12px 0 14px}
+.post-meta{margin:0;color:#5b6b70;font-size:15px}
+.post-hero{margin:0 auto 10px;max-width:1100px;padding:0 24px}
+.post-hero img{width:100%;max-height:620px;object-fit:cover;border-radius:12px;display:block}
+.post-body{padding-top:26px;padding-bottom:10px;font-size:18px;line-height:1.75;color:#2a3b40}
+.post-body p{margin:0 0 1.15em}
+.post-body h2{font-size:32px;line-height:1.2;margin:1.6em 0 .5em}
+.post-body h3{font-size:24px;line-height:1.3;margin:1.5em 0 .5em}
+.post-body h4{font:500 15px var(--sans);letter-spacing:.08em;text-transform:uppercase;margin:1.6em 0 .6em}
+.post-body a:not(.btn){color:#00738B}
+.post-body ul,.post-body ol{padding-left:1.3em;margin:0 0 1.2em}
+.post-body li{margin:.3em 0}
+.post-body blockquote{margin:1.6em 0;padding:4px 0 4px 24px;border-left:3px solid #01BCDE;font-family:var(--display);font-size:22px;line-height:1.5;color:var(--navy,#24373D)}
+.post-body figure{margin:1.6em 0}
+.post-body img{display:block;width:100%;height:auto;border-radius:10px;margin:1.6em 0}
+.post-body figure img{margin:0}
+.post-body figcaption{font-size:14px;color:#5b6b70;margin-top:8px}
+.post-body hr{border:0;border-top:1px solid var(--gray,#E2DFDE);margin:2.2em 0}
+.post-body .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.6em 0}
+.post-body .gal img{margin:0;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.post-body .yt{position:relative;aspect-ratio:16/9;margin:1.6em 0;border-radius:10px;overflow:hidden;background:#1B2A2F}
+.post-body .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.post-body a.btn{display:inline-block;margin:.4em 0 1.4em}
+.post-foot{padding-bottom:50px}
+.post-tags{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 30px}
+.post-tags a{font-size:14px;color:#00738B;text-decoration:none}
+.post-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid var(--gray,#E2DFDE);padding-top:24px}
+.post-nav a{text-decoration:none;color:var(--navy,#24373D);font-family:var(--display);font-size:19px;line-height:1.35}
+.post-nav a small{display:block;font:500 11.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#5b6b70;margin-bottom:6px}
+.post-nav .next{text-align:right}
+.blog-more{background:#F4F2F1}
+@media (max-width:640px){.post-head{padding:36px 0 18px}.post-body{font-size:17px}.post-body .gal{grid-template-columns:repeat(2,1fr)}.post-hero{padding:0 16px}.post-nav{grid-template-columns:1fr}.post-nav .next{text-align:left}.post-body blockquote{font-size:20px}}

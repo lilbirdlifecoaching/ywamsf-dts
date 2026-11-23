@@ -25,7 +25,7 @@ jobs:
         run: |
           git config user.name "YWAM SF site builder"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add design-src/squarespace-blog content/uploads/blog
+          git add design-src/squarespace-blog content/uploads
           if git diff --cached --quiet; then echo "No changes."; exit 0; fi
           git commit -m "Import blog posts and photos from Squarespace"
           for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done

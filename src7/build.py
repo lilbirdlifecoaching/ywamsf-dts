@@ -87,6 +87,79 @@ def mins(hhmm):
     return int(m.group(1)) * 60 + int(m.group(2)) if m else 0
 def initials(n): return ''.join(w[0] for w in str(n).split()[:2]).upper()
 
+# ---- Blog posts (content/blog/*.json; moved from Squarespace by tools/convert_blog.py, Nov 2026)
+# Each post keeps its old Squarespace address (path), so links and Google results carry over to the new site.
+from html.parser import HTMLParser as _HP
+def _load_blog():
+    d = os.path.join(CONTENT, 'blog'); out = []
+    if not os.path.isdir(d): return out
+    for f in sorted(os.listdir(d)):
+        if not f.endswith('.json'): continue
+        try: r = json.load(open(os.path.join(d, f), encoding='utf-8'))
+        except Exception: continue
+        path = str(r.get('path') or '')
+        if not re.fullmatch(r'blog/[A-Za-z0-9][A-Za-z0-9/_.-]{0,200}/', path) or '..' in path or not str(r.get('title') or '').strip(): continue
+        if r.get('hidden'): continue
+        try: r['_d'] = datetime.date.fromisoformat(str(r.get('date'))[:10])
+        except ValueError: continue
+        if r['_d'] > TODAY: continue                       # scheduled posts appear on their date
+        out.append(r)
+    out.sort(key=lambda r: (r['_d'], r.get('title')), reverse=True)
+    return out
+BLOG = _load_blog()
+BLOG_PATHS = {r['path'] for r in BLOG}
+BLOG_CAT_LABEL = {'MA': 'Mission Adventures', 'RI': 'Restoration Initiatives'}
+def blog_cat_slug(c): return re.sub(r'[^A-Za-z0-9_-]', '', str(c).replace(' ', '+')) if re.fullmatch(r'[A-Za-z0-9 _-]{1,40}', str(c)) else ''
+def blog_tag_slug(c): return str(c).replace(' ', '+') if re.fullmatch(r'[A-Za-z0-9 _-]{1,40}', str(c)) else ''
+
+class _BlogClean(_HP):
+    """Allow-list for post text: only plain formatting, links, local photos and YouTube videos get through."""
+    TAGS = {'p', 'h2', 'h3', 'h4', 'strong', 'em', 'ul', 'ol', 'li', 'blockquote', 'figure', 'figcaption', 'sup', 'sub'}
+    def __init__(self, up):
+        super().__init__(convert_charrefs=True); self.up, self.o, self.st, self.skip = up, [], [], 0
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if self.skip or tag in ('script', 'style', 'iframe', 'object', 'embed', 'svg', 'form', 'noscript', 'template'):
+            if tag not in ('img', 'br', 'hr'): self.skip += 1; self.st.append('#s')
+            return
+        if tag in ('br', 'hr'): self.o.append('<%s>' % tag); return
+        if tag == 'img':
+            src = str(a.get('src') or '')
+            if UPRE.match(src): self.o.append('<img src="%sassets/%s" alt="%s" loading="lazy">' % (self.up, src, html.escape(a.get('alt') or '', quote=True)))
+            return
+        if tag == 'a':
+            h = str(a.get('href') or '').strip(); href = ''
+            if re.fullmatch(r'/[A-Za-z0-9/_.+%-]*', h) and '..' not in h:
+                q = h.lstrip('/'); q = q if (q == '' or q.endswith('/') or '.' in q.rsplit('/', 1)[-1]) else q + '/'
+                href = self.up + q
+            else: href = lnk(h)
+            if href:
+                ext = href.startswith('http')
+                self.o.append('<a href="%s"%s%s>' % (href, ' class="btn"' if a.get('class') == 'btn' else '', ' target="_blank" rel="noopener"' if ext else '')); self.st.append('a')
+            else: self.st.append('#n')
+            return
+        if tag == 'div':
+            c = a.get('class')
+            if c == 'yt' and re.fullmatch(r'[A-Za-z0-9_-]{6,20}', str(a.get('data-yt') or '')):
+                self.o.append('<div class="yt"><iframe src="https://www.youtube-nocookie.com/embed/%s" title="Video" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>' % a['data-yt']); self.st.append('div'); return
+            if c == 'gal': self.o.append('<div class="gal">'); self.st.append('div'); return
+            self.st.append('#n'); return
+        if tag in self.TAGS: self.o.append('<%s>' % tag); self.st.append(tag); return
+        self.st.append('#n')
+    def handle_startendtag(self, tag, attrs):
+        if tag in ('img', 'br', 'hr'): self.handle_starttag(tag, attrs)
+    def handle_endtag(self, tag):
+        if tag in ('img', 'br', 'hr') or not self.st: return
+        x = self.st.pop()
+        if x == '#s': self.skip -= 1; return
+        if self.skip or x == '#n': return
+        self.o.append('</%s>' % x)
+    def handle_data(self, d):
+        if not self.skip: self.o.append(html.escape(d, quote=False))
+def blog_body(b, up):
+    c = _BlogClean(up); c.feed(str(b or '')); c.close()
+    return ''.join(c.o) + ''.join('</%s>' % x for x in reversed(c.st) if not x.startswith('#'))
+
 S = load('settings.json')
 PHONE = t(S.get('phone') or '415-885-6543'); TEL = 'tel:' + re.sub(r'[^0-9+]', '', S.get('phone') or '4158856543')
 EMAIL = mail(S.get('email'), 'info@ywamsanfrancisco.org'); VEMAIL = mail(S.get('volunteer_email'), 'volunteer@ywamsanfrancisco.org')
@@ -149,7 +222,7 @@ FONTS = 'https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Li
 NAV = [('volunteer/', 'Come Volunteer', 'volunteer'), ('teams/', 'Bring a Team', 'teams'), ('dts/', 'DTS (5 Month Course)', 'dts'), ('ellis-room/', 'The Ellis Room', 'neighbors')]
 
 TOP = [('about/', 'About', 'about'), ('give/', 'Give', 'give'), ('contact/', 'Connect with us', 'contact')]
-ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('join-staff/', 'Join Staff'), ('about/news/', 'News & Events'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
+ABOUT_MENU = [('about/', 'Who We Are'), ('about/#history', 'Our History'), ('about/people/#staff', 'Staff'), ('about/people/#board', 'Board'), ('join-staff/', 'Join Staff'), ('about/news/', 'News & Events'), ('blog/', 'Blog'), ('about/resources/', 'Resources'), ('contact/', 'Contact')]
 def header(cur, up):
     links = ''.join('<a href="%s%s"%s>%s</a>' % (up, h, ' aria-current="page"' if k == cur else '', t) for h, t, k in NAV)
     def tl(h, t, k):
@@ -207,7 +280,7 @@ def _sections(body):
             if depth == 0 and start is not None: out.append((start, m.end())); start = None
     return out
 def section_switches(page_title, path, body):
-    if re.match(r'about/resources/.+', path) or path in ('privacy/',): return body
+    if re.match(r'about/resources/.+|blog/', path) or path in ('privacy/',): return body
     key = (path.strip('/') or 'home')
     seen, items, cut = {}, [], []
     for a, b in _sections(body):
@@ -317,9 +390,15 @@ def phone_sizes(h):
         sizes = '%spx' % small.group(1) if small else '(max-width: 700px) 320px, 100vw'
         return tag[:-1].rstrip('/').rstrip() + ' srcset="%s" sizes="%s">' % (', '.join(parts), sizes)
     return _IMG_RE.sub(one, h)
+_BLOG_A = re.compile(r'<a\b[^>]*\bhref="https://(?:www\.)?ywamsanfrancisco\.org/blog(/[^"#?]*)?"[^>]*>')
 def wire(h, up):
     for a, b in WIRE: h = h.replace('href="' + LIVE + a, 'href="' + up + b + '"')
-    return h
+    def blog_link(m):                          # links to Squarespace blog posts now open the moved copy here
+        p = (m.group(1) or '').strip('/'); p = 'blog/' + (p + '/' if p else '')
+        if p != 'blog/' and p not in BLOG_PATHS and not re.match(r'blog/(category|tag)/', p): return m.group(0)
+        tag = re.sub(r'\shref="[^"]*"', ' href="%s%s"' % (up, p), m.group(0))
+        return re.sub(r'\s(target="_blank"|rel="noopener")', '', tag)
+    return _BLOG_A.sub(blog_link, h)
 
 def esc(s): return html.escape(s, quote=True)
 
@@ -538,7 +617,7 @@ open(os.path.join(OUT, 'teams/index.html'), 'w').write(page('Bring a Team — YW
 
 def subnav(cur, ab):
     """ab = relative path from the current page to the about/ folder"""
-    items = [(ab, 'Who We Are', 'who'), (ab + 'people/', 'Staff & Board', 'people'), (ab + '../join-staff/', 'Join Staff', 'joinstaff'), (ab + 'news/', 'News & Events', 'news'), (ab + 'resources/', 'Resources', 'resources'), (ab + '../contact/', 'Contact', 'contact')]
+    items = [(ab, 'Who We Are', 'who'), (ab + 'people/', 'Staff & Board', 'people'), (ab + '../join-staff/', 'Join Staff', 'joinstaff'), (ab + 'news/', 'News & Events', 'news'), (ab + '../blog/', 'Blog', 'blog'), (ab + 'resources/', 'Resources', 'resources'), (ab + '../contact/', 'Contact', 'contact')]
     return '<nav class="subnav" aria-label="About"><div class="wrap"><span>About</span>' + ''.join('<a href="%s"%s>%s</a>' % (h or './', ' aria-current="page"' if k == cur else '', t) for h, t, k in items) + '</div></nav>'
 # Stained-glass flip cards (Nov 2026: shown on Join Staff; the DTS Monastery section was removed)
 VOWS = [('god', '01', 'A place to encounter God', 'Prayer, reflection and Jesus, amid the noise.', 'In a neighborhood that never goes quiet, we make room to slow down, pray, sit with Scripture and meet Jesus. Not as a lesson to learn, but as a Person to know.'),
@@ -1191,6 +1270,118 @@ privacy = f'''
 os.makedirs(os.path.join(OUT, 'privacy'), exist_ok=True)
 META['Privacy — YWAM San Francisco'] = ('Privacy Policy | YWAM San Francisco', 'How YWAM San Francisco collects, uses and protects information from people who use this website, give, volunteer or apply.', 'privacy/', 'assets/img/hero-ellis.jpg')
 open(os.path.join(OUT, 'privacy', 'index.html'), 'w').write(page('Privacy — YWAM San Francisco', '', '../', '../../', privacy))
+
+# ---------------------------------------------------------------- BLOG (posts moved from Squarespace, at their old addresses)
+def _bdate(d): return d.strftime('%b ') + str(d.day) + ', ' + str(d.year)
+def _bimg(r, up): return (up + 'assets/' + r['image']) if UPRE.match(str(r.get('image') or '')) else ''
+def _bexcerpt(r, n=170):
+    x = re.sub(r'\s+', ' ', str(r.get('excerpt') or '')).strip()
+    return x if len(x) <= n else x[:n].rsplit(' ', 1)[0] + '…'
+def blog_card(r, up):
+    im = _bimg(r, up); cat = next((c for c in r.get('categories') or [] if blog_cat_slug(c)), '')
+    ph_ = ('<div class="ph"><img src="%s" alt="" loading="lazy"></div>' % im) if im else ''
+    lab = (' · ' + t(BLOG_CAT_LABEL.get(cat, cat))) if cat else ''
+    return '<a class="story bcard rv" href="%s%s">%s<small class="date">%s%s</small><h3>%s</h3><p>%s</p></a>' % (up, r['path'], ph_, _bdate(r['_d']), lab, t(r['title']), t(_bexcerpt(r)))
+BLOG_CATS = {}
+for _r in BLOG:
+    for _c in _r.get('categories') or []:
+        if blog_cat_slug(_c): BLOG_CATS.setdefault(_c, []).append(_r)
+def blog_chips(up, cur=None):
+    out = '<a href="%sblog/"%s>All stories</a>' % (up, ' aria-current="page"' if cur is None else '')
+    for c in sorted(BLOG_CATS, key=lambda c: -len(BLOG_CATS[c])):
+        out += '<a href="%sblog/category/%s/"%s>%s</a>' % (up, blog_cat_slug(c), ' aria-current="page"' if c == cur else '', t(BLOG_CAT_LABEL.get(c, c)))
+    return '<nav class="bchips" aria-label="Blog categories">' + out + '</nav>'
+BLOG_FEED_LINK = '<link rel="alternate" type="application/rss+xml" title="YWAM San Francisco blog" href="%sblog/feed.xml">'
+def blog_list_page(rel, title, kick, heading, lede, items, up, chips_cur=None, pager=''):
+    chips = blog_chips(up, chips_cur) if BLOG_CATS else ''
+    cards = ''.join(blog_card(r, up) for r in items)
+    body = ('<section class="page-hero blog-hero"><div class="wrap"><span class="kick">%s</span><h1>%s</h1><p class="lede">%s</p>%s</div></section>'
+            '<section class="pad blog-list"><div class="wrap"><div class="stories news-grid">%s</div>%s</div></section>') % (kick, heading, lede, chips, cards, pager)
+    os.makedirs(os.path.join(OUT, rel), exist_ok=True)
+    open(os.path.join(OUT, rel, 'index.html'), 'w').write(page(title, 'about', up, up, body, extra_head=BLOG_FEED_LINK % up))
+
+def blog_post_page(i, r):
+    up = '../' * r['path'].count('/')
+    desc = re.sub(r'\s+', ' ', str(r.get('seo_description') or r.get('excerpt') or '')).strip()[:300]
+    key = 'Post: ' + r['path']
+    shot = _bimg(r, '') or 'assets/img/hero-ellis.jpg'
+    META[key] = (str(r.get('seo_title') or '').strip() or (str(r['title']).strip() + ' | YWAM San Francisco'), desc, r['path'], shot)
+    cats = [c for c in r.get('categories') or [] if blog_cat_slug(c)]
+    same = [x for x in BLOG if x is not r and set(x.get('categories') or []) & set(cats)] or [x for x in BLOG if x is not r]
+    newer = BLOG[i - 1] if i > 0 else None
+    older = BLOG[i + 1] if i + 1 < len(BLOG) else None
+    im = _bimg(r, up)
+    author = str(r.get('author') or '').strip()
+    ld = {'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': str(r['title'])[:110], 'datePublished': r['_d'].isoformat(),
+          'mainEntityOfPage': BASE + r['path'], 'url': BASE + r['path'], 'description': desc, 'image': BASE + shot,
+          'author': {'@type': 'Organization' if (not author or 'YWAM' in author) else 'Person', 'name': author or 'YWAM San Francisco'},
+          'publisher': {'@type': 'Organization', 'name': 'YWAM San Francisco', 'logo': {'@type': 'ImageObject', 'url': BASE + 'favicon.png'}}}
+    kick = ' · '.join('<a href="%sblog/category/%s/">%s</a>' % (up, blog_cat_slug(c), t(BLOG_CAT_LABEL.get(c, c))) for c in cats) or 'From the blog'
+    meta = '<time datetime="%s">%s</time>%s' % (r['_d'].isoformat(), _bdate(r['_d']), (' · ' + t(author)) if author else '')
+    tags = ''.join('<a href="%sblog/tag/%s/">#%s</a>' % (up, blog_tag_slug(g), t(g)) for g in r.get('tags') or [] if blog_tag_slug(g))
+    nav = (('<a class="prev" href="%s%s"><small>Newer</small>%s</a>' % (up, newer['path'], t(newer['title']))) if newer else '<span></span>') + \
+          (('<a class="next" href="%s%s"><small>Older</small>%s</a>' % (up, older['path'], t(older['title']))) if older else '')
+    body = (
+        '<article class="post">'
+        '<header class="post-head"><div class="wrap narrow"><a class="post-back" href="%sblog/">← All stories</a><span class="kick">%s</span><h1>%s</h1><p class="post-meta">%s</p></div></header>'
+        '%s'
+        '<div class="wrap narrow post-body">%s</div>'
+        '<footer class="wrap narrow post-foot">%s<nav class="post-nav" aria-label="More posts">%s</nav></footer>'
+        '</article>'
+        '<section class="pad blog-more"><div class="wrap"><div class="rv" style="margin-bottom:24px"><span class="kick">Keep reading</span><h2>More stories</h2></div>'
+        '<div class="stories news-grid">%s</div><div class="links-row"><a class="btn ghost" href="%sblog/">All stories</a><a class="btn" href="%svolunteer/">Come volunteer</a></div></div></section>'
+    ) % (up, kick, t(r['title']), meta,
+         ('<figure class="post-hero"><img src="%s" alt=""></figure>' % im) if im else '',
+         blog_body(r.get('body'), up),
+         ('<p class="post-tags">%s</p>' % tags) if tags else '', nav,
+         ''.join(blog_card(x, up) for x in same[:3]), up, up)
+    os.makedirs(os.path.join(OUT, r['path']), exist_ok=True)
+    out = page(key, 'about', up, up, body, extra_head='<meta property="article:published_time" content="%s"><script type="application/ld+json">%s</script>' % (r['_d'].isoformat(), js(ld)) + BLOG_FEED_LINK % up)
+    out = out.replace('<meta property="og:type" content="website">', '<meta property="og:type" content="article">', 1)
+    open(os.path.join(OUT, r['path'], 'index.html'), 'w').write(out)
+
+BLOG_PER_PAGE = 18
+if BLOG:
+    _pages = [BLOG[i:i + BLOG_PER_PAGE] for i in range(0, len(BLOG), BLOG_PER_PAGE)]
+    for _i, _items in enumerate(_pages):
+        _rel = 'blog/' if _i == 0 else 'blog/page/%d/' % (_i + 1)
+        _up = '../' * _rel.count('/')
+        _pg = ''
+        if len(_pages) > 1:
+            _pg = '<nav class="bpager" aria-label="More stories">' + ''.join('<a href="%s%s"%s>%d</a>' % (_up, 'blog/' if k == 0 else 'blog/page/%d/' % (k + 1), ' aria-current="page"' if k == _i else '', k + 1) for k in range(len(_pages))) + '</nav>'
+        _tt = 'Blog — YWAM San Francisco' + ('' if _i == 0 else ' (page %d)' % (_i + 1))
+        META[_tt] = ('Stories from the Tenderloin | YWAM San Francisco Blog' + ('' if _i == 0 else ' | Page %d' % (_i + 1)),
+                     'Stories from YWAM San Francisco: the food pantry, the Ellis Room, outreach, discipleship training and life on Ellis Street in the Tenderloin.',
+                     _rel, _bimg(BLOG[0], '') or 'assets/img/hero-ellis.jpg')
+        blog_list_page(_rel, _tt, 'The YWAM SF blog', 'Stories from <em>the street.</em>', 'News, reflections and stories from life on Ellis Street.', _items, _up, None, _pg)
+    for _c, _items in BLOG_CATS.items():
+        _rel = 'blog/category/%s/' % blog_cat_slug(_c); _lab = BLOG_CAT_LABEL.get(_c, _c); _tt = 'Blog: ' + _c + ' — YWAM San Francisco'
+        META[_tt] = ('%s Stories | YWAM San Francisco Blog' % _lab, 'Stories about %s from YWAM San Francisco in the Tenderloin.' % _lab, _rel, _bimg(_items[0], '') or 'assets/img/hero-ellis.jpg')
+        blog_list_page(_rel, _tt, 'The YWAM SF blog', t(_lab), '%d %s.' % (len(_items), 'story' if len(_items) == 1 else 'stories'), _items, '../../../', _c)
+    _tags = {}
+    for _r in BLOG:
+        for _g in _r.get('tags') or []:
+            if blog_tag_slug(_g): _tags.setdefault(_g, []).append(_r)
+    for _g, _items in _tags.items():
+        _rel = 'blog/tag/%s/' % blog_tag_slug(_g); _tt = 'Blog tag: ' + _g + ' — YWAM San Francisco'
+        META[_tt] = ('%s | YWAM San Francisco Blog' % _g, 'Stories tagged %s from YWAM San Francisco.' % _g, _rel, _bimg(_items[0], '') or 'assets/img/hero-ellis.jpg')
+        blog_list_page(_rel, _tt, 'Tagged', t(_g), '%d %s.' % (len(_items), 'story' if len(_items) == 1 else 'stories'), _items, '../../../')
+    for _i, _r in enumerate(BLOG): blog_post_page(_i, _r)
+    # RSS feed (Squarespace's was /blog?format=rss)
+    def _x(v): return html.escape(str(v or ''), quote=True)
+    _items = ''.join('<item><title>%s</title><link>%s</link><guid>%s</guid><pubDate>%s</pubDate><description>%s</description></item>' % (
+        _x(r['title']), BASE + r['path'], BASE + r['path'], r['_d'].strftime('%a, %d %b %Y 12:00:00 -0800'), _x(r.get('excerpt'))) for r in BLOG[:25])
+    open(os.path.join(OUT, 'blog', 'feed.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>YWAM San Francisco blog</title><link>%sblog/</link><description>Stories from life on Ellis Street in the Tenderloin.</description><language>en-us</language>%s</channel></rss>\n' % (BASE, _items))
+
+# ---------------------------------------------------------------- SITEMAP + ROBOTS (every public page and post, for Google)
+_POST_DATES = {r['path']: r['_d'].isoformat() for r in BLOG}
+_sm = []
+for _p in sorted({d for d, _, fs in os.walk(OUT) if 'index.html' in fs}):
+    _rel = os.path.relpath(_p, OUT).replace(os.sep, '/'); _rel = '' if _rel == '.' else _rel + '/'
+    if _rel.startswith(('assets/', 'admin/')): continue
+    _sm.append('<url><loc>%s</loc>%s</url>' % (BASE + _rel, ('<lastmod>%s</lastmod>' % _POST_DATES[_rel]) if _rel in _POST_DATES else ''))
+open(os.path.join(OUT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>\n' % ''.join(_sm))
+open(os.path.join(OUT, 'robots.txt'), 'w').write('User-agent: *\nDisallow: /admin/\n' + ''.join('Disallow: /ywam%d/\n' % _n for _n in range(0, 8)) + '\nSitemap: %ssitemap.xml\n' % BASE)
 
 # ---------------------------------------------------------------- CHAT ASSISTANT KNOWLEDGE (YWAM 7)
 # The "Ask us" chat answers from this list only: no AI, nothing sent anywhere. Everything here comes from the

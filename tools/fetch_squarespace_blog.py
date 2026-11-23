@@ -2,7 +2,7 @@
 
 Run by .github/workflows/import-blog.yml (GitHub's servers can reach Squarespace; Claude's workspace can't).
 Saves the raw posts to design-src/squarespace-blog/posts.json and every photo the posts use to
-content/uploads/blog/, with a map from the old Squarespace address to the new file in images.json.
+content/uploads/blog-*, with a map from the old Squarespace address to the new file in images.json.
 tools/convert_blog.py then turns the raw posts into content/blog/*.json for the site.
 """
 import json, os, re, sys, time, hashlib, urllib.request, urllib.parse
@@ -10,7 +10,7 @@ import json, os, re, sys, time, hashlib, urllib.request, urllib.parse
 SITE = 'https://www.ywamsanfrancisco.org'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, 'design-src', 'squarespace-blog')
-IMG = os.path.join(ROOT, 'content', 'uploads', 'blog')
+IMG = os.path.join(ROOT, 'content', 'uploads')   # saved as blog-<name>, next to the other uploaded photos
 UA = {'User-Agent': 'Mozilla/5.0 (YWAM SF site migration)'}
 
 
@@ -25,7 +25,7 @@ def get(url, binary=False):
 
 
 def main():
-    os.makedirs(RAW, exist_ok=True); os.makedirs(IMG, exist_ok=True)
+    os.makedirs(RAW, exist_ok=True)
     items, url = [], SITE + '/blog?format=json'
     while url:
         j = json.loads(get(url)); items += j.get('items', [])
@@ -52,12 +52,12 @@ def main():
         name = re.sub(r'[^A-Za-z0-9._-]+', '-', name).strip('-').lower() or 'image'
         base, ext = os.path.splitext(name)
         if ext.lower() not in ('.jpg', '.jpeg', '.png', '.gif', '.webp'): ext = '.jpg'
-        name = '%s-%s%s' % (base[:50], hashlib.sha1(u.encode()).hexdigest()[:6], ext.lower())
+        name = 'blog-%s-%s%s' % (base[:50], hashlib.sha1(u.encode()).hexdigest()[:6], ext.lower())
         try:
             data = get(u + '?format=1500w', binary=True)
         except SystemExit:
             print('SKIP', u); continue
-        open(os.path.join(IMG, name), 'wb').write(data); mp[u] = 'uploads/blog/' + name
+        open(os.path.join(IMG, name), 'wb').write(data); mp[u] = 'uploads/' + name
     json.dump(mp, open(os.path.join(RAW, 'images.json'), 'w'), indent=1)
     print(len(posts), 'posts,', len(mp), 'photos')
 
