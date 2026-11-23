@@ -15,6 +15,7 @@ const server = http.createServer(async (req, res) => {
   if ((m = /^\/repos\/o\/r\/contents\/(.+)$/.exec(u.pathname))) {
     const path = decodeURIComponent(m[1]), ref = u.searchParams.get('ref');
     if (req.method === 'GET') { if (ref && ref.length === 40) { const c = commits.find(x => x.sha === ref && x.path === path); return c ? send(200, { sha: c.sha, content: c.b64, encoding: 'base64' }) : send(404, { message: 'Not Found' }); } const f = files.get(path); return f ? send(200, { sha: f.sha, content: f.b64, encoding: 'base64' }) : send(404, { message: 'Not Found' }); }
+    if (req.method === 'DELETE') { const b = JSON.parse(body), f = files.get(path); if (!f) return send(404, {}); files.delete(path); commits.unshift({ sha: sha(), path, message: b.message, author: b.author && b.author.name, b64: '' }); return send(200, {}); }
     const b = JSON.parse(body), f = files.get(path); if (f && b.sha !== f.sha) return send(409, { message: 'conflict' });
     const s = sha(); files.set(path, { sha: s, b64: b.content }); commits.unshift({ sha: s, path, message: b.message, author: b.author && b.author.name, b64: b.content }); return send(200, { content: { sha: s } });
   }

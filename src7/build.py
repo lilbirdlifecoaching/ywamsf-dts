@@ -1526,6 +1526,19 @@ for _p in sorted({d for d, _, fs in os.walk(OUT) if 'index.html' in fs}):
 open(os.path.join(OUT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>\n' % ''.join(_sm))
 open(os.path.join(OUT, 'robots.txt'), 'w').write('User-agent: *\nDisallow: /admin/\n' + ''.join('Disallow: /ywam%d/\n' % _n for _n in range(0, 8)) + '\nSitemap: %ssitemap.xml\n' % BASE)
 
+# Deleted blog posts that had been published: their address forwards to the blog (content/blog_redirects.json,
+# written by the admin page when an administrator deletes a post). Written after the sitemap, so they aren't listed.
+try: _BR = load('blog_redirects.json').get('redirects', [])
+except Exception: _BR = []
+for _x in _BR if isinstance(_BR, list) else []:
+    _f = str(_x.get('from') or '').strip('/') + '/'
+    if not re.fullmatch(r'blog/[A-Za-z0-9][A-Za-z0-9/_.-]{0,200}/', _f) or '..' in _f or os.path.exists(os.path.join(OUT, _f, 'index.html')): continue
+    _to = '/' + (str(_x.get('to') or 'blog/').strip('/') + '/' if re.fullmatch(r'[A-Za-z0-9/_.-]{1,200}', str(_x.get('to') or 'blog/').strip('/')) else 'blog/')
+    os.makedirs(os.path.join(OUT, _f), exist_ok=True)
+    open(os.path.join(OUT, _f, 'index.html'), 'w').write(('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>This post has moved — YWAM San Francisco</title>'
+        '<link rel="canonical" href="%s"><meta http-equiv="refresh" content="0; url=%s"><script>location.replace(%r)</script></head>'
+        '<body><p><a href="%s">This post is no longer available. See all stories →</a></p></body></html>\n') % (BASE + _to.lstrip('/'), _to, _to, _to))
+
 # ---------------------------------------------------------------- CHAT ASSISTANT KNOWLEDGE (YWAM 7)
 # The "Ask us" chat answers from this list only: no AI, nothing sent anywhere. Everything here comes from the
 # site's own copy and content/*.json, so admin edits (FAQ, shifts, dates, hours) flow into the chat on the next build.

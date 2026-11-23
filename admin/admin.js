@@ -1025,7 +1025,7 @@
      keeps to plain formatting (paragraphs, headings, bold, italic, lists, quotes, links, photos, YouTube videos);
      the site build checks the HTML again before it goes on the page. A post's address is set when it is first saved
      and never changes, so links and Google keep working. */
-  var BLOG = { index: null, cur: null, file: null, sha: null, editor: null };
+  var BLOG = { index: null, cur: null, file: null, sha: null, editor: null, deleted: {}, added: {} };   // deleted/added: until the site rebuilds
   function blogRel() { return SITE.replace(/^https:\/\/[^/]+/, '..'); }
   function blogSlug(s) { return String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/, '') || 'post'; }
   function blogStatus(p) { return p.hidden ? 'Draft' : (p.date > todaySF() ? 'Scheduled' : 'Live'); }
@@ -1039,7 +1039,9 @@
     var list = h('div', { class: 'list blog-list' }, h('p', { class: 'loading', text: 'Loading…' }));
     main.appendChild(h('div', { class: 'panel' }, q, list));
     fetch(blogRel() + 'blog-index.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return { posts: [] }; }).then(function (d) {
-      BLOG.index = (d.posts || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+      var have = {}; (d.posts || []).forEach(function (p) { have[p.file] = 1; });
+      var posts = (d.posts || []).filter(function (p) { return !BLOG.deleted[p.file]; }).concat(Object.keys(BLOG.added).filter(function (f) { return !have[f] && !BLOG.deleted[f]; }).map(function (f) { return BLOG.added[f]; }));
+      BLOG.index = posts.sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
       BLOG.cats = d.categories || [];
       draw();
     });
@@ -1073,7 +1075,8 @@
     var prev = h('button', { class: 'btn ghost', type: 'button', text: 'Preview', onclick: previewPost });
     var hist = !isNew && (!SERVICE || ROLE() !== 'contributor') ? h('button', { class: 'btn ghost', type: 'button', text: 'History', onclick: function () { showHistory({ id: 'blog', file: 'blog/' + BLOG.file, title: d.title || 'Blog post' }); } }) : null;
     var view = !isNew && d.path ? h('a', { class: 'btn ghost', href: SITE + d.path, target: '_blank', rel: 'noopener', text: 'View on site ↗' }) : null;
-    main.appendChild(top(isNew ? 'New blog post' : 'Edit blog post', isNew ? 'Write your post, then save it as a draft or publish it.' : 'Changes go live about 1–2 minutes after you publish.', [back, prev, hist, view]));
+    var del = !isNew && SERVICE && ROLE() === 'admin' ? h('button', { class: 'btn ghost danger', type: 'button', text: 'Delete', onclick: deletePost }) : null;
+    main.appendChild(top(isNew ? 'New blog post' : 'Edit blog post', isNew ? 'Write your post, then save it as a draft or publish it.' : 'Changes go live about 1–2 minutes after you publish.', [back, prev, hist, view, del]));
     if (BLOG.pending) main.appendChild(h('div', { class: 'notice' }, h('b', { text: BLOG.pending.status === 'sent_back' ? 'Sent back with a note: ' : 'Waiting for approval. ' }), BLOG.pending.note || 'You’re seeing the version that was submitted.'));
     main.appendChild(h('div', { id: 'pubstatus' }));
     function upd() { setDirty(true); label(); }
@@ -1243,6 +1246,26 @@
       h('div', { class: 'blog-prev-bar' }, h('b', { text: 'Preview (not published)' }), devs, h('button', { class: 'btn', type: 'button', text: 'Close preview', onclick: function () { box.remove(); } })), wrap);
     document.body.appendChild(box);
   }
+  function deletePost() {
+    var d = BLOG.cur; if (!d || !BLOG.file) return;
+    var wasLive = !d.hidden && d.date <= todaySF();
+    if (!confirm('Delete “' + (d.title || 'this post') + '”?\n\n' + (wasLive ? 'It will disappear from the blog, and its address will forward to the blog page so old links still work. ' : 'It will be removed from the admin. ') + 'It can be brought back from the site’s history if needed.')) return;
+    if (PRACTICE) { toast('Practice: this post would now be deleted.'); return; }
+    var file = BLOG.file, path = d.path, title = d.title;
+    var step = Promise.resolve();
+    if (wasLive && path) step = store.read('content/blog_redirects.json').then(function (f) {
+      var r = {}; try { r = JSON.parse(f.text || '{}'); } catch (e) {}
+      r.redirects = (r.redirects || []).filter(function (x) { return x.from !== path; }).concat([{ from: path, to: 'blog/', title: title, deleted: todaySF() }]);
+      return store.save('content/blog_redirects.json', JSON.stringify(r, null, 2) + '\n', 'Forward the address of a deleted post', f.sha, {});
+    });
+    step.then(function () { return api('POST', '/content/delete', { path: 'content/blog/' + file, summary: 'Blog: ' + title }); }).then(function () {
+      setDirty(false); PENDING = {};
+      BLOG.deleted[file] = 1; delete BLOG.added[file];
+      if (BLOG.index) BLOG.index = BLOG.index.filter(function (p) { return p.file !== file; });
+      toast('Deleted. It’ll be gone from the site in about 1–2 minutes.');
+      renderBlog();
+    }).catch(function (e) { toast('Couldn’t delete: ' + e.message, true); });
+  }
   function blogSave() {
     var d = BLOG.cur; if (!d) return;
     d.title = String(d.title || '').trim();
@@ -1258,7 +1281,8 @@
     store.save('content/blog/' + file, JSON.stringify(d, null, 2) + '\n', 'Blog: ' + d.title, BLOG.sha, photos).then(function (r) {
       busy(btn, false, label); PENDING = {}; setDirty(false);
       var wasNew = !BLOG.file; BLOG.file = file;
-      if (BLOG.index && wasNew) BLOG.index.unshift({ file: file, title: d.title, date: d.date, path: d.path, hidden: !!d.hidden });
+      BLOG.added[file] = { file: file, title: d.title, date: d.date, path: d.path, hidden: !!d.hidden };
+      if (BLOG.index) { BLOG.index = BLOG.index.filter(function (p) { return p.file !== file; }); BLOG.index.unshift(BLOG.added[file]); }
       if (r.practice) { toast('Practice: this would now be saved.'); return; }
       if (!r.published) { toast('Sent for approval.'); return; }
       toast(d.hidden ? 'Draft saved. It isn’t on the blog yet.' : (d.date > todaySF() ? 'Scheduled. It appears on the blog on ' + d.date + '.' : 'Published. It’ll be live in about 1–2 minutes.'));

@@ -112,6 +112,12 @@ function gh(env) {
       try { return await call('PUT', `/repos/${repo}/contents/${enc_(path)}`, body); }
       catch (e) { if (e.gh === 409 || e.gh === 422) fail(409, 'Someone else saved this at the same moment. Reload and try again.'); throw e; }
     },
+    async del(path, message, sha, author) {
+      const body = { message, sha, branch, committer: { name: 'YWAM SF site admin', email: 'site-admin@ywamsanfrancisco.org' } };
+      if (author) body.author = { name: author, email: 'site-admin@ywamsanfrancisco.org' };
+      try { return await call('DELETE', `/repos/${repo}/contents/${enc_(path)}`, body); }
+      catch (e) { if (e.gh === 409 || e.gh === 422) fail(409, 'Someone else changed this at the same moment. Reload and try again.'); throw e; }
+    },
     async history(path) {
       const list = await call('GET', `/repos/${repo}/commits?path=${encodeURIComponent(path)}&sha=${encodeURIComponent(branch)}&per_page=30`);
       return (list || []).map((c) => ({ sha: c.sha, message: (c.commit.message || '').split('\n')[0], who: (c.commit.author && c.commit.author.name) || '', date: c.commit.author && c.commit.author.date }));
@@ -440,6 +446,18 @@ route('PUT', '/content', async (req, env, body) => {
 });
 
 // Photos: published straight away for everyone signed in (a photo isn't shown anywhere until a page uses it).
+// Delete a blog post (administrators only). Its history stays in GitHub, so it can be brought back.
+route('POST', '/content/delete', async (req, env, body) => {
+  const u = await currentUser(env, req); need(u, 'admin');
+  const path = String(body.path || '');
+  if (!BLOG_PATH.test(path)) fail(400, 'Only blog posts can be deleted here.');
+  const g = gh(env), cur = await g.get(path);
+  if (!cur.sha) fail(404, 'That post doesn’t exist any more.');
+  await g.del(path, `${cleanName(body.summary) || path.replace(/^content\//, '')}: deleted by ${u.name} (site admin)`, cur.sha, u.name);
+  await env.DB.prepare("UPDATE changes SET status = 'withdrawn', decided = ? WHERE path = ? AND status IN ('pending', 'sent_back')").bind(now(), path).run();
+  await audit(env, u.id, 'deleted', cleanName(body.summary) || path);
+  return { deleted: true };
+});
 route('POST', '/upload', async (req, env, body) => {
   const u = await currentUser(env, req);
   const name = String(body.name || '').toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+/, '');

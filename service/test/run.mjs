@@ -30,6 +30,13 @@ const server = http.createServer(async (req, res) => {
       if (ref && /^[0-9a-f]{40}$/.test(ref)) { const c = commits.find((x) => x.sha === ref && x.path === path); return c ? send(200, { sha: c.sha, content: c.b64, encoding: 'base64' }) : send(404, { message: 'Not Found' }); }
       const f = files.get(path); return f ? send(200, { sha: f.sha, content: f.b64, encoding: 'base64', size: 1 }) : send(404, { message: 'Not Found' });
     }
+    if (req.method === 'DELETE') {
+      const b = JSON.parse(body), f = files.get(path);
+      if (!f) return send(404, { message: 'Not Found' });
+      if (b.sha !== f.sha) return send(409, { message: 'sha mismatch' });
+      files.delete(path); commits.unshift({ sha: sha(path + 'del'), path, message: b.message, author: b.author && b.author.name, b64: '' });
+      return send(200, { commit: {} });
+    }
     if (req.method === 'PUT') {
       const b = JSON.parse(body), f = files.get(path);
       if (f && b.sha !== f.sha) return send(409, { message: 'sha mismatch' });
@@ -159,6 +166,12 @@ r = await call('GET', '/history?path=content/faq.json', null, editor2); assert.o
 const seedSha = r.versions.at(-1).sha;
 r = await call('POST', '/history/restore', { path: 'content/faq.json', sha: seedSha }, editor2); assert.equal(r.status, 403); ok('only administrators can undo to an old version');
 r = await call('POST', '/history/restore', { path: 'content/faq.json', sha: seedSha }, admin); assert.equal(fileJson('content/faq.json').questions[0].question, 'Q'); ok('administrator restores an old version in one click');
+
+// deleting blog posts
+r = await call('PUT', '/content', { path: 'content/blog/blog-old-post.json', content: '{"title":"Old"}', summary: 'Blog: Old' }, admin); assert.equal(r.published, true);
+r = await call('POST', '/content/delete', { path: 'content/blog/blog-old-post.json' }, editor2); assert.equal(r.status, 403); ok('editors can’t delete blog posts');
+r = await call('POST', '/content/delete', { path: 'content/faq.json' }, admin); assert.equal(r.status, 400); ok('only blog posts can be deleted');
+r = await call('POST', '/content/delete', { path: 'content/blog/blog-old-post.json', summary: 'Blog: Old' }, admin); assert.equal(r.deleted, true); assert.ok(!files.has('content/blog/blog-old-post.json')); ok('administrators can delete a blog post');
 
 // people management
 const users = (await call('GET', '/users', null, admin)).users; const lukeId = users.find((u) => u.email === 'luke@example.org').id, samId = users.find((u) => u.email === 'sam@example.org').id;
