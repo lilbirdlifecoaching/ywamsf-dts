@@ -36,3 +36,9 @@ mission-adventure                    teams/#ma
 sotb                                 blog/category/SOTB/
 blog/9v6lgcs3hz1gio5mperw5q03h04jem  blog/
 # The 70 old event pages (tools/old_events.txt) all go to about/news/#events.
+# Older addresses still linked from blog posts (checked Nov 23)
+alphacourse                          ellis-room/
+information                          dts/
+outreach                             teams/
+restorationinitiatives               ellis-room/
+summerservice                        volunteer/

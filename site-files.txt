@@ -8,6 +8,7 @@ about/resources/the-unreached-at-our-doorstep/index.html
 about/resources/think-small/index.html
 about/resources/unreached-people-groups/index.html
 all-styles/index.html
+alphacourse/index.html
 assets/cablecar.js
 assets/cablecar/car-55.webp
 assets/cablecar/city-mid-w.webp
@@ -721,6 +722,7 @@ history/index.html
 home-copy/index.html
 home/index.html
 index.html
+information/index.html
 inkind-donations/index.html
 join-staff/index.html
 miracle/index.html
@@ -728,12 +730,14 @@ mission-adventure/index.html
 multiplication-through-simplicity/index.html
 news/index.html
 newsletter/index.html
+outreach/index.html
 pay/index.html
 policy-page/index.html
 privacy/index.html
 religious-places-of-san-francisco/index.html
 resources/index.html
 restoration-initiatives/index.html
+restorationinitiatives/index.html
 ri-monthly-credit-card-giving/index.html
 robots.txt
 sections.json
@@ -742,6 +746,7 @@ sotb/index.html
 staff-1/index.html
 staff-copy/index.html
 store/index.html
+summerservice/index.html
 teams/index.html
 tenderloin-connect/index.html
 thank-you/index.html
