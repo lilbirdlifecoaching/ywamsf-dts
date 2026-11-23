@@ -401,6 +401,10 @@
         F.text('address', 'Street address'), F.text('city', 'City, state & ZIP'),
         { k: 'dts_apply_url', l: 'DTS application link', t: 'url', full: true }, { k: 'team_booking_url', l: 'Mission Adventures booking link', t: 'url', full: true }, { k: 'give_online_url', l: 'Online giving link (Click & Pledge)', t: 'url', full: true },
         { k: 'ma_price_per_day', l: 'Mission Adventures price per person per day (USD)', t: 'number' },
+        { k: 'analytics_ga4_id', l: 'Google Analytics 4 measurement ID (optional)', hint: 'Looks like G-ABC123XYZ. Leave empty for no Google Analytics. The privacy page updates itself.' },
+        { k: 'analytics_cloudflare_token', l: 'Cloudflare Web Analytics token (optional, no cookies)', hint: 'The 32-character token from Cloudflare → Web Analytics → Add a site. Leave empty to turn off.' },
+        { k: 'google_site_verification', l: 'Google Search Console verification code (optional)', hint: 'Only if you verify with the “HTML tag” method: paste just the content value. Not needed if you verify by DNS.' },
+        { k: 'bing_site_verification', l: 'Bing Webmaster verification code (optional)', hint: 'The msvalidate.01 value, if you verify Bing with the HTML tag method.' },
         { k: 'hours', l: 'Opening hours (Contact page)', t: 'list', add: 'Add a line', title: function (x) { return x.label || 'New line'; }, sub: function (x) { return x.text || ''; }, blank: { label: '', text: '' }, fields: [F.text('label', 'Label', { req: true }), F.text('text', 'Hours')] }] },
     { id: 'editors', grp: 'Site', title: 'Editors & security' }
   ];

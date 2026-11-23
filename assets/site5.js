@@ -554,3 +554,17 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
   }, true);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 })();
+
+/* Conversion events for analytics (only when Google Analytics is on): sign-ups, giving and DTS applications. */
+(function () {
+  document.addEventListener('click', function (e) {
+    if (typeof window.gtag !== 'function') return;
+    var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+    var h = a.href, ev = null;
+    if (/calendly\.com|replit\.app|mbi\.my\.site\.com/.test(h)) ev = 'volunteer_signup_click';
+    else if (/clickandpledge|\/give\/?(#|$)/.test(h)) ev = 'give_click';
+    else if (/tfaforms\.com|\/dts\/apply\/?$/.test(h)) ev = 'dts_apply_click';
+    else if (/^mailto:|^tel:/.test(a.getAttribute('href') || '')) ev = 'contact_click';
+    if (ev) window.gtag('event', ev, { link_url: h, link_text: (a.textContent || '').trim().slice(0, 80) });
+  }, true);
+})();

@@ -340,6 +340,26 @@ def structured_data(path, title):
             items.append({'@type': 'ListItem', 'position': len(items) + 1, 'name': _crumb_name(acc), 'item': BASE + acc})
         if len(items) > 1: out.append({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': items})
     return ''.join('<script type="application/ld+json">%s</script>' % js(o) for o in out)
+
+# Analytics and search-engine verification (admin page → Settings). All off until an ID is pasted in.
+GA4_ID = str(S.get('analytics_ga4_id') or '').strip().upper()
+GA4_ID = GA4_ID if re.fullmatch(r'G-[A-Z0-9]{4,14}', GA4_ID) else ''
+CF_BEACON = str(S.get('analytics_cloudflare_token') or '').strip().lower()
+CF_BEACON = CF_BEACON if re.fullmatch(r'[a-f0-9]{32}', CF_BEACON) else ''
+GSV = str(S.get('google_site_verification') or '').strip(); GSV = GSV if re.fullmatch(r'[A-Za-z0-9_-]{20,80}', GSV) else ''
+BSV = str(S.get('bing_site_verification') or '').strip().upper(); BSV = BSV if re.fullmatch(r'[A-F0-9]{32}', BSV) else ''
+CSP_SCRIPT = (' https://www.googletagmanager.com' if GA4_ID else '') + (' https://static.cloudflareinsights.com' if CF_BEACON else '')
+CSP_CONNECT = (' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com' if GA4_ID else '') + (' https://cloudflareinsights.com' if CF_BEACON else '')
+CSP_IMG = ' https://*.google-analytics.com https://www.googletagmanager.com' if GA4_ID else ''
+ANALYTICS = ''
+if GA4_ID:
+    ANALYTICS += ('<script async src="https://www.googletagmanager.com/gtag/js?id=%s"></script><script>window.dataLayer=window.dataLayer||[];'
+                  'function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","%s");</script>') % (GA4_ID, GA4_ID)
+if CF_BEACON:
+    ANALYTICS += '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{"token": "%s"}\'></script>' % CF_BEACON
+def verification_tags(path):
+    if path != '': return ''
+    return (('<meta name="google-site-verification" content="%s">' % GSV) if GSV else '') + (('<meta name="msvalidate.01" content="%s">' % BSV) if BSV else '')
 def page(title, cur, up, root, body, extra_head='', scripts=''):
     if ROOT_SITE: root = up
     _short = title
@@ -350,12 +370,12 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
            '<meta property="og:type" content="website"><meta property="og:site_name" content="YWAM San Francisco"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta name="twitter:card" content="summary_large_image">') % (t(desc), url, t(title), t(desc), url, BASE + shot) if desc else ''
     if '<h1' not in body:                         # every page gets one main heading (some About pages start with h2s)
         body = '<h1 class="sr-only">%s</h1>' % t(H1_FALLBACK.get(path) or re.sub(r'\s*\|.*$', '', title)) + body
-    extra_head = structured_data(path, title) + extra_head
+    extra_head = structured_data(path, title) + verification_tags(path) + extra_head + ANALYTICS
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
     return phone_sizes(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="{css}">{extra_head}</head><body>
@@ -1277,7 +1297,7 @@ privacy = f'''
   <div class="art-body">
   <p>This policy explains how YWAM San Francisco collects, uses, keeps and shares information from people who use ywamsanfrancisco.org and the programs and services offered on it.</p>
   <h2>The short version</h2>
-  <ul><li>We collect information only when you give it to us: a form, an application, a gift or an email.</li><li>We never sell, trade or rent your information.</li><li>This website sets no tracking or advertising cookies of its own.</li><li>You can ask to see, correct or remove your information at any time.</li></ul>
+  <ul><li>We collect information only when you give it to us: a form, an application, a gift or an email.</li><li>We never sell, trade or rent your information.</li><li>{'This website uses Google Analytics, which sets cookies, to count visits and see which pages help people. It sets no advertising cookies.' if GA4_ID else ('This website sets no cookies of its own. It counts visits with Cloudflare Web Analytics, which uses no cookies and does not track you across sites.' if CF_BEACON else 'This website sets no tracking or advertising cookies of its own.')}</li><li>You can ask to see, correct or remove your information at any time.</li></ul>
   <h2>Information you give us</h2>
   <p>When you fill in a form on this site we collect what you enter. That can include your name, email address, phone number, postal address and, for program applications, passport details, background, health and emergency contact information. Our forms:</p>
   <ul><li><b>DTS inquiry and application, team booking and newsletter sign-up</b> run on FormAssembly and are stored in our Salesforce database.</li><li><b>Tenderloin Connect volunteer sign-up</b> runs on its own sign-up form.</li><li><b>Volunteering and general questions</b> are sent by email from your own email app.</li><li><b>Fee payments</b> requested through the Pay page are sent to our finance team by email.</li></ul>
