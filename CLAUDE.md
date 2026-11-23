@@ -38,6 +38,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   `blog/feed.xml`, BlogPosting data), which also writes `sitemap.xml` and `robots.txt`. Links anywhere on the site to
   `ywamsanfrancisco.org/blog/...` are rewritten to the local copy (`wire()`). Raw import: `design-src/squarespace-blog/`;
   re-import with the "Import blog from Squarespace" Action, then `python3 tools/convert_blog.py` (overwrites content/blog/).
+- **Old Squarespace addresses (Nov 23 2026):** `tools/old_addresses.txt` (pages) and `tools/old_events.txt` (70 past events →
+  News & Events) get instant redirect pages from `tools/publish_root.py` (no noindex, canonical = new page). At the domain
+  move set `SITE_BASE=https://ywamsanfrancisco.org/` for both the build and publish_root (build.yml), remove `noindex`, add `CNAME`.
 
 ## Never do
 

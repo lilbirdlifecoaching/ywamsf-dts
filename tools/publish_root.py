@@ -9,6 +9,8 @@ nothing else at the top of the repository (admin/, content/, src*/, ywam0-6/, �
 Old addresses keep working through small redirect pages:
   /ywam7/<page>/  →  /<page>/      (YWAM 7's previous home)
   /course/…       →  /dts/…        (the DTS page's previous address)
+  old Squarespace pages (tools/old_addresses.txt, tools/old_events.txt) → their new pages
+Redirect pages use SITE_BASE (default https://ywamembers.org/) for their canonical address: set it at the domain move.
 """
 import os, shutil, sys, html
 
@@ -18,14 +20,30 @@ MANIFEST = os.path.join(ROOT, 'site-files.txt')
 PROTECTED = {'admin', 'content', 'src', 'src7', 'service', 'tools', 'design-src', 'legacy', 'am-i-ready', '.github',
              'CNAME', 'README.md', 'CLAUDE.md', 'favicon.png', '.gitignore', 'site-files.txt', '.site7', '.git'} | {'ywam%d' % i for i in range(0, 7)}
 OLD_DTS = 'course'          # the DTS page used to live at /course/
+BASE = (os.environ.get('SITE_BASE') or 'https://ywamembers.org/').rstrip('/')
 
 
-def redirect_page(target):
-    t = html.escape(target, quote=True)
-    return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex">'
-            '<title>This page has moved — YWAM San Francisco</title><link rel="canonical" href="https://ywamembers.org%s">'
-            '<meta http-equiv="refresh" content="0; url=%s"><script>location.replace(%r + location.search + location.hash)</script></head>'
-            '<body><p><a href="%s">This page has moved. Continue →</a></p></body></html>\n') % (t, t, target, t)
+def old_squarespace():
+    """Old Squarespace address → new page, from tools/old_addresses.txt and tools/old_events.txt."""
+    out = {}
+    for line in open(os.path.join(ROOT, 'tools', 'old_addresses.txt')):
+        line = line.split('#', 1)[0] if line.lstrip().startswith('#') else line
+        parts = line.split()
+        if len(parts) == 2: out[parts[0].strip('/')] = parts[1]
+    for line in open(os.path.join(ROOT, 'tools', 'old_events.txt')):
+        if line.strip() and not line.startswith('#'): out[line.strip().strip('/')] = 'about/news/#events'
+    return out
+
+
+def redirect_page(target, noindex=True):
+    # An instant redirect (meta refresh 0 + script) is treated by Google as a permanent (301) redirect.
+    t = html.escape(target, quote=True); canon = html.escape(BASE + target.split('#')[0], quote=True)
+    keep = 'location.search + location.hash' if '#' not in target else "''"
+    return ('<!doctype html><html lang="en"><head><meta charset="utf-8">%s'
+            '<title>This page has moved — YWAM San Francisco</title><link rel="canonical" href="%s">'
+            '<meta http-equiv="refresh" content="0; url=%s"><script>location.replace(%r + %s)</script></head>'
+            '<body><p><a href="%s">This page has moved. Continue →</a></p></body></html>\n') % (
+        '<meta name="robots" content="noindex">' if noindex else '', canon, t, target, keep, t)
 
 
 def main():
@@ -44,14 +62,20 @@ def main():
         if p.startswith('dts/'):
             gen['ywam7/' + OLD_DTS + '/' + p[4:] + 'index.html'] = '/' + p
             gen[OLD_DTS + '/' + p[4:] + 'index.html'] = '/' + p
+    old = {}
+    for src, dst in old_squarespace().items():
+        rel = src + '/index.html'
+        if rel in new: continue                          # the new site has a page at the same address
+        old[rel] = dst if dst.startswith('/') else '/' + dst
+    gen.update(old)
     tops = {r.split('/', 1)[0] for r in list(new) + [g for g in gen if not g.startswith('ywam7/')]}
     clash = sorted(tops & PROTECTED)
     if clash: sys.exit('Refusing to publish: the site would overwrite ' + ', '.join(clash))
 
-    old = set()
-    if os.path.exists(MANIFEST): old = {l.strip() for l in open(MANIFEST) if l.strip()}
+    prev = set()
+    if os.path.exists(MANIFEST): prev = {l.strip() for l in open(MANIFEST) if l.strip()}
     keep = set(new) | {g for g in gen if not g.startswith('ywam7/')}
-    for rel in sorted(old - keep):                      # files the site no longer makes
+    for rel in sorted(prev - keep):                      # files the site no longer makes
         if rel.split('/', 1)[0] in PROTECTED: continue
         path = os.path.join(ROOT, rel)
         if os.path.isfile(path): os.remove(path)
@@ -62,9 +86,9 @@ def main():
     if os.path.isdir(y7): shutil.rmtree(y7)
     for rel, target in gen.items():
         dst = os.path.join(ROOT, rel); os.makedirs(os.path.dirname(dst), exist_ok=True)
-        open(dst, 'w').write(redirect_page(target))
+        open(dst, 'w').write(redirect_page(target, noindex=rel not in old))
     # tidy empty folders left behind by removed files
-    for rel in sorted(old - keep, key=lambda r: -r.count('/')):
+    for rel in sorted(prev - keep, key=lambda r: -r.count('/')):
         d = os.path.dirname(os.path.join(ROOT, rel))
         while d != ROOT and os.path.isdir(d) and not os.listdir(d) and os.path.relpath(d, ROOT).split(os.sep)[0] not in PROTECTED:
             os.rmdir(d); d = os.path.dirname(d)
