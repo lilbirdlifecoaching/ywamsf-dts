@@ -781,7 +781,7 @@
       PENDING = {}; setDirty(false); busy(btn, false, label);
       if (r.practice) { toast(r.published ? 'Practice: this would now be published.' : 'Practice: this would now be sent for approval.'); return; }
       if (!r.published) { toast('Sent for approval. ' + (r.reviewers ? 'We’ll email ' + r.reviewers + '.' : '')); refreshWaiting(); return; }
-      toast('Published. It’ll be live in about two minutes.');
+      toast('Published. It’ll be live in about 1–2 minutes.');
       return store.read('content/' + s.file).then(function (f) { SHA = f.sha; watchBuild(r.commit); });
     }).catch(function (e) {
       busy(btn, false, label);
@@ -792,7 +792,7 @@
   }
   function watchBuild(sha) {
     var box = document.getElementById('pubstatus'); if (!box) return;
-    var st = h('div', { class: 'status', role: 'status' }, h('span', { class: 'sp' }), h('span', { text: 'Publishing your change…' }));
+    var st = h('div', { class: 'status', role: 'status' }, h('span', { class: 'sp' }), h('span', { text: 'Publishing your change… This usually takes 1–2 minutes. You can keep working or leave this page.' }));
     box.textContent = ''; box.appendChild(st);
     var tries = 0, t0 = Date.now();
     function done(ok, msg) { st.className = 'status ' + (ok ? 'done' : 'fail'); st.lastChild.textContent = msg; }
@@ -800,9 +800,9 @@
       var req = SERVICE ? api('GET', '/build?since=' + encodeURIComponent(new Date(t0 - 15000).toISOString())).then(function (r) { var b = r.build; return b && b.unavailable ? 'skip' : (b || null); })
         : (!CAN_ACTIONS ? Promise.resolve('skip') : gh('GET', '/repos/' + REPO + '/actions/runs?head_sha=' + sha + '&per_page=1').then(function (r) { var run = r.workflow_runs && r.workflow_runs[0]; return run ? { status: run.status, conclusion: run.conclusion } : null; }));
       req.then(function (run) {
-        if (run === 'skip') { setTimeout(function () { done(true, 'Saved. Your change should be live now (refresh the site to see it).'); }, 75000); return; }
+        if (run === 'skip') { setTimeout(function () { done(true, 'Saved. Your change should be live now. If you don’t see it, refresh the page (Cmd+Shift+R on a Mac, Ctrl+Shift+R on Windows).'); }, 75000); return; }
         if (run && run.status === 'completed') {
-          if (run.conclusion === 'success') setTimeout(function () { done(true, 'Live on the site. (Refresh the page to see it; it can take a minute to update everywhere.)'); }, 30000);
+          if (run.conclusion === 'success') setTimeout(function () { done(true, 'Live on the site. If you don’t see it yet, refresh the page (Cmd+Shift+R on a Mac, Ctrl+Shift+R on Windows); browsers can show the old version for a few minutes.'); }, 30000);
           else done(false, 'The site couldn’t rebuild with this change. Your edit is saved; let the site manager know.');
           return;
         }
@@ -999,7 +999,7 @@
       [].forEach.call(VE.frame.contentDocument.querySelectorAll('.ve-changed'), function (x) { x.classList.remove('ve-changed'); });
       if (skipped.length) toast('Some items were changed by someone else while you were editing, so they were left as they are. Reload and check them.', true);
       else if (PRACTICE) toast('Practice: these changes would now be ' + (sent ? 'sent for approval.' : 'published.'));
-      else toast(sent ? 'Sent for approval.' : 'Published. It’ll be live in about two minutes.');
+      else toast(sent ? 'Sent for approval.' : 'Published. It’ll be live in about 1–2 minutes.');
       if (lastCommit && !PRACTICE) watchBuild(lastCommit);
     }).catch(function (e) {
       busy(btn, false, label);
@@ -1054,7 +1054,7 @@
             if (i && canRestore) box.appendChild(h('button', { class: 'btn slate small', type: 'button', text: 'Put this version back', onclick: function (e) {
               if (!confirm('Put back the version from ' + ago(v.date) + '? The current version stays in the history, so you can undo this too.')) return;
               busy(e.target, true, 'Restoring…');
-              store.restore(path, v.sha, s.title).then(function () { toast(PRACTICE ? 'Practice: this version would now be restored.' : 'Restored. It’ll be live in about two minutes.'); go(s.id, true); }).catch(function (er) { busy(e.target, false, 'Put this version back'); toast(er.message, true); });
+              store.restore(path, v.sha, s.title).then(function () { toast(PRACTICE ? 'Practice: this version would now be restored.' : 'Restored. It’ll be live in about 1–2 minutes.'); go(s.id, true); }).catch(function (er) { busy(e.target, false, 'Put this version back'); toast(er.message, true); });
             } }));
             if (i && !canRestore) box.appendChild(h('p', { class: 'hint', text: 'Only administrators can put an old version back.' }));
           }).catch(function (e) { box.textContent = ''; box.appendChild(h('p', { class: 'err', text: e.message })); });
@@ -1100,7 +1100,7 @@
         go_(false).catch(function (e) {
           if (e.status === 409 && confirm('This section has changed since ' + c.who + ' submitted this. Approving will replace those newer changes with this version. Approve anyway?')) return go_(true);
           throw e;
-        }).then(function (r) { if (r) { toast('Approved. It’ll be live in about two minutes.'); refreshWaiting(); renderApprovals(); } else busy(ap, false, 'Approve & publish'); })
+        }).then(function (r) { if (r) { toast('Approved. It’ll be live in about 1–2 minutes.'); refreshWaiting(); renderApprovals(); } else busy(ap, false, 'Approve & publish'); })
           .catch(function (e) { busy(ap, false, 'Approve & publish'); toast(e.message, true); });
       });
       sb.addEventListener('click', function () {
@@ -1276,7 +1276,7 @@
     var main = shellEls.main; main.textContent = '';
     main.appendChild(top('Help guide', 'Every “How this works” panel in one place. Print it or save it as a PDF to keep a copy.', [h('button', { class: 'btn ghost', type: 'button', text: 'Print', onclick: function () { window.print(); } }), h('button', { class: 'btn slate', type: 'button', text: 'Take the tour', onclick: function () { startTour(); } })]));
     var levels = SERVICE ? { admin: 'Administrator', editor: 'Editor', contributor: 'Contributor' }[ROLE()] : 'Editor';
-    main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Your level: ' + levels }), h('p', { class: 'hint', text: SERVICE ? (ROLE() === 'contributor' ? 'Everything you change is sent to an editor or administrator to approve. You’ll get an email when it’s approved or sent back.' : ROLE() === 'editor' ? 'You publish changes straight away (except section switches). You also approve contributors’ blog posts and resources, and moderate comments.' : 'You can do everything, including inviting people, approving changes and putting old versions back.') : 'Every editor can publish every section. Changes go live in about two minutes.' }),
+    main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Your level: ' + levels }), h('p', { class: 'hint', text: SERVICE ? (ROLE() === 'contributor' ? 'Everything you change is sent to an editor or administrator to approve. You’ll get an email when it’s approved or sent back.' : ROLE() === 'editor' ? 'You publish changes straight away (except section switches). You also approve contributors’ blog posts and resources, and moderate comments.' : 'You can do everything, including inviting people, approving changes and putting old versions back.') : 'Every editor can publish every section. Changes go live in about 1–2 minutes.' }),
       h('ol', { class: 'basics' }, h('li', { text: 'Choose a section in the menu (on a phone, tap ☰ Menu).' }), h('li', { text: 'Make your changes. Nothing is saved until you press the button at the bottom.' }), h('li', { text: SERVICE && ROLE() === 'contributor' ? 'Press “Submit for approval”.' : 'Press “Publish”. Watch the message at the top: it tells you when it’s live.' }), h('li', { text: 'Made a mistake? Open the section and press History to see or put back an earlier version.' }))));
     var order = ['overview'].concat(SECTIONS.map(function (s) { return s.id; }), SERVICE ? ['approvals', 'mine', 'comments', 'people', 'account'] : []);
     order.forEach(function (id) {
