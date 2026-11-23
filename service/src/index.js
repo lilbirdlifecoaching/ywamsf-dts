@@ -219,12 +219,20 @@ async function rewriteComments(env, post, fn, actor, message) {
 const routes = [];
 const route = (method, pattern, handler) => routes.push({ method, re: new RegExp('^' + pattern.replace(/:(\w+)/g, '(?<$1>[^/]+)') + '$'), handler });
 
-route('GET', '/health', async (req, env) => ({ ok: true, setup: !(await env.DB.prepare('SELECT 1 FROM users LIMIT 1').first()) }));
+route('GET', '/health', async (req, env) => {
+  const setup = !(await env.DB.prepare('SELECT 1 FROM users LIMIT 1').first());
+  const out = { ok: true, setup };
+  // While nobody has signed up yet, say which secrets are present (never their values) to help with setup.
+  if (setup) out.secrets = { SETUP_KEY: !!String(env.SETUP_KEY || '').trim(), GITHUB_TOKEN: !!String(env.GITHUB_TOKEN || '').trim(), RESEND_KEY: !!env.RESEND_KEY };
+  return out;
+});
 
 // First administrator. Only works while there are no accounts, and needs the SETUP_KEY secret.
 route('POST', '/setup', async (req, env, body) => {
   if (await env.DB.prepare('SELECT 1 FROM users LIMIT 1').first()) fail(403, 'The admin is already set up.');
-  if (!env.SETUP_KEY || !safeEqual(body.setup_key, env.SETUP_KEY)) fail(403, 'That setup key isn’t right.');
+  const want = String(env.SETUP_KEY || '').trim(), got = String(body.setup_key || '').trim();   // ignore stray spaces from copy and paste
+  if (!want) fail(403, 'The service has no setup key yet. Add the SETUP_KEY secret in Cloudflare (Workers & Pages → ywamsf-admin → Settings → Variables and Secrets).');
+  if (!safeEqual(got, want)) fail(403, 'That setup key isn’t right.');
   const email = normEmail(body.email), name = cleanName(body.name);
   if (!validEmail(email) || !name) fail(400, 'Enter your name and email.');
   const p = pwProblem(body.password); if (p) fail(400, p);
