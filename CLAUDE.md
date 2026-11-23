@@ -50,7 +50,12 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   (`analytics_ga4_id`, `analytics_cloudflare_token`, `google_site_verification`, `bing_site_verification`), off when empty.
 - **Launch switch:** branch `launch-switch` = CNAME `ywamsanfrancisco.org` + build.yml `MAIN_SITE`/`MAIN_INDEXING`. Merge it
   only when the domain's DNS points at GitHub Pages (rebase on main first). Until then every page is `noindex`.
-- **Admin access recovery (key mode):** forgotten password → another editor removes and re-adds you (Editors & security).
+- **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
+  (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
+  in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY not yet). `admin/keys.json` was removed. Forgotten
+  password: an administrator resends an invite / "Forgot password?" once email is set up. If the service is down, the
+  fallback is key mode (empty the admin-service meta and set up a new key).
+- **Admin access recovery (key mode, before Nov 23 2026):** forgotten password → another editor removes and re-adds you (Editors & security).
   Everyone locked out or the GitHub key expired → the repo owner makes a new fine-grained token (this repo only, Contents
   read/write, Actions read, 1-year expiry), empties `users` in `admin/keys.json` on github.com, opens /admin/ (setup screen)
   and re-adds the editors. Always run `node -e "new Function(require('fs').readFileSync('admin/admin.js','utf8'))"`
