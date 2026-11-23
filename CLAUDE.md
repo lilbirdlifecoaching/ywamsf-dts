@@ -56,8 +56,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   only when the domain's DNS points at GitHub Pages (rebase on main first). Until then every page is `noindex`.
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
   (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
-  in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY not yet). `admin/keys.json` was removed. Forgotten
-  password: an administrator resends an invite / "Forgot password?" once email is set up. If the service is down, the
+  in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY set Nov 23, Resend domain ywamsanfrancisco.org verified,
+  sending via Resend Forge: CNAME `send` → send.forge.rmta.net, DKIM `resend._domainkey`; DNS on GoDaddy nameservers via Webstix). `admin/keys.json` was removed. Forgotten
+  password: "Forgot password?" on the sign-in screen (email works). If the service is down, the
   fallback is key mode (empty the admin-service meta and set up a new key).
 - **Admin access recovery (key mode, before Nov 23 2026):** forgotten password → another editor removes and re-adds you (Editors & security).
   Everyone locked out or the GitHub key expired → the repo owner makes a new fine-grained token (this repo only, Contents
