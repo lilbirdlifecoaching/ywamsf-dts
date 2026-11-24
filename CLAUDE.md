@@ -67,6 +67,11 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 - **LAUNCHED Nov 23 2026:** DNS for ywamsanfrancisco.org moved to GitHub Pages (Webstix) and `launch-switch` was merged: CNAME
   `ywamsanfrancisco.org`, build.yml `MAIN_SITE=https://ywamsanfrancisco.org/`, `MAIN_INDEXING='1'` (pages indexable, canonical on the
   real domain), service ADMIN_URL/SITE_URL on the real domain. ywamembers.org no longer serves the site. Squarespace kept for a while as a fallback.
+- **Site check (Nov 23 2026):** `.github/workflows/site-check.yml` runs `tools/site_check.mjs` Mon/Wed/Fri ~5:20 am SF (and on demand):
+  every sitemap page and internal link, old addresses, desktop+phone browser checks (script errors, CSP blocks, overflow), CSP/noindex/
+  canonical, sign-in service, certificate, DNS, MX/SPF/DKIM, plus repo checks. Report → `site-checks/latest.md` on branch `site-checks`.
+  A scheduled Claude task ("YWAM SF site check", Mon/Wed/Fri 10:37 am SF) reads it, fixes small mechanical problems and pushes Luke a summary.
+  If you add an outside service, add it to the CSP in `page()` or the browser check will fail.
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
   (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
   in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY set Nov 23, Resend domain ywamsanfrancisco.org verified,
