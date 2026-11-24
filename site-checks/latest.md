@@ -1,10 +1,10 @@
 # Site check: all good
 
-https://ywamsanfrancisco.org/ · Nov 23, 2026, 5:27 PM (San Francisco time)
+https://ywamsanfrancisco.org/ · Nov 23, 2026, 8:36 PM (San Francisco time)
 
 ## Repository
 - ✅ **Code:** the admin page's code is valid
-- ✅ **Code:** sign-in service tests pass (72 checks passed)
+- ✅ **Code:** sign-in service tests pass (81 checks passed)
 - ✅ **Security:** no keys, tokens or passwords committed to the repository
 - ✅ **Security:** no known high-risk vulnerabilities in the sign-in service's packages
 
@@ -39,4 +39,4 @@ https://ywamsanfrancisco.org/ · Nov 23, 2026, 5:27 PM (San Francisco time)
 - ✅ **Email:** SPF email record present
 - ✅ **Email:** Resend email record (DKIM) in place
 
-Run: https://github.com/lilbirdlifecoaching/ywamsf-dts/actions/runs/45305033873
+Run: https://github.com/lilbirdlifecoaching/ywamsf-dts/actions/runs/45327383749
