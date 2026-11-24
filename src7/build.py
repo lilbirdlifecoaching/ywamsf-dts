@@ -256,7 +256,8 @@ def footer(up, root):
 
 # ROOT_SITE=1 builds YWAM 7 as the main site (https://ywamembers.org/): no concept switcher, favicon at the site root
 ROOT_SITE = os.environ.get('ROOT_SITE') == '1'
-BASE = os.environ.get('SITE_BASE') or ('https://ywamembers.org/' if ROOT_SITE else 'https://ywamembers.org/ywam%d/' % V)
+# Launched Nov 23 2026: the main site's default address is the real domain, so every build (any workflow, or by hand) is right.
+BASE = os.environ.get('SITE_BASE') or ('https://ywamsanfrancisco.org/' if ROOT_SITE else 'https://ywamsanfrancisco.org/ywam%d/' % V)
 def _seo_overrides():
     out = {}
     try: rows = load('seo.json').get('pages', [])
@@ -333,7 +334,7 @@ def section_switches(page_title, path, body):
 
 # Search engines: pages stay hidden ("noindex") on the test domain. At launch the build runs with INDEXING=1 and
 # SITE_BASE=https://ywamsanfrancisco.org/ (set in .github/workflows/build.yml).
-INDEXING = os.environ.get('INDEXING') == '1'
+INDEXING = os.environ.get('INDEXING', '1' if ROOT_SITE else '0') == '1'   # main site listed by Google since launch; INDEXING=0 hides it
 ROBOTS = '<meta name="robots" content="max-image-preview:large">' if INDEXING else '<meta name="robots" content="noindex">'
 H1_FALLBACK = {'about/': 'About YWAM San Francisco', 'about/news/': 'News & Events', 'about/resources/': 'Resources', 'about/people/': 'Staff & Board'}
 CRUMB_NAME = {}                                  # path → short name for breadcrumbs (blog posts set their title here)
@@ -1295,7 +1296,7 @@ for tm in _order:
     if tm in _seen: continue
     _seen.append(tm)
     head = []
-    cards = ''.join(pcard(p, t(p.get('role')), ' dir7') for p in head) + ''.join(pcard(p) for p in tm.get('members', []) if t(p.get('name')))
+    cards = ''.join(pcard(p, t(p.get('role')), ' dir7') for p in head) + ''.join(pcard(p, t(p.get('role'))) for p in tm.get('members', []) if t(p.get('name')))
     if cards: teams_html += '<div class="team7"><h3 class="rv">%s</h3><div class="pgrid">%s</div></div>' % (t(tm.get('name')), cards)
 board = ''.join('<article class="bm rv">%s<div><h3>%s</h3><small>%s</small><p>%s</p></div></article>' % (('<img src="%s" alt="%s" loading="lazy">' % (img(b.get('photo'), '../../', 500), t(b.get('name')))) if img(b.get('photo'), '../../', 500) else '<span class="bm-av">%s</span>' % t(initials(b.get('name'))), t(b.get('name')), t(b.get('role')), t(b.get('bio'))) for b in load('board.json').get('members', []) if t(b.get('name')))
 people = subnav('people', '../') + f'''

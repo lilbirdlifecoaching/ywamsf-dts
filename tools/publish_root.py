@@ -20,7 +20,7 @@ MANIFEST = os.path.join(ROOT, 'site-files.txt')
 PROTECTED = {'admin', 'content', 'src', 'src7', 'service', 'tools', 'design-src', 'legacy', 'am-i-ready', '.github',
              'CNAME', 'README.md', 'CLAUDE.md', 'favicon.png', '.gitignore', 'site-files.txt', '.site7', '.git'} | {'ywam%d' % i for i in range(0, 7)}
 OLD_DTS = 'course'          # the DTS page used to live at /course/
-BASE = (os.environ.get('SITE_BASE') or 'https://ywamembers.org/').rstrip('/')
+BASE = (os.environ.get('SITE_BASE') or 'https://ywamsanfrancisco.org/').rstrip('/')
 
 
 def old_squarespace():

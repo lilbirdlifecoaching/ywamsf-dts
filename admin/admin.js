@@ -357,11 +357,11 @@
       intro: 'The “What it’s like” cards on the DTS page: the city, the building, where students live, eat and learn.',
       fields: [F.area('intro', 'Intro'), { k: 'places', l: 'Cards', t: 'list', add: 'Add a card', title: function (x) { return x.title || 'New card'; }, blank: { title: '', text: '', photo: '' }, fields: [F.text('title', 'Title', { req: true }), F.area('text', 'Text'), F.photo('photo', 'Photo', { hint: 'Landscape works best. It’s cropped to 4:3.' })] }] },
     { id: 'staff', grp: 'People', file: 'staff.json', title: 'Staff', page: 'about/people/',
-      intro: 'Directors appear with a large photo. Everyone else is grouped by team with a small round photo. Without a photo, initials are shown.',
+      intro: 'Leadership appears first with a large photo. Everyone else is grouped by team; give someone a role (for example “Area director”) and it shows under their name. Without a photo, initials are shown.',
       fields: [
-        { k: 'directors', l: 'Directors', t: 'list', dnd: 'staff', dndLabel: function () { return 'Directors'; }, add: 'Add a director', blank: { name: '', role: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role'), F.photo('photo', 'Photo', { hint: 'A portrait works best. It’s cropped to 4:5.' })] },
+        { k: 'directors', l: 'Leadership', t: 'list', dnd: 'staff', dndLabel: function () { return 'Leadership'; }, add: 'Add a leader', blank: { name: '', role: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role'), F.photo('photo', 'Photo', { hint: 'A portrait works best. It’s cropped to 4:5.' })] },
         { k: 'teams', l: 'Teams', t: 'list', drag: true, add: 'Add a team', blank: { name: '', members: [] }, sub: function (x) { return (x.members || []).length + ' people'; },
-          fields: [F.text('name', 'Team name', { req: true, full: true }), { k: 'members', l: 'People on this team', t: 'list', dnd: 'staff', dndLabel: function (team) { return 'Team: ' + (team.name || 'unnamed team'); }, add: 'Add a person', blank: { name: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.photo('photo', 'Photo', { hint: 'Shown as a small circle, so a head-and-shoulders shot is best.' })] }] }] },
+          fields: [F.text('name', 'Team name', { req: true, full: true }), { k: 'members', l: 'People on this team', t: 'list', dnd: 'staff', dndLabel: function (team) { return 'Team: ' + (team.name || 'unnamed team'); }, add: 'Add a person', blank: { name: '', role: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role (optional)', { hint: 'For example “Area director”. Shown under their name.' }), F.photo('photo', 'Photo', { hint: 'Shown as a small circle, so a head-and-shoulders shot is best.' })] }] }] },
     { id: 'board', grp: 'People', file: 'board.json', title: 'Board', page: 'about/people/#board',
       fields: [{ k: 'members', l: 'Board members', t: 'list', add: 'Add a board member', blank: { name: '', role: '', photo: '', bio: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role'), F.photo('photo'), F.area('bio', 'Short bio')] }] },
     { id: 'shifts', grp: 'Serve', file: 'shifts.json', title: 'Volunteer shifts', page: 'volunteer/',
@@ -437,7 +437,7 @@
     testimonials: ['Press “Add a testimonial”, paste the student’s words and add their name and school (for example “DTS 2025”).', 'Ask the student first; their name is shown on the website.', 'Until you add some, this section stays hidden (see Show or hide sections).'],
     faq: ['Each question opens and closes on the DTS page. Keep answers short and friendly.', 'Use the arrows to change the order. The first few are the ones people see first.', 'The “For parents” questions appear in their own tab.'],
     dts_life: ['Each card has a title, a sentence or two and a photo.', 'Landscape photos work best; they’re cropped to 4:3.'],
-    staff: ['Directors appear first with a larger photo. Everyone else is listed under their team.', 'To add someone, open their team and press “Add a person”.', 'Photos: a head-and-shoulders shot works best. Without a photo, their initials are shown.', 'To move someone, drag them by the ⠿ handle: into another team’s list, onto a team’s name, or up into Directors. On a phone, open the person and use “Move to…”. Then press Publish.'],
+    staff: ['Leadership appears first with a larger photo. Everyone else is listed under their team, with their role if you add one.', 'To add someone, open their team and press “Add a person”.', 'Photos: a head-and-shoulders shot works best. Without a photo, their initials are shown.', 'To move someone, drag them by the ⠿ handle: into another team’s list, onto a team’s name, or up into Leadership. On a phone, open the person and use “Move to…”. Then press Publish.'],
     board: ['Add each board member with their role and a short bio.'],
     shifts: ["Each shift is a row on the departures board and a card on the Come Volunteer page.", "Tick the days it runs so it lights up as “Today” on those days.", "“Sign-up link”: paste the shift’s Calendly link. It opens as a pop-up on the site. Leave it empty and the button emails the volunteer team instead.", "“Details shown as tags” are the small labels like “18+”. Press Enter after each one."],
     ministries: ['These are the photo cards that scroll across the home page.', 'Keep the description to one line.'],
@@ -887,7 +887,7 @@
     });
   }
 
-  /* Drag and drop: drag an item by its ⠿ handle to reorder it. Lists that share a "dnd" group (Staff: Directors and each team)
+  /* Drag and drop: drag an item by its ⠿ handle to reorder it. Lists that share a "dnd" group (Staff: Leadership and each team)
      also accept items from each other, and dropping a person on a team's heading puts them in that team. Every such item also
      has a "Move to…" menu, which works on phones too. */
   var DRAG = null, DND_LISTS = [];
