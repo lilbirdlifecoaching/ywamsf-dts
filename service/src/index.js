@@ -9,8 +9,11 @@
    - keeps blog comments until an administrator or editor approves them;
    - sends the notification emails (Resend).
 
-   Secrets (npx wrangler secret put NAME): GITHUB_TOKEN, RESEND_KEY, SETUP_KEY, TURNSTILE_SECRET (optional).
+   Secrets (npx wrangler secret put NAME): GITHUB_TOKEN, RESEND_KEY, SETUP_KEY, TURNSTILE_SECRET (optional);
+   for the admin's "How it's going" dashboard: GOOGLE_SA_KEY, GA4_PROPERTY_ID, CF_ANALYTICS_TOKEN, CF_ACCOUNT_ID (see analytics.js).
    Settings (wrangler.toml [vars]): REPO, BRANCH, ALLOWED_ORIGINS, ADMIN_URL, SITE_URL, MAIL_FROM, GITHUB_API. */
+
+import { analyticsReport, analyticsStatus } from './analytics.js';
 
 const DAY = 86400, HOUR = 3600;
 const SESSION_IDLE = 45 * 60, SESSION_MAX = 12 * HOUR;
@@ -245,6 +248,7 @@ route('GET', '/health', async (req, env) => {
   const out = { ok: true, setup };
   // While nobody has signed up yet, say which secrets are present (never their values) to help with setup.
   if (setup) out.secrets = { SETUP_KEY: !!String(env.SETUP_KEY || '').trim(), GITHUB_TOKEN: !!String(env.GITHUB_TOKEN || '').trim(), RESEND_KEY: !!env.RESEND_KEY };
+  out.analytics = analyticsStatus(env);   // whether the dashboard's settings look right (never their values)
   return out;
 });
 
@@ -624,6 +628,17 @@ route('POST', '/comments/:id/reject', async (req, env, body, p) => {
   await env.DB.prepare("UPDATE comments SET status = 'rejected', reviewer_id = ?, decided = ? WHERE id = ?").bind(u.id, now(), c.id).run();
   await audit(env, u.id, 'comment-removed', `${c.name} on ${c.post}`);
   return { ok: true };
+});
+
+// "How it's going" dashboard (admin home): anyone signed in can see it; a fresh fetch at most every 5 minutes.
+route('GET', '/analytics', async (req, env, body, p, url) => {
+  await currentUser(env, req);
+  let fresh = url.searchParams.get('fresh') === '1';
+  if (fresh) {
+    const last = await env.DB.prepare("SELECT MAX(at) AS at FROM analytics_cache").first().catch(() => null);
+    if (last && last.at && now() - last.at < 300) fresh = false;
+  }
+  return analyticsReport(env, +url.searchParams.get('days') || 30, fresh);
 });
 
 /* ------------------------------------------------------------------ entry point */

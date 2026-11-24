@@ -450,6 +450,7 @@
     comments: ["New blog comments wait here until someone approves them. You also get an email when one arrives.", "Approve to show it under the post (about 1–2 minutes later). Remove takes it down, even after it was approved.", "Only posts with “Allow comments” switched on take comments.", "The commenter’s email is only shown here, never on the website."],
     people: ['Invite someone with their name, email and level. They get an email to choose their own password.', 'Administrators: everything, including people. Editors: publish anything except section switches, approve posts and comments. Contributors: everything waits for approval.', 'Turn someone off when they leave; you can turn them back on later.'],
     account: ['Change your password here. Forgot it? Use “Forgot password?” on the sign-in screen.'],
+    stats: ['Visitors, the pages they read, how they found the site and what they searched on Google. Pick 7, 30 or 90 days at the top.', '“▲ 12%” compares with the same number of days just before. Hover or tap the chart to see a single day.', 'Numbers come from Google Analytics, Google Search Console and Cloudflare, and refresh about once an hour. Search Console runs about two days behind.', 'Only people signed in to this admin can see this page. Nothing here identifies a visitor.'],
     guide: ['This page lists every “How this works” panel in one place. Press Print to keep a copy.']
   };
   function howto(id, open) {
@@ -487,6 +488,7 @@
   function showApp(id) {
     var nav = h('nav', { 'aria-label': 'Sections', 'data-tour': 'nav' }), lastGrp = null;
     nav.appendChild(h('button', { class: 'nav', type: 'button', 'data-id': 'overview', onclick: function () { go('overview'); } }, 'Home'));
+    if (SERVICE) nav.appendChild(h('button', { class: 'nav', type: 'button', 'data-id': 'stats', onclick: function () { go('stats'); } }, 'How it’s going'));
     nav.appendChild(h('button', { class: 'nav', type: 'button', 'data-id': 'visual', onclick: function () { go('visual'); } }, 'Visual editor'));
     if (SERVICE) {
       var tasks = extraNav().filter(function (i) { return ['approvals', 'mine', 'comments'].indexOf(i.id) >= 0; });
@@ -532,7 +534,7 @@
     shellEls.main.textContent = '';
     shellEls.main.appendChild(h('p', { class: 'loading', text: 'Loading…' }));
     window.scrollTo(0, 0);
-    var screens = { blog: renderBlog, visual: renderVisual, overview: renderOverview, editors: renderEditors, approvals: renderApprovals, mine: renderMine, comments: renderComments, people: renderPeople, account: renderAccount, guide: renderGuide };
+    var screens = { stats: renderStats, blog: renderBlog, visual: renderVisual, overview: renderOverview, editors: renderEditors, approvals: renderApprovals, mine: renderMine, comments: renderComments, people: renderPeople, account: renderAccount, guide: renderGuide };
     if (screens[id]) return screens[id]();
     shellEls.saveBtn.textContent = saveLabel(s);
     store.read('content/' + s.file).then(function (f) {
@@ -549,6 +551,138 @@
   }
   function top(title, intro, acts) {
     return h('div', { class: 'mtop' }, h('div', null, h('button', { class: 'btn ghost small menu-btn', type: 'button', text: '☰ Menu', onclick: function () { shellEls.side.classList.add('open'); } }), h('h1', { text: title }), intro ? h('p', { text: intro }) : null), acts ? h('div', { class: 'acts' }, acts) : null);
+  }
+
+
+  /* ------------------------------------------------------------------ how it's going (visitor dashboard) */
+  var STATS_DAYS = 30;
+  function svgEl(tag, attrs) { var el = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.keys(attrs || {}).forEach(function (k) { el.setAttribute(k, attrs[k]); }); return el; }
+  function fmtN(n) { n = +n || 0; return n >= 10000 ? (Math.round(n / 100) / 10) + 'k' : n.toLocaleString('en-US'); }
+  function fmtDur(s) { s = Math.round(+s || 0); return s < 60 ? s + 's' : Math.floor(s / 60) + 'm ' + (s % 60 ? s % 60 + 's' : ''); }
+  function delta(now, before, lowerBetter) {
+    if (!before) return now ? h('span', { class: 'st-d up', text: 'new' }) : null;
+    var p = Math.round((now - before) / before * 100); if (!p) return h('span', { class: 'st-d', text: 'same as before' });
+    var good = lowerBetter ? p < 0 : p > 0;
+    return h('span', { class: 'st-d ' + (good ? 'up' : 'down'), text: (p > 0 ? '▲ ' : '▼ ') + Math.abs(p) + '%', title: 'Compared with the ' + STATS_DAYS + ' days before' });
+  }
+  function kpi(label, value, d, note) { return h('div', { class: 'st-kpi' }, h('small', { class: 'kick', text: label }), h('b', { text: value }), h('div', { class: 'st-sub' }, d, note ? h('span', { text: note }) : null)); }
+  function barList(items, opts) {
+    opts = opts || {}; items = (items || []).slice(0, opts.max || 8);
+    if (!items.length) return h('p', { class: 'empty', text: opts.empty || 'No data yet.' });
+    var top = Math.max.apply(null, items.map(function (i) { return i.value; })) || 1;
+    return h('ul', { class: 'st-bars' }, items.map(function (i) {
+      var bar = h('span', { class: 'st-bar' }); bar.style.width = Math.max(2, Math.round(i.value / top * 100)) + '%';
+      return h('li', null, h('div', { class: 'st-row' }, opts.link && i.href ? h('a', { href: i.href, target: '_blank', rel: 'noopener', text: i.name, title: i.title || i.name }) : h('span', { text: i.name, title: i.title || i.name }), h('b', { text: fmtN(i.value) })), bar);
+    }));
+  }
+  function lineChart(series, dates) {
+    var W = Math.round(Math.min(720, Math.max(300, (shellEls.main.clientWidth || 720) - 90))), H = W < 500 ? 200 : 220, L = 40, R = 10, T = 12, B = 26, n = dates.length;
+    var max = 1; series.forEach(function (s) { s.values.forEach(function (v) { if (v > max) max = v; }); });
+    var step = Math.pow(10, Math.floor(Math.log10(max))), nice = Math.ceil(max / step) * step; if (nice / step < 3) { step /= 2; nice = Math.ceil(max / step) * step; }
+    var x = function (i) { return L + (n < 2 ? 0 : i * (W - L - R) / (n - 1)); }, y = function (v) { return T + (H - T - B) * (1 - v / nice); };
+    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'st-chart', role: 'img', 'aria-label': series.map(function (s) { return s.name + ': ' + fmtN(s.values.reduce(function (a, b) { return a + b; }, 0)) + ' in total'; }).join('; ') });
+    for (var g = 0; g <= nice + 1e-9; g += step) { svg.appendChild(svgEl('line', { x1: L, x2: W - R, y1: y(g), y2: y(g), class: 'st-grid' })); var t = svgEl('text', { x: L - 6, y: y(g) + 4, 'text-anchor': 'end', class: 'st-ax' }); t.textContent = fmtN(g); svg.appendChild(t); }
+    var every = Math.max(1, Math.ceil(n / 6));
+    dates.forEach(function (d, i) { if (i % every && i !== n - 1) return; var p = pd(d); var t = svgEl('text', { x: x(i), y: H - 6, 'text-anchor': i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle', class: 'st-ax' }); t.textContent = p ? MON[p.m - 1] + ' ' + p.d : d; svg.appendChild(t); });
+    series.forEach(function (s, si) {
+      if (!s.values.length) return;
+      var pts = s.values.map(function (v, i) { return x(i).toFixed(1) + ',' + y(v).toFixed(1); });
+      if (si === 0) svg.appendChild(svgEl('path', { d: 'M' + x(0) + ',' + y(0) + ' L' + pts.join(' L') + ' L' + x(s.values.length - 1) + ',' + y(0) + ' Z', class: 'st-area' }));
+      svg.appendChild(svgEl('polyline', { points: pts.join(' '), class: 'st-line s' + si }));
+    });
+    // hover readout
+    var tip = h('div', { class: 'st-tip' }), wrap = h('div', { class: 'st-chartwrap' }), cursor = svgEl('line', { y1: T, y2: H - B, class: 'st-cursor' });
+    svg.appendChild(cursor); wrap.appendChild(svg); wrap.appendChild(tip);
+    function at(ev) {
+      var r = svg.getBoundingClientRect(), px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left, sx = px * W / r.width;
+      var i = Math.max(0, Math.min(n - 1, Math.round((sx - L) / ((W - L - R) / Math.max(1, n - 1)))));
+      cursor.setAttribute('x1', x(i)); cursor.setAttribute('x2', x(i)); wrap.classList.add('on');
+      var p = pd(dates[i]); tip.textContent = '';
+      tip.appendChild(h('b', { text: p ? MON[p.m - 1] + ' ' + p.d : dates[i] }));
+      series.forEach(function (s, si) { if (s.values[i] != null) tip.appendChild(h('div', null, h('i', { class: 's' + si }), s.name + ': ' + fmtN(s.values[i]))); });
+      tip.style.left = Math.min(r.width - 160, Math.max(0, x(i) * r.width / W - 80)) + 'px';
+    }
+    svg.addEventListener('mousemove', at); svg.addEventListener('touchstart', at, { passive: true });
+    svg.addEventListener('mouseleave', function () { wrap.classList.remove('on'); });
+    var legend = h('div', { class: 'st-legend' }, series.filter(function (s) { return s.values.length; }).map(function (s, si) { return h('span', null, h('i', { class: 's' + si }), s.name); }));
+    return h('div', null, wrap, legend);
+  }
+  var CHANNEL = { 'Organic Search': 'Google & other search', 'Direct': 'Typed the address / bookmarks', 'Organic Social': 'Social media', 'Referral': 'Links on other websites', 'Email': 'Email', 'Paid Search': 'Search ads', 'Unassigned': 'Unknown', 'Organic Video': 'YouTube & video', 'Paid Social': 'Social ads', 'Organic Shopping': 'Shopping' };
+  function renderStats() {
+    var main = shellEls.main; main.textContent = '';
+    var periods = h('div', { class: 'st-periods', role: 'group', 'aria-label': 'Period' }, [7, 30, 90].map(function (d) {
+      return h('button', { type: 'button', class: 'btn small ' + (d === STATS_DAYS ? '' : 'ghost'), 'aria-pressed': d === STATS_DAYS ? 'true' : 'false', text: d + ' days', onclick: function () { STATS_DAYS = d; renderStats(); } });
+    }));
+    main.appendChild(top('How it’s going', 'Who’s visiting the website, what they read, and how they found it. Updated about once an hour.', [periods]));
+    main.appendChild(howto('stats'));
+    if (!SERVICE) { main.appendChild(h('p', { class: 'notice', text: 'The dashboard needs the sign-in service.' })); return; }
+    var body = h('div', { class: 'st' }, h('p', { class: 'loading', text: 'Fetching the numbers…' })); main.appendChild(body);
+    load(false);
+    function load(fresh) {
+      api('GET', '/analytics?days=' + STATS_DAYS + (fresh ? '&fresh=1' : '')).then(function (r) { if (CUR === 'stats') draw(r); })
+        .catch(function (e) { body.textContent = ''; body.appendChild(h('p', { class: 'err', text: 'Couldn’t load the numbers: ' + e.message })); });
+    }
+    function draw(r) {
+      body.textContent = '';
+      var g = r.ga4, sc = r.gsc, cf = r.cf, st = r.status || {};
+      if (r.sample) body.appendChild(h('div', { class: 'notice warn' }, h('b', { text: 'Sample numbers. ' }), 'These are made up, to show what the dashboard will look like. Real numbers appear once Google Analytics, Search Console and Cloudflare are connected to the sign-in service (an administrator does this once in Google and Cloudflare).'));
+      var probs = ['ga4', 'gsc', 'cf'].filter(function (k) { return st[k] && st[k] !== 'ok' && !r.sample; });
+      if (probs.length) body.appendChild(h('div', { class: 'notice warn' }, h('b', { text: 'Not everything loaded. ' }), h('ul', null, probs.map(function (k) { return h('li', { text: st[k] === 'not set up' ? { ga4: 'Google Analytics', gsc: 'Search Console', cf: 'Cloudflare' }[k] + ' isn’t connected yet.' : st[k] }); }))));
+      // headline numbers
+      var k = h('div', { class: 'st-kpis' }); body.appendChild(k);
+      if (g) {
+        k.appendChild(kpi('Visitors', fmtN(g.totals.visitors), delta(g.totals.visitors, g.before.visitors), 'people'));
+        k.appendChild(kpi('Pages viewed', fmtN(g.totals.views), delta(g.totals.views, g.before.views)));
+        k.appendChild(kpi('Time on the site', fmtDur(g.totals.avg_engaged_sec), delta(g.totals.avg_engaged_sec, g.before.avg_engaged_sec), 'per visitor'));
+      } else if (cf) {
+        k.appendChild(kpi('Visits', fmtN(cf.totals.visits), null, 'Cloudflare count'));
+        k.appendChild(kpi('Pages viewed', fmtN(cf.totals.views), null));
+      }
+      if (sc) k.appendChild(kpi('Clicks from Google', fmtN(sc.totals.clicks), delta(sc.totals.clicks, sc.before.clicks), 'searches'));
+      if (g) {
+        var vol = g.actions.filter(function (a) { return a.id === 'volunteer_signup_click'; })[0], give = g.actions.filter(function (a) { return a.id === 'give_click'; })[0];
+        if (vol) k.appendChild(kpi('Volunteer sign-ups', fmtN(vol.now), delta(vol.now, vol.before), 'clicks'));
+        if (give) k.appendChild(kpi('Give clicks', fmtN(give.now), delta(give.now, give.before)));
+      }
+      // visitors over time
+      var dates = (g ? g.daily : cf ? cf.daily : []).map(function (d) { return d.date; });
+      if (dates.length) {
+        var cfBy = {}; (cf && cf.daily || []).forEach(function (d) { cfBy[d.date] = d.visits; });
+        var series = g ? [{ name: 'Visitors (Google Analytics)', values: g.daily.map(function (d) { return d.visitors; }) }] : [{ name: 'Visits (Cloudflare)', values: cf.daily.map(function (d) { return d.visits; }) }];
+        if (g && cf) series.push({ name: 'Visits (Cloudflare)', values: dates.map(function (d) { return cfBy[d] || 0; }) });
+        body.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Visitors per day' }), h('p', { class: 'hint', text: g && cf ? 'Two counts of the same visitors. Google Analytics misses people with ad-blockers, so Cloudflare usually reads a little higher.' : 'Hover or tap the chart to see each day.' }), lineChart(series, dates)));
+      }
+      var grid = h('div', { class: 'st-grid2' }); body.appendChild(grid);
+      function panel(title, hint, content) { grid.appendChild(h('div', { class: 'panel' }, h('h2', { text: title }), hint ? h('p', { class: 'hint', text: hint }) : null, content)); }
+      var siteBase = SITE.replace(/\/?$/, '/');
+      var pages = g ? g.pages : (cf ? cf.pages.map(function (p) { return { path: p.name, title: p.name, views: p.value }; }) : []);
+      var nonBlog = pages.filter(function (p) { return !/^\/blog\/\d{4}\//.test(p.path); }), blog = pages.filter(function (p) { return /^\/blog\/\d{4}\//.test(p.path); });
+      var asItem = function (p) { return { name: (p.title || p.path).replace(/\s*[|–—-]\s*YWAM San Francisco\s*$/i, '') || p.path, title: p.path, value: p.views, href: siteBase + p.path.replace(/^\//, '') }; };
+      panel('Most-read pages', null, barList(nonBlog.map(asItem), { link: true }));
+      if (g) panel('How people find you', 'Where visits started.', barList(g.channels.map(function (c) { return { name: CHANNEL[c.name] || c.name, value: c.value }; })));
+      if (sc) {
+        var qs = sc.queries || [];
+        panel('What people searched on Google', 'Searches that showed the site, ' + fmtDate(sc.from) + ' – ' + fmtDate(sc.to) + ' (Google runs about two days behind). Average spot ' + (sc.totals.position || '–') + ' in the results.',
+          qs.length ? h('table', { class: 'st-table' }, h('thead', null, h('tr', null, h('th', { text: 'Search' }), h('th', { text: 'Clicks' }), h('th', { text: 'Seen' }), h('th', { text: 'Spot', title: 'Average position in Google’s results (1 = top)' }))),
+            h('tbody', null, qs.slice(0, 12).map(function (q) { return h('tr', null, h('td', { text: q.query }), h('td', { text: fmtN(q.clicks) }), h('td', { text: fmtN(q.impressions) }), h('td', { text: q.position })); }))) : h('p', { class: 'empty', text: 'No searches yet. This fills in after launch, once Google has the new site.' }));
+      }
+      if (g) panel('Actions that matter', 'Clicks on buttons that lead to a sign-up, a gift or an application, compared with the ' + STATS_DAYS + ' days before.',
+        h('table', { class: 'st-table' }, h('tbody', null, g.actions.map(function (a) { return h('tr', null, h('td', { text: a.label }), h('td', null, h('b', { text: fmtN(a.now) })), h('td', null, delta(a.now, a.before))); }))));
+      if (blog.length || g) panel('Most-read blog posts', null, barList(blog.map(asItem), { link: true, empty: 'No blog visits in this period.' }));
+      var refs = g ? g.sources.map(function (s) { return { name: s.name === '(direct)' ? 'Direct (no link)' : s.name, value: s.value }; }) : (cf ? cf.referrers : []);
+      panel('Websites that sent visitors', null, barList(refs));
+      if (g) {
+        var dev = g.devices, tot = dev.reduce(function (a, b) { return a + b.value; }, 0) || 1, strip = h('div', { class: 'st-strip' });
+        dev.forEach(function (d, i) { var s = h('span', { class: 'c' + i, title: d.name + ': ' + Math.round(d.value / tot * 100) + '%' }); s.style.width = (d.value / tot * 100) + '%'; strip.appendChild(s); });
+        var ret = {}; (g.returning || []).forEach(function (x) { ret[x.name] = x.value; });
+        var rt = (ret['new'] || 0) + (ret.returning || 0);
+        panel('Phones and computers', null, h('div', null, strip, h('div', { class: 'st-legend' }, dev.map(function (d, i) { return h('span', null, h('i', { class: 'c' + i }), d.name.charAt(0).toUpperCase() + d.name.slice(1) + ' ' + Math.round(d.value / tot * 100) + '%'); })),
+          rt ? h('p', { class: 'hint st-ret', text: Math.round((ret.returning || 0) / rt * 100) + '% of visitors had been before; ' + Math.round((ret['new'] || 0) / rt * 100) + '% were new.' }) : null));
+        panel('Where visitors are', null, barList(g.cities.length ? g.cities : g.countries));
+      }
+      body.appendChild(h('p', { class: 'st-foot' }, (r.sample ? 'Sample data' : 'Updated ' + ago(r.updated)) + '. ', h('button', { class: 'link', type: 'button', text: 'Refresh now', onclick: function () { body.textContent = ''; body.appendChild(h('p', { class: 'loading', text: 'Fetching fresh numbers…' })); load(true); } }),
+        ' · Sources: Google Analytics, Google Search Console, Cloudflare Web Analytics. Open ', h('a', { href: 'https://analytics.google.com/', target: '_blank', rel: 'noopener', text: 'Google Analytics ↗' }), ' for more detail.'));
+    }
   }
 
   /* ------------------------------------------------------------------ home */
@@ -1735,12 +1869,12 @@
     var levels = SERVICE ? { admin: 'Administrator', editor: 'Editor', contributor: 'Contributor' }[ROLE()] : 'Editor';
     main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Your level: ' + levels }), h('p', { class: 'hint', text: SERVICE ? (ROLE() === 'contributor' ? 'Everything you change is sent to an editor or administrator to approve. You’ll get an email when it’s approved or sent back.' : ROLE() === 'editor' ? 'You publish changes straight away (except section switches). You also approve contributors’ blog posts and resources, and moderate comments.' : 'You can do everything, including inviting people, approving changes and putting old versions back.') : 'Every editor can publish every section. Changes go live in about 1–2 minutes.' }),
       h('ol', { class: 'basics' }, h('li', { text: 'Choose a section in the menu (on a phone, tap ☰ Menu).' }), h('li', { text: 'Make your changes. Nothing is saved until you press the button at the bottom.' }), h('li', { text: SERVICE && ROLE() === 'contributor' ? 'Press “Submit for approval”.' : 'Press “Publish”. Watch the message at the top: it tells you when it’s live.' }), h('li', { text: 'Made a mistake? Open the section and press History to see or put back an earlier version.' }))));
-    var order = ['overview', 'visual'].concat(SECTIONS.map(function (s) { return s.id; }), SERVICE ? ['approvals', 'mine', 'comments', 'people', 'account'] : []);
+    var order = ['overview', 'stats', 'visual'].concat(SECTIONS.map(function (s) { return s.id; }), SERVICE ? ['approvals', 'mine', 'comments', 'people', 'account'] : []);
     order = order.filter(function (id, i) { return order.indexOf(id) === i; });
     order.forEach(function (id) {
       if (!HOWTO[id]) return;
       var s = id === 'overview' ? null : SECTIONS.filter(function (x) { return x.id === id; })[0];
-      var title = s ? s.title : { overview: 'Getting started', visual: 'Visual editor', approvals: 'Approving changes', mine: 'Your submitted changes', comments: 'Blog comments', people: 'People and levels', account: 'Your account' }[id];
+      var title = s ? s.title : { overview: 'Getting started', stats: 'How it’s going (visitor numbers)', visual: 'Visual editor', approvals: 'Approving changes', mine: 'Your submitted changes', comments: 'Blog comments', people: 'People and levels', account: 'Your account' }[id];
       main.appendChild(h('div', { class: 'panel guide-item' }, h('h2', { text: title }), h('ol', null, HOWTO[id].map(function (t) { return h('li', { text: t }); }))));
     });
   }

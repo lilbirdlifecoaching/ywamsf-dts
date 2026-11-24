@@ -59,6 +59,11 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   build (sanitized by `pt_clean`). Admin → Visual editor edits them (B/I toolbar, Reset to original, list of all changes).
   If you reword template text in code, an existing override for the old wording simply stops applying (its key changes).
   Don't name other attributes `data-pt*`. Emails/phones/URLs are excluded (they come from Settings).
+- **"How it's going" dashboard (Nov 23 2026):** admin → How it's going (any signed-in person). `service/src/analytics.js`
+  (`GET /analytics?days=7|30|90`, cached an hour in D1 `analytics_cache`) reads GA4 (Data API) + Search Console with one Google
+  service account (Worker secrets `GOOGLE_SA_KEY` = whole JSON key, `GA4_PROPERTY_ID` = the numeric property ID) and Cloudflare
+  Web Analytics via GraphQL (`CF_ANALYTICS_TOKEN` Account Analytics:Read, `CF_ACCOUNT_ID`). `/health` → `analytics` says which are
+  set (never values). Not set up → labelled sample numbers. Drawn by `renderStats` in admin.js (hand-made SVG chart, no libraries).
 - **Launch switch:** branch `launch-switch` = CNAME `ywamsanfrancisco.org` + build.yml `MAIN_SITE`/`MAIN_INDEXING`. Merge it
   only when the domain's DNS points at GitHub Pages (rebase on main first). Until then every page is `noindex`.
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev

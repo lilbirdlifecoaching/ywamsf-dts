@@ -10,6 +10,7 @@ import crypto from 'node:crypto';
 const files = new Map();          // path -> {sha, b64}
 const commits = [];               // {sha, path, message, author, snapshot}
 const mails = [];
+const SA = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 }); const analyticsCalls = [];
 const sha = (s) => crypto.createHash('sha1').update(s + Math.random()).digest('hex');
 function seed(path, obj) { const b = Buffer.from(JSON.stringify(obj, null, 2)).toString('base64'); const s = sha(path); files.set(path, { sha: s, b64: b }); commits.push({ sha: s, path, message: 'seed', author: 'seed', b64: b }); }
 seed('content/dts.json', { schools: [], cost_note: 'x' });
@@ -21,6 +22,38 @@ const server = http.createServer(async (req, res) => {
   const send = (st, obj) => { res.writeHead(st, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); };
   const u = new URL(req.url, 'http://x');
   if (u.pathname === '/emails') { mails.push(JSON.parse(body)); return send(200, { id: 'm' }); }
+  // fake Google + Cloudflare analytics
+  if (u.pathname === '/token') {
+    const a = new URLSearchParams(body).get('assertion').split('.');
+    const okSig = crypto.verify('sha256', Buffer.from(a[0] + '.' + a[1]), SA.publicKey, Buffer.from(a[2], 'base64url'));
+    const claims = JSON.parse(Buffer.from(a[1], 'base64url'));
+    return okSig && claims.iss === 'robot@test.iam.gserviceaccount.com' && /analytics\.readonly/.test(claims.scope) ? send(200, { access_token: 'G-TOKEN' }) : send(400, { error: 'invalid_grant' });
+  }
+  if (/batchRunReports$/.test(u.pathname)) {
+    if (req.headers.authorization !== 'Bearer G-TOKEN') return send(401, { error: { message: 'no' } });
+    analyticsCalls.push(u.pathname);
+    const reqs = JSON.parse(body).requests;
+    const row = (d, m) => ({ dimensionValues: d.map((value) => ({ value })), metricValues: m.map((value) => ({ value: String(value) })) });
+    return send(200, { reports: reqs.map((q) => {
+      const dims = (q.dimensions || []).map((d) => d.name);
+      if (dims[0] === 'date') return { rows: [row(['20261120'], [10, 25]), row(['20261121'], [12, 30])] };
+      if (!dims.length) return { rows: [row(['now'], [22, 55, 30, 1100, 18, 0.6]), row(['before'], [11, 20, 14, 500, 9, 0.5])] };
+      if (dims[0] === 'eventName') return { rows: [row(['give_click', 'now'], [3]), row(['give_click', 'before'], [1])] };
+      if (dims[0] === 'pagePath') return { rows: [row(['/dts/', 'DTS'], [40])] };
+      return { rows: [row(['Organic Search'], [7])] };
+    }) });
+  }
+  if (/searchAnalytics\/query$/.test(u.pathname)) {
+    assert.match(decodeURIComponent(u.pathname), /sites\/sc-domain:ywamsanfrancisco\.org\//);
+    const q = JSON.parse(body), d = (q.dimensions || [])[0];
+    return send(200, { rows: d ? [{ keys: [d === 'date' ? '2026-11-20' : d === 'page' ? 'https://ywamsanfrancisco.org/dts/' : 'ywam sf'], clicks: 4, impressions: 90, ctr: 0.04, position: 3.2 }] : [{ clicks: 4, impressions: 90, ctr: 0.0444, position: 3.21 }] });
+  }
+  if (u.pathname === '/graphql') {
+    if (req.headers.authorization !== 'Bearer CF-TOKEN') return send(200, { errors: [{ message: 'not authorized' }] });
+    const q = JSON.parse(body);
+    const g = (k, v) => [{ count: 9, sum: { visits: 5 }, dimensions: { [k]: v } }];
+    return send(200, { data: { viewer: { accounts: [{ daily: g('date', '2026-11-20'), pages: g('requestPath', '/'), refs: [...g('refererHost', 'www.google.com'), ...g('refererHost', 'ywamsanfrancisco.org')], countries: g('countryName', 'US'), devices: g('deviceType', 'mobile') }] } }, _vars: q.variables });
+  }
   if (req.headers.authorization !== 'Bearer TEST-GH-TOKEN') return send(401, { message: 'Bad credentials' });
   let m;
   if ((m = /^\/repos\/o\/r\/contents\/(.+)$/.exec(u.pathname))) {
@@ -55,7 +88,7 @@ const base = 'http://127.0.0.1:' + server.address().port;
 
 /* ---------- local Cloudflare */
 const mf = new Miniflare({
-  modules: true, scriptPath: 'src/index.js', compatibilityDate: '2024-11-01', d1Databases: ['DB'],
+  modules: true, modulesRules: [{ type: 'ESModule', include: ['**/*.js'] }], scriptPath: 'src/index.js', compatibilityDate: '2024-11-01', d1Databases: ['DB'],
   bindings: { REPO: 'o/r', BRANCH: 'main', ALLOWED_ORIGINS: 'https://ywamembers.org', ADMIN_URL: 'https://ywamembers.org/admin/', GITHUB_API: base, RESEND_API: base + '/emails', GITHUB_TOKEN: 'TEST-GH-TOKEN', RESEND_KEY: 'TEST-RESEND', SETUP_KEY: 'setup-key-123456' }
 });
 const db = await mf.getD1Database('DB');
@@ -191,6 +224,32 @@ r = await call('DELETE', `/users/${lukeId}`, null, admin); assert.equal(r.status
 r = await call('PATCH', `/users/${samId}`, { disabled: true }, admin); assert.equal(r.user.disabled, true);
 r = await call('POST', '/auth/login', { email: 'sam@example.org', password: 'sam password 1' }); assert.equal(r.status, 401); ok('turning someone off blocks sign-in');
 r = await call('GET', '/audit', null, admin); assert.ok(r.entries.some((e) => e.action === 'approved')); ok('audit log records who did what');
+
+// "How it's going" dashboard
+r = await call('GET', '/analytics?days=30'); assert.equal(r.status, 401); ok('the dashboard needs a sign-in');
+r = await call('GET', '/analytics?days=7', null, admin); assert.equal(r.sample, true); assert.equal(r.ga4.daily.length, 7); assert.equal(r.status.ga4, 'not set up'); ok('before setup the dashboard shows labelled sample numbers');
+r = await call('GET', '/health'); assert.equal(r.analytics.GOOGLE_SA_KEY, 'missing'); ok('health says which dashboard settings are missing (never their values)');
+{
+  const keyJson = JSON.stringify({ type: 'service_account', client_email: 'robot@test.iam.gserviceaccount.com', private_key: SA.privateKey.export({ type: 'pkcs8', format: 'pem' }) });
+  const mf2 = new Miniflare({ modules: true, modulesRules: [{ type: 'ESModule', include: ['**/*.js'] }], scriptPath: 'src/index.js', compatibilityDate: '2024-11-01', d1Databases: ['DB'],
+    bindings: { REPO: 'o/r', BRANCH: 'main', ALLOWED_ORIGINS: 'https://ywamembers.org', GITHUB_API: base, GITHUB_TOKEN: 'TEST-GH-TOKEN', SETUP_KEY: 'k',
+      GOOGLE_SA_KEY: keyJson, GA4_PROPERTY_ID: '412345678', CF_ANALYTICS_TOKEN: 'CF-TOKEN', CF_ACCOUNT_ID: 'a'.repeat(32), GOOGLE_TOKEN_URL: base + '/token', GA4_API: base, GSC_API: base, CF_GRAPHQL: base + '/graphql' } });
+  const db2 = await mf2.getD1Database('DB');
+  for (const stmt of fs.readFileSync('schema.sql', 'utf8').replace(/--.*$/gm, '').split(';').map((s) => s.trim()).filter(Boolean)) await db2.prepare(stmt).run();
+  const c2 = async (path, token) => { const res = await mf2.dispatchFetch('http://svc' + path, { headers: Object.assign({ Origin: 'https://ywamembers.org' }, token ? { Authorization: 'Bearer ' + token } : {}) }); return res.json(); };
+  let h = await c2('/health'); assert.deepEqual(Object.values(h.analytics), ['ok', 'ok', 'ok', 'ok']);
+  const res = await mf2.dispatchFetch('http://svc/setup', { method: 'POST', headers: { Origin: 'https://ywamembers.org', 'Content-Type': 'application/json' }, body: JSON.stringify({ setup_key: 'k', email: 'a@example.org', name: 'A', password: 'correct horse 1' }) });
+  const tok = (await res.json()).token;
+  let a = await c2('/analytics?days=30', tok);
+  assert.equal(a.sample, false); assert.deepEqual(a.status, { ga4: 'ok', gsc: 'ok', cf: 'ok' });
+  assert.equal(a.ga4.totals.visitors, 22); assert.equal(a.ga4.before.visitors, 11); assert.equal(a.ga4.totals.avg_engaged_sec, 50); assert.equal(a.ga4.daily[0].date, '2026-11-20');
+  assert.equal(a.ga4.actions.find((x) => x.id === 'give_click').now, 3); assert.equal(a.ga4.pages[0].path, '/dts/');
+  assert.equal(a.gsc.queries[0].query, 'ywam sf'); assert.equal(a.gsc.pages[0].page, '/dts/'); assert.equal(a.gsc.totals.position, 3.2);
+  assert.equal(a.cf.totals.views, 9); assert.equal(a.cf.referrers.length, 1);
+  ok('dashboard: signs in to Google with the service account and reads GA4, Search Console and Cloudflare');
+  const calls = analyticsCalls.length; a = await c2('/analytics?days=30', tok); assert.equal(a.cached, true); assert.equal(analyticsCalls.length, calls); ok('dashboard numbers are kept for an hour');
+  await mf2.dispose();
+}
 
 console.log(`\n${n} checks passed`);
 await mf.dispose(); server.close();

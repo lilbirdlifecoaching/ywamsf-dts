@@ -24,7 +24,7 @@ const server = http.createServer(async (req, res) => {
   send(404, {});
 });
 server.listen(8788, '127.0.0.1');
-const mf = new Miniflare({ modules: true, scriptPath: 'src/index.js', compatibilityDate: '2024-11-01', d1Databases: ['DB'], port: 8787, host: '127.0.0.1',
+const mf = new Miniflare({ modules: true, modulesRules: [{ type: 'ESModule', include: ['**/*.js'] }], scriptPath: 'src/index.js', compatibilityDate: '2024-11-01', d1Databases: ['DB'], port: 8787, host: '127.0.0.1',
   bindings: { REPO: 'o/r', BRANCH: 'main', ALLOWED_ORIGINS: 'http://127.0.0.1:8000', ADMIN_URL: 'http://127.0.0.1:8000/admin/', GITHUB_API: 'http://127.0.0.1:8788', RESEND_API: 'http://127.0.0.1:8788/emails', GITHUB_TOKEN: 't', RESEND_KEY: 'k', SETUP_KEY: 'local-setup-key' } });
 await mf.ready;
 const db = await mf.getD1Database('DB');

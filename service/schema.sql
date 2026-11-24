@@ -84,3 +84,10 @@ CREATE TABLE IF NOT EXISTS reaction_marks (
   created INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS reaction_marks_ip ON reaction_marks (ip_hash, created);
+
+-- "How it's going" dashboard: the last report from Google Analytics / Search Console / Cloudflare, kept for an hour
+CREATE TABLE IF NOT EXISTS analytics_cache (
+  k TEXT PRIMARY KEY,
+  at INTEGER NOT NULL,
+  data TEXT NOT NULL
+);
