@@ -210,7 +210,6 @@ assets/sq/w600/9b5cff39b4be1c62.jpg
 assets/sq/w600/a01f7cb9668af637.jpg
 assets/sq/w600/a1e72c79caf8d489.jpeg
 assets/sq/w600/a7b440a640bc6b7b.jpg
-assets/sq/w600/a8ed26b0513d733a.jpg
 assets/sq/w600/aaa4d63311e8a90e.jpg
 assets/sq/w600/b9c60277793b6652.jpeg
 assets/sq/w600/cf1257c88cc08cb7.jpeg
@@ -233,7 +232,6 @@ assets/sq/w960/9b5cff39b4be1c62.jpg
 assets/sq/w960/a01f7cb9668af637.jpg
 assets/sq/w960/a1e72c79caf8d489.jpeg
 assets/sq/w960/a7b440a640bc6b7b.jpg
-assets/sq/w960/a8ed26b0513d733a.jpg
 assets/sq/w960/aaa4d63311e8a90e.jpg
 assets/sq/w960/cf1257c88cc08cb7.jpeg
 assets/sq/w960/d1d447d5b853726c.png
