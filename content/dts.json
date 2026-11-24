@@ -2,8 +2,8 @@
   "schools": [
     {
       "name": "Discipleship Training School",
-      "start": "2026-01-18",
-      "end": "2027-06-25",
+      "start": "2028-01-18",
+      "end": "2028-06-25",
       "start_time": "09:00",
       "cost": 8000,
       "spots": 15,
