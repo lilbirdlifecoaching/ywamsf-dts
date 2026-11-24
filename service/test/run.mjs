@@ -126,7 +126,14 @@ r = await call('POST', '/auth/accept', { token: inv, password: 'ange password 1'
 r = await call('POST', '/auth/accept', { token: inv, password: 'ange password 2' }); assert.equal(r.status, 400); ok('invite link works only once');
 await call('POST', '/users', { email: 'sam@example.org', name: 'Sam', role: 'contributor' }, admin);
 r = await call('POST', '/auth/accept', { token: linkFrom(mails.at(-1), 'invite'), password: 'sam password 1' }); const contrib = r.token; ok('contributor joins');
-r = await call('POST', '/users', { email: 'x@example.org', name: 'X', role: 'admin' }, editor); assert.equal(r.status, 403); ok('editors can’t add people');
+r = await call('POST', '/users', { email: 'x@example.org', name: 'X', role: 'admin' }, editor); assert.equal(r.status, 403); ok('editors can’t add administrators');
+r = await call('POST', '/users', { email: 'x2@example.org', name: 'X2', role: 'editor' }, editor); assert.equal(r.status, 403); ok('editors can’t add editors');
+r = await call('POST', '/users', { email: 'helper@example.org', name: 'Helper', role: 'contributor' }, editor); assert.equal(r.user.role, 'contributor'); ok('editors can invite contributors');
+{ const list = (await call('GET', '/users', null, editor)).users; const helper = list.find((x) => x.email === 'helper@example.org'), lukeU = list.find((x) => x.email === 'luke@example.org');
+  r = await call('PATCH', `/users/${helper.id}`, { role: 'editor' }, editor); assert.equal(r.status, 403); ok('editors can’t promote a contributor');
+  r = await call('PATCH', `/users/${lukeU.id}`, { disabled: true }, editor); assert.equal(r.status, 403); ok('editors can’t turn off an administrator');
+  r = await call('PATCH', `/users/${helper.id}`, { disabled: true }, editor); assert.equal(r.user.disabled, true); ok('editors can turn off a contributor');
+  r = await call('DELETE', `/users/${helper.id}`, null, editor); assert.equal(r.status, 403); ok('only administrators remove people'); }
 r = await call('POST', '/users', { email: 'ange@example.org', name: 'A2', role: 'editor' }, admin); assert.equal(r.status, 409); ok('no duplicate accounts');
 
 // publishing
@@ -138,6 +145,8 @@ r = await call('PUT', '/content', { path: 'content/dts.json', content: JSON.stri
 assert.ok(mails.slice(before).some((m) => m.to.includes('luke@example.org') && /Published: DTS schools/.test(m.subject))); ok('editor publishes dates without approval; administrators are emailed');
 r = await call('PUT', '/content', { path: 'content/faq.json', content: JSON.stringify({ questions: [] }), summary: 'DTS FAQ' }, editor); assert.equal(r.published, false); assert.match(r.reviewers, /administrator/); ok('editor’s change to page copy waits for an administrator');
 r = await call('PUT', '/content', { path: 'content/settings.json', content: JSON.stringify({ phone: '2', show_ellis_stories: false }), summary: 'Settings' }, editor); assert.equal(r.published, false); ok('editor’s change to settings waits for an administrator');
+seed('content/shifts.json', { shifts: [] });
+r = await call('PUT', '/content', { path: 'content/shifts.json', content: JSON.stringify({ shifts: [{ title: 'Food pantry' }] }), summary: 'Volunteer shifts' }, editor); assert.equal(r.published, true); ok('editor publishes volunteer shifts straight away');
 r = await call('PUT', '/content', { path: 'content/settings.json', content: JSON.stringify({ phone: '2', show_ellis_stories: true }), summary: 'Show stories' }, editor); assert.equal(r.published, false); assert.match(r.reviewers, /administrator/); ok('editor turning a section on/off needs an administrator');
 for (const bad of ['admin/keys.json', 'content/../admin/keys.json', 'content/comments/x.json', '.github/workflows/build.yml', 'content/Settings.JSON']) { r = await call('PUT', '/content', { path: bad, content: '{}' }, admin); assert.equal(r.status, 400, bad); }
 ok('only website content files can be changed (not keys, workflows or comments)');

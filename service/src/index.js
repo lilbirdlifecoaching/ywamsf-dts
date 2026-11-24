@@ -65,9 +65,10 @@ const JSON_PATH = /^content\/[a-z0-9_]{1,40}\.json$/;
 const BLOG_PATH = /^content\/blog\/[a-z0-9][a-z0-9-]{0,80}\.json$/;
 const UPLOAD_PATH = /^content\/uploads\/[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.(?:jpe?g|png|webp)$/;
 const NEVER = new Set(['content/comments.json']);
-// Editors publish and approve only blog posts and dates (DTS school dates, events). Everything else (page copy, people,
-// settings, photos on pages…) needs an administrator, also when an editor changes it.
-const EDITOR_FILES = new Set(['content/dts.json', 'content/events.json']);
+// Editors publish and approve the day-to-day things: blog posts, DTS dates, events, volunteer shifts, the Ellis Room week,
+// the announcement bar, Instagram posts and resources. The approved site copy and design (page wording, page photos, FAQs,
+// staff and board, testimonials, home cards, search titles, settings) needs an administrator, also when an editor changes it.
+const EDITOR_FILES = new Set(['content/dts.json', 'content/events.json', 'content/shifts.json', 'content/ellis_week.json', 'content/banner.json', 'content/instagram.json', 'content/resources.json']);
 function policy(path) {
   if (NEVER.has(path) || path.startsWith('content/comments/')) return null;   // comments change only through moderation
   if (BLOG_PATH.test(path) || EDITOR_FILES.has(path)) return { reviewers: 'editor' };
@@ -367,13 +368,14 @@ route('POST', '/me/password', async (req, env, body) => {
 
 /* people (administrators only) */
 route('GET', '/users', async (req, env) => {
-  const u = await currentUser(env, req); need(u, 'admin');
+  const u = await currentUser(env, req); need(u, 'admin', 'editor');
   const q = await env.DB.prepare("SELECT * FROM users ORDER BY role = 'admin' DESC, role = 'editor' DESC, name").all();
   return { users: q.results.map(publicUser) };
 });
 route('POST', '/users', async (req, env, body) => {
-  const u = await currentUser(env, req); need(u, 'admin');
+  const u = await currentUser(env, req); need(u, 'admin', 'editor');
   const email = normEmail(body.email), name = cleanName(body.name), role = body.role;
+  if (u.role === 'editor' && role !== 'contributor') fail(403, 'Editors can invite contributors only.');
   if (!validEmail(email)) fail(400, 'Enter a valid email address.');
   if (!name) fail(400, 'Enter their name.');
   if (!ROLES.includes(role)) fail(400, 'Choose an access level.');
@@ -391,8 +393,10 @@ route('POST', '/users', async (req, env, body) => {
   return out;
 });
 route('PATCH', '/users/:id', async (req, env, body, p) => {
-  const u = await currentUser(env, req); need(u, 'admin');
+  const u = await currentUser(env, req); need(u, 'admin', 'editor');
   const t = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(+p.id).first(); if (!t) fail(404, 'Not found.');
+  // Editors may resend a contributor's invitation or turn a contributor off/on; nothing else.
+  if (u.role === 'editor' && (t.role !== 'contributor' || (body.role !== undefined && body.role !== 'contributor'))) fail(403, 'Editors can manage contributors only.');
   const admins = (await env.DB.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'admin' AND disabled = 0 AND pw_hash IS NOT NULL").first()).n;
   const losesAdmin = t.role === 'admin' && !t.disabled && ((body.role && body.role !== 'admin') || body.disabled === true);
   if (losesAdmin && admins <= 1) fail(400, 'There must always be at least one administrator.');

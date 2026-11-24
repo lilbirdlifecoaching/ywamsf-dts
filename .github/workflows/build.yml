@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Start from the latest main (another build may have just published)
         run: git pull -q origin main
       - name: Install Pillow (phone-sized photos for YWAM 7)

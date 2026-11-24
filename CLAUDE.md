@@ -78,10 +78,12 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   sending via Resend Forge: CNAME `send` → send.forge.rmta.net, DKIM `resend._domainkey`; DNS on GoDaddy nameservers via Webstix). `admin/keys.json` was removed. Forgotten
   password: "Forgot password?" on the sign-in screen (email works). If the service is down, the
   fallback is key mode (empty the admin-service meta and set up a new key).
-- **Levels (Nov 23 2026):** administrators do everything. Editors publish and approve only blog posts and dates (`EDITOR_FILES` =
-  dts.json, events.json, in service/src/index.js and admin.js `canPublishFile`); their changes to anything else (page wording, photos,
-  people, settings, page_text.json) wait for an administrator. Editors also moderate comments and can view History; only admins restore.
-  Contributors: everything waits for approval. Recent activity/Activity log: admins only.
+- **Levels (Nov 23 2026):** administrators do everything. Editors publish and approve the day-to-day sections (`EDITOR_FILES` in
+  service/src/index.js and admin.js `canPublishFile`: blog posts, dts.json, events.json, shifts.json, ellis_week.json, banner.json,
+  instagram.json, resources.json), moderate comments, can view History, and can invite contributors (and resend invites / turn
+  contributors off). Their changes to approved site copy and design (page_text.json, seo.json, settings.json, faq, staff, board,
+  testimonials, ministries, dts_life) wait for an administrator. Only admins restore old versions, remove people or see the activity log.
+  Contributors: everything waits for approval.
 - **Admin access recovery (key mode, before Nov 23 2026):** forgotten password → another editor removes and re-adds you (Editors & security).
   Everyone locked out or the GitHub key expired → the repo owner makes a new fine-grained token (this repo only, Contents
   read/write, Actions read, 1-year expiry), empties `users` in `admin/keys.json` on github.com, opens /admin/ (setup screen)
