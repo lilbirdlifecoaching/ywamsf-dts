@@ -64,8 +64,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   service account (Worker secrets `GOOGLE_SA_KEY` = whole JSON key, `GA4_PROPERTY_ID` = the numeric property ID) and Cloudflare
   Web Analytics via GraphQL (`CF_ANALYTICS_TOKEN` Account Analytics:Read, `CF_ACCOUNT_ID`). `/health` → `analytics` says which are
   set (never values). Not set up → labelled sample numbers. Drawn by `renderStats` in admin.js (hand-made SVG chart, no libraries).
-- **Launch switch:** branch `launch-switch` = CNAME `ywamsanfrancisco.org` + build.yml `MAIN_SITE`/`MAIN_INDEXING`. Merge it
-  only when the domain's DNS points at GitHub Pages (rebase on main first). Until then every page is `noindex`.
+- **LAUNCHED Nov 23 2026:** DNS for ywamsanfrancisco.org moved to GitHub Pages (Webstix) and `launch-switch` was merged: CNAME
+  `ywamsanfrancisco.org`, build.yml `MAIN_SITE=https://ywamsanfrancisco.org/`, `MAIN_INDEXING='1'` (pages indexable, canonical on the
+  real domain), service ADMIN_URL/SITE_URL on the real domain. ywamembers.org no longer serves the site. Squarespace kept for a while as a fallback.
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
   (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
   in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY set Nov 23, Resend domain ywamsanfrancisco.org verified,
