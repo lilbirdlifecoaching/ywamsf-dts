@@ -643,8 +643,10 @@ _IMG_TAG = re.compile(r'<img\b[^>]*>', re.I)
 def lazy_imgs(h):
     """Photos further down the page load only when the visitor scrolls near them (loading="lazy"), so the top of the page
     shows sooner on phones. The first two photos in the main content stay eager; the first gets fetchpriority="high"."""
-    i = h.find('<main'); 
+    i = h.find('<main')
     if i < 0: return h
+    j = h.find('</section>', i)          # nothing in the first section (the hero) is lazy
+    if j > 0: i = j
     head, body = h[:i], h[i:]
     n = [0]
     def one(m):
@@ -675,8 +677,10 @@ def phone_sizes(h):
         except Exception: return tag
         sizes_ = [(w, _variant(rel, w)) for w in (600, 960, 1600)]
         full = _variant(rel, None)
+        # Only photos big enough to have smaller copies get a srcset. Small images (the neon-sign cut-outs on the home
+        # photo, icons) keep their own size: a lone "45w" entry would make the browser stretch them to the "sizes" width.
+        if not any(v for w, v in sizes_): return tag
         parts = [up + 'assets/' + v + ' %dw' % w for w, v in sizes_ if v] + [up + 'assets/' + (full or rel) + ' %dw' % min(W, 2000 if full else W)]
-        if len(parts) == 1 and not full: return tag
         sizes = '%spx' % small.group(1) if small else '(max-width: 700px) 320px, 100vw'
         return tag[:-1].rstrip('/').rstrip() + ' srcset="%s" sizes="%s">' % (', '.join(parts), sizes)
     return _IMG_RE.sub(one, h)
