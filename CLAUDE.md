@@ -75,6 +75,10 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   canonical, sign-in service, certificate, DNS, MX/SPF/DKIM, plus repo checks. Report → `site-checks/latest.md` on branch `site-checks`.
   A scheduled Claude task ("YWAM SF site check", Mon/Wed/Fri 10:37 am SF) reads it, fixes small mechanical problems and pushes Luke a summary.
   If you add an outside service, add it to the CSP in `page()` or the browser check will fail.
+- **Speed (Nov 23 2026):** `.github/workflows/speed-check.yml` (Mondays + on demand) runs Lighthouse (phone) on the main pages →
+  `site-checks/speed.md`. Average went 83 → 92 after: WebP copies for every photo (`_variant()`: w600/w960/w1600 + `wfull`, used in
+  srcset by `phone_sizes()` and for background photos by `bg_webp()`), `lazy_imgs()` (lazy below the fold, first photo high
+  priority), Google Fonts loaded without blocking, GA4 script loaded 1.2s after page load.
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
   (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
   in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY set Nov 23, Resend domain ywamsanfrancisco.org verified,
