@@ -67,6 +67,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
 - **LAUNCHED Nov 23 2026:** DNS for ywamsanfrancisco.org moved to GitHub Pages (Webstix) and `launch-switch` was merged: CNAME
   `ywamsanfrancisco.org`, build.yml `MAIN_SITE=https://ywamsanfrancisco.org/`, `MAIN_INDEXING='1'` (pages indexable, canonical on the
   real domain), service ADMIN_URL/SITE_URL on the real domain. ywamembers.org no longer serves the site. Squarespace kept for a while as a fallback.
+  Nov 23: Luke verified the domain in GitHub (account Settings → Pages, TXT record at Webstix) against takeover, and dealt with
+  ywamembers.org's DNS. The sign-in service accepts only the ywamsanfrancisco.org origins. `tools/check_launch.py` runs in build.yml
+  and mirror.yml before every publish and refuses a build that is noindex, off-domain or missing CNAME.
 - **Site check (Nov 23 2026):** `.github/workflows/site-check.yml` runs `tools/site_check.mjs` Mon/Wed/Fri ~5:20 am SF (and on demand):
   every sitemap page and internal link, old addresses, desktop+phone browser checks (script errors, CSP blocks, overflow), CSP/noindex/
   canonical, sign-in service, certificate, DNS, MX/SPF/DKIM, plus repo checks. Report → `site-checks/latest.md` on branch `site-checks`.
