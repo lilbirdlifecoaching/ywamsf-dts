@@ -359,9 +359,9 @@
     { id: 'staff', grp: 'People', file: 'staff.json', title: 'Staff', page: 'about/people/',
       intro: 'Directors appear with a large photo. Everyone else is grouped by team with a small round photo. Without a photo, initials are shown.',
       fields: [
-        { k: 'directors', l: 'Directors', t: 'list', add: 'Add a director', blank: { name: '', role: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role'), F.photo('photo', 'Photo', { hint: 'A portrait works best. It’s cropped to 4:5.' })] },
-        { k: 'teams', l: 'Teams', t: 'list', add: 'Add a team', blank: { name: '', members: [] }, sub: function (x) { return (x.members || []).length + ' people'; },
-          fields: [F.text('name', 'Team name', { req: true, full: true }), { k: 'members', l: 'People on this team', t: 'list', add: 'Add a person', blank: { name: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.photo('photo', 'Photo', { hint: 'Shown as a small circle, so a head-and-shoulders shot is best.' })] }] }] },
+        { k: 'directors', l: 'Directors', t: 'list', dnd: 'staff', dndLabel: function () { return 'Directors'; }, add: 'Add a director', blank: { name: '', role: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role'), F.photo('photo', 'Photo', { hint: 'A portrait works best. It’s cropped to 4:5.' })] },
+        { k: 'teams', l: 'Teams', t: 'list', drag: true, add: 'Add a team', blank: { name: '', members: [] }, sub: function (x) { return (x.members || []).length + ' people'; },
+          fields: [F.text('name', 'Team name', { req: true, full: true }), { k: 'members', l: 'People on this team', t: 'list', dnd: 'staff', dndLabel: function (team) { return 'Team: ' + (team.name || 'unnamed team'); }, add: 'Add a person', blank: { name: '', photo: '' }, fields: [F.text('name', 'Name', { req: true }), F.photo('photo', 'Photo', { hint: 'Shown as a small circle, so a head-and-shoulders shot is best.' })] }] }] },
     { id: 'board', grp: 'People', file: 'board.json', title: 'Board', page: 'about/people/#board',
       fields: [{ k: 'members', l: 'Board members', t: 'list', add: 'Add a board member', blank: { name: '', role: '', photo: '', bio: '' }, fields: [F.text('name', 'Name', { req: true }), F.text('role', 'Role'), F.photo('photo'), F.area('bio', 'Short bio')] }] },
     { id: 'shifts', grp: 'Serve', file: 'shifts.json', title: 'Volunteer shifts', page: 'volunteer/',
@@ -437,7 +437,7 @@
     testimonials: ['Press “Add a testimonial”, paste the student’s words and add their name and school (for example “DTS 2025”).', 'Ask the student first; their name is shown on the website.', 'Until you add some, this section stays hidden (see Show or hide sections).'],
     faq: ['Each question opens and closes on the DTS page. Keep answers short and friendly.', 'Use the arrows to change the order. The first few are the ones people see first.', 'The “For parents” questions appear in their own tab.'],
     dts_life: ['Each card has a title, a sentence or two and a photo.', 'Landscape photos work best; they’re cropped to 4:3.'],
-    staff: ['Directors appear first with a larger photo. Everyone else is listed under their team.', 'To add someone, open their team and press “Add a person”.', 'Photos: a head-and-shoulders shot works best. Without a photo, their initials are shown.'],
+    staff: ['Directors appear first with a larger photo. Everyone else is listed under their team.', 'To add someone, open their team and press “Add a person”.', 'Photos: a head-and-shoulders shot works best. Without a photo, their initials are shown.', 'To move someone, drag them by the ⠿ handle: into another team’s list, onto a team’s name, or up into Directors. On a phone, open the person and use “Move to…”. Then press Publish.'],
     board: ['Add each board member with their role and a short bio.'],
     shifts: ["Each shift is a row on the departures board and a card on the Come Volunteer page.", "Tick the days it runs so it lights up as “Today” on those days.", "“Sign-up link”: paste the shift’s Calendly link. It opens as a pop-up on the site. Leave it empty and the button emails the volunteer team instead.", "“Details shown as tags” are the small labels like “18+”. Press Enter after each one."],
     ministries: ['These are the photo cards that scroll across the home page.', 'Keep the description to one line.'],
@@ -887,9 +887,41 @@
     });
   }
 
+  /* Drag and drop: drag an item by its ⠿ handle to reorder it. Lists that share a "dnd" group (Staff: Directors and each team)
+     also accept items from each other, and dropping a person on a team's heading puts them in that team. Every such item also
+     has a "Move to…" menu, which works on phones too. */
+  var DRAG = null, DND_LISTS = [];
+  function dndTargets(group) { DND_LISTS = DND_LISTS.filter(function (l) { return l.el.isConnected; }); return DND_LISTS.filter(function (l) { return l.group === group; }); }
+  function dndMove(from, idx, to, at) {
+    var x = from.arr.splice(idx, 1)[0];
+    if (from.arr === to.arr && at > idx) at--;
+    to.arr.splice(at == null ? to.arr.length : at, 0, x);
+    changed();
+    var redraw = dndTargets(from.group).concat([from, to]);
+    redraw.forEach(function (l) { if (l.el.isConnected) l.draw(); });
+    toast('Moved ' + (x.name || 'item') + ' to ' + to.label + '. Publish to update the site.');
+  }
   function listField(f, obj) {
     if (!Array.isArray(obj[f.k])) obj[f.k] = [];
     var arr = obj[f.k], list = h('div', { class: 'list' });
+    var me = f.dnd ? { group: f.dnd, arr: arr, el: list, label: f.dndLabel ? f.dndLabel(obj) : f.l, draw: function () { draw(); } } : null;
+    if (me) DND_LISTS.push(me);
+    var canDrag = !!(f.dnd || f.drag);
+    if (canDrag) {
+      list.addEventListener('dragover', function (e) { if (!DRAG || !(DRAG.list === me || (me && DRAG.group === me.group) || DRAG.arr === arr)) return; e.preventDefault(); list.classList.add('drop-on'); });
+      list.addEventListener('dragleave', function (e) { if (!list.contains(e.relatedTarget)) list.classList.remove('drop-on'); });
+      list.addEventListener('drop', function (e) {
+        list.classList.remove('drop-on'); if (!DRAG) return;
+        var it = e.target.closest && e.target.closest('.item'); if (it && it.parentNode !== list) return;   // dropped inside a nested list: that list handles it
+        e.preventDefault(); e.stopPropagation();
+        var at = arr.length;
+        if (it) { var r = it.getBoundingClientRect(); at = +it.dataset.i + (e.clientY > r.top + r.height / 2 ? 1 : 0); }
+        var to = me || { arr: arr, draw: function () { draw(); }, el: list, label: f.l, group: null };
+        var from = DRAG.list || to; var d = DRAG; DRAG = null;
+        if (from.arr === to.arr && (at === d.idx || at === d.idx + 1)) return;
+        dndMove(from, d.idx, to, at);
+      });
+    }
     function itemTitle(x) { return f.title ? f.title(x) : (x.name || x.title || x.question || x.label || 'New item'); }
     function draw(openIdx) {
       list.textContent = '';
@@ -905,13 +937,44 @@
         var up = h('button', { class: 'ib', type: 'button', 'aria-label': 'Move up', text: '↑', disabled: i === 0 || null, onclick: function (e) { e.stopPropagation(); arr.splice(i - 1, 0, arr.splice(i, 1)[0]); changed(); draw(); } });
         var dn = h('button', { class: 'ib', type: 'button', 'aria-label': 'Move down', text: '↓', disabled: i === arr.length - 1 || null, onclick: function (e) { e.stopPropagation(); arr.splice(i + 1, 0, arr.splice(i, 1)[0]); changed(); draw(); } });
         var del = h('button', { class: 'ib del', type: 'button', 'aria-label': 'Delete', text: '✕', onclick: function (e) { e.stopPropagation(); if (confirm('Delete “' + (itemTitle(x) || 'this item') + '”? It disappears from the site when you publish.')) { arr.splice(i, 1); changed(); draw(); } } });
-        var item = h('div', { class: 'item' + (i === openIdx ? '' : ' closed') });
+        var item = h('div', { class: 'item' + (i === openIdx ? '' : ' closed'), 'data-i': String(i) });
+        var grip = null;
+        if (canDrag) {
+          grip = h('span', { class: 'grip', title: 'Drag to move', 'aria-hidden': 'true', text: '⠿', draggable: 'true' });
+          grip.addEventListener('dragstart', function (e) { DRAG = { list: me, group: me && me.group, arr: arr, idx: i }; item.classList.add('dragging'); try { e.dataTransfer.setData('text/plain', itemTitle(x) || 'item'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setDragImage(item, 20, 20); } catch (err) {} });
+          grip.addEventListener('dragend', function () { item.classList.remove('dragging'); DRAG = null; document.querySelectorAll('.drop-on').forEach(function (n) { n.classList.remove('drop-on'); }); });
+          grip.addEventListener('click', function (e) { e.stopPropagation(); });
+        }
+        // a team heading accepts people dropped on it (lists nested inside items with a matching group)
+        var nested = f.fields.filter(function (q) { return q.t === 'list' && q.dnd; })[0];
         var header = h('header', { role: 'button', tabindex: '0', 'aria-expanded': String(i === openIdx), onclick: function () { var c = item.classList.toggle('closed'); header.setAttribute('aria-expanded', String(!c)); }, onkeydown: function (e) { if (e.target === header && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); header.click(); } } });
         retitle();
+        if (nested) {
+          header.addEventListener('dragover', function (e) { if (DRAG && DRAG.group === nested.dnd && DRAG.arr !== x[nested.k]) { e.preventDefault(); header.classList.add('drop-on'); } });
+          header.addEventListener('dragleave', function () { header.classList.remove('drop-on'); });
+          header.addEventListener('drop', function (e) {
+            header.classList.remove('drop-on'); if (!DRAG || DRAG.group !== nested.dnd) return; e.preventDefault(); e.stopPropagation();
+            if (!Array.isArray(x[nested.k])) x[nested.k] = [];
+            var d = DRAG; DRAG = null;
+            dndMove(d.list, d.idx, { arr: x[nested.k], el: list, draw: function () { draw(i); }, label: nested.dndLabel ? nested.dndLabel(x) : nested.l, group: nested.dnd }, null);
+            draw(i);
+          });
+        }
+        if (grip) header.appendChild(grip);
         header.appendChild(h('span', { class: 'chev', 'aria-hidden': 'true', text: '›' }));
         if (thumb) header.appendChild(thumb);
         header.appendChild(ttl); header.appendChild(h('span', { class: 'tools' }, up, dn, del));
         var body = h('div', { class: 'body' }, fieldsFor(f.fields, x));
+        if (me) {   // "Move to…" (also works on phones, where dragging doesn't)
+          var mv = h('select', { 'aria-label': 'Move ' + (itemTitle(x) || 'this person') + ' to another group' });
+          mv.addEventListener('focus', function () {
+            mv.textContent = ''; mv.appendChild(h('option', { value: '', text: 'Move to…' }));
+            dndTargets(me.group).forEach(function (l, k) { if (l.arr !== arr) mv.appendChild(h('option', { value: String(k), text: l.label })); });
+          });
+          mv.appendChild(h('option', { value: '', text: 'Move to…' }));
+          mv.addEventListener('change', function () { var t = dndTargets(me.group)[+mv.value]; if (mv.value !== '' && t) dndMove(me, i, t, null); });
+          body.appendChild(h('div', { class: 'moveto' }, mv));
+        }
         body.addEventListener('retitle', function () { var old = thumb; retitle(); if (old && old !== thumb && !old.parentNode) header.insertBefore(thumb, ttl); });
         item.appendChild(header); item.appendChild(body); list.appendChild(item);
       });

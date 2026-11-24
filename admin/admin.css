@@ -343,3 +343,11 @@ h1,h2,h3{font-weight:400}
 @media (max-width:720px){.st-grid2{grid-template-columns:1fr}.st-kpi b{font-size:28px}.mtop .st-periods{margin-top:8px}}
 .st-table td{white-space:nowrap}.st-table td:first-child{white-space:normal}
 .show-more{display:block;margin:12px 0 0;font-size:14px}
+
+/* drag and drop in lists (Staff: move people between Directors and teams) */
+.item header .grip{cursor:grab;color:var(--muted);font-size:18px;line-height:1;padding:2px 4px;margin-right:2px;user-select:none;-webkit-user-select:none}
+.item header .grip:active{cursor:grabbing}
+.item.dragging{opacity:.45}
+.list.drop-on{outline:2px dashed #01BCDE;outline-offset:4px;border-radius:8px}
+.item header.drop-on{background:rgba(1,188,222,.12);box-shadow:inset 0 0 0 2px #01BCDE}
+.moveto{margin-top:10px}.moveto select{max-width:260px}
