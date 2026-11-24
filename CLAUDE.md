@@ -171,7 +171,9 @@ page's own files use `?v=N` in `admin/index.html`: bump it when you change `admi
 - **Editable vs coded:** if the team will want to change something often (dates, people, photos,
   FAQs, cards), put it in `content/*.json` and add a matching section in `admin/admin.js`
   (`SECTIONS` list; field helpers `F.text`, `F.area`, `F.photo`).
-- **SEO:** every page is `noindex` until launch. `SITE_BASE` env sets canonical URLs.
+- **SEO:** since launch the build defaults to `SITE_BASE=https://ywamsanfrancisco.org/` and `INDEXING=1` for the main site (set
+  `INDEXING=0` to hide it). Any workflow that rebuilds the site (build.yml, mirror.yml) must keep these; on Nov 23 mirror.yml once
+  republished the site as noindex with test-domain canonicals because it built without them.
 - **Testing animations:** the hero weather comes from Open-Meteo; in local tests, mock it with a
   Playwright route on `**/api.open-meteo.com/**`.
 
