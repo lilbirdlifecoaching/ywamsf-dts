@@ -361,12 +361,26 @@
     return errs;
   }
 
+  // DTS dates drive "Next DTS" everywhere on the site (home, DTS page, apply, chat, search results). A school whose first day
+  // is already past counts as running, so the site keeps saying "new dates coming soon": catch typos in the year.
+  function dtsDays(x) { var a = pd(x.start), b = pd(x.end); return a && b ? Math.round((Date.UTC(b.y, b.m - 1, b.d) - Date.UTC(a.y, a.m - 1, a.d)) / 864e5) : null; }
+  function dtsCheck(d) {
+    var errs = [];
+    (d.schools || []).forEach(function (x) { var n = dtsDays(x); if (n != null && n > 270) errs.push('“' + (x.name || 'DTS') + '” runs ' + Math.round(n / 30) + ' months (' + fmtDate(x.start) + ' to ' + fmtDate(x.end) + '). A DTS is about 5 months: check the years.'); });
+    return errs;
+  }
+  function dtsWarn(d) {
+    var today = todaySF(), w = [];
+    (d.schools || []).forEach(function (x) { if (x.start && x.start <= today && x.end && x.end >= today) w.push('“' + (x.name || 'DTS') + '” starts on ' + fmtDate(x.start) + ', which is today or in the past. The site will show it as already running and keep saying new dates are coming soon.'); });
+    return w;
+  }
+
   var SECTIONS = [
     { id: 'overview', grp: '', title: 'Overview' },
-    { id: 'dts', grp: 'DTS', file: 'dts.json', title: 'DTS schools', page: 'dts/',
+    { id: 'dts', grp: 'DTS', file: 'dts.json', title: 'DTS schools', page: 'dts/', check: dtsCheck, warn: dtsWarn,
       intro: 'Add each school once. The site always features the next school to start, everywhere it mentions DTS dates or cost: the cable car on the home page, the DTS page, the departures board and countdown, the check-in quiz and the Pay page. When a school starts, the next one takes over automatically overnight.',
       fields: [
-        { k: 'schools', l: 'Schools', t: 'list', add: 'Add a school', title: function (x) { return x.start ? fmtRange(x.start, x.end) : 'New school'; }, sub: function (x) { return (x.name || 'Discipleship Training School') + (x.status ? ' · ' + x.status : ''); },
+        { k: 'schools', l: 'Schools', t: 'list', add: 'Add a school', title: function (x) { return x.start ? fmtRange(x.start, x.end) : 'New school'; }, sub: function (x) { var t = todaySF(), st = !x.start || !x.end ? '' : x.end < t ? ' · Ended (hidden on the site)' : x.start <= t ? ' · In session (not shown as the next DTS)' : ' · Shown as an upcoming DTS'; return (x.name || 'Discipleship Training School') + (x.status ? ' · ' + x.status : '') + st; },
           blank: { name: 'Discipleship Training School', start: '', end: '', start_time: '09:00', cost: 8000, spots: '', status: 'Applications open', apply_url: '' },
           fields: [F.text('name', 'School name'), { k: 'start', l: 'First day', t: 'date', req: true }, { k: 'end', l: 'Last day', t: 'date', req: true }, { k: 't', l: '', t: 'none' },
             { k: 'start_time', l: 'Start time (for the countdown)', t: 'time' }, { k: 'cost', l: 'Cost (USD)', t: 'number' },
@@ -1046,6 +1060,7 @@
     var s = SECTIONS.filter(function (x) { return x.id === CUR; })[0]; if (!s || !s.file) return;
     var errs = validate(s.fields, DATA, s.title, []);
     if (s.check) errs = errs.concat(s.check(DATA));
+    if (!errs.length && s.warn) { var w = s.warn(DATA); if (w.length && !confirm(w.join('\n\n') + '\n\nPublish anyway? (Press Cancel to fix the dates.)')) return; }
     if (errs.length) { toast(errs[0], true); return; }
     var btn = shellEls.saveBtn, label = saveLabel(s); busy(btn, true, PRACTICE ? 'Practising…' : (label === 'Submit for approval' ? 'Submitting…' : 'Publishing…'));
     var photos = {}; Object.keys(usedPhotos(DATA, {})).forEach(function (p) { photos[p] = PENDING[p]; });
