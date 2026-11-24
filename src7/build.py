@@ -460,7 +460,7 @@ _T_RAW = {'script', 'style', 'textarea', 'title'}
 _T_TEXT = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'span', 'a', 'b', 'strong', 'small', 'em', 'i', 'figcaption', 'blockquote', 'dt', 'dd', 'td', 'th', 'label', 'button', 'cite', 'summary', 'div', 'q'}
 _T_INLINE = {'em', 'strong', 'b', 'i', 'br'}
 _T_SKIP_TAGS = {'svg', 'select', 'option', 'form', 'noscript', 'template', 'head', 'iframe', 'video', 'audio', 'canvas'}
-_T_SKIP_ATTR = re.compile(r'\b(data-edit|data-edit-img|aria-hidden="true"|contenteditable)|class="[^"]*\b(sr-only|chat7|su-pop|c7-|post-body|post-social|clist|ann-item copy|flap|dc-|clock|cd-|evpop|cu7-)', re.I)
+_T_SKIP_ATTR = re.compile(r'\b(data-edit|data-edit-img|aria-hidden="true"|contenteditable)|class="[^"]*\b(sr-only|chat7|su-pop|c7-|post-body|post-social|clist|ann-item copy|flap|dc-|clock|cd-)', re.I)
 def pt_clean(v):
     """Changed wording: plain text with bold, italic and line breaks only."""
     v = str(v or '')[:3000]
@@ -762,40 +762,6 @@ MIN = load('ministries.json').get('ministries', [])
 REEL = ''.join('<a class="hit" href="ellis-room/"><img src="%s"%s sizes="(max-width:700px) 78vw, 460px" alt="%s" loading="lazy" decoding="async"><span class="hit-t"><small>%s</small><b>%s</b><span>%s</span></span></a>' % (img(m.get('photo'), '', 1500), srcset(m.get('photo'), ''), t(m.get('title')), t(m.get('when')), t(m.get('title')), t(m.get('description'))) for m in MIN if t(m.get('title')))
 SPOTS_TXT = ('%d spots' % int(num(NX.get('spots')))) if NX and num(NX.get('spots')) > 0 else ''
 NEXT7 = ('<p class="next7">Next DTS begins ' + mdy(NX['_s']) + ('. ' + SPOTS_TXT + '.' if SPOTS_TXT else '.') + '</p>') if NX else '<p class="next7">New DTS dates are coming soon.</p>'
-# Featured events (admin → Events → "Feature on the home page"): a "Coming up" band under the hero, and for the next
-# dated one a small card that slides in at the bottom of the home page once per visitor (closing it remembers that).
-# Past events drop off by themselves (the site rebuilds every night).
-def _feat_ok(e):
-    d = _d(e.get('date')) if e.get('date') else None
-    return e.get('home') and t(e.get('title')) and (d is None or d >= TODAY)
-FEATURED = sorted([e for e in load('events.json').get('events', []) if _feat_ok(e)], key=lambda e: e.get('date') or '9999')[:3]
-def _feat_when(e):
-    d = _d(e.get('date'))
-    big = t(e.get('when')) or (d.strftime('%b') if d else '')
-    small = (str(d.day) if d and not t(e.get('when')) else '')
-    detail = t(e.get('when_detail'))
-    return big, small, detail, (d.strftime('%A, %B ') + str(d.day) if d else '')
-def _feat_card(e):
-    big, small, detail, long_ = _feat_when(e)
-    u = lnk(e.get('link_url'))
-    btn = '<a class="btn small" href="%s"%s>%s</a>' % (u, ' target="_blank" rel="noopener"' if u.startswith('http') and not re.match(r'https://(www\.)?ywamsanfrancisco\.org(/|$)', u) else '', t(e.get('link_text') or 'Find out more')) if u else ''
-    return ('<article class="cu7-card rv"><div class="cu7-date"><b>%s</b><span>%s</span></div><div class="cu7-txt"><h3>%s</h3><p class="cu7-when">%s</p><p>%s</p>%s</div></article>'
-            % (big, small, t(e.get('title')), ' · '.join(x for x in (long_, detail) if x), t(e.get('description')), btn))
-COMING_UP = ('<section class="coming7 pad" id="coming-up"><div class="wrap"><div class="cu7-head rv"><span class="kick">Coming up</span><h2>Join us.</h2>'
-             '<a class="link-arrow" href="about/news/">All events →</a></div><div class="cu7-grid">%s</div></div></section>' % ''.join(_feat_card(e) for e in FEATURED)) if FEATURED else ''
-_pop = next((e for e in FEATURED if e.get('date')), None)
-if _pop:
-    _b, _s, _dt, _long = _feat_when(_pop)
-    _u = lnk(_pop.get('link_url')) or 'about/news/'
-    _ph = img(_pop.get('photo'), '', 600)
-    EVENT_POP = ('<aside class="evpop" hidden data-key="%s" aria-label="Upcoming event"><button type="button" class="evpop-x" aria-label="Close">×</button>%s'
-                 '<div class="evpop-txt"><span class="kick">Coming up · %s</span><b>%s</b><p>%s</p><a class="btn small" href="%s"%s>%s</a></div></aside>') % (
-        esc(str(_pop.get('date')) + '|' + str(_pop.get('title'))[:60]), ('<img src="%s" alt="" loading="lazy">' % _ph) if _ph else '',
-        ' · '.join(x for x in (_long, _dt) if x), t(_pop.get('title')), t(_pop.get('description'))[:160],
-        _u, ' target="_blank" rel="noopener"' if _u.startswith('http') and not re.match(r'https://(www\.)?ywamsanfrancisco\.org(/|$)', _u) else '', t(_pop.get('link_text') or 'Find out more'))
-else:
-    EVENT_POP = ''
-
 home = f'''
 <section class="hero7"><div class="hero7-grid">
 <div class="hero7-media">
@@ -856,7 +822,6 @@ home = f'''
 </div>
 </div></section>
 
-{COMING_UP}
 <section class="engage pad"><div class="wrap">
   <span class="kick rv">Neighborhood engagement</span>
   <h2 class="rv">A place of peace, right in the middle of it.</h2>
@@ -878,7 +843,7 @@ home = f'''
 '''
 home_scripts = f'<script>{ig_js}</script><script src="assets/igcarousel.js?v={VER}"></script><script src="assets/dayhero.js?v={VER}"></script>'
 os.makedirs(OUT, exist_ok=True)
-open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../', home + EVENT_POP, scripts=home_scripts))   # home has its own simpler newsletter line above Instagram
+open(os.path.join(OUT, 'index.html'), 'w').write(page('HOME', 'home', '', '../', home, scripts=home_scripts))   # home has its own simpler newsletter line above Instagram
 
 # ---------------------------------------------------------------- VOLUNTEER
 SHIFTS = [x for x in load('shifts.json').get('shifts', []) if t(x.get('title'))]

@@ -600,18 +600,3 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
     p.after(b);
   });
 })();
-
-/* Featured event pop-up (home page): a small card slides in at the bottom a few seconds after the page opens.
-   Closing it (or following its link) remembers that in this browser, so each visitor sees each event once. */
-(function () {
-  var box = document.querySelector('.evpop'); if (!box) return;
-  var key = 'ywamsf.evpop.' + box.getAttribute('data-key');
-  try { if (localStorage.getItem(key)) return; } catch (e) {}
-  function done() { box.classList.remove('in'); setTimeout(function () { box.hidden = true; }, 400); try { localStorage.setItem(key, '1'); } catch (e) {} }
-  box.querySelector('.evpop-x').addEventListener('click', done);
-  var a = box.querySelector('a'); if (a) a.addEventListener('click', function () { try { localStorage.setItem(key, '1'); } catch (e) {} });
-  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) done(); });
-  var band = document.getElementById('coming-up'), inView = false;
-  if (band && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { inView = es[0].isIntersecting; box.classList.toggle('in', !inView && !box.hidden); }).observe(band);   // the same event is on screen in the band
-  setTimeout(function () { box.hidden = false; requestAnimationFrame(function () { if (!inView) box.classList.add('in'); }); }, 3000);
-})();

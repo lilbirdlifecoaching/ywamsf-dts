@@ -5,10 +5,6 @@
    "page": "Home",
    "sections": [
     {
-     "id": "home:coming-up",
-     "label": "Coming up: Join us."
-    },
-    {
      "id": "home:neighborhood-engagement",
      "label": "Neighborhood engagement: A place of peace, right in the middle of it."
     },

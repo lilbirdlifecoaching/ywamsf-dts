@@ -2073,31 +2073,5 @@ html.su-pop-on,html.su-pop-on body{overflow:hidden}
 .board-grid{align-items:start}
 @media (max-width:520px){.bm img{width:100%;max-width:240px;height:auto}}
 
-/* round 7-55: scheduled announcements (one bar at a time) and featured events (Coming up band + pop-up card on the home page) */
+/* round 7-55: scheduled announcements (one bar at a time) */
 .ann[hidden]{display:none!important}
-.coming7{background:#F4F2F1}
-.cu7-head{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:24px}
-.cu7-head .kick{width:100%}
-.cu7-head h2{margin:0}
-.cu7-head .link-arrow{margin-left:auto;color:#00738B;font-weight:500;text-decoration:none}
-.cu7-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-.cu7-card{display:flex;gap:18px;background:#fff;border-radius:10px;padding:22px;box-shadow:0 1px 0 rgba(36,55,61,.06)}
-.cu7-date{flex:0 0 64px;height:70px;border-radius:8px;background:#24373D;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.06em}
-.cu7-date b{font:500 13px/1 var(--sans)}
-.cu7-date span{font:400 26px/1.1 var(--display);letter-spacing:0}
-.cu7-txt h3{margin:0 0 4px;font-size:22px}
-.cu7-txt p{margin:0 0 10px;font-size:15px}
-.cu7-txt .cu7-when{color:#00738B;font-weight:500;font-size:14px}
-.evpop{position:fixed;left:20px;bottom:20px;z-index:60;width:min(360px,calc(100vw - 110px));background:#fff;border-radius:12px;box-shadow:0 18px 50px rgba(36,55,61,.28);overflow:hidden;transform:translateY(24px);opacity:0;transition:transform .4s ease,opacity .4s ease}
-.evpop.in{transform:none;opacity:1}
-.evpop[hidden]{display:none}
-.evpop img{display:block;width:100%;height:130px;object-fit:cover}
-.evpop-txt{padding:16px 18px 18px}
-.evpop-txt .kick{display:block;margin-bottom:6px;font-size:11px}
-.evpop-txt b{display:block;font:400 22px/1.2 var(--display);color:#24373D;margin-bottom:6px}
-.evpop-txt p{margin:0 0 12px;font-size:14px;line-height:1.5}
-.evpop-x{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#24373D;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-@media (prefers-reduced-motion:reduce){.evpop{transition:none}}
-@media (max-width:520px){.evpop{left:12px;bottom:12px}.evpop img{height:100px}}
-.evpop-txt .kick{padding-right:30px}
-@media (max-width:520px){.evpop-txt p{display:none}.evpop-txt b{font-size:19px}}

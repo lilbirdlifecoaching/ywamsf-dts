@@ -79,12 +79,11 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   `site-checks/speed.md`. Average went 83 → 92 after: WebP copies for every photo (`_variant()`: w600/w960/w1600 + `wfull`, used in
   srcset by `phone_sizes()` and for background photos by `bg_webp()`), `lazy_imgs()` (lazy below the fold, first photo high
   priority), Google Fonts loaded without blocking, GA4 script loaded 1.2s after page load.
-- **Announcements & featured events (Nov 23 2026):** `content/banner.json` = `{items: [{text, link_text, link_url, from_date,
+- **Announcements (Nov 23 2026):** `content/banner.json` = `{items: [{text, link_text, link_url, from_date,
   from_part ''|morning|afternoon|evening, to_date, to_part morning|afternoon|evening, off}]}` (morning 6–12, afternoon 12–17,
   evening 17–24, SF time). `banner_html()` writes every not-ended item as a `.ann` with data-from/data-to; site5.js shows the one
   whose time it is. The admin (`annOverlaps`, section `check`) refuses overlapping times; `migrate` converts the old single format.
-  Events: `home: true` = "Coming up" band under the home hero (`COMING_UP`, up to 3) and the next dated one as a once-per-visitor
-  pop-up card (`EVENT_POP`, `.evpop`, localStorage key per event), with optional `link_text`/`link_url`/`photo`.
+  (A featured-event band and pop-up on the home page were tried on Nov 23 and removed: not eye-catching enough.)
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
   (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
   in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY set Nov 23, Resend domain ywamsanfrancisco.org verified,
