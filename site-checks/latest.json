@@ -1,0 +1,153 @@
+{
+ "site": "https://ywamsanfrancisco.org/",
+ "at": "2026-11-24T01:21:47.752Z",
+ "fails": 2,
+ "warnings": 0,
+ "results": [
+  {
+   "area": "Pages",
+   "level": "ok",
+   "msg": "sitemap lists 121 pages"
+  },
+  {
+   "area": "Pages",
+   "level": "ok",
+   "msg": "all 121 sitemap pages load"
+  },
+  {
+   "area": "Security",
+   "level": "ok",
+   "msg": "every page has its security policy (CSP)"
+  },
+  {
+   "area": "Security",
+   "level": "ok",
+   "msg": "no insecure (http://) files on any page"
+  },
+  {
+   "area": "Search",
+   "level": "ok",
+   "msg": "every page can be found by Google"
+  },
+  {
+   "area": "Search",
+   "level": "ok",
+   "msg": "canonical addresses all point at ywamsanfrancisco.org"
+  },
+  {
+   "area": "Search",
+   "level": "ok",
+   "msg": "every page has a title"
+  },
+  {
+   "area": "Search",
+   "level": "ok",
+   "msg": "robots.txt is right"
+  },
+  {
+   "area": "Blog",
+   "level": "ok",
+   "msg": "RSS feed works (25 posts)"
+  },
+  {
+   "area": "Links",
+   "level": "ok",
+   "msg": "all 317 links, photos, styles and scripts inside the site work"
+  },
+  {
+   "area": "Old addresses",
+   "level": "ok",
+   "msg": "all 109 old Squarespace addresses redirect"
+  },
+  {
+   "area": "Browser",
+   "level": "fail",
+   "msg": "desktop: / → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483267905&cv=11&tid=G-6285857WPH&fst=1795483267905&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483267 | blocked by security policy: Refused to connect to 'https://stats.g.doubleclick.net/g/collect?v=2&ngs=1&ibt=1&tid=G-6285857WPH&cid=2026862352.1795483268&gtm=45je6bh1v913 ;; /volunteer/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483270048&cv=11&tid=G-6285857WPH&fst=1795483270048&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483269 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483269935&gc ;; /dts/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483271992&cv=11&tid=G-6285857WPH&fst=1795483271992&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483271 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483271885&gc ;; /ellis-room/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483273929&cv=11&tid=G-6285857WPH&fst=1795483273929&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483273 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483273808&gc ;; /give/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483275573&cv=11&tid=G-6285857WPH&fst=1795483275573&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483275 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483275510&gc ;; /contact/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483277644&cv=11&tid=G-6285857WPH&fst=1795483277644&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483277 | blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483277666&cv=11&tid=G-6285857WPH&fst=1795483277666&fmt=8&en= ;; /about/people/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483279806&cv=11&tid=G-6285857WPH&fst=1795483279806&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483279 | blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483279826&cv=11&tid=G-6285857WPH&fst=1795483279826&fmt=8&en= ;; /blog/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483281472&cv=11&tid=G-6285857WPH&fst=1795483281472&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483281 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483281393&gc ;; /teams/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483283164&cv=11&tid=G-6285857WPH&fst=1795483283164&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483283 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483283075&gc ;; /join-staff/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483284893&cv=11&tid=G-6285857WPH&fst=1795483284893&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483284 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483284799&gc"
+  },
+  {
+   "area": "Browser",
+   "level": "fail",
+   "msg": "phone: / → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483286855&cv=11&tid=G-6285857WPH&fst=1795483286855&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483286 | blocked by security policy: Refused to connect to 'https://stats.g.doubleclick.net/g/collect?v=2&ngs=1&ibt=1&tid=G-6285857WPH&cid=594410102.1795483287&gtm=45je6bh1v9131 ;; /volunteer/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483288866&cv=11&tid=G-6285857WPH&fst=1795483288866&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483288 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483288753&gc ;; /dts/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483290630&cv=11&tid=G-6285857WPH&fst=1795483290630&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483290 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483290619&gc ;; /ellis-room/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483292598&cv=11&tid=G-6285857WPH&fst=1795483292598&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483292 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483292490&gc ;; /give/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483294279&cv=11&tid=G-6285857WPH&fst=1795483294279&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483294 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483294224&gc ;; /contact/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483296103&cv=11&tid=G-6285857WPH&fst=1795483296103&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483296 | blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483296124&cv=11&tid=G-6285857WPH&fst=1795483296124&fmt=8&en= ;; /about/people/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483298239&cv=11&tid=G-6285857WPH&fst=1795483298239&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483298 | blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483298262&cv=11&tid=G-6285857WPH&fst=1795483298262&fmt=8&en= ;; /blog/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483299916&cv=11&tid=G-6285857WPH&fst=1795483299916&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483299 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483299842&gc ;; /teams/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483301608&cv=11&tid=G-6285857WPH&fst=1795483301608&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483301 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483301515&gc ;; /join-staff/ → blocked by security policy: Refused to connect to 'https://www.google.com/measurement/conversion?random=1795483303332&cv=11&tid=G-6285857WPH&fst=1795483303332&fmt=8&en= | blocked by security policy: Refused to connect to 'https://analytics.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483303 | blocked by security policy: Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-6285857WPH&gtm=45je6bh1v9131557494za208zd9131557494xf1&_p=1795483303248&gc"
+  },
+  {
+   "area": "Admin",
+   "level": "ok",
+   "msg": "admin page opens to its sign-in screen"
+  },
+  {
+   "area": "Admin",
+   "level": "ok",
+   "msg": "sign-in service is up"
+  },
+  {
+   "area": "Dashboard",
+   "level": "ok",
+   "msg": "all four dashboard settings are in place"
+  },
+  {
+   "area": "Security",
+   "level": "ok",
+   "msg": "service refuses requests without a sign-in"
+  },
+  {
+   "area": "Security",
+   "level": "ok",
+   "msg": "service refuses other websites (CORS)"
+  },
+  {
+   "area": "Security",
+   "level": "ok",
+   "msg": "wrong passwords are refused"
+  },
+  {
+   "area": "Blog",
+   "level": "ok",
+   "msg": "blog reactions are working"
+  },
+  {
+   "area": "Domain",
+   "level": "ok",
+   "msg": "security certificate valid for 90 more days"
+  },
+  {
+   "area": "Security",
+   "level": "ok",
+   "msg": "http:// sends visitors to https://"
+  },
+  {
+   "area": "Domain",
+   "level": "ok",
+   "msg": "www.ywamsanfrancisco.org goes to ywamsanfrancisco.org"
+  },
+  {
+   "area": "Domain",
+   "level": "ok",
+   "msg": "ywamsanfrancisco.com forwards to the site"
+  },
+  {
+   "area": "Domain",
+   "level": "ok",
+   "msg": "website DNS points at GitHub Pages"
+  },
+  {
+   "area": "Email",
+   "level": "ok",
+   "msg": "email (MX) records still point at Google"
+  },
+  {
+   "area": "Search",
+   "level": "ok",
+   "msg": "Search Console verification record is in place"
+  },
+  {
+   "area": "Email",
+   "level": "ok",
+   "msg": "SPF email record present"
+  },
+  {
+   "area": "Email",
+   "level": "ok",
+   "msg": "Resend email record (DKIM) in place"
+  }
+ ]
+}
