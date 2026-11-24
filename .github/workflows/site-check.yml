@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: site-check
+  group: site-checks-branch
   cancel-in-progress: false
 
 jobs:

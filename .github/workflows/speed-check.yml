@@ -1,0 +1,45 @@
+# Page speed grades for the live site (Google Lighthouse, phone settings). On demand (Actions → "Speed check" → Run
+# workflow) and every Monday morning. Report: run summary and site-checks/speed.md on the `site-checks` branch.
+name: Speed check
+
+on:
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: 'Pages to test, separated by spaces (leave empty for the main pages)'
+        required: false
+  schedule:
+    - cron: '41 12 * * 1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-checks-branch
+  cancel-in-progress: false
+
+jobs:
+  speed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install Lighthouse
+        run: npm install --no-save --no-package-lock --no-audit --no-fund lighthouse@12.2.1 chrome-launcher@1.1.2 >/dev/null
+      - name: Test the pages
+        env:
+          PAGES: ${{ github.event.inputs.pages }}
+        run: node tools/speed_check.mjs
+      - name: Save the report
+        if: always()
+        run: |
+          [ -f speed-report.md ] || exit 0
+          mkdir -p /tmp/out && cp speed-report.md /tmp/out/ && cp speed-report.json /tmp/out/
+          git config user.name "YWAM SF site check"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin site-checks && git checkout -q -B site-checks origin/site-checks || git checkout -q --orphan site-checks
+          git rm -rq --cached . >/dev/null 2>&1 || true
+          mkdir -p site-checks/speed-history && cp /tmp/out/speed-report.md site-checks/speed.md && cp /tmp/out/speed-report.json site-checks/speed.json && cp /tmp/out/speed-report.md "site-checks/speed-history/$(date -u +%Y-%m-%d-%H%M).md"
+          git add site-checks && git commit -qm "Speed check $(date -u +%Y-%m-%dT%H:%MZ)" && git push -q origin site-checks
