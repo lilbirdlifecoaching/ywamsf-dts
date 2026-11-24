@@ -12,7 +12,8 @@
       "when": "Wed",
       "when_detail": "Midday",
       "description": "A short update on ministry in the Tenderloin from our director, followed by a time of prayer together. Dates are announced on our events calendar.",
-      "date": ""
+      "date": "",
+      "home": true
     },
     {
       "title": "Community events",
