@@ -1,7 +1,14 @@
 {
-  "show": true,
-  "text": "🎄 Tis' the season!   GIVING TUESDAY IS HERE!   Give towards our work in SF. 🎄",
-  "link_text": "→ Give Here!",
-  "link_url": "https://ywamsanfrancisco.org/give/",
-  "hide_after": "2026-12-02"
+  "items": [
+    {
+      "text": "🎄 Tis' the season!   GIVING TUESDAY IS HERE!   Give towards our work in SF. 🎄",
+      "link_text": "→ Give Here!",
+      "link_url": "https://ywamsanfrancisco.org/give/",
+      "from_date": "",
+      "from_part": "",
+      "to_date": "2026-12-02",
+      "to_part": "evening",
+      "off": false
+    }
+  ]
 }

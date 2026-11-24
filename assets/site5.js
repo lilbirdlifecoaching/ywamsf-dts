@@ -447,8 +447,22 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
 
 (function(){var h=document.querySelector('.y5-head');if(!h)return;function t(){h.classList.toggle('scrolled',(window.scrollY||pageYOffset)>4)}addEventListener('scroll',t,{passive:true});t();})();
 
-/* announcement bar: hide after its end date (San Francisco time) */
-(function () { var b = document.querySelector('.ann[data-until]'); if (!b) return; try { var t = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }); if (t > b.getAttribute('data-until')) b.remove(); } catch (e) {} })();
+/* announcement bar: several can be scheduled (data-from / data-to, San Francisco time, "YYYY-MM-DDTHH:MM").
+   Show the one whose time it is now and remove the rest; the site rebuilds nightly, this handles changes during the day. */
+(function () {
+  var bars = [].slice.call(document.querySelectorAll('.ann')); if (!bars.length) return;
+  var now;
+  try {
+    var p = {}; new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+    now = p.year + '-' + p.month + '-' + p.day + 'T' + p.hour + ':' + p.minute;
+  } catch (e) { return; }
+  var pick = null;
+  bars.forEach(function (b) {
+    var f = b.getAttribute('data-from') || '', t = b.getAttribute('data-to') || '';
+    if (!pick && f <= now && (!t || now < t)) pick = b;
+  });
+  bars.forEach(function (b) { if (b === pick) b.hidden = false; else b.remove(); });
+})();
 /* About dropdown: tap to open on touch screens, Escape to close */
 (function () {
   [].forEach.call(document.querySelectorAll('.tdd'), function (d) {
@@ -497,7 +511,7 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
 /* YWAM 7: the announcement bar scrolls like a ticker. The message is copied until it fills the row twice over,
    then the row slides left by exactly half and repeats, so there is no jump. Hover or focus pauses it. */
 (function () {
-  var bar = document.querySelector('.ann'), track = bar && bar.querySelector('.ann-track');
+  var bar = document.querySelector('.ann:not([hidden])'), track = bar && bar.querySelector('.ann-track');
   if (!track || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
   var item = track.querySelector('.ann-item');
   function build() {
@@ -585,4 +599,19 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
     });
     p.after(b);
   });
+})();
+
+/* Featured event pop-up (home page): a small card slides in at the bottom a few seconds after the page opens.
+   Closing it (or following its link) remembers that in this browser, so each visitor sees each event once. */
+(function () {
+  var box = document.querySelector('.evpop'); if (!box) return;
+  var key = 'ywamsf.evpop.' + box.getAttribute('data-key');
+  try { if (localStorage.getItem(key)) return; } catch (e) {}
+  function done() { box.classList.remove('in'); setTimeout(function () { box.hidden = true; }, 400); try { localStorage.setItem(key, '1'); } catch (e) {} }
+  box.querySelector('.evpop-x').addEventListener('click', done);
+  var a = box.querySelector('a'); if (a) a.addEventListener('click', function () { try { localStorage.setItem(key, '1'); } catch (e) {} });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) done(); });
+  var band = document.getElementById('coming-up'), inView = false;
+  if (band && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { inView = es[0].isIntersecting; box.classList.toggle('in', !inView && !box.hidden); }).observe(band);   // the same event is on screen in the band
+  setTimeout(function () { box.hidden = false; requestAnimationFrame(function () { if (!inView) box.classList.add('in'); }); }, 3000);
 })();

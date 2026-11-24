@@ -333,6 +333,34 @@
     area: function (k, l, o) { return Object.assign({ k: k, l: l, t: 'area', full: true }, o); },
     photo: function (k, l, o) { return Object.assign({ k: k, l: l || 'Photo', t: 'photo', full: true }, o); }
   };
+  // Announcement scheduling (banner.json items): times in San Francisco, parts of the day as on the site (src7/build.py ANN_FROM/ANN_TO)
+  var ANN_FROM = { '': '00:00', morning: '06:00', afternoon: '12:00', evening: '17:00' }, ANN_TO = { morning: '12:00', afternoon: '17:00', evening: '24:00', '': '24:00' };
+  var ANN_PART = { '': 'midnight', morning: 'morning', afternoon: 'afternoon', evening: 'evening' };
+  function annRange(x) {
+    var a = x.from_date ? x.from_date + 'T' + (ANN_FROM[x.from_part || ''] || '00:00') : '';
+    var b = '';
+    if (x.to_date) { var hm = ANN_TO[x.to_part || 'evening'] || '24:00'; if (hm === '24:00') { var d = new Date(x.to_date + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + 1); b = d.toISOString().slice(0, 10) + 'T00:00'; } else b = x.to_date + 'T' + hm; }
+    return [a, b];
+  }
+  function annWhen(x) {
+    if (x.off) return 'Paused';
+    var r = annRange(x), now = todaySF() + 'T' + new Date().toLocaleTimeString('en-GB', { timeZone: 'America/Los_Angeles', hour: '2-digit', minute: '2-digit' });
+    var from = x.from_date ? fmtDate(x.from_date) + ', ' + (ANN_PART[x.from_part || ''] || '') : 'now';
+    var to = x.to_date ? fmtDate(x.to_date) + ' (' + { morning: 'end of morning', afternoon: 'end of afternoon', evening: 'end of day' }[x.to_part || 'evening'] + ')' : 'until removed';
+    var state = r[1] && r[1] <= now ? 'Ended · ' : (!r[0] || r[0] <= now) ? 'Showing now · ' : 'Scheduled · ';
+    return state + 'from ' + from + ' to ' + to;
+  }
+  function annOverlaps(d) {
+    var errs = [], items = (d.items || []).filter(function (x) { return !x.off && String(x.text || '').trim(); });
+    items.forEach(function (x) { var r = annRange(x); if (r[0] && r[1] && r[1] <= r[0]) errs.push('“' + x.text.slice(0, 40) + '” ends before it starts.'); });
+    for (var i = 0; i < items.length; i++) for (var j = i + 1; j < items.length; j++) {
+      var a = annRange(items[i]), b = annRange(items[j]);
+      var aS = a[0] || '0000', aE = a[1] || '9999', bS = b[0] || '0000', bE = b[1] || '9999';
+      if (aS < bE && bS < aE) errs.push('“' + items[i].text.slice(0, 40) + '” and “' + items[j].text.slice(0, 40) + '” are scheduled at the same time. Only one announcement can show at a time: change the dates or the part of the day, or pause one.');
+    }
+    return errs;
+  }
+
   var SECTIONS = [
     { id: 'overview', grp: '', title: 'Overview' },
     { id: 'dts', grp: 'DTS', file: 'dts.json', title: 'DTS schools', page: 'dts/',
@@ -384,9 +412,12 @@
           { k: 'start', l: 'Starts', t: 'time' }, { k: 'end', l: 'Ends', t: 'time' }, F.text('label', 'Time as shown', { hint: 'e.g. 1:30–4 pm' }), { k: 'every', l: 'How often', t: 'select', opts: [['every', 'Every week'], ['2nd & 4th', '2nd & 4th week only']] }] }] },
     { id: 'blog', grp: 'News', title: 'Blog posts', page: 'blog/' },
     { id: 'events', grp: 'News', file: 'events.json', title: 'Events', page: 'about/news/',
-      intro: 'Gatherings on News & Events. Give an event a date and it disappears from the site the day after.',
-      fields: [{ k: 'events', l: 'Events', t: 'list', add: 'Add an event', sub: function (x) { return x.date ? 'On ' + fmtDate(x.date) : [x.when, x.when_detail].filter(Boolean).join(' '); }, blank: { title: '', when: '', when_detail: '', date: '', description: '' },
-        fields: [F.text('title', 'Event', { req: true }), { k: 'date', l: 'Date (for one-off events)', t: 'date', hint: 'Leave blank for regular events.' }, F.text('when', 'Big label', { hint: 'e.g. Mon, or leave blank to use the date' }), F.text('when_detail', 'Small label', { hint: 'e.g. 5–9 pm' }), F.area('description', 'Description')] }] },
+      intro: 'Gatherings on News & Events. Give an event a date and it disappears from the site the day after. Tick “Feature on the home page” to show it in a “Coming up” band on the home page; the next dated featured event also pops up in a small card there (once per visitor).',
+      fields: [{ k: 'events', l: 'Events', t: 'list', add: 'Add an event', sub: function (x) { return (x.home ? '★ On the home page · ' : '') + (x.date ? 'On ' + fmtDate(x.date) : [x.when, x.when_detail].filter(Boolean).join(' ')); }, blank: { title: '', when: '', when_detail: '', date: '', description: '', home: false, link_text: '', link_url: '', photo: '' },
+        fields: [F.text('title', 'Event', { req: true }), { k: 'date', l: 'Date (for one-off events)', t: 'date', hint: 'Leave blank for regular events.' }, F.text('when', 'Big label', { hint: 'e.g. Mon, or leave blank to use the date' }), F.text('when_detail', 'Small label', { hint: 'e.g. 5–9 pm' }), F.area('description', 'Description'),
+          { k: 'home', l: 'Feature on the home page', t: 'bool', hint: 'Shows in “Coming up” on the home page. A dated event also gets the pop-up card.' },
+          F.text('link_text', 'Button text (optional)', { hint: 'e.g. Sign up, RSVP, Get tickets' }), { k: 'link_url', l: 'Button link (optional)', t: 'url' },
+          F.photo('photo', 'Photo for the pop-up (optional)', { hint: 'A wide photo works best.' })] }] },
     { id: 'instagram', grp: 'News', file: 'instagram.json', title: 'Instagram cards', page: '#',
       intro: 'The Instagram carousel on the home page. Save a photo from a post, upload it here, and paste the post’s link.',
       fields: [{ k: 'posts', l: 'Posts', t: 'list', add: 'Add a post', title: function (x) { return x.caption || 'New post'; }, blank: { photo: '', caption: '', url: '' }, fields: [F.photo('photo', 'Photo', { req: true }), F.text('caption', 'Short caption', { full: true }), { k: 'url', l: 'Link to the post', t: 'url', full: true }] }] },
@@ -398,8 +429,18 @@
             { k: 'items', l: 'Links', t: 'list', add: 'Add a link', title: function (x) { return x.title || 'New link'; }, sub: function (x) { return x.by || ''; }, blank: { title: '', by: '', url: '' },
               fields: [F.text('title', 'Title', { req: true, full: true }), F.text('by', 'By (optional)'), { k: 'url', l: 'Link', t: 'url', req: true, hint: 'YouTube, Vimeo and PDF links are labelled automatically.' }] }] }] },
     { id: 'banner', grp: 'Site', file: 'banner.json', title: 'Announcement bar', page: '#',
-      intro: 'A slim red bar across the top of every page, for things like closures or a big event.',
-      fields: [{ k: 'show', l: 'Show the announcement bar', t: 'bool' }, F.text('text', 'Message', { full: true }), F.text('link_text', 'Link text (optional)'), { k: 'link_url', l: 'Link (optional)', t: 'url' }, { k: 'hide_after', l: 'Hide automatically after', t: 'date', hint: 'Optional. The bar disappears the day after this date.' }] },
+      intro: 'The slim bar across the top of every page. Schedule as many announcements as you like: each shows from its start until its end (San Francisco time), one at a time.',
+      // the old single announcement becomes the first scheduled one
+      migrate: function (d) { if (!Array.isArray(d.items)) { var old = d; d = { items: [] }; if (String(old.text || '').trim()) d.items.push({ text: old.text, link_text: old.link_text || '', link_url: old.link_url || '', from_date: '', from_part: '', to_date: old.hide_after || '', to_part: 'evening', off: !old.show }); } return d; },
+      check: annOverlaps,
+      fields: [{ k: 'items', l: 'Announcements', t: 'list', add: 'Schedule an announcement', title: function (x) { return x.text || 'New announcement'; }, sub: annWhen,
+        blank: { text: '', link_text: '', link_url: '', from_date: '', from_part: 'morning', to_date: '', to_part: 'evening', off: false },
+        fields: [F.text('text', 'Message', { req: true, full: true }), F.text('link_text', 'Link text (optional)'), { k: 'link_url', l: 'Link (optional)', t: 'url' },
+          { k: 'from_date', l: 'Show from (date)', t: 'date', hint: 'Leave blank to show it straight away.' },
+          { k: 'from_part', l: 'Starting', t: 'select', opts: [['', 'Midnight (start of the day)'], ['morning', 'Morning (6 am)'], ['afternoon', 'Afternoon (noon)'], ['evening', 'Evening (5 pm)']] },
+          { k: 'to_date', l: 'Take down (date)', t: 'date', hint: 'Leave blank to keep it up until you remove it.' },
+          { k: 'to_part', l: 'Ending', t: 'select', opts: [['morning', 'End of the morning (noon)'], ['afternoon', 'End of the afternoon (5 pm)'], ['evening', 'End of the day (midnight)']] },
+          { k: 'off', l: 'Paused (don’t show this one)', t: 'bool' }] }] },
     { id: 'settings', grp: 'Site', file: 'settings.json', title: 'Settings', page: 'contact/',
       intro: 'Contact details, key links and prices used across the site.',
       fields: [F.text('phone', 'Phone'), { k: 'email', l: 'Main email', t: 'email' }, { k: 'volunteer_email', l: 'Volunteering email', t: 'email' }, { k: 'outreach_email', l: 'Teams & outreach email', t: 'email' }, { k: 'dts_email', l: 'DTS email', t: 'email' }, { k: 'finance_email', l: 'Finance email (Give page: check, ACH, matching, wire, stock)', t: 'email' },
@@ -442,10 +483,10 @@
     shifts: ["Each shift is a row on the departures board and a card on the Come Volunteer page.", "Tick the days it runs so it lights up as “Today” on those days.", "“Sign-up link”: paste the shift’s Calendly link. It opens as a pop-up on the site. Leave it empty and the button emails the volunteer team instead.", "“Details shown as tags” are the small labels like “18+”. Press Enter after each one."],
     ministries: ['These are the photo cards that scroll across the home page.', 'Keep the description to one line.'],
     ellis: ['Each program is one block in the weekly calendar on the Ellis Room page.', 'Set the start and end times; the page highlights what’s happening right now.', '“Time as shown” is the friendly label, like “1:30–4 pm”.'],
-    events: ['For a one-off event, set its date: it disappears from the site the day after.', 'For regular gatherings, leave the date empty and write the day in “Big label”.'],
+    events: ['For a one-off event, set its date: it disappears from the site the day after.', 'For regular gatherings, leave the date empty and write the day in “Big label”.', 'Tick “Feature on the home page” to show an event in the “Coming up” band on the home page (up to three, soonest first). The next dated one also slides in as a small card at the bottom of the home page; each visitor sees it once.', 'Add a button (for example “RSVP” with a sign-up link) and a photo to make the pop-up card more inviting.'],
     instagram: ['Save a photo from an Instagram post, upload it here, and paste the link to the post.', 'Six to eight posts is plenty.'],
     resources: ['Resources are grouped. Each group becomes a tab.', 'Paste the link to a video, PDF or article. YouTube, Vimeo and PDF links are labelled automatically.'],
-    banner: ['Tick “Show the announcement bar”, write a short message, and add a link if people should click through.', 'Set “Hide automatically after” so you don’t have to remember to turn it off.', 'The message scrolls across the top of every page.'],
+    banner: ['Press “Schedule an announcement”, write a short message, and add a link if people should click through.', 'Choose when it goes up (a date and morning, afternoon or evening) and when it comes down. Leave the start empty to show it now, or the end empty to keep it up until you remove it.', 'You can line up several announcements ahead of time. Only one shows at a time, so times can’t overlap: the admin tells you if they do.', 'Each one says “Showing now”, “Scheduled” or “Ended”. Tick “Paused” to hold one back without deleting it.'],
     switches: ['Every section of every page is listed here, page by page. Switch one off to hide it from the website; its content is kept, so you can switch it back on any time.', 'Press Publish at the bottom. The page updates in about 1–2 minutes.', 'The header photo at the top of each page always shows.'],
     seo: ["Add a page only if you want to change what Google shows for it. Pages not listed keep their built-in title and description.", "Page address: everything after the domain, for example dts/ or blog/2026/1/19/church-that-shows-up/. Use / for the home page.", "Search title: about 50–60 characters. Search description: about 120–155 characters, saying what someone will find on the page.", "Sharing picture: shown when the page is shared on social media or in messages. Changes can take a few days to show in Google."],
     settings: ["Contact details, key links and prices used all over the site.", "Change these carefully: they appear on many pages.", "Near the bottom: the Cloudflare Web Analytics token (visitor counts, no cookies), and optional Google Analytics and search verification codes. Leave any you don’t use empty."],
@@ -556,9 +597,10 @@
     shellEls.saveBtn.textContent = saveLabel(s);
     store.read('content/' + s.file).then(function (f) {
       DATA = JSON.parse(f.text || '{}'); SHA = f.sha;
+      if (s.migrate) DATA = s.migrate(DATA);
       var note = null;
       if (f.pending) {
-        try { DATA = JSON.parse(f.pending.content); } catch (e) {}
+        try { DATA = JSON.parse(f.pending.content); if (s.migrate) DATA = s.migrate(DATA); } catch (e) {}
         note = f.pending.status === 'sent_back'
           ? h('div', { class: 'notice warn' }, h('b', { text: 'Sent back with a note: ' }), f.pending.note || '', h('br'), 'This is your version. Make the changes and submit it again.')
           : h('div', { class: 'notice' }, h('b', { text: 'Waiting for approval. ' }), 'You’re seeing the version you submitted ' + ago(f.pending.created) + '. Any new changes you submit replace it.');
@@ -1003,6 +1045,7 @@
     if (CUR === 'blog') return blogSave();
     var s = SECTIONS.filter(function (x) { return x.id === CUR; })[0]; if (!s || !s.file) return;
     var errs = validate(s.fields, DATA, s.title, []);
+    if (s.check) errs = errs.concat(s.check(DATA));
     if (errs.length) { toast(errs[0], true); return; }
     var btn = shellEls.saveBtn, label = saveLabel(s); busy(btn, true, PRACTICE ? 'Practising…' : (label === 'Submit for approval' ? 'Submitting…' : 'Publishing…'));
     var photos = {}; Object.keys(usedPhotos(DATA, {})).forEach(function (p) { photos[p] = PENDING[p]; });
