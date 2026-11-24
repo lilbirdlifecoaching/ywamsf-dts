@@ -2063,3 +2063,12 @@ html.su-pop-on,html.su-pop-on body{overflow:hidden}
 .cnote{margin:0;font-size:13px;color:#5b6b70}
 .cstatus{margin:0;font-size:15px}.cstatus.ok{color:#00738B}.cstatus.err{color:#9A1E14}
 @media (max-width:640px){.cform{grid-template-columns:1fr}}
+
+/* round 7-54: board: photos framed the same (face-centred 4:5 crops), long bios fold to a few lines with "Read more" */
+.bm img{aspect-ratio:4/5;height:auto;object-position:50% 30%}
+.bm p.bm-fold{max-height:calc(4lh);overflow:hidden;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+@supports not (max-height:1lh){.bm p.bm-fold{max-height:6.8em}}
+.bm-more{margin-top:8px;padding:0;border:0;background:none;color:#00738B;font:inherit;font-size:14px;font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.bm-more:hover,.bm-more:focus-visible{color:#24373D}
+.board-grid{align-items:start}
+@media (max-width:520px){.bm img{width:100%;max-width:240px;height:auto}}

@@ -568,3 +568,21 @@ setTimeout(function () { if (document.querySelector('.rv') && !document.querySel
     if (ev) window.gtag('event', ev, { link_url: h, link_text: (a.textContent || '').trim().slice(0, 80) });
   }, true);
 })();
+
+/* Board: long bios show the first few lines, with a "Read more" button to open the rest. */
+(function () {
+  document.querySelectorAll('.bm p').forEach(function (p, i) {
+    p.classList.add('bm-fold');
+    if (p.scrollHeight <= p.clientHeight + 4) { p.classList.remove('bm-fold'); return; }
+    p.id = p.id || 'bm-bio-' + i;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'bm-more'; b.textContent = 'Read more';
+    b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-controls', p.id);
+    b.addEventListener('click', function () {
+      var open = p.classList.toggle('bm-fold') === false;
+      b.textContent = open ? 'Show less' : 'Read more';
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    p.after(b);
+  });
+})();
