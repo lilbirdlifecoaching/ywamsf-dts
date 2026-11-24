@@ -380,8 +380,11 @@ CSP_CONNECT = (GA4_HOSTS if GA4_ID else '') + (' https://cloudflareinsights.com'
 CSP_IMG = GA4_HOSTS if GA4_ID else ''
 ANALYTICS = ''
 if GA4_ID:
-    ANALYTICS += ('<script async src="https://www.googletagmanager.com/gtag/js?id=%s"></script><script>window.dataLayer=window.dataLayer||[];'
-                  'function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","%s");</script>') % (GA4_ID, GA4_ID)
+    # Google's script (180 KB) loads once the page has finished loading, so it never slows the page down; anything that
+    # happens before then is queued in dataLayer and sent when it arrives.
+    ANALYTICS += ('<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","%s");'
+                  'addEventListener("load",function(){setTimeout(function(){var s=document.createElement("script");s.async=true;'
+                  's.src="https://www.googletagmanager.com/gtag/js?id=%s";document.head.appendChild(s);},1200);});</script>') % (GA4_ID, GA4_ID)
 if CF_BEACON:
     ANALYTICS += '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{"token": "%s"}\'></script>' % CF_BEACON
 def verification_tags(path):
@@ -565,17 +568,17 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     extra_head = structured_data(path, title) + verification_tags(path) + extra_head + ANALYTICS
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
-    return phone_sizes(text_layer(edit_hooks(localize(wire(f'''<!doctype html>
+    return lazy_imgs(phone_sizes(text_layer(edit_hooks(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}{(' ' + SERVICE_URL) if SERVICE_URL else ''}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{FONTS}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="{FONTS}" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="{FONTS}" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="{css}">{extra_head}</head><body>
 {banner_html()}{header(cur, up)}
 <main id="main">{body}</main>
 {footer(up, root)}
 <div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p" aria-label="Ask us anything"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path), path, up))
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path), path, up)))
 
 def banner_html():
     b = load('banner.json')
@@ -594,7 +597,9 @@ WIRE = [('/about"', 'about/'), ('/give"', 'give/'), ('/contact"', 'contact/'), (
 _VARIANTS = {}
 _IMG_RE = re.compile(r'<img\b[^>]*>')
 def _variant(rel, w):
-    """assets/<rel> → assets/<dir>/w<w>/<name>, made once per build; '' if the photo is already small."""
+    """assets/<rel> → assets/<dir>/w<w>/<name>.webp, made once per build; '' if the photo is already small.
+    w=None makes a full-size WebP copy (for photos that aren't WebP already). WebP is about a third of the size of the same
+    JPEG and a tenth of a PNG photo, which is what made pages slow to show on phones (Lighthouse, Nov 23 2026)."""
     key = (rel, w)
     if key in _VARIANTS: return _VARIANTS[key]
     out = ''
@@ -602,14 +607,26 @@ def _variant(rel, w):
         from PIL import Image as _I
         src = os.path.join(OUT, 'assets', rel)
         im = _I.open(src)
-        if im.width > w * 1.15:
-            d, name = os.path.split(rel)
-            dst_rel = d + '/w%d/' % w + name
+        d, name = os.path.split(rel)
+        stem = os.path.splitext(name)[0]
+        if w is None:
+            if not name.lower().endswith('.webp'):
+                tw = min(im.width, 2000)
+                dst_rel = d + '/wfull/' + stem + '.webp'
+                dst = os.path.join(OUT, 'assets', dst_rel)
+                if not os.path.exists(dst):
+                    os.makedirs(os.path.dirname(dst), exist_ok=True)
+                    im2 = im.convert('RGBA' if im.mode in ('RGBA', 'LA', 'P') else 'RGB')
+                    if tw < im.width: im2 = im2.resize((tw, round(im.height * tw / im.width)), _I.LANCZOS)
+                    im2.save(dst, 'WEBP', quality=80, method=4)
+                out = dst_rel
+        elif im.width > w * 1.15:
+            dst_rel = d + '/w%d/' % w + stem + '.webp'
             dst = os.path.join(OUT, 'assets', dst_rel)
             if not os.path.exists(dst):
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
-                if name.lower().endswith(('.jpg', '.jpeg')): im = im.convert('RGB')
-                im.resize((w, round(im.height * w / im.width)), _I.LANCZOS).save(dst, quality=80, optimize=True)
+                im2 = im.convert('RGBA' if im.mode in ('RGBA', 'LA', 'P') else 'RGB')
+                im2.resize((w, round(im.height * w / im.width)), _I.LANCZOS).save(dst, 'WEBP', quality=78, method=4)
             out = dst_rel
     except Exception:
         out = ''
@@ -622,6 +639,22 @@ def phone_img(u, up=''):
     if not m: return u
     v = _variant(m.group(2), 960)
     return m.group(1) + 'assets/' + v if v else u
+_IMG_TAG = re.compile(r'<img\b[^>]*>', re.I)
+def lazy_imgs(h):
+    """Photos further down the page load only when the visitor scrolls near them (loading="lazy"), so the top of the page
+    shows sooner on phones. The first two photos in the main content stay eager; the first gets fetchpriority="high"."""
+    i = h.find('<main'); 
+    if i < 0: return h
+    head, body = h[:i], h[i:]
+    n = [0]
+    def one(m):
+        tag = m.group(0)
+        n[0] += 1
+        if re.search(r'\sloading=', tag): return tag
+        if n[0] == 1: return tag[:-1].rstrip('/').rstrip() + ' fetchpriority="high">'
+        if n[0] == 2: return tag
+        return tag[:-1].rstrip('/').rstrip() + ' loading="lazy" decoding="async">'
+    return head + _IMG_TAG.sub(one, body)
 def phone_sizes(h):
     def one(m):
         tag = m.group(0)
@@ -630,12 +663,13 @@ def phone_sizes(h):
         if not sm: return tag
         up, rel = sm.group(1), sm.group(2)
         small = re.search(r'data-sz="(\d+)"', tag)
-        v6, v9 = _variant(rel, 600), _variant(rel, 960)
-        if not v9 and not v6: return tag
         try:
             from PIL import Image as _I; W = _I.open(os.path.join(OUT, 'assets', rel)).width
         except Exception: return tag
-        parts = ([up + 'assets/' + v6 + ' 600w'] if v6 else []) + ([up + 'assets/' + v9 + ' 960w'] if v9 else []) + [up + 'assets/' + rel + ' %dw' % W]
+        sizes_ = [(w, _variant(rel, w)) for w in (600, 960, 1600)]
+        full = _variant(rel, None)
+        parts = [up + 'assets/' + v + ' %dw' % w for w, v in sizes_ if v] + [up + 'assets/' + (full or rel) + ' %dw' % min(W, 2000 if full else W)]
+        if len(parts) == 1 and not full: return tag
         sizes = '%spx' % small.group(1) if small else '(max-width: 700px) 320px, 100vw'
         return tag[:-1].rstrip('/').rstrip() + ' srcset="%s" sizes="%s">' % (', '.join(parts), sizes)
     return _IMG_RE.sub(one, h)
