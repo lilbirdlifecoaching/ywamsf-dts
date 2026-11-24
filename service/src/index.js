@@ -65,9 +65,12 @@ const JSON_PATH = /^content\/[a-z0-9_]{1,40}\.json$/;
 const BLOG_PATH = /^content\/blog\/[a-z0-9][a-z0-9-]{0,80}\.json$/;
 const UPLOAD_PATH = /^content\/uploads\/[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.(?:jpe?g|png|webp)$/;
 const NEVER = new Set(['content/comments.json']);
+// Editors publish and approve only blog posts and dates (DTS school dates, events). Everything else (page copy, people,
+// settings, photos on pages…) needs an administrator, also when an editor changes it.
+const EDITOR_FILES = new Set(['content/dts.json', 'content/events.json']);
 function policy(path) {
   if (NEVER.has(path) || path.startsWith('content/comments/')) return null;   // comments change only through moderation
-  if (BLOG_PATH.test(path) || path === 'content/resources.json') return { reviewers: 'editor' };
+  if (BLOG_PATH.test(path) || EDITOR_FILES.has(path)) return { reviewers: 'editor' };
   if (JSON_PATH.test(path)) return { reviewers: 'admin' };
   return null;
 }
@@ -84,7 +87,8 @@ function touchesSwitches(path, oldText, newText) {
 function canPublish(user, path, switches) {
   if (user.role === 'admin') return true;
   if (switches) return false;
-  return user.role === 'editor';
+  const pol = policy(path);
+  return user.role === 'editor' && !!pol && pol.reviewers === 'editor';
 }
 const canReview = (user, reviewers) => user.role === 'admin' || (reviewers === 'editor' && user.role === 'editor');
 

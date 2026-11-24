@@ -141,7 +141,7 @@
       return readFile(path);
     },
     save: function (path, text, summary, sha, photos) {
-      if (PRACTICE) return new Promise(function (res) { setTimeout(function () { res({ published: !SERVICE || ROLE() !== 'contributor', practice: true }); }, 700); });
+      if (PRACTICE) return new Promise(function (res) { setTimeout(function () { res({ published: canPublishFile(path), practice: true }); }, 700); });
       if (SERVICE) {
         var up = Promise.resolve();
         Object.keys(photos).forEach(function (p) { up = up.then(function () { return api('POST', '/upload', { name: p.replace(/^uploads\//, ''), data: photos[p] }).catch(function (e) { if (e.status !== 409) throw e; }); }); });
@@ -174,6 +174,9 @@
   function ROLE() { return SERVICE ? (USER && USER.role) : 'admin'; }
   function ROLE_LABEL() { return SERVICE ? (USER && USER.roleName) : 'Editor'; }
   function isReviewer() { return SERVICE && USER && USER.role !== 'contributor'; }
+  // Editors publish (and approve) only blog posts and dates; everything else waits for an administrator. Same rule as the service.
+  var EDITOR_FILES = ['dts.json', 'events.json'];
+  function canPublishFile(file) { file = String(file || '').replace(/^content\//, ''); if (!SERVICE) return true; var r = ROLE(); if (r === 'admin') return true; return r === 'editor' && (/^blog\//.test(file) || EDITOR_FILES.indexOf(file) >= 0); }
 
   /* ------------------------------------------------------------------ session */
   var idleT;
@@ -448,7 +451,7 @@
     approvals: ['Each card is a change someone submitted. “See what changed” shows the old and new text side by side.', 'Approve it to publish it, or Send back with a short note saying what to change.', 'They get an email either way.'],
     mine: ['Changes you submitted that are waiting for approval, and ones that were sent back with a note.', 'To fix a sent-back change, open that section: your version is still there. Make the change and submit it again.'],
     comments: ["New blog comments wait here until someone approves them. You also get an email when one arrives.", "Approve to show it under the post (about 1–2 minutes later). Remove takes it down, even after it was approved.", "Only posts with “Allow comments” switched on take comments.", "The commenter’s email is only shown here, never on the website."],
-    people: ['Invite someone with their name, email and level. They get an email to choose their own password.', 'Administrators: everything, including people. Editors: publish anything except section switches, approve posts and comments. Contributors: everything waits for approval.', 'Turn someone off when they leave; you can turn them back on later.'],
+    people: ['Invite someone with their name, email and level. They get an email to choose their own password.', 'Administrators: everything, including people. Editors: publish blog posts, DTS dates and events, and approve those and comments; their changes to anything else go to an administrator. Contributors: everything waits for approval.', 'Turn someone off when they leave; you can turn them back on later.'],
     account: ['Change your password here. Forgot it? Use “Forgot password?” on the sign-in screen.'],
     stats: ['Visitors, the pages they read, how they found the site and what they searched on Google. Pick 7, 30 or 90 days at the top.', '“▲ 12%” compares with the same number of days just before. Hover or tap the chart to see a single day.', 'Numbers come from Google Analytics, Google Search Console and Cloudflare, and refresh about once an hour. Search Console runs about two days behind.', 'Only people signed in to this admin can see this page. Nothing here identifies a visitor.'],
     guide: ['This page lists every “How this works” panel in one place. Press Print to keep a copy.']
@@ -468,6 +471,19 @@
   function fmtRange(a, b) { var x = pd(a), y = pd(b); if (!x) return 'New school'; if (!y) return fmtDate(a); return MON[x.m - 1] + ' ' + x.d + (x.y !== y.y ? ', ' + x.y : '') + ' – ' + MON[y.m - 1] + ' ' + y.d + ', ' + y.y; }
   function todaySF() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   function ago(t) { var ms = typeof t === 'number' ? t * 1000 : new Date(t).getTime(), s = (Date.now() - ms) / 1000; if (s < 90) return 'just now'; if (s < 3600) return Math.round(s / 60) + ' min ago'; if (s < 86400) return Math.round(s / 3600) + ' h ago'; return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); }
+  // Long lists (history, activity) show the first few, with a "Show more" button for the rest.
+  function showSome(box, items, render, first, step) {
+    var n = 0, btn = h('button', { class: 'link show-more', type: 'button' });
+    function more() {
+      var upto = Math.min(items.length, n + (n ? step || 10 : first || 5));
+      for (; n < upto; n++) box.appendChild(render(items[n], n));
+      btn.textContent = 'Show more (' + (items.length - n) + ' older)';
+      btn.hidden = n >= items.length;
+    }
+    btn.addEventListener('click', more); more();
+    if (box.parentNode) box.parentNode.insertBefore(btn, box.nextSibling); else box.appendChild(btn);
+    return btn;
+  }
   function chip(status) { var L = { pending: 'Waiting for approval', sent_back: 'Sent back', approved: 'Published', withdrawn: 'Withdrawn', rejected: 'Removed' }; return h('span', { class: 'chip ' + status, text: L[status] || status }); }
 
   /* ------------------------------------------------------------------ app shell */
@@ -522,7 +538,7 @@
     if (!SERVICE) return 'Save & publish';
     var r = ROLE();
     if (r === 'admin') return 'Publish';
-    if (r === 'editor' && s.id !== 'switches') return 'Publish';
+    if (s.id !== 'switches' && canPublishFile(s.file)) return 'Publish';
     return 'Submit for approval';
   }
   function go(id, force) {
@@ -713,9 +729,9 @@
       var act = h('ul', { class: 'hist' });
       main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Recent activity' }), h('p', { class: 'hint', text: 'Who published, approved, invited or deleted what. Every published version can also be put back with the History button on each section.' }), act));
       api('GET', '/audit').then(function (r) {
-        var rows = (r.entries || []).slice(0, 12);
+        var rows = (r.entries || []).slice(0, 60);
         if (!rows.length) act.appendChild(h('li', null, h('span', { class: 'empty', text: 'Nothing yet.' })));
-        rows.forEach(function (e) { act.appendChild(h('li', null, h('span', { text: (e.name || 'Someone') + ': ' + String(e.action || '').replace(/-/g, ' ') + (e.detail ? ' · ' + e.detail : '') }), h('time', { text: ago(e.at) }))); });
+        showSome(act, rows, function (e) { return h('li', null, h('span', { text: (e.name || 'Someone') + ': ' + String(e.action || '').replace(/-/g, ' ') + (e.detail ? ' · ' + e.detail : '') }), h('time', { text: ago(e.at) })); }, 5, 10);
       }).catch(function () { act.appendChild(h('li', null, h('span', { class: 'empty', text: 'Couldn’t load recent activity.' }))); });
     }
     if (!SERVICE) {
@@ -1003,7 +1019,7 @@
   function veSafe(html) { var d = new DOMParser().parseFromString('<div>' + String(html || '') + '</div>', 'text/html').body.firstChild; return d ? veInline(d) : ''; }
   function renderVisual() {
     var main = shellEls.main; main.textContent = '';
-    shellEls.saveBtn.textContent = SERVICE && ROLE() === 'contributor' ? 'Submit for approval' : 'Publish';
+    shellEls.saveBtn.textContent = SERVICE && ROLE() !== 'admin' ? 'Submit for approval' : 'Publish';
     main.appendChild(top('Visual editor', 'Click any outlined text or photo on the page to change it. What you see in the frame is the preview. Nothing goes live until you press Publish.', []));
     main.appendChild(howto('visual'));
     var pages = h('select', { 'aria-label': 'Page' });
@@ -1633,7 +1649,7 @@
     Promise.all([store.history(path), store.read(path)]).then(function (res) {
       var versions = res[0], live = res[1].text; list.textContent = '';
       if (!versions.length) list.appendChild(h('p', { class: 'empty', text: 'No history yet.' }));
-      versions.forEach(function (v, i) {
+      showSome(list, versions, function (v, i) {
         var box = h('div', { class: 'body' }), item = h('div', { class: 'item closed' });
         var header = h('header', { role: 'button', tabindex: '0', onclick: function () {
           var closed = item.classList.toggle('closed'); if (closed || box.childNodes.length) return;
@@ -1651,8 +1667,8 @@
           }).catch(function (e) { box.textContent = ''; box.appendChild(h('p', { class: 'err', text: e.message })); });
         }, onkeydown: function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); header.click(); } } },
           h('span', { class: 'chev', 'aria-hidden': 'true', text: '›' }), h('span', { class: 'ttl' }, v.message.replace(/ \(site admin\)$/, ''), h('small', { text: (v.who ? v.who + ' · ' : '') + ago(v.date) })), i === 0 ? h('span', { class: 'chip approved', text: 'Live now' }) : null);
-        item.appendChild(header); item.appendChild(box); list.appendChild(item);
-      });
+        item.appendChild(header); item.appendChild(box); return item;
+      }, 8, 15);
     }).catch(function (e) { list.textContent = ''; list.appendChild(h('p', { class: 'err', text: 'Couldn’t load the history: ' + e.message })); });
   }
 
@@ -1660,7 +1676,7 @@
   function sectionFor(path) { var f = path.replace(/^content\//, ''); if (/^blog\//.test(f)) return SECTIONS.filter(function (s) { return s.id === 'blog'; })[0]; return SECTIONS.filter(function (s) { return s.file === f; })[0]; }
   function renderApprovals() {
     var main = shellEls.main; main.textContent = '';
-    main.appendChild(top('Waiting for approval', ROLE() === 'admin' ? 'Changes from contributors (and editors’ section switches). Approve to publish, or send back with a note.' : 'Blog posts and resources from contributors. Approve to publish, or send back with a note.'));
+    main.appendChild(top('Waiting for approval', ROLE() === 'admin' ? 'Changes from contributors, and editors’ changes to page wording, photos, people and settings. Approve to publish, or send back with a note.' : 'Blog posts, DTS dates and events from contributors. Approve to publish, or send back with a note.'));
     main.appendChild(howto('approvals'));
     var wrap = h('div'); main.appendChild(wrap); wrap.appendChild(h('p', { class: 'loading', text: 'Loading…' }));
     api('GET', '/changes').then(function (r) {
@@ -1776,11 +1792,11 @@
       } }, h('div', { class: 'grid' }, field('Name', nn), field('Email', ne), field('Level', nr)), err, btn),
       h('details', { class: 'levels' }, h('summary', { text: 'What can each level do?' }),
         h('ul', null, h('li', null, h('b', { text: 'Administrator: ' }), 'everything, including inviting people, turning sections on or off, approving page changes and putting old versions back.'),
-          h('li', null, h('b', { text: 'Editor: ' }), 'publishes changes straight away (except section switches), approves contributors’ blog posts and resources, and moderates comments.'),
+          h('li', null, h('b', { text: 'Editor: ' }), 'publishes blog posts, DTS dates and events straight away, approves contributors’ changes to those, and moderates comments. Page wording, photos, people and settings go to an administrator.'),
           h('li', null, h('b', { text: 'Contributor: ' }), 'can change anything, but nothing goes live until an editor or administrator approves it.')))));
     var log = h('ul', { class: 'hist' });
     main.appendChild(h('details', { class: 'panel' }, h('summary', { class: 'sumh', text: 'Activity log' }), log));
-    api('GET', '/audit').then(function (r) { r.entries.slice(0, 60).forEach(function (a) { log.appendChild(h('li', null, h('span', { text: (a.name || 'Someone') + ': ' + a.action.replace(/-/g, ' ') + (a.detail ? ' (' + a.detail + ')' : '') }), h('time', { text: ago(a.at) }))); }); }).catch(function () {});
+    api('GET', '/audit').then(function (r) { showSome(log, r.entries || [], function (a) { return h('li', null, h('span', { text: (a.name || 'Someone') + ': ' + a.action.replace(/-/g, ' ') + (a.detail ? ' (' + a.detail + ')' : '') }), h('time', { text: ago(a.at) })); }, 15, 25); }).catch(function () {});
   }
   function renderAccount() {
     var main = shellEls.main; main.textContent = '';
@@ -1867,7 +1883,7 @@
     var main = shellEls.main; main.textContent = '';
     main.appendChild(top('Help guide', 'Every “How this works” panel in one place. Print it or save it as a PDF to keep a copy.', [h('button', { class: 'btn ghost', type: 'button', text: 'Print', onclick: function () { window.print(); } }), h('button', { class: 'btn slate', type: 'button', text: 'Take the tour', onclick: function () { startTour(); } })]));
     var levels = SERVICE ? { admin: 'Administrator', editor: 'Editor', contributor: 'Contributor' }[ROLE()] : 'Editor';
-    main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Your level: ' + levels }), h('p', { class: 'hint', text: SERVICE ? (ROLE() === 'contributor' ? 'Everything you change is sent to an editor or administrator to approve. You’ll get an email when it’s approved or sent back.' : ROLE() === 'editor' ? 'You publish changes straight away (except section switches). You also approve contributors’ blog posts and resources, and moderate comments.' : 'You can do everything, including inviting people, approving changes and putting old versions back.') : 'Every editor can publish every section. Changes go live in about 1–2 minutes.' }),
+    main.appendChild(h('div', { class: 'panel' }, h('h2', { text: 'Your level: ' + levels }), h('p', { class: 'hint', text: SERVICE ? (ROLE() === 'contributor' ? 'Everything you change is sent to an editor or administrator to approve. You’ll get an email when it’s approved or sent back.' : ROLE() === 'editor' ? 'You publish blog posts, DTS dates and events straight away, approve contributors’ changes to those, and moderate comments. Changes to page wording, photos, people and settings go to an administrator to approve.' : 'You can do everything, including inviting people, approving changes and putting old versions back.') : 'Every editor can publish every section. Changes go live in about 1–2 minutes.' }),
       h('ol', { class: 'basics' }, h('li', { text: 'Choose a section in the menu (on a phone, tap ☰ Menu).' }), h('li', { text: 'Make your changes. Nothing is saved until you press the button at the bottom.' }), h('li', { text: SERVICE && ROLE() === 'contributor' ? 'Press “Submit for approval”.' : 'Press “Publish”. Watch the message at the top: it tells you when it’s live.' }), h('li', { text: 'Made a mistake? Open the section and press History to see or put back an earlier version.' }))));
     var order = ['overview', 'stats', 'visual'].concat(SECTIONS.map(function (s) { return s.id; }), SERVICE ? ['approvals', 'mine', 'comments', 'people', 'account'] : []);
     order = order.filter(function (id, i) { return order.indexOf(id) === i; });
@@ -1901,7 +1917,7 @@
       { sel: '[data-tour="nav"]', title: 'The menu', text: 'Everything you can change is listed here, grouped the same way as the website: DTS, People, Serve, News and Site.', side: 'right', mobileMenu: true },
       { go: 'dts', sel: '[data-tour="howto"]', title: '“How this works”', text: 'Every section starts with the exact steps for that task. Open it whenever you’re unsure.' },
       { sel: '[data-tour="form"]', title: 'Make your changes', text: 'Edit the text, dates and photos here. Use the arrows to reorder items, ✕ to delete one, and “+ Add” to add a new one. Nothing changes on the website yet.' },
-      { sel: '[data-tour="save"]', showBar: true, title: contrib ? 'Submit for approval' : 'Publish', text: contrib ? 'When you’re happy, press “Submit for approval”. An editor or administrator checks it, and you get an email when it’s approved or sent back with a note.' : 'When you’re happy, press “Publish”. Your change is live on the website about 1–2 minutes later, and a message at the top tells you when.' },
+      { sel: '[data-tour="save"]', showBar: true, title: contrib ? 'Submit for approval' : 'Publish', text: contrib ? 'When you’re happy, press “Submit for approval”. An editor or administrator checks it, and you get an email when it’s approved or sent back with a note.' : (r === 'editor' ? 'When you’re happy, press the button at the bottom. Blog posts, DTS dates and events are published straight away (live about 1–2 minutes later). Changes to anything else say “Submit for approval”: an administrator checks them first.' : 'When you’re happy, press “Publish”. Your change is live on the website about 1–2 minutes later, and a message at the top tells you when.') },
       !contrib ? { sel: '[data-tour="history"]', title: 'History and undo', text: 'Every published version is kept. Press History to see what changed and who changed it' + (r === 'admin' ? ', and to put an earlier version back in one click.' : '. An administrator can put an earlier version back.') } : null,
       SERVICE && r !== 'contributor' ? { go: 'overview', sel: '.side .grp', title: 'Your to-do list', text: 'Changes waiting for your approval and new blog comments appear under “To do”, with a number when something is waiting. You’ll also get an email.', side: 'right', mobileMenu: true } : null,
       { go: 'overview', sel: '.nav[data-id="visual"]', title: 'Visual editor', text: 'The quickest way to change words and photos: open a page, click the outlined text right on it, and type. Check it on Desktop, Tablet and Phone, then publish. Your edits are kept as a draft until you do.', side: 'right', mobileMenu: true },

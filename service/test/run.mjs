@@ -17,6 +17,7 @@ seed('content/dts.json', { schools: [], cost_note: 'x' });
 seed('content/faq.json', { questions: [{ question: 'Q', answer: 'A' }] });
 seed('content/settings.json', { phone: '1', show_ellis_stories: false });
 seed('content/resources.json', { groups: [] });
+seed('content/events.json', { events: [] });
 const server = http.createServer(async (req, res) => {
   let body = ''; for await (const c of req) body += c;
   const send = (st, obj) => { res.writeHead(st, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); };
@@ -133,20 +134,22 @@ r = await call('PUT', '/content', { path: 'content/dts.json', content: JSON.stri
 assert.equal(r.published, true); assert.match(commits[0].message, /^DTS schools: updated by Luke \(site admin\)$/); assert.equal(commits[0].authorEmail, 'site-admin@ywamsanfrancisco.org'); ok('administrator publishes; people’s own emails never go to GitHub');
 r = await call('PUT', '/content', { path: 'content/dts.json', content: '{}', summary: 'x', base_sha: 'stale' }, admin); assert.equal(r.status, 409); ok('stale edit is refused instead of overwriting someone else');
 const before = mails.length;
-r = await call('PUT', '/content', { path: 'content/faq.json', content: JSON.stringify({ questions: [] }), summary: 'DTS FAQ' }, editor); assert.equal(r.published, true);
-assert.ok(mails.slice(before).some((m) => m.to.includes('luke@example.org') && /Published: DTS FAQ/.test(m.subject))); ok('editor publishes copy without approval; administrators are emailed');
-r = await call('PUT', '/content', { path: 'content/settings.json', content: JSON.stringify({ phone: '2', show_ellis_stories: false }), summary: 'Settings' }, editor); assert.equal(r.published, true); ok('editor can change settings');
+r = await call('PUT', '/content', { path: 'content/dts.json', content: JSON.stringify({ schools: [{ start: '2027-04-05' }] }), summary: 'DTS schools' }, editor); assert.equal(r.published, true);
+assert.ok(mails.slice(before).some((m) => m.to.includes('luke@example.org') && /Published: DTS schools/.test(m.subject))); ok('editor publishes dates without approval; administrators are emailed');
+r = await call('PUT', '/content', { path: 'content/faq.json', content: JSON.stringify({ questions: [] }), summary: 'DTS FAQ' }, editor); assert.equal(r.published, false); assert.match(r.reviewers, /administrator/); ok('editor’s change to page copy waits for an administrator');
+r = await call('PUT', '/content', { path: 'content/settings.json', content: JSON.stringify({ phone: '2', show_ellis_stories: false }), summary: 'Settings' }, editor); assert.equal(r.published, false); ok('editor’s change to settings waits for an administrator');
 r = await call('PUT', '/content', { path: 'content/settings.json', content: JSON.stringify({ phone: '2', show_ellis_stories: true }), summary: 'Show stories' }, editor); assert.equal(r.published, false); assert.match(r.reviewers, /administrator/); ok('editor turning a section on/off needs an administrator');
 for (const bad of ['admin/keys.json', 'content/../admin/keys.json', 'content/comments/x.json', '.github/workflows/build.yml', 'content/Settings.JSON']) { r = await call('PUT', '/content', { path: bad, content: '{}' }, admin); assert.equal(r.status, 400, bad); }
 ok('only website content files can be changed (not keys, workflows or comments)');
 r = await call('PUT', '/content', { path: 'content/faq.json', content: '{not json' }, admin); assert.equal(r.status, 400); ok('broken content is refused');
 
-// contributor → editor approval (resources)
+// contributor → editor approval (events)
 const m0 = mails.length;
-r = await call('PUT', '/content', { path: 'content/resources.json', content: JSON.stringify({ groups: [{ title: 'New' }] }), summary: 'Resources' }, contrib); assert.equal(r.published, false); assert.match(r.reviewers, /editor/);
-assert.ok(mails.slice(m0).some((m) => m.to.includes('ange@example.org') && /Waiting for your approval/.test(m.subject))); ok('contributor’s resource change waits; editors are emailed');
-r = await call('GET', '/content?path=content/resources.json', null, contrib); assert.ok(r.pending); ok('contributor sees their own waiting version');
-r = await call('GET', '/changes', null, editor); const resChange = r.changes.find((c) => c.path === 'content/resources.json' && c.status === 'pending'); assert.ok(resChange); ok('editor sees it in the approval queue');
+r = await call('PUT', '/content', { path: 'content/events.json', content: JSON.stringify({ events: [{ title: 'New' }] }), summary: 'Events' }, contrib); assert.equal(r.published, false); assert.match(r.reviewers, /editor/);
+assert.ok(mails.slice(m0).some((m) => m.to.includes('ange@example.org') && /Waiting for your approval/.test(m.subject))); ok('contributor’s event change waits; editors are emailed');
+r = await call('GET', '/content?path=content/events.json', null, contrib); assert.ok(r.pending); ok('contributor sees their own waiting version');
+r = await call('GET', '/changes', null, editor); const resChange = r.changes.find((c) => c.path === 'content/events.json' && c.status === 'pending'); assert.ok(resChange); ok('editor sees it in the approval queue');
+assert.ok(!r.changes.some((c) => c.path === 'content/faq.json' && c.status === 'pending')); ok('editors don’t see page-copy changes in their queue');
 r = await call('POST', `/changes/${resChange.id}/approve`, {}, editor); assert.equal(r.ok, true); assert.match(commits[0].message, /updated by Sam, approved by Ange/);
 assert.match(mails.at(-1).subject, /^Approved/); assert.deepEqual(mails.at(-1).to, ['sam@example.org']); ok('editor approves; it goes live credited to both; contributor is emailed');
 
@@ -157,10 +160,10 @@ r = await call('POST', `/changes/${cid}/send-back`, { note: '' }, admin); assert
 r = await call('POST', `/changes/${cid}/send-back`, { note: 'Please add an answer.' }, admin); assert.equal(r.ok, true); assert.match(mails.at(-1).text, /Please add an answer/); ok('administrator sends it back; contributor gets the note by email');
 r = await call('GET', '/me', null, contrib); assert.equal(r.waiting.sent_back, 1); ok('contributor’s dashboard shows it was sent back');
 r = await call('PUT', '/content', { path: 'content/faq.json', content: JSON.stringify({ questions: [{ question: 'New Q', answer: 'Yes' }] }), summary: 'DTS FAQ' }, contrib); assert.equal(r.change, cid); ok('resubmitting reuses the same change');
-await call('PUT', '/content', { path: 'content/faq.json', content: JSON.stringify({ questions: [{ question: 'Other', answer: 'edit' }] }), summary: 'DTS FAQ' }, editor);
+await call('PUT', '/content', { path: 'content/faq.json', content: JSON.stringify({ questions: [{ question: 'Other', answer: 'edit' }] }), summary: 'DTS FAQ' }, admin);
 r = await call('POST', `/changes/${cid}/approve`, {}, admin); assert.equal(r.status, 409); ok('approving warns if the page changed since it was submitted');
 r = await call('POST', `/changes/${cid}/approve`, { force: true }, admin); assert.equal(r.ok, true); assert.equal(fileJson('content/faq.json').questions[0].answer, 'Yes'); ok('… and can be approved anyway');
-r = await call('GET', '/me', null, admin); assert.equal(r.waiting.changes, 1); ok('administrator’s dashboard counts what’s waiting (the switch change)');
+r = await call('GET', '/me', null, admin); assert.equal(r.waiting.changes, 2); ok('administrator’s dashboard counts what’s waiting (the editor’s FAQ and settings changes)');
 
 // photos
 const png = Buffer.from('89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d4944415478da63f8ffff3f0005fe02fea7d6a5bd0000000049454e44ae426082', 'hex').toString('base64');

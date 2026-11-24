@@ -342,3 +342,4 @@ h1,h2,h3{font-weight:400}
 .notice ul{margin:6px 0 0;padding-left:20px}
 @media (max-width:720px){.st-grid2{grid-template-columns:1fr}.st-kpi b{font-size:28px}.mtop .st-periods{margin-top:8px}}
 .st-table td{white-space:nowrap}.st-table td:first-child{white-space:normal}
+.show-more{display:block;margin:12px 0 0;font-size:14px}
