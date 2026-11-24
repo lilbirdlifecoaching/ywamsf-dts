@@ -134,7 +134,7 @@ def footer(up, root):
 <div class="concept">{CONCEPT}</div></div></div></div>
 {sw}'''
 
-BASE = os.environ.get('SITE_BASE') or 'https://ywamembers.org/ywam%d/' % V
+BASE = os.environ.get('SITE_BASE') or 'https://ywamsanfrancisco.org/ywam%d/' % V
 def meta_for(title):
     m = META.get(title)
     if not m: return title, '', '', 'assets/img/hero-ellis.jpg'

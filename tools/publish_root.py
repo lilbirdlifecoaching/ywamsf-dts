@@ -1,4 +1,4 @@
-"""Publish YWAM 7 as the main site (https://ywamembers.org/).
+"""Publish YWAM 7 as the main site (https://ywamsanfrancisco.org/).
 
     ROOT_SITE=1 OUT=.site7 python3 src7/build.py && python3 tools/publish_root.py
 
@@ -10,7 +10,7 @@ Old addresses keep working through small redirect pages:
   /ywam7/<page>/  →  /<page>/      (YWAM 7's previous home)
   /course/…       →  /dts/…        (the DTS page's previous address)
   old Squarespace pages (tools/old_addresses.txt, tools/old_events.txt) → their new pages
-Redirect pages use SITE_BASE (default https://ywamembers.org/) for their canonical address: set it at the domain move.
+Redirect pages use SITE_BASE (default https://ywamsanfrancisco.org/) for their canonical address.
 """
 import os, shutil, sys, html
 

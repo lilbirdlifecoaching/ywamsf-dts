@@ -202,7 +202,7 @@
   function busy(btn, on, label) { btn.disabled = on; if (label) btn.textContent = label; }
 
   function boot() {
-    if (!window.crypto || !crypto.subtle) { mount(gate([h('h1', { text: 'Secure connection needed' }), h('p', { text: 'Open this page over https (ywamembers.org/admin/) in an up-to-date browser.' })])); return; }
+    if (!window.crypto || !crypto.subtle) { mount(gate([h('h1', { text: 'Secure connection needed' }), h('p', { text: 'Open this page over https (ywamsanfrancisco.org/admin/) in an up-to-date browser.' })])); return; }
     if (!SERVICE) { loadPublicKeys().then(function (k) { KEYS = k && Array.isArray(k.users) ? k : { version: 1, users: [] }; if (KEYS.users.length) showLogin(); else showSetup(); }); return; }
     var m = /^#(invite|reset)=([A-Za-z0-9_-]{20,})$/.exec(location.hash);
     if (m) { history.replaceState(null, '', location.pathname); return m[1] === 'invite' ? showInvite(m[2]) : showReset(m[2]); }

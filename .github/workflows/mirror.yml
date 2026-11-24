@@ -27,6 +27,8 @@ jobs:
         run: python3 tools/mirror_squarespace.py
       - name: Rebuild YWAM 7 with the local copies
         run: SITE_BASE=https://ywamsanfrancisco.org/ INDEXING=1 ROOT_SITE=1 OUT=.site7 python3 src7/build.py && SITE_BASE=https://ywamsanfrancisco.org/ python3 tools/publish_root.py
+      - name: Safety check (real domain, listed by Google) before publishing
+        run: python3 tools/check_launch.py
       - name: Commit
         run: |
           git config user.name "YWAM SF site builder"

@@ -254,7 +254,7 @@ def footer(up, root):
 {'' if ROOT_SITE else '<div class="concept">' + CONCEPT + '</div>'}</div></div></div>
 {'' if ROOT_SITE else sw}'''
 
-# ROOT_SITE=1 builds YWAM 7 as the main site (https://ywamembers.org/): no concept switcher, favicon at the site root
+# ROOT_SITE=1 builds YWAM 7 as the main site (https://ywamsanfrancisco.org/): no concept switcher, favicon at the site root
 ROOT_SITE = os.environ.get('ROOT_SITE') == '1'
 # Launched Nov 23 2026: the main site's default address is the real domain, so every build (any workflow, or by hand) is right.
 BASE = os.environ.get('SITE_BASE') or ('https://ywamsanfrancisco.org/' if ROOT_SITE else 'https://ywamsanfrancisco.org/ywam%d/' % V)

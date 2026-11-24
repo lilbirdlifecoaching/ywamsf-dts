@@ -6,7 +6,7 @@ compatibility_date = "2024-11-01"
 [vars]
 REPO = "lilbirdlifecoaching/ywamsf-dts"
 BRANCH = "main"
-ALLOWED_ORIGINS = "https://ywamembers.org,https://www.ywamembers.org,https://ywamsanfrancisco.org,https://www.ywamsanfrancisco.org"
+ALLOWED_ORIGINS = "https://ywamsanfrancisco.org,https://www.ywamsanfrancisco.org"
 ADMIN_URL = "https://ywamsanfrancisco.org/admin/"
 SITE_URL = "https://ywamsanfrancisco.org/"
 MAIL_FROM = "YWAM SF website <website@ywamsanfrancisco.org>"
