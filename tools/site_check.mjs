@@ -112,7 +112,7 @@ for (const [label, ctxOpts] of [['desktop', { viewport: { width: 1440, height: 9
     const page = await ctx.newPage();
     const errs = [];
     page.on('pageerror', (e) => errs.push('script error: ' + e.message.slice(0, 120)));
-    page.on('console', (m) => { if (m.type() === 'error' && /Content Security Policy|Refused to/i.test(m.text())) errs.push('blocked by security policy: ' + m.text().slice(0, 140)); });
+    page.on('console', (m) => { if (m.type() === 'error' && /Content Security Policy|Refused to/i.test(m.text())) { const u = (/'(https?:\/\/[^/' ]+)/.exec(m.text()) || [])[1] || m.text().slice(0, 80); errs.push('security policy blocks ' + u); } });
     page.on('response', (r) => { if (r.url().startsWith(SITE) && r.status() >= 400) errs.push(`missing file ${r.url().replace(SITE, '/')} (${r.status()})`); });
     try {
       await page.goto(SITE + p, { waitUntil: 'load', timeout: 45000 });

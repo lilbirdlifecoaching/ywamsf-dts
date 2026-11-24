@@ -372,9 +372,11 @@ CF_BEACON = str(S.get('analytics_cloudflare_token') or '').strip().lower()
 CF_BEACON = CF_BEACON if re.fullmatch(r'[a-f0-9]{32}', CF_BEACON) else ''
 GSV = str(S.get('google_site_verification') or '').strip(); GSV = GSV if re.fullmatch(r'[A-Za-z0-9_-]{20,80}', GSV) else ''
 BSV = str(S.get('bing_site_verification') or '').strip().upper(); BSV = BSV if re.fullmatch(r'[A-F0-9]{32}', BSV) else ''
-CSP_SCRIPT = (' https://www.googletagmanager.com' if GA4_ID else '') + (' https://static.cloudflareinsights.com' if CF_BEACON else '')
-CSP_CONNECT = (' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com' if GA4_ID else '') + (' https://cloudflareinsights.com' if CF_BEACON else '')
-CSP_IMG = ' https://*.google-analytics.com https://www.googletagmanager.com' if GA4_ID else ''
+CSP_SCRIPT = (' https://*.googletagmanager.com' if GA4_ID else '') + (' https://static.cloudflareinsights.com' if CF_BEACON else '')
+# GA4 sends its data to these (Google's own list for a Content-Security-Policy); missing any of them silently loses visits
+GA4_HOSTS = ' https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com'
+CSP_CONNECT = (GA4_HOSTS if GA4_ID else '') + (' https://cloudflareinsights.com' if CF_BEACON else '')
+CSP_IMG = GA4_HOSTS if GA4_ID else ''
 ANALYTICS = ''
 if GA4_ID:
     ANALYTICS += ('<script async src="https://www.googletagmanager.com/gtag/js?id=%s"></script><script>window.dataLayer=window.dataLayer||[];'
