@@ -83,7 +83,9 @@ Claude project **"Ange YWAM"** as `claude/ywam-sf-website-work-log.md`. Read it 
   from_part ''|morning|afternoon|evening, to_date, to_part morning|afternoon|evening, off}]}` (morning 6–12, afternoon 12–17,
   evening 17–24, SF time). `banner_html()` writes every not-ended item as a `.ann` with data-from/data-to; site5.js shows the one
   whose time it is. The admin (`annOverlaps`, section `check`) refuses overlapping times; `migrate` converts the old single format.
-  (A featured-event band and pop-up on the home page were tried on Nov 23 and removed: not eye-catching enough.)
+  Message is one-line rich text (admin field type `line`: B / I / U → <strong>/<em>/<u>, cleaned again by `ann_clean()`).
+  (A featured-event band and pop-up on the home page were tried on Nov 23 and removed: not eye-catching enough. Luke's idea for
+  later: a "Featured event" admin section where you choose how to feature it: announcement bar, cable car banner, pop-up, etc.)
 - **Admin sign-in (Nov 23 2026): service mode is live** — `admin/index.html` points at https://ywamsf-admin.angela-95e.workers.dev
   (Cloudflare account angela-95e; deployed by `.github/workflows/deploy-service.yml`; secrets SETUP_KEY, GITHUB_TOKEN set
   in the Cloudflare dashboard on the `ywamsf-admin` worker; RESEND_KEY set Nov 23, Resend domain ywamsanfrancisco.org verified,

@@ -2075,3 +2075,4 @@ html.su-pop-on,html.su-pop-on body{overflow:hidden}
 
 /* round 7-55: scheduled announcements (one bar at a time) */
 .ann[hidden]{display:none!important}
+.ann-item strong{font-weight:700}.ann-item em{font-style:italic}.ann-item u{text-decoration:underline;text-underline-offset:3px}

@@ -593,7 +593,7 @@ def ann_items():
         items = [{'text': b.get('text'), 'link_text': b.get('link_text'), 'link_url': b.get('link_url'), 'to_date': b.get('hide_after') or '', 'to_part': 'evening', 'off': not b.get('show')}]
     out = []
     for x in items:
-        if not isinstance(x, dict) or x.get('off') or not str(x.get('text') or '').strip(): continue
+        if not isinstance(x, dict) or x.get('off') or not re.sub(r'<[^>]*>', '', str(x.get('text') or '')).strip(): continue
         fd, td = _d(x.get('from_date')), _d(x.get('to_date'))
         start = (fd.isoformat() + 'T' + ANN_FROM.get(x.get('from_part') or '', '00:00')) if fd else ''
         end = ''
@@ -602,6 +602,21 @@ def ann_items():
             end = (td + datetime.timedelta(days=1)).isoformat() + 'T00:00' if hm == '24:00' else td.isoformat() + 'T' + hm
         out.append((start, end, x))
     return out
+def ann_clean(v):
+    """Announcement text: plain text with bold, italic and underline only (admin → Announcement bar's B / I / U buttons)."""
+    v = str(v or '')[:600]
+    keep = []
+    def hold(m):
+        tag = {'b': 'strong', 'i': 'em'}.get(m.group(2).lower(), m.group(2).lower())
+        keep.append('<%s%s>' % ('/' if m.group(1) else '', tag)); return '\x00%d\x00' % (len(keep) - 1)
+    v = re.sub(r'<(/?)(em|strong|b|i|u)\s*>', hold, v, flags=re.I)
+    v = html.escape(html.unescape(re.sub(r'<[^>]*>', '', v)), quote=False)
+    v = re.sub(r'\x00(\d+)\x00', lambda m: keep[int(m.group(1))], v).strip()
+    # close anything left open so the rest of the page isn't affected
+    for tag in ('strong', 'em', 'u'):
+        extra = v.count('<%s>' % tag) - v.count('</%s>' % tag)
+        if extra > 0: v += '</%s>' % tag * extra
+    return v
 def banner_html():
     now = TODAY.isoformat() + 'T12:00' if os.environ.get('TODAY') else datetime.datetime.now(SF).strftime('%Y-%m-%dT%H:%M')
     bars, shown = [], False
@@ -613,7 +628,7 @@ def banner_html():
         shown = shown or live
         # scrolls like a ticker (site5.js copies the message to fill the row); stays still for reduced-motion visitors
         bars.append('<div class="ann" role="note"%s%s%s><div class="ann-track"><span class="ann-item">%s%s</span></div></div>' % (
-            ' data-from="%s"' % start if start else '', ' data-to="%s"' % end if end else '', '' if live else ' hidden', t(x['text']), a))
+            ' data-from="%s"' % start if start else '', ' data-to="%s"' % end if end else '', '' if live else ' hidden', ann_clean(x['text']), a))
     return ''.join(bars)
 
 WIRE = [('/about"', 'about/'), ('/give"', 'give/'), ('/contact"', 'contact/'), ('/volunteer"', 'volunteer/'), ('/mission-adventure"', 'teams/')]

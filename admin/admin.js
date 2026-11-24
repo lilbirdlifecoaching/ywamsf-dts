@@ -351,7 +351,7 @@
     return state + 'from ' + from + ' to ' + to;
   }
   function annOverlaps(d) {
-    var errs = [], items = (d.items || []).filter(function (x) { return !x.off && String(x.text || '').trim(); });
+    var errs = [], items = (d.items || []).filter(function (x) { return !x.off && plainText(x.text); }).map(function (x) { return Object.assign({}, x, { text: plainText(x.text) }); });
     items.forEach(function (x) { var r = annRange(x); if (r[0] && r[1] && r[1] <= r[0]) errs.push('“' + x.text.slice(0, 40) + '” ends before it starts.'); });
     for (var i = 0; i < items.length; i++) for (var j = i + 1; j < items.length; j++) {
       var a = annRange(items[i]), b = annRange(items[j]);
@@ -444,9 +444,9 @@
       // the old single announcement becomes the first scheduled one
       migrate: function (d) { if (!Array.isArray(d.items)) { var old = d; d = { items: [] }; if (String(old.text || '').trim()) d.items.push({ text: old.text, link_text: old.link_text || '', link_url: old.link_url || '', from_date: '', from_part: '', to_date: old.hide_after || '', to_part: 'evening', off: !old.show }); } return d; },
       check: annOverlaps,
-      fields: [{ k: 'items', l: 'Announcements', t: 'list', add: 'Schedule an announcement', title: function (x) { return x.text || 'New announcement'; }, sub: annWhen,
+      fields: [{ k: 'items', l: 'Announcements', t: 'list', add: 'Schedule an announcement', title: function (x) { return plainText(x.text) || 'New announcement'; }, sub: annWhen,
         blank: { text: '', link_text: '', link_url: '', from_date: '', from_part: 'morning', to_date: '', to_part: 'evening', off: false },
-        fields: [F.text('text', 'Message', { req: true, full: true }), F.text('link_text', 'Link text (optional)'), { k: 'link_url', l: 'Link (optional)', t: 'url' },
+        fields: [{ k: 'text', l: 'Message', t: 'line', req: true, full: true, hint: 'Select words and press B, I or U to make them bold, italic or underlined.' }, F.text('link_text', 'Link text (optional)'), { k: 'link_url', l: 'Link (optional)', t: 'url' },
           { k: 'from_date', l: 'Show from (date)', t: 'date', hint: 'Leave blank to show it straight away.' },
           { k: 'from_part', l: 'Starting', t: 'select', opts: [['', 'Midnight (start of the day)'], ['morning', 'Morning (6 am)'], ['afternoon', 'Afternoon (noon)'], ['evening', 'Evening (5 pm)']] },
           { k: 'to_date', l: 'Take down (date)', t: 'date', hint: 'Leave blank to keep it up until you remove it.' },
@@ -863,10 +863,40 @@
     i.addEventListener('input', function () { obj[f.k] = type === 'number' ? (i.value === '' ? '' : +i.value) : i.value; changed(); i.dispatchEvent(new CustomEvent('retitle', { bubbles: true })); });
     return i;
   }
+  /* One-line text with bold, italic and underline (announcement bar). Stored as <strong>, <em>, <u> only; the site build
+     cleans it again (ann_clean in src7/build.py). Enter is ignored and pasting brings plain text. */
+  function plainText(v) { var d = document.createElement('div'); d.innerHTML = String(v || ''); return (d.textContent || '').trim(); }
+  function lineClean(root) {
+    var out = '';
+    (function walk(n) {
+      [].forEach.call(n.childNodes, function (c) {
+        if (c.nodeType === 3) { out += c.nodeValue.replace(/[&<>]/g, function (x) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[x]; }).replace(/\s*\n\s*/g, ' '); return; }
+        if (c.nodeType !== 1) return;
+        var tag = c.nodeName.toLowerCase(), st = c.getAttribute('style') || '';
+        var w = { b: 'strong', strong: 'strong', i: 'em', em: 'em', u: 'u' }[tag] || (/font-weight:\s*(bold|[6-9]00)/.test(st) ? 'strong' : /font-style:\s*italic/.test(st) ? 'em' : /text-decoration[^;]*underline/.test(st) ? 'u' : '');
+        if (w) out += '<' + w + '>'; walk(c); if (w) out += '</' + w + '>';
+      });
+    })(root);
+    return out.replace(/<(strong|em|u)><\/\1>/g, '').trim();
+  }
+  function lineEditor(f, obj) {
+    var ed = h('div', { class: 'line-ed', contenteditable: 'true', role: 'textbox', 'aria-label': f.l, spellcheck: 'true' });
+    ed.innerHTML = lineClean((function () { var d = document.createElement('div'); d.innerHTML = String(obj[f.k] || ''); return d; })());
+    function sync() { obj[f.k] = lineClean(ed); changed(); ed.dispatchEvent(new CustomEvent('retitle', { bubbles: true })); }
+    ed.addEventListener('input', sync);
+    ed.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); return; }
+      if ((e.metaKey || e.ctrlKey) && /^[biu]$/i.test(e.key)) { e.preventDefault(); document.execCommand({ b: 'bold', i: 'italic', u: 'underline' }[e.key.toLowerCase()]); sync(); }
+    });
+    ed.addEventListener('paste', function (e) { e.preventDefault(); var txt = (e.clipboardData || window.clipboardData).getData('text/plain').replace(/\s*\n\s*/g, ' '); document.execCommand('insertText', false, txt); });
+    function btn(cmd, label, title) { return h('button', { type: 'button', class: 'line-b ' + cmd, title: title, 'aria-label': title, text: label, onmousedown: function (e) { e.preventDefault(); }, onclick: function () { ed.focus(); document.execCommand(cmd); sync(); } }); }
+    return h('div', { class: 'line-wrap' }, h('div', { class: 'line-tools' }, btn('bold', 'B', 'Bold (Cmd/Ctrl+B)'), btn('italic', 'I', 'Italic (Cmd/Ctrl+I)'), btn('underline', 'U', 'Underline (Cmd/Ctrl+U)')), ed);
+  }
   function renderField(f, obj) {
     var t = f.t;
     if (t === 'text' || t === 'url' || t === 'email' || t === 'date' || t === 'time' || t === 'number') return field(f.l, inputFor(f, obj, t === 'text' ? 'text' : t), f.hint);
     if (t === 'area') { var a = h('textarea', { required: f.req || null }); a.value = obj[f.k] || ''; a.addEventListener('input', function () { obj[f.k] = a.value; changed(); a.dispatchEvent(new CustomEvent('retitle', { bubbles: true })); }); return field(f.l, a, f.hint); }
+    if (t === 'line') return field(f.l, lineEditor(f, obj), f.hint);
     if (t === 'select') {
       var sel = h('select'); f.opts.forEach(function (o) { var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o; sel.appendChild(h('option', { value: v, text: l })); });
       if (obj[f.k] != null) sel.value = obj[f.k]; if (sel.value !== obj[f.k]) obj[f.k] = sel.value;
