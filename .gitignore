@@ -3,3 +3,7 @@ node_modules/
 .wrangler/
 .dev.vars
 .site7/
+site-check-report.*
+repo-checks.md
+service-tests.log
+report.md
