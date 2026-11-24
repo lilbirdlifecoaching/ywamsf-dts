@@ -7,6 +7,16 @@
       "from_date": "",
       "from_part": "",
       "to_date": "2026-12-02",
+      "to_part": "morning",
+      "off": false
+    },
+    {
+      "text": "🎉  Help us hit our End of Year Goal! ✨ ",
+      "link_text": "→ Give Here! ←",
+      "link_url": "https://ywamsanfrancisco.org/give/",
+      "from_date": "2026-12-02",
+      "from_part": "afternoon",
+      "to_date": "2026-12-31",
       "to_part": "evening",
       "off": false
     }
