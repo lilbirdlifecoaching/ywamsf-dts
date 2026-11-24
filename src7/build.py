@@ -568,7 +568,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
     extra_head = structured_data(path, title) + verification_tags(path) + extra_head + ANALYTICS
     title = t(title)
     css = f'{up}assets/site5.css?v={VER}'
-    return lazy_imgs(phone_sizes(text_layer(edit_hooks(localize(wire(f'''<!doctype html>
+    return bg_webp(lazy_imgs(phone_sizes(text_layer(edit_hooks(localize(wire(f'''<!doctype html>
 <html lang="en"{' class="tb"' if V in (6, 7) else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{ROBOTS}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.tfaforms.com https://resources.connect.clickandpledge.com{CSP_SCRIPT}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.squarespace-cdn.com https://widgets.candid.org https://widgets.guidestar.org{CSP_IMG}; frame-src https://calendly.com https://www.tfaforms.com https://connect.clickandpledge.com https://www.youtube-nocookie.com https://www.youtube.com https://maps.google.com https://www.google.com; connect-src 'self' https://api.open-meteo.com{CSP_CONNECT}{(' ' + SERVICE_URL) if SERVICE_URL else ''}; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="format-detection" content="telephone=no">
 <title>{title}</title>{seo}<link rel="icon" type="image/png" href="{root}favicon.png">
@@ -578,7 +578,7 @@ def page(title, cur, up, root, body, extra_head='', scripts=''):
 <main id="main">{body}</main>
 {footer(up, root)}
 <div class="chat7" data-kb="{up}assets/chat-kb.js?v={KBV}" data-root="{up}"><button type="button" class="chat7-btn" aria-expanded="false" aria-controls="chat7-p" aria-label="Ask us anything"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/></svg><span>Ask us anything</span></button><div class="chat7-p" id="chat7-p" role="dialog" aria-label="Ask YWAM San Francisco" hidden><div class="c7-head"><div><b>Ask YWAM SF</b><small>Instant answers from our website</small></div><button type="button" class="c7-x" aria-label="Close chat">✕</button></div><div class="c7-log" aria-live="polite"></div><form class="c7-form" autocomplete="off"><input type="text" name="q" maxlength="200" placeholder="Type a question…" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form><p class="c7-foot">Automated answers, not a person. A real person replies at <a href="mailto:{EMAIL}">{EMAIL}</a> or <a href="{TEL}">{PHONE}</a>.</p></div></div>
-{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path), path, up)))
+{scripts}<script src="{up}assets/site5.js?v={VER}"></script><script src="{up}assets/chat7.js?v={VER}" defer></script></body></html>''', up), up), path), path, up))))
 
 def banner_html():
     b = load('banner.json')
@@ -620,7 +620,7 @@ def _variant(rel, w):
                     if tw < im.width: im2 = im2.resize((tw, round(im.height * tw / im.width)), _I.LANCZOS)
                     im2.save(dst, 'WEBP', quality=80, method=4)
                 out = dst_rel
-        elif im.width > w * 1.15:
+        elif im.width > w * 1.05:
             dst_rel = d + '/w%d/' % w + stem + '.webp'
             dst = os.path.join(OUT, 'assets', dst_rel)
             if not os.path.exists(dst):
@@ -655,6 +655,13 @@ def lazy_imgs(h):
         if n[0] == 2: return tag
         return tag[:-1].rstrip('/').rstrip() + ' loading="lazy" decoding="async">'
     return head + _IMG_TAG.sub(one, body)
+_BG_IMG = re.compile(r"background-image:url\('((?:\.\./)*)assets/((?:img|sq|uploads)/[^'?]+\.(?:jpe?g|png))'\)")
+def bg_webp(h):
+    """Background photos (film thumbnails, cards) use the 960px WebP copy."""
+    def one(m):
+        v = _variant(m.group(2), 960) or _variant(m.group(2), None)
+        return "background-image:url('%sassets/%s')" % (m.group(1), v) if v else m.group(0)
+    return _BG_IMG.sub(one, h)
 def phone_sizes(h):
     def one(m):
         tag = m.group(0)
