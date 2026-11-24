@@ -1,0 +1,332 @@
+{
+ "site": "https://ywamsanfrancisco.org/",
+ "at": "2026-11-24T04:56:56.842Z",
+ "avg": 83,
+ "rows": [
+  {
+   "page": "/",
+   "score": 78,
+   "lcp": 4601.784500000001,
+   "cls": 0.014099033375347503,
+   "tbt": 109.5,
+   "fcp": 2793.1455,
+   "bytes": 3990520,
+   "lcpEl": "",
+   "big": [
+    "/assets/sq/59379308927b63f7.png 528 KB",
+    "/assets/uploads/ig-02.jpg 203 KB",
+    "/assets/sq/07713aa97dc4ccc5.jpeg 181 KB"
+   ],
+   "tips": [
+    "Defer offscreen images (~1.7s)",
+    "Serve images in next-gen formats (~1.7s)"
+   ]
+  },
+  {
+   "page": "/about/",
+   "score": 90,
+   "lcp": 2876.90025,
+   "cls": 0.01266965409743975,
+   "tbt": 117,
+   "fcp": 2726.89425,
+   "bytes": 362209,
+   "lcpEl": "",
+   "big": [
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "/assets/site5.css 40 KB",
+    "https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2 35 KB"
+   ],
+   "tips": []
+  },
+  {
+   "page": "/about/people/",
+   "score": 78,
+   "lcp": 4635.2907,
+   "cls": 0.002094510951130668,
+   "tbt": 76,
+   "fcp": 2921.9209499999997,
+   "bytes": 1083743,
+   "lcpEl": "",
+   "big": [
+    "/assets/uploads/board-tim-svoboda.jpg 210 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "/assets/uploads/board-david-r-singh.jpg 123 KB"
+   ],
+   "tips": [
+    "Properly size images (~450ms)",
+    "Reduce unused JavaScript (~390ms)",
+    "Serve images in next-gen formats (~300ms)"
+   ]
+  },
+  {
+   "page": "/about/news/",
+   "score": 69,
+   "lcp": 13054.577199999998,
+   "cls": 0.0003369717933995712,
+   "tbt": 145,
+   "fcp": 2729.4512,
+   "bytes": 3733941,
+   "lcpEl": "",
+   "big": [
+    "/assets/sq/w960/1afffba5e3d9bb62.png 886 KB",
+    "/assets/sq/w960/5af0354ecf44c3a8.png 866 KB",
+    "/assets/sq/w960/4cd5dc918831ebe8.png 790 KB"
+   ],
+   "tips": [
+    "Properly size images (~1.1s)",
+    "Serve images in next-gen formats (~600ms)",
+    "Reduce unused JavaScript (~450ms)"
+   ]
+  },
+  {
+   "page": "/about/resources/",
+   "score": 90,
+   "lcp": 2875.5040500000005,
+   "cls": 0.007088308680065413,
+   "tbt": 111.99999999999955,
+   "fcp": 2725.4999999999995,
+   "bytes": 361184,
+   "lcpEl": "",
+   "big": [
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "/assets/site5.css 40 KB",
+    "https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2 35 KB"
+   ],
+   "tips": []
+  },
+  {
+   "page": "/blog/",
+   "score": 73,
+   "lcp": 5750.0147,
+   "cls": 0.003457260013856901,
+   "tbt": 114,
+   "fcp": 2925.892,
+   "bytes": 4334521,
+   "lcpEl": "",
+   "big": [
+    "/assets/uploads/blog-dts-j1--1--c44473.png 1.7 MB",
+    "/assets/uploads/w960/blog-slide-7-1afffb.png 886 KB",
+    "/assets/uploads/w960/blog-slide-5-4cd5dc.png 790 KB"
+   ],
+   "tips": [
+    "Serve images in next-gen formats (~760ms)",
+    "Properly size images (~650ms)",
+    "Reduce unused JavaScript (~450ms)"
+   ]
+  },
+  {
+   "page": "/blog/2026/1/19/church-that-shows-up/",
+   "score": 70,
+   "lcp": 8478.121050000002,
+   "cls": 0.0002069418074602075,
+   "tbt": 102,
+   "fcp": 2880.5712,
+   "bytes": 1713934,
+   "lcpEl": "",
+   "big": [
+    "/assets/uploads/w960/blog-slide-7-1afffb.png 886 KB",
+    "/assets/uploads/w960/blog-dts27-1-6-x-4-in-625acf.png 272 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB"
+   ],
+   "tips": [
+    "Serve images in next-gen formats (~3.9s)",
+    "Properly size images (~1.9s)"
+   ]
+  },
+  {
+   "page": "/contact/",
+   "score": 78,
+   "lcp": 4053.0780000000004,
+   "cls": 0.1114555834876109,
+   "tbt": 71,
+   "fcp": 2880.7277000000004,
+   "bytes": 1027263,
+   "lcpEl": "",
+   "big": [
+    "/assets/sq/w960/cf1257c88cc08cb7.jpeg 199 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "https://maps.googleapis.com/maps-api-v3/api/js/67/1d/places.js 97 KB"
+   ],
+   "tips": [
+    "Properly size images (~610ms)",
+    "Serve images in next-gen formats (~310ms)"
+   ]
+  },
+  {
+   "page": "/dts/",
+   "score": 88,
+   "lcp": 3352.4567,
+   "cls": 0.001399449424328133,
+   "tbt": 59,
+   "fcp": 2728.0255000000006,
+   "bytes": 1569598,
+   "lcpEl": "",
+   "big": [
+    "/assets/img/w960/dts-dinner-7.jpg 235 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "/assets/img/w960/dts-lunch-7.jpg 133 KB"
+   ],
+   "tips": [
+    "Reduce unused CSS (~470ms)",
+    "Serve images in next-gen formats (~300ms)",
+    "Properly size images (~300ms)"
+   ]
+  },
+  {
+   "page": "/dts/apply/",
+   "score": 93,
+   "lcp": 2576.3493,
+   "cls": 0.007464137929414462,
+   "tbt": 67,
+   "fcp": 2576.3493,
+   "bytes": 1213966,
+   "lcpEl": "",
+   "big": [
+    "https://www.gstatic.com/recaptcha/releases/4i3aN5wAweL7i3ADI7BSX4B-/recaptcha__en.js 352 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "https://www.googletagmanager.com/gtm.js 126 KB"
+   ],
+   "tips": []
+  },
+  {
+   "page": "/dts/inquire/",
+   "score": 90,
+   "lcp": 2877.9814000000006,
+   "cls": 0.001737886877926864,
+   "tbt": 57.5,
+   "fcp": 2877.9814,
+   "bytes": 1219105,
+   "lcpEl": "",
+   "big": [
+    "https://www.gstatic.com/recaptcha/releases/4i3aN5wAweL7i3ADI7BSX4B-/recaptcha__en.js 351 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "https://www.googletagmanager.com/gtm.js 125 KB"
+   ],
+   "tips": []
+  },
+  {
+   "page": "/ellis-room/",
+   "score": 87,
+   "lcp": 3341.6292000000008,
+   "cls": 0.0002215894659909844,
+   "tbt": 49,
+   "fcp": 2883.3482000000004,
+   "bytes": 1325762,
+   "lcpEl": "",
+   "big": [
+    "/assets/sq/w960/a1e72c79caf8d489.jpeg 210 KB",
+    "/assets/sq/w960/cf1257c88cc08cb7.jpeg 199 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB"
+   ],
+   "tips": []
+  },
+  {
+   "page": "/give/",
+   "score": 80,
+   "lcp": 4536.2932,
+   "cls": 0.0005672560744886164,
+   "tbt": 76.5,
+   "fcp": 2608.8111,
+   "bytes": 693753,
+   "lcpEl": "",
+   "big": [
+    "/assets/sq/w960/a1e72c79caf8d489.jpeg 210 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2 76 KB"
+   ],
+   "tips": [
+    "Properly size images (~640ms)",
+    "Reduce unused JavaScript (~450ms)",
+    "Serve images in next-gen formats (~340ms)"
+   ]
+  },
+  {
+   "page": "/join-staff/",
+   "score": 77,
+   "lcp": 4865.432400000001,
+   "cls": 0.02931766470430765,
+   "tbt": 104,
+   "fcp": 2880.22265,
+   "bytes": 1030353,
+   "lcpEl": "",
+   "big": [
+    "/assets/img/vow-god.jpg 240 KB",
+    "/assets/img/vow-neighbor.jpg 236 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB"
+   ],
+   "tips": [
+    "Reduce unused JavaScript (~340ms)"
+   ]
+  },
+  {
+   "page": "/teams/",
+   "score": 79,
+   "lcp": 4455.6441,
+   "cls": 0.02609446784404248,
+   "tbt": 44,
+   "fcp": 2904.3930577472047,
+   "bytes": 991959,
+   "lcpEl": "",
+   "big": [
+    "/assets/img/w960/team-serve-7.jpg 240 KB",
+    "/assets/img/w960/team-cross.jpg 195 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB"
+   ],
+   "tips": [
+    "Reduce unused JavaScript (~380ms)",
+    "Reduce unused CSS (~300ms)"
+   ]
+  },
+  {
+   "page": "/volunteer/",
+   "score": 87,
+   "lcp": 3643.0316999999995,
+   "cls": 0.02994212726616264,
+   "tbt": 50.5,
+   "fcp": 2433.7367999999997,
+   "bytes": 1565242,
+   "lcpEl": "",
+   "big": [
+    "/assets/sq/w960/cf1257c88cc08cb7.jpeg 199 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "/assets/sq/w960/1b7c946b3a1064a0.jpg 159 KB"
+   ],
+   "tips": [
+    "Serve images in next-gen formats (~300ms)",
+    "Properly size images (~300ms)"
+   ]
+  },
+  {
+   "page": "/newsletter/",
+   "score": 90,
+   "lcp": 2882.2467000000006,
+   "cls": 0.012754555332377831,
+   "tbt": 70,
+   "fcp": 2732.1883000000003,
+   "bytes": 1180030,
+   "lcpEl": "",
+   "big": [
+    "https://www.gstatic.com/recaptcha/releases/4i3aN5wAweL7i3ADI7BSX4B-/recaptcha__en.js 351 KB",
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "https://www.googletagmanager.com/gtm.js 125 KB"
+   ],
+   "tips": []
+  },
+  {
+   "page": "/privacy/",
+   "score": 92,
+   "lcp": 2732.2339,
+   "cls": 0.0001777575146041712,
+   "tbt": 43.5,
+   "fcp": 2582.2293000000004,
+   "bytes": 344042,
+   "lcpEl": "",
+   "big": [
+    "https://www.googletagmanager.com/gtag/js 180 KB",
+    "/assets/site5.css 40 KB",
+    "https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2 35 KB"
+   ],
+   "tips": []
+  }
+ ]
+}
