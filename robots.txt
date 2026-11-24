@@ -9,4 +9,4 @@ Disallow: /ywam5/
 Disallow: /ywam6/
 Disallow: /ywam7/
 
-Sitemap: https://ywamsanfrancisco.org/sitemap.xml
+Sitemap: https://ywamembers.org/sitemap.xml
