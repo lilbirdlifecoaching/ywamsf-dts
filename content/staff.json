@@ -9,16 +9,6 @@
       "name": "Tim & Karol Svoboda",
       "role": "YWAM San Francisco Bay Area Coordinators",
       "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/1770318794175-4VCIPMH2PCKUT82R229Z/image-asset.jpeg"
-    },
-    {
-      "name": "Saji Thomas",
-      "role": "Director of Training and Outreach",
-      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/e45a61e4-bff2-48a9-b1d8-e35633129372/saji.jpg"
-    },
-    {
-      "name": "Emily Bridge",
-      "role": "Director of Operations",
-      "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/e71445e0-7593-4986-b068-690b65d7ab94/DSC_4496.jpg"
     }
   ],
   "teams": [
@@ -64,6 +54,11 @@
       "name": "Operations",
       "members": [
         {
+          "name": "Emily Bridge",
+          "role": "Director of Operations",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/e71445e0-7593-4986-b068-690b65d7ab94/DSC_4496.jpg"
+        },
+        {
           "name": "Samuel Karuppiah",
           "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/73c4e746-545a-4164-9d7b-5ebcbdb66628/DSC_4491.jpg"
         }
@@ -72,6 +67,11 @@
     {
       "name": "Training and Outreach",
       "members": [
+        {
+          "name": "Saji Thomas",
+          "role": "Director of Training and Outreach",
+          "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/e45a61e4-bff2-48a9-b1d8-e35633129372/saji.jpg"
+        },
         {
           "name": "Jackie Karuppiah",
           "photo": "https://images.squarespace-cdn.com/content/v1/56e87b56d51cd42c04a4fd37/50933dc0-87c0-4e71-9da0-9d173d9d8dc7/jackie.jpg"
