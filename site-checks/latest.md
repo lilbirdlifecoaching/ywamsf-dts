@@ -1,6 +1,6 @@
 # Site check: all good
 
-https://ywamsanfrancisco.org/ · Nov 23, 2026, 8:36 PM (San Francisco time)
+https://ywamsanfrancisco.org/ · Nov 25, 2026, 10:42 AM (San Francisco time)
 
 ## Repository
 - ✅ **Code:** the admin page's code is valid
@@ -29,7 +29,7 @@ https://ywamsanfrancisco.org/ · Nov 23, 2026, 8:36 PM (San Francisco time)
 - ✅ **Security:** service refuses other websites (CORS)
 - ✅ **Security:** wrong passwords are refused
 - ✅ **Blog:** blog reactions are working
-- ✅ **Domain:** security certificate valid for 90 more days
+- ✅ **Domain:** security certificate valid for 88 more days
 - ✅ **Security:** http:// sends visitors to https://
 - ✅ **Domain:** www.ywamsanfrancisco.org goes to ywamsanfrancisco.org
 - ✅ **Domain:** ywamsanfrancisco.com forwards to the site
@@ -39,4 +39,4 @@ https://ywamsanfrancisco.org/ · Nov 23, 2026, 8:36 PM (San Francisco time)
 - ✅ **Email:** SPF email record present
 - ✅ **Email:** Resend email record (DKIM) in place
 
-Run: https://github.com/lilbirdlifecoaching/ywamsf-dts/actions/runs/45327383749
+Run: https://github.com/lilbirdlifecoaching/ywamsf-dts/actions/runs/45677381678
