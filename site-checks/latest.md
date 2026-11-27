@@ -1,6 +1,6 @@
-# Site check: 1 problem
+# Site check: all good
 
-https://ywamsanfrancisco.org/ · Nov 27, 2026, 10:40 AM (San Francisco time)
+https://ywamsanfrancisco.org/ · Nov 27, 2026, 10:42 AM (San Francisco time)
 
 ## Repository
 - ✅ **Code:** the admin page's code is valid
@@ -9,8 +9,8 @@ https://ywamsanfrancisco.org/ · Nov 27, 2026, 10:40 AM (San Francisco time)
 - ✅ **Security:** no known high-risk vulnerabilities in the sign-in service's packages
 
 ## Live site
-- ❌ **Pages:** 1 page(s) in the sitemap don't load: /blog/michaelas-story/ → 503
 - ✅ **Pages:** sitemap lists 121 pages
+- ✅ **Pages:** all 121 sitemap pages load
 - ✅ **Security:** every page has its security policy (CSP)
 - ✅ **Security:** no insecure (http://) files on any page
 - ✅ **Search:** every page can be found by Google

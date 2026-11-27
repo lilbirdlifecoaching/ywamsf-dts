@@ -1,7 +1,7 @@
 {
  "site": "https://ywamsanfrancisco.org/",
- "at": "2026-11-27T18:40:08.464Z",
- "fails": 1,
+ "at": "2026-11-27T18:42:17.555Z",
+ "fails": 0,
  "warnings": 0,
  "results": [
   {
@@ -11,8 +11,8 @@
   },
   {
    "area": "Pages",
-   "level": "fail",
-   "msg": "1 page(s) in the sitemap don't load: /blog/michaelas-story/ → 503"
+   "level": "ok",
+   "msg": "all 121 sitemap pages load"
   },
   {
    "area": "Security",
