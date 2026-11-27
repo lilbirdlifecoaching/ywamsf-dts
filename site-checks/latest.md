@@ -1,6 +1,6 @@
-# Site check: all good
+# Site check: 1 problem
 
-https://ywamsanfrancisco.org/ · Nov 25, 2026, 2:37 PM (San Francisco time)
+https://ywamsanfrancisco.org/ · Nov 27, 2026, 10:40 AM (San Francisco time)
 
 ## Repository
 - ✅ **Code:** the admin page's code is valid
@@ -9,8 +9,8 @@ https://ywamsanfrancisco.org/ · Nov 25, 2026, 2:37 PM (San Francisco time)
 - ✅ **Security:** no known high-risk vulnerabilities in the sign-in service's packages
 
 ## Live site
+- ❌ **Pages:** 1 page(s) in the sitemap don't load: /blog/michaelas-story/ → 503
 - ✅ **Pages:** sitemap lists 121 pages
-- ✅ **Pages:** all 121 sitemap pages load
 - ✅ **Security:** every page has its security policy (CSP)
 - ✅ **Security:** no insecure (http://) files on any page
 - ✅ **Search:** every page can be found by Google
@@ -29,7 +29,7 @@ https://ywamsanfrancisco.org/ · Nov 25, 2026, 2:37 PM (San Francisco time)
 - ✅ **Security:** service refuses other websites (CORS)
 - ✅ **Security:** wrong passwords are refused
 - ✅ **Blog:** blog reactions are working
-- ✅ **Domain:** security certificate valid for 88 more days
+- ✅ **Domain:** security certificate valid for 86 more days
 - ✅ **Security:** http:// sends visitors to https://
 - ✅ **Domain:** www.ywamsanfrancisco.org goes to ywamsanfrancisco.org
 - ✅ **Domain:** ywamsanfrancisco.com forwards to the site
@@ -39,4 +39,4 @@ https://ywamsanfrancisco.org/ · Nov 25, 2026, 2:37 PM (San Francisco time)
 - ✅ **Email:** SPF email record present
 - ✅ **Email:** Resend email record (DKIM) in place
 
-Run: https://github.com/lilbirdlifecoaching/ywamsf-dts/actions/runs/45714669894
+Run: https://github.com/lilbirdlifecoaching/ywamsf-dts/actions/runs/46051026977

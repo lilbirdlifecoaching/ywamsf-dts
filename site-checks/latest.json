@@ -1,7 +1,7 @@
 {
  "site": "https://ywamsanfrancisco.org/",
- "at": "2026-11-25T22:37:49.319Z",
- "fails": 0,
+ "at": "2026-11-27T18:40:08.464Z",
+ "fails": 1,
  "warnings": 0,
  "results": [
   {
@@ -11,8 +11,8 @@
   },
   {
    "area": "Pages",
-   "level": "ok",
-   "msg": "all 121 sitemap pages load"
+   "level": "fail",
+   "msg": "1 page(s) in the sitemap don't load: /blog/michaelas-story/ → 503"
   },
   {
    "area": "Security",
@@ -107,7 +107,7 @@
   {
    "area": "Domain",
    "level": "ok",
-   "msg": "security certificate valid for 88 more days"
+   "msg": "security certificate valid for 86 more days"
   },
   {
    "area": "Security",
